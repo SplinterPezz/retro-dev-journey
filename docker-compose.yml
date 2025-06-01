@@ -4,8 +4,6 @@ services:
     container_name: db_retro_dev_journey
     image: mongo:latest
     restart: always
-    env_file:
-      - ./database/.env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME:-username}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-really_strong_password}
@@ -22,17 +20,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    env_file:
-      - ./backend/.env.local
     ports:
       - "8421:8421"
     depends_on:
       - database
     environment:
     - APP_ENV=${APP_ENV:-local}
-    - PORT=${PORT:-8421}
-    - ALLOW_ORIGIN=${ALLOW_ORIGIN:-http://localhost:3000}
-    - MONGO_URI=${MONGO_URI:-mongodb://username:really_strong_password@db_retro_dev_journey:27017}
     networks:
       - retro_dev_journey
     volumes:

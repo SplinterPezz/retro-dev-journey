@@ -1,7 +1,9 @@
-backend/.env
-database/.env
-frontend/.env
+# Ignore all env files anywhere
+*.env
+*.env.*
 
-backend/.env.local
-backend/tmp/build-errors.log
-backend/tmp/main
+# Ignore all log files anywhere
+*.log
+
+# Optionally, ignore tmp directories and their content
+tmp/

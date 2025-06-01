@@ -9,8 +9,8 @@ RUN go mod download
 COPY . .
 
 COPY .env.local ./
-#COPY .env.dev ./
-#COPY .env.prod ./
+COPY .env.dev ./
+COPY .env.prod ./
 
 RUN go build -o app .
 
