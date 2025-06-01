@@ -8,13 +8,13 @@ import (
 
 	"os"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // Define a struct for the claims we want to include in the JWT
 type Claims struct {
 	Username string `json:"username"`
-	jwt.StandardClaims
+	jwt.RegisteredClaims
 }
 
 // GenerateJWT creates a new JWT token for a user
@@ -32,8 +32,8 @@ func GenerateJWT(username string) (string, int64, error) {
 	// Create JWT claims
 	claims := &Claims{
 		Username: username,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 			Issuer:    os.Getenv("APP_NAME"),
 		},
 	}
