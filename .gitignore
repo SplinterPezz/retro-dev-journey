@@ -4,3 +4,4 @@ frontend/.env
 
 backend/.env.local
 backend/tmp/build-errors.log
+backend/tmp/main
