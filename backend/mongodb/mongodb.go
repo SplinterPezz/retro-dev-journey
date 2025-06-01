@@ -2,6 +2,8 @@ package mongodb
 
 import (
 	"backend/internal/models"
+	"backend/internal/utils"
+
 	"context"
 	"fmt"
 	"log"
@@ -13,6 +15,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Global variable to hold the MongoDB client
@@ -71,6 +76,68 @@ func InitMongoDB() {
 	usersCollection = Client.Database(dbName).Collection("users")       // Set the users collection
 
 	fmt.Println("Connected to MongoDB and initialized users collection!")
+	//ROOT_USERNAME='admin'
+	//ROOT_PASSWORD='Z8a8vtY5cyfQBOgh30P6k'
+	//ROOT_EMAIL='it@devjourney.com'
+	rootUsername := os.Getenv("ROOT_USERNAME")
+	if rootUsername == "" {
+		log.Fatal("ROOT_USERNAME missing on env file")
+	}
+
+	storedUser, err := FindUserByUsernameOrEmail(rootUsername)
+	if err != nil || storedUser == nil {
+		// If Root user is not found it will be created
+		fmt.Println("Root user doesnt exists, creating Root user")
+
+		CreateRootUser()
+		
+	} else {
+		fmt.Println("Root user already exists, skip creating user.")
+	}
+	
+
+}
+
+func CreateRootUser()  (string, error) {
+	rootUsername := os.Getenv("ROOT_USERNAME")
+	rootPassword := os.Getenv("ROOT_PASSWORD")
+	rootEmail := os.Getenv("ROOT_EMAIL")
+
+	if rootUsername == "" || rootPassword == "" || rootEmail == "" {
+		log.Fatal("ROOT_USERNAME or ROOT_PASSWORD or ROOT_EMAIL missing on env file")
+	}
+
+	user := models.User{
+		Username: rootUsername,
+		Password: rootPassword,
+		Email:    rootEmail,
+	}
+	
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal("Could not hash password : " , err.Error())
+	}
+	
+	user.Password = string(hashedPassword)
+	userId, err := CreateUser(user)
+
+	// Create the user in the database
+	if err != nil {
+		log.Fatal("Could not create user : " , err.Error())
+	}
+
+	fmt.Println("Root user created with Id : ", userId)
+
+
+	// Generate JWT token for the newly created user
+	token, _, err := utils.GenerateJWT(user.Username)
+	if err != nil {
+		log.Fatal("Could not create token : " , err.Error())
+	}
+
+	fmt.Println("Root user created.")
+
+	return token, err
 }
 
 // GetDatabase returns a MongoDB database by name

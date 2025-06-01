@@ -76,7 +76,7 @@ func main() {
 	// Routes for HTTP-based interactions
 	r.GET("/hello", handlers.HelloWorld)
 
-	r.POST("/register", auth.Register)
+	//r.POST("/register", auth.Register)
 	r.POST("/login", auth.Login)
 
 	// Start HTTP server
@@ -105,6 +105,6 @@ func main() {
 	if err := server.Close(); err != nil {
 		log.Fatal("Server close:", err)
 	}
-	
+
 	mongodb.CloseMongoDB()
 }

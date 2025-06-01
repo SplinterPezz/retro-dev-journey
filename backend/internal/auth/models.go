@@ -2,6 +2,8 @@ package auth
 
 import (
 	"backend/internal/models"
+	"backend/internal/utils"
+	
 	"backend/mongodb"
 	"fmt"
 	"net/http"
@@ -54,7 +56,7 @@ func Register(c *gin.Context) {
 	}
 
 	// Generate JWT token for the newly created user
-	token, expiration, err := GenerateJWT(user.Username)
+	token, expiration, err := utils.GenerateJWT(user.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create token : " + err.Error()})
 		return
@@ -200,7 +202,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Generate JWT token for the logged-in user
-	token, expiration, err := GenerateJWT(storedUser.Username)
+	token, expiration, err := utils.GenerateJWT(storedUser.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create token"})
 		return

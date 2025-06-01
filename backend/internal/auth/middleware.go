@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"backend/internal/utils"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -15,9 +17,8 @@ func JWTMiddleware(c *gin.Context) {
 		return
 	}
 	// Skip the routes that don't require authentication
-	// WS Route have a custom auth token checker
-	// login and registration are public
-	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/register" || c.Request.URL.Path == "/ws" {
+	// login is public
+	if c.Request.URL.Path == "/login" {
 		c.Next()
 		return
 	}
@@ -41,7 +42,7 @@ func JWTMiddleware(c *gin.Context) {
 	tokenString = tokenString[7:]
 
 	// Validate the token
-	claims, err := ValidateJWT(tokenString)
+	claims, err := utils.ValidateJWT(tokenString)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": fmt.Sprintf("Invalid token: %v", err)})
 		c.Abort()
