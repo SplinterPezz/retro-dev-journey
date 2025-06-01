@@ -1,0 +1,6 @@
+backend/.env
+database/.env
+frontend/.env
+
+backend/.env.local
+backend/tmp/build-errors.log

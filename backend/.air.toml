@@ -1,0 +1,52 @@
+# .air.toml
+root = "."
+tmp_dir = "tmp"
+log = "stdout"
+
+[build]
+  # Array of commands to run before each build (if needed)
+  pre_cmd = ["echo 'Air is starting...' > pre_cmd.txt"]
+
+  # Command to build your Go application
+  cmd = "go build -o ./tmp/main ."
+  bin = "tmp/main"
+  include_dir = ["."]
+  exclude_dir = ["tmp", "vendor"]
+  watch_ext = [".go"]
+  exclude_regex = ["_test\\.go"]
+
+  # Stop rebuilding if no changes are detected in files
+  exclude_unchanged = true
+
+  # Follow symlinks for directories (if applicable)
+  follow_symlink = true
+
+  # Log file location in tmp_dir
+  log = "air.log"
+
+  # Poll files for changes if fsnotify doesn't work well
+  poll = false
+
+  # Poll interval (defaults to 500ms if polling is enabled)
+  poll_interval = 500  # ms
+
+  # Delay between rebuilds after file changes (0 ms for instant rebuilds)
+  delay = 0  # ms
+
+  # Stop running old binary if a build error occurs
+  stop_on_error = true
+
+  # Send an Interrupt signal before killing process (Windows doesn't support)
+  send_interrupt = false
+
+  # Delay after sending Interrupt signal (for graceful shutdown)
+  kill_delay = 500  # nanoseconds
+
+  # Rerun the binary after each build (enable live reloading)
+  rerun = true
+  rerun_delay = 500  
+
+[colors]
+  main = "yellow"
+  build = "green"
+  watch = "cyan"
