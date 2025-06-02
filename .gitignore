@@ -7,3 +7,4 @@
 
 # Optionally, ignore tmp directories and their content
 tmp/
+.DS_Store
