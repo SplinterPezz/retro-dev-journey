@@ -8,6 +8,7 @@ import SignIn from './Pages/Login/Signin';
 import AdminPage from './Pages/Admin/AdminPage';
 import HomePage from './Pages/Home/HomePage';
 
+
 function App() {
   return (
     <Provider store={store}>
@@ -15,6 +16,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/story" element={<HomePage />} />
+          <Route path="/sandbox" element={<HomePage />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/admin" element={<PrivateRoute />}>
             <Route path="/admin" element={<AdminPage />} />

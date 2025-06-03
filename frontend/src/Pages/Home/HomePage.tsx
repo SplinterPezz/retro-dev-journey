@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AudioControls from "../../Components/AudioControls";
+import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
 
 export default function HomePage() {
@@ -8,7 +9,6 @@ export default function HomePage() {
 
   useEffect(() => {
     // Disable scroll 
-
     document.body.classList.add('homepage-active');
 
     const img = new Image();
@@ -30,44 +30,46 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="homepage-container">
-      {/* Audio Controls */}
-      <AudioControls 
-        audioSrc="/audio/home_compressed.mp3"
-        defaultVolume={20}
-        defaultMuted={true}
-        position="top-right"
-        buttonStyle="normal"
-        containerStyle="framed-grey"
-        loop={true}
-        autoPlay={false}
-        showVolumePercentage={true}
-      />
-      
-      <div 
-        className={`homepage-background ${!imageLoaded ? 'loading' : ''}`}
-        style={{
-          opacity: imageLoaded ? 1 : 0,
-          transition: 'opacity 0.5s ease-in-out'
-        }}
-      />
-      
-      
-      
-      {/* Loading indicator */}
-      {!imageLoaded && (
-        <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          color: 'white',
-          fontSize: '1.2rem',
-          zIndex: 10
-        }}>
-          Loading...
-        </div>
-      )}
+    <div className="rpgui-content">
+      <div className="homepage-container">
+        {/* Audio Controls */}
+        <AudioControls 
+          audioSrc="/audio/home_compressed.mp3"
+          defaultVolume={20}
+          defaultMuted={true}
+          position="top-right"
+          buttonStyle="normal"
+          containerStyle="framed-grey"
+          loop={true}
+          autoPlay={false}
+          showVolumePercentage={true}
+        />
+        
+        <div 
+          className={`homepage-background ${!imageLoaded ? 'loading' : ''}`}
+          style={{
+            opacity: imageLoaded ? 1 : 0,
+            transition: 'opacity 0.5s ease-in-out'
+          }}
+        />
+        
+        {imageLoaded && <GameModeSelector />}
+        
+        {/* Loading indicator */}
+        {!imageLoaded && (
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'white',
+            fontSize: '1.2rem',
+            zIndex: 10
+          }}>
+            Loading...
+          </div>
+        )}
+      </div>
     </div>
   );
 }
