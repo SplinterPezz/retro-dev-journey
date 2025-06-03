@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './GameModeSelector.css';
 
 const GameModeSelector: React.FC = () => {
   const navigate = useNavigate();
+  const [backgroundVisible, setBackgroundVisible] = useState(false);
 
   const handleStoryMode = () => {
     console.log('Story Mode clicked!');
@@ -15,10 +16,30 @@ const GameModeSelector: React.FC = () => {
     navigate('/sandbox');
   };
 
+  const toggleBackground = () => {
+    setBackgroundVisible(!backgroundVisible);
+  };
+
   return (
     <div className="game-mode-selector">
-      <div className="rpgui-container framed-golden">
-        <h2 className="game-mode-title">Get to Know Me!</h2>
+      <div 
+        className="rpgui-container framed-golden w-100"
+        style={{
+          background: backgroundVisible ? 'rgba(0, 0, 0, 0.1)' : 'rgb(133 76 48)',
+          backdropFilter: backgroundVisible ? 'blur(2px)' : 'none'
+        }}
+      >
+        {/* Toggle button */}
+        <button 
+          className="background-toggle-btn"
+          onClick={toggleBackground}
+          title={backgroundVisible ? "Hide background" : "Show background"}
+        >
+        </button>
+
+        <h2 className="mb-3 mb-md-4" style={{ color: '#ffd700', fontSize: 'clamp(1.2rem, 4vw, 1.0rem)' }}>
+          Get to Know Me!
+        </h2>
 
         <div className="game-mode-description">
           <p>Pick your preferred way to discover my journey</p>
@@ -30,23 +51,23 @@ const GameModeSelector: React.FC = () => {
           </label>
 
           <div className="game-mode-buttons">
-            <button 
-              className="rpgui-button golden" 
-              type="button" 
+            <button
+              className="rpgui-button golden"
+              type="button"
               onClick={handleStoryMode}
-              style={{width:"200px"}}
+              style={{ width: "200px" }}
               disabled
             >
-              <p>Story Mode</p>
+              <p style={{marginTop:"revert"}}>Story Mode</p>
             </button>
 
-            <button 
-              className="rpgui-button golden" 
-              type="button" 
+            <button
+              className="rpgui-button golden"
+              type="button"
               onClick={handleSandboxMode}
-              style={{width:"200px"}}
+              style={{ width: "200px" }}
             >
-              <p>Sandbox</p>
+              <p style={{marginTop:"revert"}}>Sandbox</p>
             </button>
           </div>
         </div>

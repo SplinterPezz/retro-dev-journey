@@ -147,7 +147,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
         <div style={{ display: 'flex', gap: '10px' }}>
           {/* Volume Controls Button */}
           <button 
-            className={`rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
+            className={`d-none d-sm-block rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
             type="button"
             onClick={toggleVolumeControls}
             style={{

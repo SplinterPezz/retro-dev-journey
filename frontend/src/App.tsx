@@ -8,6 +8,8 @@ import SignIn from './Pages/Login/Signin';
 import AdminPage from './Pages/Admin/AdminPage';
 import HomePage from './Pages/Home/HomePage';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 
 function App() {
   return (

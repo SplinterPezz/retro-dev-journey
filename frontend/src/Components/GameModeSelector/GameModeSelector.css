@@ -4,7 +4,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 100;
-    min-width: 330px;
+    min-width: 400px;
 }
 
 .game-mode-selector .rpgui-container {
@@ -59,11 +59,42 @@
     font-style: italic;
     opacity: 0.8;
 }
+.background-toggle-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #ffd700;
+    background: transparent;
+    color: #ffd700;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease-in-out;
+    z-index: 101;
+    line-height: 1;
+    padding: 0;
+}
+
+.background-toggle-btn:active {
+    transform: scale(0.95);
+    background: #ffd700;
+}
+
+.background-toggle-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+}
 
 /* Responsive design */
 @media (max-width: 768px) {
     .game-mode-selector {
-        min-width: 280px;
+        min-width: 350px;
         padding: 0 10px;
     }
 
@@ -74,11 +105,17 @@
     .game-mode-description p {
         font-size: 0.85rem;
     }
+    .background-toggle-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 11px;
+    }
 }
 
 @media (max-width: 480px) {
     .game-mode-selector {
-        min-width: 250px;
+        min-width: 300px;
+        top:15%;
     }
 
     .game-mode-title {
@@ -88,4 +125,13 @@
     .game-mode-selector .rpgui-container {
         padding: 15px;
     }
+
+    .background-toggle-btn {
+        width: 20px;
+        height: 20px;
+        font-size: 10px;
+        top: 8px;
+        right: 8px;
+    }
+
 }

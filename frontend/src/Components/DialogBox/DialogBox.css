@@ -1,9 +1,10 @@
+/* Desktop default */
 .dialog-box-container {
   position: fixed;
-  bottom: 30px;
-  left: 50%;
+  bottom: 25%;
+  left: 25%;
   transform: translateX(-50%);
-  z-index: 200;
+  z-index: 95;
   max-width: 90vw;
   width: 600px;
   transition: all 0.5s ease-in-out;
@@ -35,7 +36,7 @@
 
 .dialog-text {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.1rem !important; 
   line-height: 1.4;
   color: #ffffff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -58,12 +59,30 @@
   }
 }
 
-/* Responsive design */
+@media (max-width: 1200px) {
+    .dialog-box-container {
+        bottom: 20%;
+        left: 50%;
+        width: 95vw;
+        max-width: none;
+    }
+}
+
+/* Mid size screens (tablet) */
 @media (max-width: 768px) {
   .dialog-box-container {
-    bottom: 20px;
+    bottom: 20%;
+    left: 59%;
     width: 95vw;
     max-width: none;
+  }
+  
+  .dialog-box-container.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .dialog-box-container.hidden {
+    transform: translateX(-50%) translateY(20px);
   }
   
   .dialog-box-container .rpgui-container {
@@ -71,14 +90,24 @@
   }
   
   .dialog-text {
-    font-size: 1rem;
+    font-size: 1rem !important;
   }
 }
 
+/* Mobile screens */
 @media (max-width: 480px) {
   .dialog-box-container {
-    bottom: 15px;
+    bottom: 13%;
+    left: 55%;
     width: 98vw;
+  }
+  
+  .dialog-box-container.visible {
+    transform: translateX(-50%) translateY(0);
+  }
+  
+  .dialog-box-container.hidden {
+    transform: translateX(-50%) translateY(20px);
   }
   
   .dialog-box-container .rpgui-container {
@@ -86,7 +115,7 @@
   }
   
   .dialog-text {
-    font-size: 0.9rem;
+    font-size: 0.9rem !important;
     line-height: 1.3;
   }
   

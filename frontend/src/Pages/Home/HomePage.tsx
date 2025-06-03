@@ -24,17 +24,7 @@ export default function HomePage() {
     <div className="rpgui-content">
       <div className="homepage-container">
         {/* Audio Controls */}
-        <AudioControls 
-          audioSrc="/audio/home_compressed.mp3"
-          defaultVolume={20}
-          defaultMuted={true}
-          position="top-right"
-          buttonStyle="normal"
-          containerStyle="framed-grey"
-          loop={true}
-          autoPlay={false}
-          showVolumePercentage={true}
-        />
+        
         
         <div 
           className={`homepage-background ${!imageLoaded ? 'loading' : ''}`}
@@ -46,8 +36,26 @@ export default function HomePage() {
         
         {imageLoaded && <GameModeSelector />}
 
-        {/*<IntroDialog onComplete={handleDialogComplete} />*/}
+        {imageLoaded && 
+          <IntroDialog 
+            onComplete={handleDialogComplete} 
+            initialDelay={3000} 
+            debugMode={false}
+          />
+        }
         
+        <AudioControls 
+          audioSrc="/audio/home_compressed.mp3"
+          defaultVolume={20}
+          defaultMuted={true}
+          position="top-right"
+          buttonStyle="normal"
+          containerStyle="framed-grey"
+          loop={true}
+          autoPlay={false}
+          showVolumePercentage={true}
+        />
+
         {/* Loading indicator */}
         {!imageLoaded && (
           <div style={{

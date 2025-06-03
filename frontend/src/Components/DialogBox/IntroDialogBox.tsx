@@ -1,37 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DialogBox from './DialogBox';
 
 interface IntroDialogProps {
   onComplete?: () => void;
   autoStart?: boolean;
+  initialDelay?: number;
+  debugMode?: boolean;
 }
 
 const IntroDialog: React.FC<IntroDialogProps> = ({ 
   onComplete, 
-  autoStart = true 
+  autoStart = true,
+  initialDelay = 2000,
+  debugMode = false
 }) => {
-  const [showDialog, setShowDialog] = useState(autoStart);
+  const [showDialog, setShowDialog] = useState(debugMode);
+
+  useEffect(() => {
+    if (autoStart && !debugMode) {
+      const timer = setTimeout(() => {
+        setShowDialog(true);
+      }, initialDelay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [autoStart, initialDelay, debugMode]);
 
   const messages = [
     {
       speaker: "Dude",
       text: "Look how beautiful Palermo is...",
-      delay: 1000 // Start after 1 second
+      delay: debugMode ? 0 : 1000
     },
     {
-      speaker: "????",
+      speaker: "????", 
       text: "Bro, but ur leaving..",
-      delay: 500 // 0.5 seconds between messages
+      delay: debugMode ? 0 : 500
     },
     {
       speaker: "Dude",
-      text: "ur right.. thats my CV then",
-      delay: 500 // 0.5 seconds between messages
+      text: "ur right.. thats my CV then...",
+      delay: debugMode ? 0 : 500
     }
   ];
 
   const handleDialogComplete = () => {
-    setShowDialog(false);
+    if (!debugMode) {
+      setShowDialog(false);
+    }
     if (onComplete) {
       onComplete();
     }
@@ -41,12 +57,29 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
     return null;
   }
 
+  // In modalità debug, mostra solo un messaggio statico
+  if (debugMode) {
+    return (
+      <div className="dialog-box-container visible">
+        <div className="rpgui-content">
+          <div className="rpgui-container framed">
+            <div className="dialog-content">
+              <p className="dialog-text">
+                Dude: ur right.. thats my CV then..
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DialogBox
       messages={messages}
       onComplete={handleDialogComplete}
-      typingSpeed={50} // 50ms per character
-      messageDuration={3000} // 3 seconds per message
+      typingSpeed={50}
+      messageDuration={3000}
     />
   );
 };
