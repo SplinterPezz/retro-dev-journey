@@ -46,7 +46,7 @@ const GameModeSelector: React.FC = () => {
               onClick={handleSandboxMode}
               style={{width:"200px"}}
             >
-              <p>  Sandbox  </p>
+              <p>Sandbox</p>
             </button>
           </div>
         </div>

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import AudioControls from "../../Components/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
+import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     // Disable scroll 
@@ -14,20 +14,11 @@ export default function HomePage() {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.src = '/backgrounds/3dcjfz5xxyw21.gif';
-
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    // Active Scroll on mount component
-    return () => {
-      document.body.classList.remove('homepage-active');
-      window.removeEventListener('resize', checkMobile);
-    };
   }, []);
+  
+  const handleDialogComplete = () => {
+    console.log("Dialog complete")
+  };
 
   return (
     <div className="rpgui-content">
@@ -54,6 +45,8 @@ export default function HomePage() {
         />
         
         {imageLoaded && <GameModeSelector />}
+
+        {/*<IntroDialog onComplete={handleDialogComplete} />*/}
         
         {/* Loading indicator */}
         {!imageLoaded && (
