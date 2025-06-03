@@ -4,7 +4,7 @@ import './GameModeSelector.css';
 
 const GameModeSelector: React.FC = () => {
   const navigate = useNavigate();
-  const [backgroundVisible, setBackgroundVisible] = useState(false);
+  const [backgroundVisible, setBackgroundVisible] = useState(true);
 
   const handleStoryMode = () => {
     console.log('Story Mode clicked!');
@@ -29,16 +29,16 @@ const GameModeSelector: React.FC = () => {
           backdropFilter: backgroundVisible ? 'blur(2px)' : 'none'
         }}
       >
-        {/* Toggle button */}
-        <button 
-          className="background-toggle-btn"
-          onClick={toggleBackground}
-          title={backgroundVisible ? "Hide background" : "Show background"}
-        >
-        </button>
-
         <h2 className="mb-3 mb-md-4" style={{ color: '#ffd700', fontSize: 'clamp(1.2rem, 4vw, 1.0rem)' }}>
-          Get to Know Me!
+          Get to Know{' '}
+          <span 
+            className="easter-egg-btn"
+            onClick={toggleBackground}
+            title=""
+          >
+            Me
+          </span>
+          !
         </h2>
 
         <div className="game-mode-description">

@@ -29,17 +29,17 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   const messages = [
     {
       speaker: "Dude",
-      text: "Look how beautiful Palermo is...",
+      text: "Look how beautiful Italy is...",
       delay: debugMode ? 0 : 1000
     },
     {
       speaker: "????", 
-      text: "Bro, but ur leaving..",
+      text: "Bro, but ur leaving Italy...",
       delay: debugMode ? 0 : 500
     },
     {
       speaker: "Dude",
-      text: "ur right.. thats my CV then...",
+      text: "Ur right.. thats my CV then...",
       delay: debugMode ? 0 : 500
     }
   ];
