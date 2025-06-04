@@ -249,7 +249,6 @@ inside your html file.
 
 /* game div with background image*/
 .rpgui-container.framed {
-  /* border */
   border-style: solid;
   border-image-source: url("img/border-image.png");
   border-image-repeat: repeat;

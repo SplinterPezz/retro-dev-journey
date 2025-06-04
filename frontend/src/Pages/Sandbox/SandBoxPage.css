@@ -1,0 +1,267 @@
+.sandbox-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+.sandbox-loading .rpgui-container {
+  place-self: anchor-center;
+  text-align: center;
+  min-width: 400px;
+  padding: 30px;
+}
+
+.loading-bar {
+  margin-top: 20px;
+}
+
+.loading-bar .rpgui-progress {
+  width: 100%;
+  height: 20px;
+}
+
+/* Main container */
+.sandbox-container {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #87ceeb; /* Sky blue background */
+}
+
+/* Viewport that moves with the player */
+.sandbox-viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Game world container */
+.sandbox-world {
+  position: relative;
+  transition: transform 0.1s ease-out;
+  
+  /* Pixel perfect rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* World background pattern */
+.world-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    /* Grass texture */
+    radial-gradient(circle at 25% 25%, #90ee90 2px, transparent 2px),
+    radial-gradient(circle at 75% 75%, #98fb98 1px, transparent 1px),
+    /* Base grass color */
+    linear-gradient(180deg, #90ee90 0%, #98fb98 100%);
+  background-size: 40px 40px, 30px 30px, 100% 100%;
+  background-position: 0 0, 20px 20px, 0 0;
+  z-index: 1;
+}
+
+/* Main path running through the world */
+.main-path {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80px;
+  height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    #8b7355 0px,
+    #8b7355 20px,
+    #a0845c 20px,
+    #a0845c 40px
+  );
+  transform: translateX(-50%);
+  z-index: 2;
+  
+  /* Add some texture */
+  box-shadow: 
+    inset 0 0 20px rgba(0, 0, 0, 0.1),
+    inset -4px 0 8px rgba(0, 0, 0, 0.1),
+    inset 4px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+/* UI Overlay */
+.sandbox-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* Controls info */
+.controls-info {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  pointer-events: auto;
+}
+
+.controls-info .rpgui-container {
+  padding: 10px 15px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+}
+
+/* Minimap */
+.minimap {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 200px;
+  height: 150px;
+  pointer-events: auto;
+}
+
+.minimap .rpgui-container {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(3px);
+  width: 100%;
+  height: 100%;
+}
+
+.minimap-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #90ee90 0%, #98fb98 100%);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+/* Minimap player indicator */
+.minimap-player {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffd700;
+  border: 1px solid #000;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: pulse-player 2s infinite;
+}
+
+@keyframes pulse-player {
+  0%, 100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+/* Minimap structure indicators */
+.minimap-structure {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+}
+
+.minimap-structure.building {
+  background: #8b4513;
+  border: 1px solid #654321;
+}
+
+.minimap-structure.statue {
+  background: #708090;
+  border: 1px solid #556b2f;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .controls-info {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .minimap {
+    bottom: 10px;
+    right: 10px;
+    width: 150px;
+    height: 100px;
+  }
+  
+  .sandbox-world {
+    /* Scale up for mobile to make everything more visible */
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls-info .rpgui-container {
+    padding: 8px 12px;
+  }
+  
+  .controls-info p {
+    font-size: 0.7rem !important;
+  }
+  
+  .minimap {
+    width: 120px;
+    height: 80px;
+  }
+  
+  /* Hide minimap on very small screens */
+  @media (max-width: 320px) {
+    .minimap {
+      display: none;
+    }
+  }
+}
+
+/* World boundaries visualization (development) */
+.world-boundaries {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px dashed rgba(255, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Performance optimizations */
+.sandbox-world * {
+  will-change: transform;
+}
+
+/* Smooth camera following */
+.sandbox-viewport.smooth-camera .sandbox-world {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Debug grid (development only) */
+.debug-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 9998;
+}

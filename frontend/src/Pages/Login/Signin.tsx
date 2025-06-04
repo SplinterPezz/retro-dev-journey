@@ -12,7 +12,7 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Card from "../../Components/Card";
 import { styled } from "@mui/material/styles";
-import ForgotPassword from "../ForgotPassword/ForgotPassword";
+import ForgotPassword from "./ForgotPassword";
 import { SitemarkIcon } from "../../Components/CustomIcons";
 import { login } from "../../Services/authService";
 import "./login.css";

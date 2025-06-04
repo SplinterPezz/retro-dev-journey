@@ -7,6 +7,7 @@ import PrivateRoute from './Utils/PrivateRoute';
 import SignIn from './Pages/Login/Signin';
 import AdminPage from './Pages/Admin/AdminPage';
 import HomePage from './Pages/Home/HomePage';
+import SandboxPage from './Pages/Sandbox/SandBoxPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
@@ -19,7 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/story" element={<HomePage />} />
-          <Route path="/sandbox" element={<HomePage />} />
+          <Route path="/sandbox" element={<SandboxPage />} />
           <Route path="/login" element={<SignIn />} />
           <Route path="/admin" element={<PrivateRoute />}>
             <Route path="/admin" element={<AdminPage />} />
