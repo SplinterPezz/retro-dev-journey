@@ -1,0 +1,203 @@
+.structure-container {
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.structure-sprite {
+  width: 50px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+  
+  /* Pixel art styling */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.structure-container.building .structure-sprite {
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+}
+
+.structure-container.statue .structure-sprite {
+  background: linear-gradient(135deg, #708090, #778899);
+}
+
+.structure-icon {
+  font-size: 24px;
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Hover/nearby effects */
+.structure-container.nearby .structure-sprite {
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  border-color: #ffd700 !important;
+}
+
+.structure-container.nearby {
+  z-index: 60;
+}
+
+/* Structure label */
+.structure-label {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  text-align: center;
+  min-width: 100px;
+}
+
+.structure-label.visible {
+  opacity: 1;
+}
+
+.structure-label span {
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffd700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  border: 1px solid #8b4513;
+  display: block;
+}
+
+/* Interaction hint */
+.interaction-hint {
+  margin-top: 5px;
+  background: rgba(255, 215, 0, 0.9);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+/* Connection path to main road */
+.structure-path {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 50px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #8b7355 0px,
+    #8b7355 8px,
+    #a0845c 8px,
+    #a0845c 16px
+  );
+  transform: translate(-50%, 0);
+  z-index: -1;
+  opacity: 0.7;
+}
+
+/* Interaction radius indicator (development only) */
+.interaction-radius {
+  position: absolute;
+  border: 2px dashed rgba(255, 215, 0, 0.3);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Building specific styles */
+.structure-container.building .structure-sprite {
+  border-style: solid;
+}
+
+.structure-container.building .structure-icon {
+  color: #f4a460;
+}
+
+/* Statue specific styles */
+.structure-container.statue .structure-sprite {
+  border-style: solid;
+  border-radius: 4px;
+}
+
+.structure-container.statue .structure-icon {
+  color: #dcdcdc;
+}
+
+/* Animation for newly discovered structures */
+.structure-container.discovered {
+  animation: discovered 0.8s ease-out;
+}
+
+@keyframes discovered {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .structure-sprite {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .structure-icon {
+    font-size: 20px;
+  }
+  
+  .structure-label span {
+    font-size: 10px;
+    padding: 2px 6px;
+  }
+  
+  .interaction-hint {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .structure-sprite {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .structure-icon {
+    font-size: 18px;
+  }
+  
+  .structure-container {
+    left: calc(var(--x) - 17.5px) !important;
+    top: calc(var(--y) - 17.5px) !important;
+  }
+}
