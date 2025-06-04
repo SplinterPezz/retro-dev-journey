@@ -1,0 +1,159 @@
+/* src/Pages/Sandbox/Components/Player/Player.css */
+
+.player-container {
+  pointer-events: none;
+}
+
+.player-sprite {
+  width: 128px;
+  height: 128px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  
+  /* Pixel perfect rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Sprite animations - using available GIF files with transforms */
+.player-sprite.idle-down {
+  background-image: url('/public/sprites/topdown_walkingDown.gif');
+}
+
+/* Walking down - use the main walking sprite */
+.player-sprite.walking-down {
+  background-image: url('/public/sprites/topdown_walkingDown.gif');
+}
+
+/* Walking up - temporarily use walking down sprite */
+.player-sprite.walking-up {
+  background-image: url('/public/sprites/topdown_walkingDown.gif');
+}
+
+/* Walking left -  flip the left sprite horizontally  */
+.player-sprite.walking-left {
+  background-image: url('/public/sprites/topdown_walkingE.gif');
+  transform: scaleX(-1);
+}
+
+/* Walking right */
+.player-sprite.walking-right {
+  background-image: url('/public/sprites/topdown_walkingE.gif');
+  
+}
+
+/* Diagonal movements */
+.player-sprite.walking-up-left {
+  background-image: url('/public/sprites/topdown_walkingDown.gif');
+}
+
+.player-sprite.walking-up-right {
+  background-image: url('/public/sprites/topdown_walkingDown.gif');
+}
+
+/* Walking down-left - flip the SE sprite horizontally */
+.player-sprite.walking-down-left {
+  background-image: url('/public/sprites/topdown_walkingSE.gif');
+  transform: scaleX(-1); /* Horizontal flip */
+}
+
+/* Walking down-right - use the SE sprite as-is */
+.player-sprite.walking-down-right {
+  background-image: url('/public/sprites/topdown_walkingSE.gif');
+}
+
+/* Remove the CSS keyframe animation since GIFs are self-animated */
+/* @keyframes walk-animation - Not needed for GIF sprites */
+
+/* Player name tag */
+.player-nametag {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 5px;
+  pointer-events: none;
+}
+
+.player-nametag span {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffd700;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  border: 1px solid #8b4513;
+}
+
+/* Player shadow */
+.player-shadow {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Temporary fallback sprites (colored squares) - remove when you have actual sprites */
+.player-sprite:not([style*="background-image"]) {
+  background-color: #4a90e2;
+  border: 2px solid #2c5aa0;
+  border-radius: 2px;
+}
+
+.player-sprite.walking-up:not([style*="background-image"]) {
+  background-color: #5cb85c;
+}
+
+.player-sprite.walking-down:not([style*="background-image"]) {
+  background-color: #d9534f;
+}
+
+.player-sprite.walking-left:not([style*="background-image"]) {
+  background-color: #f0ad4e;
+}
+
+.player-sprite.walking-right:not([style*="background-image"]) {
+  background-color: #5bc0de;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .player-sprite {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .player-container {
+    left: calc(var(--x) - 12px) !important;
+    top: calc(var(--y) - 12px) !important;
+  }
+  
+  .player-nametag span {
+    font-size: 8px;
+    padding: 1px 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-sprite {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .player-container {
+    left: calc(var(--x) - 10px) !important;
+    top: calc(var(--y) - 10px) !important;
+  }
+}
