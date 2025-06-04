@@ -20,7 +20,7 @@ const SandboxPage: React.FC = () => {
 
     // Player movement hook
     const { playerPosition, isMoving, direction } = usePlayerMovement({
-        initialPosition: { x: worldConfig.width / 2, y: worldConfig.height / 2 },
+        initialPosition: { x: worldConfig.width / 2, y: 100 },
         speed: 3,
         worldBounds: {
             minX: 50,
@@ -52,8 +52,6 @@ const SandboxPage: React.FC = () => {
     }, [nearbyStructure, showDialog]);
 
     useEffect(() => {
-        document.body.classList.add('sandbox-active');
-
         // Animate loading progress
         const loadingInterval = setInterval(() => {
             setLoadingProgress(prev => {
@@ -65,11 +63,6 @@ const SandboxPage: React.FC = () => {
                 return prev + 2;
             });
         }, 30);
-
-        return () => {
-            document.body.classList.remove('sandbox-active');
-            clearInterval(loadingInterval);
-        };
     }, []);
 
 
@@ -212,7 +205,7 @@ const SandboxPage: React.FC = () => {
 
                 {/* Audio Controls */}
                 <AudioControls
-                    audioSrc="/audio/sandbox_music.mp3"
+                    audioSrc="/audio/sandbox_compressed.mp3"
                     defaultVolume={15}
                     defaultMuted={true}
                     position="top-right"

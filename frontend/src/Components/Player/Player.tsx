@@ -14,7 +14,7 @@ const Player: React.FC<PlayerProps> = ({ position, isMoving, direction }) => {
     const baseClass = 'player-sprite';
     
     if (!isMoving) {
-      return `${baseClass} idle-down`; // Default idle state
+      return `${baseClass} idle-down`;
     }
 
     // Map directions to sprite classes with available sprites
@@ -45,10 +45,10 @@ const Player: React.FC<PlayerProps> = ({ position, isMoving, direction }) => {
       className="player-container"
       style={{
         position: 'absolute',
-        left: position.x - 16, // Center the 32px sprite
-        top: position.y - 16,
+        left: position.x - 64,
+        top: position.y - 64,
         zIndex: 100,
-        transition: 'none' // Smooth movement handled by the hook
+        transition: 'none'
       }}
     >
       <div className={getSpriteClass()}>

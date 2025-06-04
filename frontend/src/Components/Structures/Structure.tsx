@@ -10,7 +10,8 @@ interface StructureProps {
 }
 
 const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosition }) => {
-  // Calculate if structure should show interaction hint
+  
+    // Calculate if structure should show interaction hint
   const showInteractionHint = isNearby;
 
   // Get structure icon/sprite
@@ -19,11 +20,10 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       return data.sprite;
     }
     
-    // Fallback icons based on type
     if (type === 'building') {
-      return '🏢'; // Company building
+      return '🏢';
     } else {
-      return '🗿'; // Technology statue
+      return '🗿';
     }
   };
 
@@ -37,7 +37,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       className={`structure-container ${type} ${isNearby ? 'nearby' : ''}`}
       style={{
         position: 'absolute',
-        left: data.position.x - 25, // Center the structure
+        left: data.position.x - 25,
         top: data.position.y - 25,
         zIndex: 50
       }}

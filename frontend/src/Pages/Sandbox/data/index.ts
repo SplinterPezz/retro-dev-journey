@@ -16,30 +16,28 @@ const companiesData: CompanyData[] = [
     period: "2022 - Present",
     technologies: ["React", "Node.js", "TypeScript", "MongoDB", "AWS"],
     description: "Developed modern web applications using React and Node.js. Implemented microservices architecture and cloud deployment strategies.",
-    website: "https://techcorp.it"
+    website: "https://techcorp.it",
+    position: { x: 8, y: 32 },
+    connectionSide: 'left',
   },
   {
-    company: "StartupXYZ",
+    company: "InnovateSoft",
     role: "Frontend Developer",
-    period: "2021 - 2022",
-    technologies: ["Vue.js", "JavaScript", "CSS3", "REST APIs"],
-    description: "Built responsive user interfaces for a fintech startup. Collaborated with UX designers to create intuitive user experiences.",
-    website: "https://startupxyz.com"
+    period: "2020 - 2022",
+    technologies: ["React", "Vue.js", "SASS", "Webpack"],
+    description: "Built responsive user interfaces and improved application performance by 40%.",
+    website: "https://innovatesoft.com",
+    position: { x: 15, y: 45 },
+    connectionSide: 'right',
   },
   {
-    company: "Digital Agency Roma",
-    role: "Web Developer",
-    period: "2020 - 2021",
-    technologies: ["WordPress", "PHP", "jQuery", "MySQL"],
-    description: "Created custom WordPress themes and plugins for various clients. Optimized website performance and SEO.",
-    website: "https://digitalagency.roma"
-  },
-  {
-    company: "Freelance Projects",
-    role: "Full Stack Developer",
+    company: "StartupHub",
+    role: "Junior Developer",
     period: "2019 - 2020",
-    technologies: ["Laravel", "Vue.js", "PostgreSQL", "Docker"],
-    description: "Worked on various freelance projects including e-commerce platforms and business management systems.",
+    technologies: ["JavaScript", "HTML5", "CSS3", "jQuery"],
+    description: "Started my development journey building landing pages and simple web applications.",
+    position: { x: 8, y: 58 },
+    connectionSide: 'left',
   }
 ];
 
@@ -51,7 +49,9 @@ const technologiesData: TechnologyData[] = [
     level: "Expert",
     yearsExperience: 4,
     description: "Advanced React development including hooks, context, and performance optimization.",
-    projects: ["Portfolio Website", "E-commerce Platform", "Admin Dashboard"]
+    projects: ["Portfolio Website", "E-commerce Platform", "Admin Dashboard"],
+    position: { x: 15, y: 25 },
+    connectionSide: 'right',
   },
   {
     name: "Node.js",
@@ -59,7 +59,9 @@ const technologiesData: TechnologyData[] = [
     level: "Advanced",
     yearsExperience: 3,
     description: "Server-side JavaScript development with Express.js and various databases.",
-    projects: ["REST APIs", "Real-time Chat App", "Authentication System"]
+    projects: ["REST APIs", "Real-time Chat App", "Authentication System"],
+    position: { x: 8, y: 40 },
+    connectionSide: 'left',
   },
   {
     name: "TypeScript",
@@ -67,7 +69,9 @@ const technologiesData: TechnologyData[] = [
     level: "Advanced",
     yearsExperience: 3,
     description: "Type-safe JavaScript development for large-scale applications.",
-    projects: ["Enterprise Applications", "Component Libraries", "API Development"]
+    projects: ["Enterprise Applications", "Component Libraries", "API Development"],
+    position: { x: 15, y: 52 },
+    connectionSide: 'right',
   },
   {
     name: "MongoDB",
@@ -75,39 +79,9 @@ const technologiesData: TechnologyData[] = [
     level: "Intermediate",
     yearsExperience: 2,
     description: "NoSQL database design and optimization for modern web applications.",
-    projects: ["User Management System", "Content Management", "Analytics Platform"]
-  },
-  {
-    name: "AWS",
-    category: "Cloud Platform",
-    level: "Intermediate",
-    yearsExperience: 2,
-    description: "Cloud infrastructure management and deployment on Amazon Web Services.",
-    projects: ["Serverless Applications", "Container Deployment", "Static Site Hosting"]
-  },
-  {
-    name: "Vue.js",
-    category: "Frontend Framework",
-    level: "Intermediate",
-    yearsExperience: 2,
-    description: "Progressive JavaScript framework for building user interfaces.",
-    projects: ["SPA Applications", "Component Libraries", "Admin Panels"]
-  },
-  {
-    name: "Docker",
-    category: "DevOps Tool",
-    level: "Intermediate",
-    yearsExperience: 2,
-    description: "Containerization and orchestration for development and production environments.",
-    projects: ["Development Environment", "Production Deployment", "CI/CD Pipeline"]
-  },
-  {
-    name: "Git",
-    category: "Version Control",
-    level: "Expert",
-    yearsExperience: 5,
-    description: "Advanced Git workflows including branching strategies and collaboration.",
-    projects: ["All Projects", "Open Source Contributions", "Team Collaboration"]
+    projects: ["User Management System", "Content Management", "Analytics Platform"],
+    position: { x: 8, y: 65 },
+    connectionSide: 'left',
   }
 ];
 
