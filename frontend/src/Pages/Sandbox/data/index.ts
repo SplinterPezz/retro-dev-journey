@@ -17,8 +17,6 @@ const companiesData: CompanyData[] = [
     technologies: ["React", "Node.js", "TypeScript", "MongoDB", "AWS"],
     description: "Developed modern web applications using React and Node.js. Implemented microservices architecture and cloud deployment strategies.",
     website: "https://techcorp.it",
-    position: { x: 8, y: 32 },
-    connectionSide: 'left',
   },
   {
     company: "InnovateSoft",
@@ -27,8 +25,6 @@ const companiesData: CompanyData[] = [
     technologies: ["React", "Vue.js", "SASS", "Webpack"],
     description: "Built responsive user interfaces and improved application performance by 40%.",
     website: "https://innovatesoft.com",
-    position: { x: 15, y: 45 },
-    connectionSide: 'right',
   },
   {
     company: "StartupHub",
@@ -36,8 +32,6 @@ const companiesData: CompanyData[] = [
     period: "2019 - 2020",
     technologies: ["JavaScript", "HTML5", "CSS3", "jQuery"],
     description: "Started my development journey building landing pages and simple web applications.",
-    position: { x: 8, y: 58 },
-    connectionSide: 'left',
   }
 ];
 
@@ -50,8 +44,6 @@ const technologiesData: TechnologyData[] = [
     yearsExperience: 4,
     description: "Advanced React development including hooks, context, and performance optimization.",
     projects: ["Portfolio Website", "E-commerce Platform", "Admin Dashboard"],
-    position: { x: 15, y: 25 },
-    connectionSide: 'right',
   },
   {
     name: "Node.js",
@@ -60,8 +52,6 @@ const technologiesData: TechnologyData[] = [
     yearsExperience: 3,
     description: "Server-side JavaScript development with Express.js and various databases.",
     projects: ["REST APIs", "Real-time Chat App", "Authentication System"],
-    position: { x: 8, y: 40 },
-    connectionSide: 'left',
   },
   {
     name: "TypeScript",
@@ -70,8 +60,6 @@ const technologiesData: TechnologyData[] = [
     yearsExperience: 3,
     description: "Type-safe JavaScript development for large-scale applications.",
     projects: ["Enterprise Applications", "Component Libraries", "API Development"],
-    position: { x: 15, y: 52 },
-    connectionSide: 'right',
   },
   {
     name: "MongoDB",
@@ -80,8 +68,6 @@ const technologiesData: TechnologyData[] = [
     yearsExperience: 2,
     description: "NoSQL database design and optimization for modern web applications.",
     projects: ["User Management System", "Content Management", "Analytics Platform"],
-    position: { x: 8, y: 65 },
-    connectionSide: 'left',
   }
 ];
 
