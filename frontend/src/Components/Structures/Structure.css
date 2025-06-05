@@ -55,8 +55,6 @@
 /* Hover/nearby effects */
 .structure-container.nearby .structure-sprite {
   transform: scale(1.1);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
-  border-color: #ffd700 !important;
 }
 
 .structure-container.nearby {

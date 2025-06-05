@@ -110,9 +110,9 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       {/* Structure label */}
       <div className={`structure-label ${showInteractionHint ? 'visible' : ''}`}>
         <span>{data.name}</span>
-        {showInteractionHint && (
+        {(showInteractionHint && data.name === '???') && (
           <div className="interaction-hint">
-            {data.name === '???' ? 'Your next opportunity awaits!' : 'Walk closer to explore'}
+            {'Your next opportunity awaits!'}
           </div>
         )}
       </div>

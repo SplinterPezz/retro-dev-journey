@@ -37,7 +37,7 @@ const SandboxPage: React.FC = () => {
     // Player movement hook
     const { playerPosition, isMoving, direction } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
-        speed: 3,
+        speed: 5,
         worldBounds: {
             minX: 50,
             minY: 50,
