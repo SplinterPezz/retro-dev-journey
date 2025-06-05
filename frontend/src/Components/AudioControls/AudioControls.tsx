@@ -1,4 +1,3 @@
-// src/Components/AudioControls.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { VolumeX, Volume2, ChevronUp, ChevronDown, Headphones } from 'lucide-react';
 

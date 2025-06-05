@@ -1,6 +1,6 @@
 import { store } from "../store/store";
 import { checkAuthentication, logout } from "../store/authSlice";
-import { ApiError } from "../Models/models";
+import { ApiError } from "../Pages/Login/types";
 
 const whitelist = ["/login"]
 

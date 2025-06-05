@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import AudioControls from "../../Components/AudioControls";
+import AudioControls from "../../Components/AudioControls/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
 import IntroDialog from "../../Components/DialogBox/IntroDialogBox";

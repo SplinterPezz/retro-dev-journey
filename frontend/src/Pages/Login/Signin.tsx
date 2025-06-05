@@ -10,17 +10,17 @@ import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Card from "../../Components/Card";
+import Card from "../../Components/Common/Card";
 import { styled } from "@mui/material/styles";
 import ForgotPassword from "./ForgotPassword";
-import { SitemarkIcon } from "../../Components/CustomIcons";
+import { SitemarkIcon } from "../../Components/Common/CustomIcons";
 import { login } from "../../Services/authService";
 import "./login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import { RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
-import { LoginModel } from "../../Models/models";
+import { LoginModel } from "./types";
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
   height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
