@@ -1,0 +1,45 @@
+.path-renderer {
+  position: relative;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.path-segment {
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  
+  /* Smooth transitions for dynamic path changes */
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Animation for newly generated path segments */
+.path-segment.new {
+  animation: pathAppear 0.5s ease-out;
+}
+
+@keyframes pathAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .path-segment {
+    /* Scale down path segments on mobile if needed */
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .path-segment {
+    /* Further scaling for very small screens */
+  }
+}

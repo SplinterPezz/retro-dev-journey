@@ -1,4 +1,4 @@
-import { ApiError, LoginModel, TokenAuth } from '../Models/models';
+import { ApiError, LoginModel, TokenAuth } from '../Pages/Login/types';
 import { fetchFromApi } from '../Utils/apiService'
 
 export async function login(payload: LoginModel): Promise<TokenAuth | ApiError> {

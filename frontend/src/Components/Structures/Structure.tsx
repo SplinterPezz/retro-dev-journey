@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position, StructureData } from '../../Pages/Sandbox/types';
+import { Position, StructureData, CompanyData } from '../../Pages/Sandbox/types';
 import './Structure.css';
 
 interface StructureProps {
@@ -11,59 +11,101 @@ interface StructureProps {
 
 const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosition }) => {
   
-    // Calculate if structure should show interaction hint
+  // Calculate if structure should show interaction hint
   const showInteractionHint = isNearby;
 
   // Get structure icon/sprite
   const getStructureIcon = (): string => {
-    if (data.sprite) {
-      return data.sprite;
-    }
-    
     if (type === 'building') {
-      return '🏢';
-    } else {
-      return '🗿';
+        const defaultBuilding = '/sprites/buildings/default.png'
+        const companyData = data.data as CompanyData;
+        return companyData.image !== undefined ? companyData.image : defaultBuilding;
+    }
+    else {
+      return data.id;
     }
   };
 
-  // Get structure color based on type
-  const getStructureColor = (): string => {
-    return type === 'building' ? '#8b4513' : '#708090';
+  const getSignpostIcon = (): string => {
+    if (type === 'building') {
+        const defaultSignpost = '/signpost/default.png'
+        const companyData = data.data as CompanyData;
+        return companyData.signpost !== undefined ? companyData.signpost : defaultSignpost;
+    }
+    else {
+      return data.id;
+    }
+  };
+
+  // Get special classes for the structure
+  const getStructureClasses = (): string => {
+    let classes = `structure-container ${type}`;
+    
+    if (isNearby) {
+      classes += ' nearby';
+    }
+    return classes;
   };
 
   return (
     <div
-      className={`structure-container ${type} ${isNearby ? 'nearby' : ''}`}
+      className={getStructureClasses()}
       style={{
         position: 'absolute',
-        left: data.position.x - 25,
-        top: data.position.y - 25,
+        left: data.position.x - 256,
+        top: data.position.y - 490,
         zIndex: 50
       }}
     >
       {/* Structure sprite/icon */}
-      <div 
-        className="structure-sprite"
-        style={{
-          backgroundColor: getStructureColor(),
-          border: `2px solid ${isNearby ? '#ffd700' : '#654321'}`,
-          boxShadow: isNearby ? '0 0 10px rgba(255, 215, 0, 0.5)' : 'none'
-        }}
-      >
-        <span className="structure-icon">
-          {getStructureIcon()}
-        </span>
+      <div className="structure-sprite">
+        {/* Check if it's a building with image path or emoji */}
+        {type === 'building' ? (
+          <>
+            <img 
+              src={getStructureIcon()}
+              alt={data.name}
+              className="structure-building-image"
+              style={{
+                width: '512px',
+                height: '512px',
+                objectFit: 'contain',
+                imageRendering: 'pixelated'
+              }}
+            />
+            <div className="signpost-shadow"></div>
+            <img 
+              src={getSignpostIcon()}
+              alt={data.name}
+              className="structure-building-image"
+              style={{
+                width: '128px',
+                height: '128px',
+                position: 'absolute',
+                top: '410px',
+                marginLeft:'-120px',
+                objectFit: 'contain',
+                imageRendering: 'pixelated'
+              }}
+            />
+          </>
+          
+        ) : (
+          <span className="structure-icon">
+            {getStructureIcon()}
+          </span>
+        )}
         
         {/* Interaction radius indicator (debug) */}
         {process.env.NODE_ENV === 'development' && (
           <div 
-            className="interaction-radius"
+            
+            className="interaction-radius d-none"
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
-              left: -(data.interactionRadius - 25),
-              top: -(data.interactionRadius - 25)
+              left: 256 - data.interactionRadius,
+              top: 512 - data.interactionRadius
             }}
           />
         )}
@@ -72,15 +114,15 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       {/* Structure label */}
       <div className={`structure-label ${showInteractionHint ? 'visible' : ''}`}>
         <span>{data.name}</span>
-        {showInteractionHint && (
+        {(showInteractionHint && data.name === '???') && (
           <div className="interaction-hint">
-            Press SPACE to interact
+            {'Your next opportunity awaits!'}
           </div>
         )}
       </div>
 
-      {/* Connection path to main road */}
-      <div className="structure-path" />
+      {/* Connection indicator to main path */}
+      <div className="structure-connection-line" />
     </div>
   );
 };

@@ -10,7 +10,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   // Handle key press
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'].includes(key)) {
+    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift'].includes(key)) {
       event.preventDefault();
       setPressedKeys(prev => new Set([...prev, key]));
     }
@@ -96,12 +96,14 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     const gameLoop = setInterval(() => {
       const currentDirection = getDirectionFromKeys(pressedKeys);
       const moving = currentDirection !== 'idle';
+      const isRunning = pressedKeys.has('shift');
       
       setDirection(currentDirection);
       setIsMoving(moving);
 
       if (moving) {
-        setPosition(currentPos => calculateNewPosition(currentPos, currentDirection, config.speed));
+        const currentSpeed = isRunning ? config.speed * 1.5 : config.speed;
+        setPosition(currentPos => calculateNewPosition(currentPos, currentDirection, currentSpeed));
       }
     }, 16); // ~60 FPS
 

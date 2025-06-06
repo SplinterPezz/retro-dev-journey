@@ -1,15 +1,18 @@
-
-import React, { useState, useEffect } from 'react';
+// src/Pages/Sandbox/SandBoxPage.tsx
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AudioControls from '../../Components/AudioControls';
+import AudioControls from '../../Components/AudioControls/AudioControls';
 import './SandBoxPage.css';
 import { usePlayerMovement } from './hooks/usePlayerMovement';
 import { useCollisionDetection } from './hooks/useCollisionDetection';
 import Player from '../../Components/Player/Player';
 import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
-import { worldConfig, companies, technologies } from './data';
-import { Position, StructureData } from './types';
+import PathRenderer from '../../Components/Path/PathRender';
+import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
+import { worldConfig, companies, technologies, mainPathConfig } from './config';
+import { createPathGenerator } from '../../Components/Path/pathGeneration';
+import { Position, StructureData, PathSegment } from './types';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -18,10 +21,23 @@ const SandboxPage: React.FC = () => {
     const [gameLoaded, setGameLoaded] = useState(false);
     const [loadingProgress, setLoadingProgress] = useState(0);
 
+    // Generate path segments based on structure positions
+    const pathSegments: PathSegment[] = useMemo(() => {
+        const pathGenerator = createPathGenerator({
+            startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
+            endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
+            structures: [...companies, ...technologies],
+            tileSize: worldConfig.tileSize,
+            pathWidth: mainPathConfig.width
+        });
+
+        return pathGenerator.generatePath();
+    }, []);
+
     // Player movement hook
     const { playerPosition, isMoving, direction } = usePlayerMovement({
-        initialPosition: { x: worldConfig.width / 2, y: 100 },
-        speed: 3,
+        initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
+        speed: 5,
         worldBounds: {
             minX: 50,
             minY: 50,
@@ -51,8 +67,8 @@ const SandboxPage: React.FC = () => {
         }
     }, [nearbyStructure, showDialog]);
 
+    // Loading simulation
     useEffect(() => {
-        // Animate loading progress
         const loadingInterval = setInterval(() => {
             setLoadingProgress(prev => {
                 if (prev >= 100) {
@@ -63,8 +79,9 @@ const SandboxPage: React.FC = () => {
                 return prev + 2;
             });
         }, 30);
-    }, []);
 
+        return () => clearInterval(loadingInterval);
+    }, []);
 
     // Handle back to home
     const handleBackToHome = () => {
@@ -112,11 +129,14 @@ const SandboxPage: React.FC = () => {
                             transform: `translate(${-playerPosition.x + window.innerWidth / 2}px, ${-playerPosition.y + window.innerHeight / 2}px)`
                         }}
                     >
-                        {/* Background Pattern */}
-                        <div className="world-background" />
+                        {/* Terrain Background (Grass) */}
+                        <TerrainRenderer worldConfig={worldConfig} />
 
-                        {/* Main Path */}
-                        <div className="main-path" />
+                        {/* Dynamic Path System */}
+                        <PathRenderer 
+                            pathSegments={pathSegments} 
+                            tileSize={worldConfig.tileSize}
+                        />
 
                         {/* Companies (Buildings) */}
                         {companies.map((company) => (
@@ -147,10 +167,11 @@ const SandboxPage: React.FC = () => {
                             direction={direction}
                         />
 
-                        {/* Debug grid in development */}
+                        {/* Debug grid in development 
                         {process.env.NODE_ENV === 'development' && (
                             <div className="debug-grid" />
                         )}
+                        */}
                     </div>
                 </div>
 
@@ -175,12 +196,25 @@ const SandboxPage: React.FC = () => {
                         </div>
                     </div>
 
-
-
                     {/* Mini Map */}
                     <div className="minimap">
                         <div className="rpgui-container framed-grey">
                             <div className="minimap-content">
+                                {/* Main path on minimap */}
+                                <div 
+                                    className="minimap-main-path"
+                                    style={{
+                                        position: 'absolute',
+                                        left: '50%',
+                                        top: '0%',
+                                        width: '4px',
+                                        height: '100%',
+                                        background: '#8b7355',
+                                        transform: 'translateX(-50%)'
+                                    }}
+                                />
+                                
+                                {/* Player position */}
                                 <div
                                     className="minimap-player"
                                     style={{
@@ -188,14 +222,19 @@ const SandboxPage: React.FC = () => {
                                         top: `${(playerPosition.y / worldConfig.height) * 100}%`
                                     }}
                                 />
+                                
+                                {/* Structures on minimap */}
                                 {[...companies, ...technologies].map((structure) => (
                                     <div
                                         key={structure.id}
-                                        className={`minimap-structure ${structure.type}`}
+                                        className={`minimap-structure ${structure.type} ${
+                                            structure.name === '???' ? 'future' : ''
+                                        }`}
                                         style={{
                                             left: `${(structure.position.x / worldConfig.width) * 100}%`,
                                             top: `${(structure.position.y / worldConfig.height) * 100}%`
                                         }}
+                                        title={structure.name}
                                     />
                                 ))}
                             </div>
