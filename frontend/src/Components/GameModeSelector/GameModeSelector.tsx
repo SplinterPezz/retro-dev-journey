@@ -29,7 +29,7 @@ const GameModeSelector: React.FC = () => {
           backdropFilter: backgroundVisible ? 'blur(2px)' : 'none'
         }}
       >
-        <h2 className="mb-3 mb-md-4" style={{ color: '#ffd700', fontSize: 'clamp(1.2rem, 4vw, 1.0rem)' }}>
+        <h2 className="title-gamemode-box mb-3 mb-md-4 " >
           Get to Know{' '}
           <span 
             className="easter-egg-btn"
@@ -38,7 +38,7 @@ const GameModeSelector: React.FC = () => {
           >
             Me
           </span>
-          !
+           !
         </h2>
 
         <div className="game-mode-description">
@@ -52,22 +52,20 @@ const GameModeSelector: React.FC = () => {
 
           <div className="game-mode-buttons">
             <button
-              className="rpgui-button golden"
+              className="rpgui-button golden gamemode-button-size"
               type="button"
               onClick={handleStoryMode}
-              style={{ width: "200px" }}
               disabled
             >
-              <p style={{marginTop:"revert"}}>Story Mode</p>
+              <p className='revert-top'>Story Mode</p>
             </button>
 
             <button
-              className="rpgui-button golden"
+              className="rpgui-button golden gamemode-button-size"
               type="button"
               onClick={handleSandboxMode}
-              style={{ width: "200px" }}
             >
-              <p style={{marginTop:"revert"}}>Sandbox</p>
+              <p className='revert-top'>Sandbox</p>
             </button>
           </div>
         </div>

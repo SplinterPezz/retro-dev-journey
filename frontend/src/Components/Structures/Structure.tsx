@@ -1,6 +1,7 @@
 import React from 'react';
 import { Position, StructureData, CompanyData } from '../../Pages/Sandbox/types';
 import './Structure.css';
+import { structureCentering } from '../../Pages/Sandbox/config';
 
 interface StructureProps {
   data: StructureData;
@@ -52,9 +53,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       className={getStructureClasses()}
       style={{
         position: 'absolute',
-        left: data.position.x - 256,
-        top: data.position.y - 490,
-        zIndex: 50
+        left: data.position.x + structureCentering.x,
+        top: data.position.y + structureCentering.y,
       }}
     >
       {/* Structure sprite/icon */}
@@ -66,27 +66,12 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
               src={getStructureIcon()}
               alt={data.name}
               className="structure-building-image"
-              style={{
-                width: '512px',
-                height: '512px',
-                objectFit: 'contain',
-                imageRendering: 'pixelated'
-              }}
             />
             <div className="signpost-shadow"></div>
             <img 
               src={getSignpostIcon()}
               alt={data.name}
-              className="structure-building-image"
-              style={{
-                width: '128px',
-                height: '128px',
-                position: 'absolute',
-                top: '410px',
-                marginLeft:'-120px',
-                objectFit: 'contain',
-                imageRendering: 'pixelated'
-              }}
+              className="structure-signpost-image"
             />
           </>
           

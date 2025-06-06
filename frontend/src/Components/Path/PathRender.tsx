@@ -39,16 +39,12 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
           key={segment.id}
           className={`path-segment path-${segment.type}`}
           style={{
-            position: 'absolute',
             left: segment.position.x - 64,
             top: segment.position.y - 64,
             width: tileSize != undefined ? tileSize+1 : tileSize,
             height: tileSize != undefined ? tileSize+1 : tileSize,
             zIndex: segment.zIndex,
             backgroundImage: `url(${getPathImage(segment.type)})`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'repeat',
-            backgroundPosition: 'center',
             ...getTransformStyle(segment.rotation)
           }}
         />

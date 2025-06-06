@@ -12,7 +12,7 @@ const Player: React.FC<PlayerProps> = ({ position, isMoving, direction }) => {
   // Get sprite class based on direction and movement
   const getSpriteClass = (): string => {
     const baseClass = 'player-sprite';
-    
+
     if (!isMoving) {
       return `${baseClass} idle-down`;
     }
@@ -44,22 +44,17 @@ const Player: React.FC<PlayerProps> = ({ position, isMoving, direction }) => {
     <div
       className="player-container"
       style={{
-        position: 'absolute',
         left: position.x - 64,
         top: position.y - 64,
-        zIndex: 100,
-        transition: 'none'
       }}
     >
-      <div className={getSpriteClass()}>
-        {/* Player name tag */}
-        <div className="player-nametag">
-          <span>Dude</span>
-        </div>
-        
-        {/* Shadow */}
-        <div className="player-shadow" />
+      {/* Player name tag */}
+      <div className="player-nametag">
+        <span>Dude</span>
       </div>
+
+      <div className={getSpriteClass()} />
+      <div className="player-shadow" />
     </div>
   );
 };

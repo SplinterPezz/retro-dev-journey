@@ -1,6 +1,11 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData } from './types';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position } from './types';
 
 export const tileSize: number = 128;
+
+export const structureCentering: Position = {
+  x: -256,
+  y: -490
+}
 
 // World configuration
 export const worldConfig: WorldConfig = {

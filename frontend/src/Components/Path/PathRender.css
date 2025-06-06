@@ -9,7 +9,13 @@
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  
+
+  background-size: contain;
+  background-repeat: repeat;
+  background-position: center;
+
+  position: absolute;
+
   /* Smooth transitions for dynamic path changes */
   transition: opacity 0.3s ease-in-out;
 }

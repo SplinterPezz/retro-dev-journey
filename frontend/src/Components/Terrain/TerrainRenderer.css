@@ -23,12 +23,17 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   
+
+  background-repeat: no-repeat;
+  background-position: center;
+  z-index: 0;
+
   /* Force hardware acceleration */
   will-change: transform;
   
   /* Ensure smooth transitions if needed */
   transition: none;
-  
+  position: absolute;
   /* Force compositing layer */
   isolation: isolate;
 }

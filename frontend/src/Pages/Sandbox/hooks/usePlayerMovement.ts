@@ -10,7 +10,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   // Handle key press
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     const key = event.key.toLowerCase();
-    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift'].includes(key)) {
+    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', 'spacebar'].includes(key)) {
       event.preventDefault();
       setPressedKeys(prev => new Set([...prev, key]));
     }
