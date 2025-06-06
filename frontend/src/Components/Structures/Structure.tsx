@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position, StructureData } from '../../Pages/Sandbox/types';
+import { Position, StructureData, CompanyData } from '../../Pages/Sandbox/types';
 import './Structure.css';
 
 interface StructureProps {
@@ -17,32 +17,24 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
   // Get structure icon/sprite
   const getStructureIcon = (): string => {
     if (type === 'building') {
-      // Map different companies to different building sprites
-      switch (data.name) {
-        case 'StartupHub':
-          return '/sprites/buildings/startup.png';
-        case 'InnovateSoft':
-          return '/sprites/buildings/corporate.png';
-        case 'TechCorp Italia':
-          return '/sprites/buildings/tech_company.png';
-        case '???':
-          return '/sprites/buildings/future.png';
-        default:
-          return '/sprites/buildings/default.png';
-      }
-    } else {
-      return data.sprite;
+        const defaultBuilding = '/sprites/buildings/default.png'
+        const companyData = data.data as CompanyData;
+        return companyData.image !== undefined ? companyData.image : defaultBuilding;
+    }
+    else {
+      return data.id;
     }
   };
 
-  // Get structure color based on type and special cases
-  const getStructureColor = (): string => {
-    
-    if (data.name === '???') {
-      return '#ffd700';
+  const getSignpostIcon = (): string => {
+    if (type === 'building') {
+        const defaultSignpost = '/signpost/default.png'
+        const companyData = data.data as CompanyData;
+        return companyData.signpost !== undefined ? companyData.signpost : defaultSignpost;
     }
-    
-    return type === 'building' ? '#8b4513' : '#708090';
+    else {
+      return data.id;
+    }
   };
 
   // Get special classes for the structure
@@ -52,12 +44,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
     if (isNearby) {
       classes += ' nearby';
     }
-    
-    // Special class for future opportunity
-    if (data.name === '???') {
-      classes += ' future-opportunity';
-    }
-    
     return classes;
   };
 
@@ -74,18 +60,36 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       {/* Structure sprite/icon */}
       <div className="structure-sprite">
         {/* Check if it's a building with image path or emoji */}
-        {type === 'building' && getStructureIcon().startsWith('/sprites/') ? (
-          <img 
-            src={getStructureIcon()}
-            alt={data.name}
-            className="structure-building-image"
-            style={{
-              width: '512px',
-              height: '512px',
-              objectFit: 'contain',
-              imageRendering: 'pixelated'
-            }}
-          />
+        {type === 'building' ? (
+          <>
+            <img 
+              src={getStructureIcon()}
+              alt={data.name}
+              className="structure-building-image"
+              style={{
+                width: '512px',
+                height: '512px',
+                objectFit: 'contain',
+                imageRendering: 'pixelated'
+              }}
+            />
+            <div className="signpost-shadow"></div>
+            <img 
+              src={getSignpostIcon()}
+              alt={data.name}
+              className="structure-building-image"
+              style={{
+                width: '128px',
+                height: '128px',
+                position: 'absolute',
+                top: '410px',
+                marginLeft:'-120px',
+                objectFit: 'contain',
+                imageRendering: 'pixelated'
+              }}
+            />
+          </>
+          
         ) : (
           <span className="structure-icon">
             {getStructureIcon()}

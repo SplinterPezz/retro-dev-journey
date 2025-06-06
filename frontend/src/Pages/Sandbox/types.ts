@@ -15,13 +15,13 @@ export interface StructureData {
   name: string;
   type: 'building' | 'statue';
   position: Position;
-  sprite: string;
   description: string;
   data: CompanyData | TechnologyData;
   interactionRadius: number;
 }
 
 export interface CompanyData {
+  id: string;
   company: string;
   role: string;
   period: string;
@@ -30,6 +30,9 @@ export interface CompanyData {
   website?: string;
   logo?: string;
   position: Position;
+  image: string;
+  signpost?: string;
+  easteregg?: string;
 }
 
 export interface TechnologyData {
@@ -79,7 +82,7 @@ export interface GameState {
 export interface PathSegment {
   id: string;
   position: Position;
-  type: 'core' | 'start' | 'cross' | 't_cross';
+  type: 'core' | 'start' | 'cross' | 't_cross' | 'end';
   rotation: number;
   zIndex: number;
 }
@@ -90,4 +93,9 @@ export interface PathGenerationConfig {
   structures: StructureData[];
   tileSize: number;
   pathWidth: number;
+}
+
+export interface IntersectionInfo {
+  count: number;
+  directions: ('left' | 'right')[];
 }

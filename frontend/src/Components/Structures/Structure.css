@@ -10,12 +10,24 @@
   justify-content: center;
   position: relative;
   transition: all 0.3s ease;
-  
+
   /* Pixel art styling */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+}
+
+.signpost-shadow {
+  position: absolute;
+  top: 531px;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  z-index: -1;
+  margin-left: -70px;
 }
 
 /* Special styling for future opportunity */
@@ -25,9 +37,12 @@
 }
 
 @keyframes future-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
   }
+
   50% {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
   }
@@ -45,7 +60,7 @@
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  
+
   /* Ensure image fits properly */
   width: 100%;
   height: 100%;
@@ -107,9 +122,12 @@
 }
 
 @keyframes label-glow {
-  0%, 100% {
+
+  0%,
+  100% {
     box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
   }
+
   50% {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
   }
@@ -135,10 +153,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.7;
     transform: scale(0.95);
@@ -146,10 +167,13 @@
 }
 
 @keyframes pulse-future {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.05);
@@ -169,19 +193,20 @@
 }
 
 .structure-container.future-opportunity .structure-connection-line {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 215, 0, 0.8) 0%,
-    rgba(255, 215, 0, 0.3) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(255, 215, 0, 0.8) 0%,
+      rgba(255, 215, 0, 0.3) 100%);
   width: 3px;
   animation: connection-pulse 2s infinite;
 }
 
 @keyframes connection-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.7;
   }
+
   50% {
     opacity: 1;
   }
@@ -225,9 +250,11 @@
     transform: scale(0.5);
     opacity: 0;
   }
+
   50% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -240,16 +267,16 @@
     width: 40px;
     height: 40px;
   }
-  
+
   .structure-icon {
     font-size: 20px;
   }
-  
+
   .structure-label span {
     font-size: 10px;
     padding: 2px 6px;
   }
-  
+
   .interaction-hint {
     font-size: 8px;
     padding: 1px 4px;
@@ -261,11 +288,11 @@
     width: 35px;
     height: 35px;
   }
-  
+
   .structure-icon {
     font-size: 18px;
   }
-  
+
   .structure-container {
     left: calc(var(--x) - 17.5px) !important;
     top: calc(var(--y) - 17.5px) !important;

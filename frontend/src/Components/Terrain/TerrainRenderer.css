@@ -6,7 +6,9 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
-}
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;}
 
 .terrain-tile {
   /* Pixel perfect rendering for terrain */
@@ -15,12 +17,44 @@
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  
+  /* Force hardware acceleration */
+  will-change: transform;
+  
   /* Ensure smooth transitions if needed */
   transition: none;
+  
+  /* Force compositing layer */
+  isolation: isolate;
+  
+}
+
+.terrain-tile {
+  contain: layout style paint;
 }
 
 /* Performance optimization for large numbers of tiles */
 .terrain-tile {
   will-change: auto;
   contain: layout style paint;
+}
+
+/* Browser-specific fixes */
+@supports (-webkit-appearance: none) {
+  .terrain-tile {
+    /* Safari/WebKit specific */
+    -webkit-transform: translateZ(0);
+    -webkit-font-smoothing: none;
+  }
+}
+
+@-moz-document url-prefix() {
+  .terrain-tile {
+    /* Firefox specific */
+    image-rendering: crisp-edges;
+    transform: translateZ(0.1px);
+  }
 }

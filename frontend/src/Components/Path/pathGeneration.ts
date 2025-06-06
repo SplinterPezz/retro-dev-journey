@@ -1,25 +1,4 @@
-import { Position, StructureData } from '../../Pages/Sandbox/types';
-
-export interface PathSegment {
-  id: string;
-  position: Position;
-  type: 'core' | 'start' | 'cross' | 't_cross';
-  rotation: number;
-  zIndex: number;
-}
-
-export interface PathGenerationConfig {
-  startPosition: Position;
-  endPosition: Position;
-  structures: StructureData[];
-  tileSize: number;
-  pathWidth: number;
-}
-
-interface IntersectionInfo {
-  count: number;
-  directions: ('left' | 'right')[];
-}
+import { Position, PathGenerationConfig, PathSegment, IntersectionInfo } from '../../Pages/Sandbox/types';
 
 export class PathGenerator {
   private config: PathGenerationConfig;
@@ -80,11 +59,11 @@ export class PathGenerator {
       });
     }
 
-    // End segment (rotated 180 degrees) - at the ??? company position
+    // End segment
     this.addPathSegment({
-      id: 'main-end',
+      id: `main-core-${segments+1}`,
       position: { x: startPosition.x, y: actualEndY },
-      type: 'start',
+      type: 'core',
       rotation: 180,
       zIndex: 1
     });
@@ -94,9 +73,6 @@ export class PathGenerator {
     const { structures, tileSize } = this.config;
 
     structures.forEach((structure, index) => {
-      // Skip the ??? company at the end
-      if (structure.name === '???') return;
-
       const structurePos = structure.position;
       const branchY = this.findNearestMainPathY(structurePos.y);
 
@@ -150,23 +126,30 @@ export class PathGenerator {
   }
 
   private updateMainPathIntersections(): void {
-    this.pathSegments.forEach(segment => {
-      if (segment.id.startsWith('main-core-')) {
+   this.pathSegments
+  .filter(segment => segment.id.startsWith('main-core-'))
+  .forEach((segment, index, filteredArray) => {
         const intersectionKey = `${segment.position.x},${segment.position.y}`;
         const info = this.intersectionInfo.get(intersectionKey);
+        const isLast = index === filteredArray.length - 1;
         
         if (info) {
-          if (info.count === 1) {
+          if (info.count === 1 && !isLast) {
             segment.type = 't_cross';
             const isRight = info.directions.includes('right');
             segment.rotation = isRight ? 180 : 0;
-          } else if (info.count >= 2) {
+          } else if (info.count >= 2 && !isLast) {
             segment.type = 'cross';
             segment.rotation = 0;
+          } else{
+            segment.type = 'end';
+            const isRight = info.directions.includes('right');
+            segment.rotation = isRight ? 90 : 0;
           }
         }
-      }
-    });
+        
+      });
+    
   }
 
   private findNearestMainPathY(targetY: number): number {

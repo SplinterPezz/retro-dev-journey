@@ -1,5 +1,5 @@
 import React from 'react';
-import { PathSegment } from './pathGeneration';
+import { PathSegment } from '../../Pages/Sandbox/types';
 import './PathRender.css';
 
 interface PathRendererProps {
@@ -18,6 +18,8 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
         return '/sprites/terrain/path_cross.png';
       case 't_cross':
         return '/sprites/terrain/path_t_cross.png';
+      case 'end':
+        return '/sprites/terrain/path_end.png';
       default:
         return '/sprites/terrain/path_core.png';
     }
@@ -40,8 +42,8 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
             position: 'absolute',
             left: segment.position.x - 64,
             top: segment.position.y - 64,
-            width: tileSize,
-            height: tileSize,
+            width: tileSize != undefined ? tileSize+1 : tileSize,
+            height: tileSize != undefined ? tileSize+1 : tileSize,
             zIndex: segment.zIndex,
             backgroundImage: `url(${getPathImage(segment.type)})`,
             backgroundSize: 'contain',

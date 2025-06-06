@@ -20,38 +20,85 @@ export const mainPathConfig = {
 // Company data with specific positions
 const companiesData: CompanyData[] = [
   {
-    company: "StartupHub",
-    role: "Junior Developer",
-    period: "2019 - 2020",
-    technologies: ["JavaScript", "HTML5", "CSS3", "jQuery"],
-    description: "Started my development journey building landing pages and simple web applications.",
-    position: { x: mainPathConfig.startX - 400, y: 390 }
+    id: "eikony",
+    company: "Eikony (IT)",
+    role: "IT Intern",
+    period: "2014 - 2014",
+    technologies: ["Java", "Android SDK", "Objective-C"],
+    description: "Development of two mobile apps for managing restaurant reservations",
+    website: "https://www.linkedin.com/company/eikony/?originalSubdomain=it",
+    position: { x: mainPathConfig.startX - 400, y: 390 },
+    image: "/sprites/buildings/eikony.png",
+    signpost: "/signpost/eikony_signpost.png",
+    easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly."
   },
   {
-    company: "InnovateSoft",
-    role: "Frontend Developer",
-    period: "2020 - 2022",
-    technologies: ["React", "Vue.js", "SASS", "Webpack"],
-    description: "Built responsive user interfaces and improved application performance by 40%.",
-    website: "https://innovatesoft.com",
-    position: { x: mainPathConfig.startX + 390, y: 640 }
+    id: "unipa",
+    company: "University - Computer Science",
+    role: "Student",
+    period: "2015 - 2019",
+    technologies: ["Java", "MySQL", "C", "Open Data", "CSN"],
+    description: "Bachelor's Degree in Computer Science",
+    website: "https://www.unipa.it/",
+    position: { x: mainPathConfig.startX + 390, y: 640 },
+    image: "/sprites/buildings/unipa.png",
+    signpost: "/signpost/unipa_signpost.png",
+    easteregg: "Ah, UniPA. Four long years of Computer Science – plus a bonus one, just for fun. Dude didn’t finish the degree (money stuff, life stuff), but that’s probably where the spark for coding truly ignited. Thanks, UniPA!"
   },
   {
-    company: "TechCorp Italia",
-    role: "Full Stack Developer",
-    period: "2022 - Present",
-    technologies: ["React", "Node.js", "TypeScript", "MongoDB", "AWS"],
-    description: "Developed modern web applications using React and Node.js. Implemented microservices architecture and cloud deployment strategies.",
-    website: "https://techcorp.it",
-    position: { x: mainPathConfig.startX - 260, y: 1150 }
+    id: "foryouviaggi",
+    company: "ForYou Viaggi (IT)",
+    role: "Software Developer",
+    period: "2020 - 2020",
+    technologies: [
+      "PHP", "Python", "Java", "ReactJs", "MongoDB", "MySQL", "Facebook API"
+    ],
+    description: "Developed and architected an Headless CMS for web and promotion management also integrated with Facebook API for dynamic content.",
+    position: { x: mainPathConfig.startX + 700, y: 1560 },
+    image: "/sprites/buildings/foryouviaggi.png",
+    signpost: "/signpost/foryouviaggi_signpost.png",
+    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
   },
   {
+    id: "alessi",
+    company: "Alessi S.p.a (IT)",
+    role: "Software Developer",
+    period: "2018 - 2019",
+    technologies: ["JavaScript", "PHP", "MySQL", "SQL", "Talend", "Pentaho", "365 API"],
+    description: "Developed a monitoring tool for advertising and managed internal databases.",
+    website: "https://alessipubblicita.it/",
+    position: { x: mainPathConfig.startX - 260, y: 1150 },
+    image: "/sprites/buildings/alessi.png",
+    signpost: "/signpost/alessi_signpost.png",
+    easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!"
+  },
+  {
+    id: "codesour",
+    company: "CodeSour (IT)",
+    role: "Software Developer",
+    period: "2019 - 2025",
+    technologies: [
+      "Java", "Spring Boot", "ReactJS", "MongoDB", "CassandraDB", "NiFi",
+      "Kafka", "GCP", "Terraform", "Python", "SuperSet", "LLM", "NLP"
+    ],
+    description: "Developed and architected scalable backend advertising platform with event-driven microservices, processing 10M+ daily AD events. Implemented ML-based predictive analytics and deployed cloud-native infrastructure on GCP. Developed Computer Vision solution for audience analysis.",
+    website: "https://codesour.tech/",
+    position: { x: mainPathConfig.startX + 390, y: 1160 },
+    image: "/sprites/buildings/codesour.png",
+    signpost: "/signpost/codesour_signpost.png",
+    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
+  },
+  {
+    id:"???",
     company: "???",
     role: "Your Next Great Hire",
     period: "2025 - Future",
     technologies: ["Your Tech Stack", "Innovation", "Growth"],
     description: "Ready to bring my skills and passion to your team. Let's build something amazing together!",
-    position: { x: mainPathConfig.startX, y: mainPathConfig.endY - 108 }
+    position: { x: mainPathConfig.startX-600, y: mainPathConfig.endY - 108 },
+    image: "/sprites/buildings/new_opportunity.png",
+    signpost: "/signpost/new_opportunity_signpost.png",
+    easteregg: "Classified location. Undisclosed mission. All we know is that Dude is heading there, armed with Java, Python, and a healthy skepticism of spaghetti code. Something big is coming."
   }
 ];
 
@@ -85,15 +132,6 @@ const technologiesData: TechnologyData[] = [
     position: { x: mainPathConfig.startX - 390, y: 900 }
   },
   {
-    name: "MongoDB",
-    category: "Database",
-    level: "Intermediate",
-    yearsExperience: 2,
-    description: "NoSQL database design and optimization for modern web applications.",
-    projects: ["User Management System", "Content Management", "Analytics Platform"],
-    position: { x: mainPathConfig.startX + 390, y: 1160 }
-  },
-  {
     name: "AWS",
     category: "Cloud Platform",
     level: "Intermediate",
@@ -110,7 +148,6 @@ export const companies: StructureData[] = companiesData.map((company, index) => 
   name: company.company,
   type: 'building',
   position: company.position,
-  sprite: company.company === '???' ? '❓' : '🏢',
   description: company.description,
   data: company,
   interactionRadius: 80
@@ -121,22 +158,7 @@ export const technologies: StructureData[] = technologiesData.map((tech, index) 
   name: tech.name,
   type: 'statue',
   position: tech.position,
-  sprite: getTechIcon(tech.category),
   description: tech.description,
   data: tech,
   interactionRadius: 60
 }));
-
-function getTechIcon(category: string): string {
-  const iconMap: { [key: string]: string } = {
-    'Frontend Framework': '⚛️',
-    'Backend Runtime': '🟢',
-    'Programming Language': '📝',
-    'Database': '🗄️',
-    'Cloud Platform': '☁️',
-    'DevOps Tool': '🐳',
-    'Version Control': '📊'
-  };
-  
-  return iconMap[category] || '🔧';
-}
