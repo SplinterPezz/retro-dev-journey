@@ -49,14 +49,14 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig }) => {
             position: 'absolute',
             left: tile.x,
             top: tile.y,
-            width: worldConfig.tileSize,
-            height: worldConfig.tileSize,
+            width: worldConfig.tileSize +1,
+            height: worldConfig.tileSize +1,
             backgroundImage: 'url(/sprites/terrain/main.png)',
-            backgroundSize: `${worldConfig.tileSize}px ${worldConfig.tileSize}px`,
+            backgroundSize: `${worldConfig.tileSize + 1}px ${worldConfig.tileSize + 1}px`,
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             transform: `rotate(${tile.rotation}deg)`,
-            zIndex: 0
+            zIndex: 0,
           }}
         />
       ))}

@@ -8,7 +8,9 @@
   pointer-events: none;
   transform: translateZ(0);
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;}
+  -webkit-backface-visibility: hidden;
+
+}
 
 .terrain-tile {
   /* Pixel perfect rendering for terrain */
@@ -29,11 +31,6 @@
   
   /* Force compositing layer */
   isolation: isolate;
-  
-}
-
-.terrain-tile {
-  contain: layout style paint;
 }
 
 /* Performance optimization for large numbers of tiles */
