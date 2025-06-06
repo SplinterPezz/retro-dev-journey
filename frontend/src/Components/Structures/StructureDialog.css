@@ -10,6 +10,11 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+.structure-title{
+  font-size:2em !important;
+  text-decoration: none !important;
+}
+
 .structure-dialog {
   animation: slideIn 0.3s ease-out;
 }
@@ -40,13 +45,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-}
-
-.dialog-title {
-  margin: 0;
-  color: #ffd700;
-  font-size: 1.4rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .dialog-close-btn {
@@ -205,10 +203,6 @@
     top: 10% !important;
   }
   
-  .dialog-title {
-    font-size: 1.2rem;
-  }
-  
   .dialog-content {
     max-height: 50vh;
   }
@@ -239,11 +233,6 @@
     position: absolute;
     top: 10px;
     right: 10px;
-  }
-  
-  .dialog-title {
-    font-size: 1.1rem;
-    text-align: center;
   }
   
   .info-section {
