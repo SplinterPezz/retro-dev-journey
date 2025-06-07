@@ -10,6 +10,13 @@ export interface WorldBounds {
   maxY: number;
 }
 
+export interface Hitbox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
 export interface StructureData {
   id: string;
   name: string;
@@ -41,6 +48,7 @@ export interface CompanyData {
   easteregg?: string;
   shadow?: ShadowInfo;
   centering?: Position;
+  collisionHitbox?: Hitbox;
 }
 
 export interface TechnologyData {
@@ -55,6 +63,7 @@ export interface TechnologyData {
   image: string;
   shadow?: ShadowInfo;
   centering?: Position;
+  collisionHitbox?: Hitbox;
 }
 
 export interface WorldConfig {

@@ -1,4 +1,3 @@
-// src/Pages/Sandbox/SandBoxPage.tsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AudioControls from '../../Components/AudioControls/AudioControls';
@@ -12,7 +11,7 @@ import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
 import { worldConfig, companies, technologies, mainPathConfig } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { Position, StructureData, PathSegment } from './types';
+import { Position, StructureData, PathSegment, Hitbox } from './types';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -34,7 +33,15 @@ const SandboxPage: React.FC = () => {
         return pathGenerator.generatePath();
     }, []);
 
-    // Player movement hook
+    // Player hitbox (optional - se non specificato userà quello di default)
+    const playerHitbox: Hitbox = {
+        x: -16, // Center the hitbox around player position
+        y: -16,
+        width: 32,
+        height: 32
+    };
+
+    // Player movement hook with structure collision support
     const { playerPosition, isMoving, direction } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
         speed: 5,
@@ -43,7 +50,9 @@ const SandboxPage: React.FC = () => {
             minY: 50,
             maxX: worldConfig.width - 50,
             maxY: worldConfig.height - 50
-        }
+        },
+        structures: [...companies, ...technologies], // Pass structures for collision detection
+        playerHitbox: playerHitbox
     });
 
     // Collision detection hook
@@ -126,8 +135,6 @@ const SandboxPage: React.FC = () => {
                         style={{
                             width: worldConfig.width,
                             height: worldConfig.height,
-
-                            //magics
                             transform: `translate(${-playerPosition.x + window.innerWidth / 2}px, ${-playerPosition.y + window.innerHeight / 2}px)`
                         }}
                     >
@@ -162,7 +169,7 @@ const SandboxPage: React.FC = () => {
                                     type="building"
                                     isNearby={nearbyStructure?.id === company.id}
                                     playerPosition={playerPosition}
-                                    />
+                                />
                             ))}
                         </div>
 
@@ -173,11 +180,47 @@ const SandboxPage: React.FC = () => {
                             direction={direction}
                         />
 
-                        {/* Debug grid in development 
-                            {process.env.NODE_ENV === 'development' && (
-                                <div className="debug-grid" />
-                            )}
-                        */}
+                        {/* Debug hitboxes in development */}
+                        {process.env.NODE_ENV === 'development' && (
+                            <>
+                                {/* Player hitbox */}
+                                <div 
+                                    className="debug-hitbox player-hitbox"
+                                    style={{
+                                        position: 'absolute',
+                                        left: playerPosition.x + playerHitbox.x,
+                                        top: playerPosition.y + playerHitbox.y,
+                                        width: playerHitbox.width,
+                                        height: playerHitbox.height,
+                                        border: '2px solid lime',
+                                        backgroundColor: 'rgba(0, 255, 0, 0.1)',
+                                        pointerEvents: 'none',
+                                        zIndex: 9999
+                                    }}
+                                />
+                                
+                                {/* Structure hitboxes */}
+                                {[...companies, ...technologies].map((structure) => 
+                                    structure.data.collisionHitbox && (
+                                        <div
+                                            key={`hitbox-${structure.id}`}
+                                            className="debug-hitbox structure-hitbox"
+                                            style={{
+                                                position: 'absolute',
+                                                left: structure.position.x + structure.data.collisionHitbox.x,
+                                                top: structure.position.y + structure.data.collisionHitbox.y,
+                                                width: structure.data.collisionHitbox.width,
+                                                height: structure.data.collisionHitbox.height,
+                                                border: '2px solid red',
+                                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                pointerEvents: 'none',
+                                                zIndex: 9998
+                                            }}
+                                        />
+                                    )
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -225,12 +268,10 @@ const SandboxPage: React.FC = () => {
                                         className={`minimap-structure ${structure.type} ${
                                             structure.name === '???' ? 'future' : ''
                                         }`}
-
                                         style={{
                                             left: `${(structure.position.x / worldConfig.width) * 100}%`,
                                             top: `${(structure.position.y / worldConfig.height) * 100}%`
                                         }}
-
                                         title={structure.name}
                                     />
                                 ))}

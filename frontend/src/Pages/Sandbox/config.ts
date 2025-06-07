@@ -1,6 +1,20 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, ShadowInfo } from './types';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, Hitbox } from './types';
 
 export const tileSize: number = 128;
+
+const defaultBuildingHitbox: Hitbox = {
+  x: -200,
+  y: -350,
+  width: 400,
+  height: 350
+};
+
+const defaultTechnologyHitbox: Hitbox = {
+  x: -64,
+  y: -128,
+  width: 128,
+  height: 128
+};
 
 export const structureCentering: Position = {
   x: -256,
@@ -27,8 +41,6 @@ export const mainPathConfig = {
   width: tileSize
 };
 
-//CENTER orizzontal = StartX
-
 // Company data with specific positions
 const companiesData: CompanyData[] = [
   {
@@ -43,8 +55,12 @@ const companiesData: CompanyData[] = [
     image: "/sprites/buildings/eikony.png",
     signpost: "/signpost/eikony_signpost.png",
     easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly.",
-    //shadow: { height: 100, width:200 , position:{x:20,y:20}}
-    //centering:{x:0, y:-40}
+    collisionHitbox: {
+      x: -140,
+      y: -390,
+      width: 285,
+      height: 370
+    }
   },
   {
     id: "unipa",
@@ -153,7 +169,7 @@ const technologiesData: TechnologyData[] = [
       "Gender & Age Analysis Service"
     ],
     extras: ["Flask", "Notebook", "OAUTH2", "CI/CD", "Forecast", "NLP", "Scrapy", "Computer Vision", "Gender Analysis", "Age Analysis", "Meta API", "Kafka", "PubSub", "Prometheus", "MongoDB", "MySQL", "InfluxDB", "Docker", "Git"],
-    position: { x: mainPathConfig.startX - 256, y: 964 },
+    position: { x: mainPathConfig.startX - 160, y: 944 },
     image: "/sprites/statues/python.png",
     centering : {x: 0, y: 20},
     shadow: { height: 30, width:140 , position: {x:135, y:240}}
@@ -421,7 +437,6 @@ const technologiesData: TechnologyData[] = [
     image: "/sprites/statues/machinelearning.png",
     centering : {x:-30, y: -10},
     shadow: { height: 25, width:200 , position: {x:105, y:225}},
-
   }
 ];
 
