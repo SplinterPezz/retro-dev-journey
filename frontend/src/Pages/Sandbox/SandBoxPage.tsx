@@ -141,7 +141,7 @@ const SandboxPage: React.FC = () => {
                         />
                         
                         {/* Companies (Buildings) */}
-                        <div className='company-buildings-container'>
+                        <div className='structure-container'>
                             {companies.map((company) => (
                             <Structure
                                 key={company.id}
@@ -155,12 +155,12 @@ const SandboxPage: React.FC = () => {
                         
 
                         {/* Technologies (Statues) */}
-                        <div>
+                        <div className='structure-container'>
                             {technologies.map((tech) => (
                                 <Structure
                                     key={tech.id}
                                     data={tech}
-                                    type="statue"
+                                    type="technology"
                                     isNearby={nearbyStructure?.id === tech.id}
                                     playerPosition={playerPosition}
                                 />

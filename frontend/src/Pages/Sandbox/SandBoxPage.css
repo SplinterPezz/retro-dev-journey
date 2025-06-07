@@ -201,7 +201,7 @@
   animation: pulse-future 1.5s infinite;
 }
 
-.company-buildings-container{
+.structure-container{
   position:absolute;
   z-index:50;
 }

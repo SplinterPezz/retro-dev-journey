@@ -67,6 +67,7 @@ export class PathGenerator {
       rotation: 180,
       zIndex: 1
     });
+    
   }
 
   private generateStructureBranches(): void {
@@ -126,6 +127,7 @@ export class PathGenerator {
   }
 
   private updateMainPathIntersections(): void {
+    console.log(this.pathSegments)
    this.pathSegments
   .filter(segment => segment.id.startsWith('main-core-'))
   .forEach((segment, index, filteredArray) => {

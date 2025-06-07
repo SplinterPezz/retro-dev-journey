@@ -1,11 +1,11 @@
 import React from 'react';
-import { Position, StructureData, CompanyData } from '../../Pages/Sandbox/types';
+import { Position, StructureData, CompanyData, TechnologyData } from '../../Pages/Sandbox/types';
 import './Structure.css';
-import { structureCentering } from '../../Pages/Sandbox/config';
+import { structureCentering, technologyCentering } from '../../Pages/Sandbox/config';
 
 interface StructureProps {
   data: StructureData;
-  type: 'building' | 'statue';
+  type: 'building' | 'technology';
   isNearby: boolean;
   playerPosition: Position;
 }
@@ -15,7 +15,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
   // Calculate if structure should show interaction hint
   const showInteractionHint = isNearby;
 
-  // Get structure icon/sprite
   const getStructureIcon = (): string => {
     if (type === 'building') {
         const defaultBuilding = '/sprites/buildings/default.png'
@@ -23,7 +22,9 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         return companyData.image !== undefined ? companyData.image : defaultBuilding;
     }
     else {
-      return data.id;
+      const defaultTech = '/sprites/statues/default.png'
+      const techData = data.data as TechnologyData;
+      return techData.image !== undefined ? techData.image : defaultTech;
     }
   };
 
@@ -53,8 +54,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       className={getStructureClasses()}
       style={{
         position: 'absolute',
-        left: data.position.x + structureCentering.x,
-        top: data.position.y + structureCentering.y,
+        left: data.position.x + (type === 'building'? structureCentering.x : technologyCentering.x),
+        top: data.position.y + (type === 'building'? structureCentering.y : technologyCentering.y),
       }}
     >
       {/* Structure sprite/icon */}
@@ -76,9 +77,11 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
           </>
           
         ) : (
-          <span className="structure-icon">
-            {getStructureIcon()}
-          </span>
+          <img 
+              src={getStructureIcon()}
+              alt={data.name}
+              className="structure-technology-image"
+            />
         )}
         
         {/* Interaction radius indicator (debug) */}

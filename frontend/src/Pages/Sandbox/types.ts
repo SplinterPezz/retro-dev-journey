@@ -20,6 +20,12 @@ export interface StructureData {
   interactionRadius: number;
 }
 
+export interface ShadowInfo{
+  width: number;
+  height: number;
+  position: Position;
+}
+
 export interface CompanyData {
   id: string;
   company: string;
@@ -33,6 +39,8 @@ export interface CompanyData {
   image: string;
   signpost?: string;
   easteregg?: string;
+  shadow?: ShadowInfo;
+  centering?: Position;
 }
 
 export interface TechnologyData {
@@ -41,9 +49,12 @@ export interface TechnologyData {
   level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
   yearsExperience: number;
   description: string;
-  icon?: string;
   projects?: string[];
   position: Position;
+  extras?: string[];
+  image: string;
+  shadow?: ShadowInfo;
+  centering?: Position;
 }
 
 export interface WorldConfig {
