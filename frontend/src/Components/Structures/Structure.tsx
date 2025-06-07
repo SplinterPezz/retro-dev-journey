@@ -67,21 +67,36 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
               src={getStructureIcon()}
               alt={data.name}
               className="structure-building-image"
+              style={{
+                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                }}
             />
-            <div className="signpost-shadow"></div>
+            
             <img 
               src={getSignpostIcon()}
               alt={data.name}
               className="structure-signpost-image"
             />
+            <div className="signpost-shadow"></div>
           </>
           
         ) : (
-          <img 
-              src={getStructureIcon()}
-              alt={data.name}
-              className="structure-technology-image"
-            />
+          <>
+          {data.data.shadow  != undefined ? 
+            <div className="tech-shadow"></div> : <></>
+          }
+            <img 
+                src={getStructureIcon()}
+                alt={data.name}
+                style={{
+                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                }}
+                className="structure-technology-image"
+              />
+          </>
+          
         )}
         
         {/* Interaction radius indicator (debug) */}
@@ -92,8 +107,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
-              left: 256 - data.interactionRadius,
-              top: 512 - data.interactionRadius
+              left: data.data.position.x,
+              top: data.data.position.y
             }}
           />
         )}
@@ -108,9 +123,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
           </div>
         )}
       </div>
-
-      {/* Connection indicator to main path */}
-      <div className="structure-connection-line" />
     </div>
   );
 };

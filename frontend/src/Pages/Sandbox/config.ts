@@ -8,7 +8,7 @@ export const structureCentering: Position = {
 }
 
 export const technologyCentering: Position = {
-  x: -20,
+  x: -90,
   y: -200,
 }
 
@@ -39,12 +39,12 @@ const companiesData: CompanyData[] = [
     technologies: ["Java", "Android SDK", "Objective-C"],
     description: "Development of two mobile apps for managing restaurant reservations",
     website: "https://www.linkedin.com/company/eikony/?originalSubdomain=it",
-    position: { x: mainPathConfig.startX + 512, y: 256 },
+    position: { x: mainPathConfig.startX + 726, y: 216 },
     image: "/sprites/buildings/eikony.png",
     signpost: "/signpost/eikony_signpost.png",
     easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly.",
     //shadow: { height: 100, width:200 , position:{x:20,y:20}}
-    //centering:{x:200, y:100}
+    //centering:{x:0, y:-40}
   },
   {
     id: "unipa",
@@ -54,7 +54,7 @@ const companiesData: CompanyData[] = [
     technologies: ["Java", "MySQL", "C", "Open Data", "CSN"],
     description: "Bachelor's Degree in Computer Science",
     website: "https://www.unipa.it/",
-    position: { x: mainPathConfig.startX - 768, y: 512 },
+    position: { x: mainPathConfig.startX - 768, y: 462 },
     image: "/sprites/buildings/unipa.png",
     signpost: "/signpost/unipa_signpost.png",
     easteregg: "Ah, UniPA. Four long years of Computer Science – plus a bonus one, just for fun. Dude didn’t finish the degree (money stuff, life stuff), but that’s probably where the spark for coding truly ignited. Thanks, UniPA!"
@@ -68,7 +68,7 @@ const companiesData: CompanyData[] = [
       "PHP", "Python", "Java", "ReactJs", "MongoDB", "MySQL", "Facebook API"
     ],
     description: "Developed and architected an Headless CMS for web and promotion management also integrated with Facebook API for dynamic content.",
-    position: { x: mainPathConfig.startX + 768, y: 1024 },
+    position: { x: mainPathConfig.startX + 768, y: 984 },
     image: "/sprites/buildings/foryouviaggi.png",
     signpost: "/signpost/foryouviaggi_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
@@ -81,7 +81,7 @@ const companiesData: CompanyData[] = [
     technologies: ["JavaScript", "PHP", "MySQL", "SQL", "Talend", "Pentaho", "365 API"],
     description: "Developed a monitoring tool for advertising and managed internal databases.",
     website: "https://alessipubblicita.it/",
-    position: { x: mainPathConfig.startX - 512, y: 1208 },
+    position: { x: mainPathConfig.startX - 512, y: 1228 },
     image: "/sprites/buildings/alessi.png",
     signpost: "/signpost/alessi_signpost.png",
     easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!"
@@ -97,7 +97,7 @@ const companiesData: CompanyData[] = [
     ],
     description: "Developed and architected scalable backend advertising platform with event-driven microservices, processing 10M+ daily AD events. Implemented ML-based predictive analytics and deployed cloud-native infrastructure on GCP. Developed Computer Vision solution for audience analysis.",
     website: "https://codesour.tech/",
-    position: { x: mainPathConfig.startX + 512, y: 1536 },
+    position: { x: mainPathConfig.startX + 512, y: 1496 },
     image: "/sprites/buildings/codesour.png",
     signpost: "/signpost/codesour_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
@@ -109,10 +109,11 @@ const companiesData: CompanyData[] = [
     period: "2025 - Future",
     technologies: ["Your Tech Stack", "Innovation", "Growth"],
     description: "Ready to bring my skills and passion to your team. Let's build something amazing together!",
-    position: { x: mainPathConfig.startX - 512, y: mainPathConfig.endY - 108 },
+    position: { x: mainPathConfig.startX - 640, y: mainPathConfig.endY - 108 },
     image: "/sprites/buildings/new_opportunity.png",
     signpost: "/signpost/new_opportunity_signpost.png",
-    easteregg: "Classified location. Undisclosed mission. All we know is that Dude is heading there, armed with Java, Python, and a healthy skepticism of spaghetti code. Something big is coming."
+    easteregg: "Classified location. Undisclosed mission. All we know is that Dude is heading there, armed with Java, Python, and a healthy skepticism of spaghetti code. Something big is coming.",
+    //centering : {x: 10, y: 10}
   }
 ];
 
@@ -134,7 +135,9 @@ const technologiesData: TechnologyData[] = [
     ],
     extras: ["SpringBoot", "Maven", "CI/CD", "MVC", "FeignClient", "OAUTH2", "Zuul", "Kafka", "PubSub", "Redis Server", "Ribbon", "Design Pattern", "Prometheus", "MongoDB", "CassandraDB", "SQL", "MySQL", "InfluxDB", "ElasticSearch", "GCP", "AWS", "Docker", "Git"],
     position: { x: mainPathConfig.startX + 256, y: 708 },
-    image: "/sprites/statues/java.png"
+    image: "/sprites/statues/java.png",
+    //shadow: { height: 100, width:200 , position: {x:20,y:20}},
+    centering : {x: -50, y: 30}
   },
   {
     name: "Python",
@@ -150,8 +153,9 @@ const technologiesData: TechnologyData[] = [
       "Gender & Age Analysis Service"
     ],
     extras: ["Flask", "Notebook", "OAUTH2", "CI/CD", "Forecast", "NLP", "Scrapy", "Computer Vision", "Gender Analysis", "Age Analysis", "Meta API", "Kafka", "PubSub", "Prometheus", "MongoDB", "MySQL", "InfluxDB", "Docker", "Git"],
-    position: { x: mainPathConfig.startX - 256, y: 984 },
-    image: "/sprites/statues/python.png"
+    position: { x: mainPathConfig.startX - 256, y: 964 },
+    image: "/sprites/statues/python.png",
+    centering : {x: 0, y: 20}
   },
   {
     name: "Golang",
@@ -165,7 +169,8 @@ const technologiesData: TechnologyData[] = [
     ],
     extras: ["Gin", "WebSocket", "OAUTH2", "MongoDB", "Docker", "Git"],
     position: { x: mainPathConfig.startX + 512, y: 2776 },
-    image: "/sprites/statues/golang.png"
+    image: "/sprites/statues/golang.png",
+    centering : {x: -70, y: -10}
   },
   {
     name: "JavaScript",
@@ -180,8 +185,9 @@ const technologiesData: TechnologyData[] = [
       "Advertising Company Platform"
     ],
     extras: ["ES7", "CI/CD", "TypeScript", "ReactJS", "React Native", "365 SDK", "GAM", "Tracking Script"],
-    position: { x: mainPathConfig.startX + 512, y: 482 },
-    image: "/sprites/statues/javascript.png"
+    position: { x: mainPathConfig.startX + 256, y: 442 },
+    image: "/sprites/statues/javascript.png",
+    centering : {x: -70, y: 10}
   },
   {
     name: "Kafka & Google PubSub",
@@ -194,8 +200,9 @@ const technologiesData: TechnologyData[] = [
       "Advertising Company Platform"
     ],
     extras: ["10M+ Requests", "Java", "Python", "Docker", "Git"],
-    position: { x: mainPathConfig.startX - 256, y: 2432 },
-    image: "/sprites/statues/kafka.png"
+    position: { x: mainPathConfig.startX - 256, y: 2372 },
+    image: "/sprites/statues/kafka.png",
+    centering : {x: -10, y: 10}
   },
   {
     name: "MongoDB",
@@ -215,7 +222,7 @@ const technologiesData: TechnologyData[] = [
       "Contextual text with NLP"
     ],
     extras: ["2B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX - 256, y: 1496 },
+    position: { x: mainPathConfig.startX - 256, y: 1476 },
     image: "/sprites/statues/mongodb.png"
   },
   {
@@ -230,8 +237,9 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["5B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX + 256, y: 2520 },
-    image: "/sprites/statues/cassandra.png"
+    position: { x: mainPathConfig.startX + 256, y: 2500 },
+    image: "/sprites/statues/cassandra.png",
+    centering : {x: -50, y: 0}
   },
   {
     name: "ElasticSearch",
@@ -241,8 +249,9 @@ const technologiesData: TechnologyData[] = [
     description: "Centralized logging solution deployed both on cloud and self-hosted environments.",
     projects: ["Advertising Company Platform"],
     extras: ["Cloud", "Docker"],
-    position: { x: mainPathConfig.startX + 512, y: 2008 },
-    image: "/sprites/statues/elastic.png"
+    position: { x: mainPathConfig.startX + 512, y: 1988 },
+    image: "/sprites/statues/elastic.png",
+    centering : {x: -70, y: 0}
   },
   {
     name: "MySQL & SQL",
@@ -255,8 +264,9 @@ const technologiesData: TechnologyData[] = [
       "Headless CMS: ReactJS + Python + MetaAPI Hooks"
     ],
     extras: ["Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX - 256, y: 708 },
-    image: "/sprites/statues/sql.png"
+    position: { x: mainPathConfig.startX - 256, y: 698 },
+    image: "/sprites/statues/sql.png",
+    centering : {x: 0, y: 10}
   },
   {
     name: "Docker",
@@ -278,8 +288,9 @@ const technologiesData: TechnologyData[] = [
       "Forecast Service for revenue income"
     ],
     extras: ["Docker", "Docker Compose", "Docker Hub"],
-    position: { x: mainPathConfig.startX + 256, y: 1752 },
-    image: "/sprites/statues/docker.png"
+    position: { x: mainPathConfig.startX + 256, y: 1732 },
+    image: "/sprites/statues/docker.png",
+    centering : {x: -40, y: 20}
   },
   {
     name: "Amazon AWS",
@@ -289,7 +300,7 @@ const technologiesData: TechnologyData[] = [
     description: "Integrated AWS services with Java/Python. Used AWS CLI and buckets in ETL workflows.",
     projects: ["Advertising Company Platform"],
     extras: ["Java", "NiFi", "AWS Cli", "ETL"],
-    position: { x: mainPathConfig.startX - 512, y: 1880 },
+    position: { x: mainPathConfig.startX - 512, y: 1860 },
     image: "/sprites/statues/aws.png"
   },
   {
@@ -304,8 +315,9 @@ const technologiesData: TechnologyData[] = [
       "Audience Tracking Real Time"
     ],
     extras: ["Java", "Python", "Terraform", "PubSub"],
-    position: { x: mainPathConfig.startX - 256, y: 2136 },
-    image: "/sprites/statues/gcp.png"
+    position: { x: mainPathConfig.startX - 256, y: 2116 },
+    image: "/sprites/statues/gcp.png",
+    centering : {x: -30, y: 10}
   },
   {
     name: "Pipelines",
@@ -321,8 +333,9 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["Java", "Python", "CI/CD", "Talend", "Nifi", "PM2", "ChronJob", "ETL", "OLAP", "Terraform"],
-    position: { x: mainPathConfig.startX + 256, y: 2264 },
-    image: "/sprites/statues/pipelines.png"
+    position: { x: mainPathConfig.startX + 256, y: 2244 },
+    image: "/sprites/statues/pipelines.png",
+    centering : {x: -60, y: 0}
   },
   {
     name: "ETL & OLAP",
@@ -338,8 +351,9 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["Nifi", "Talend", "Pentaho", "Superset"],
-    position: { x: mainPathConfig.startX + 256, y: 1240 },
-    image: "/sprites/statues/etl.png"
+    position: { x: mainPathConfig.startX + 256, y: 1230 },
+    image: "/sprites/statues/etl.png",
+    centering : {x: -50, y: 0}
   },
   {
     name: "Git",
@@ -362,7 +376,8 @@ const technologiesData: TechnologyData[] = [
     ],
     extras: ["CI/CD", "GitLab", "GitHub", "Java", "SpringBoot", "ReactJS", "Python", "Go", "Javascript"],
     position: { x: mainPathConfig.startX - 256, y: 186 },
-    image: "/sprites/statues/git.png"
+    image: "/sprites/statues/git.png",
+    centering : {x: 60, y: 0}
   },
   {
     name: "Artificial Intelligence",
@@ -377,8 +392,9 @@ const technologiesData: TechnologyData[] = [
       "Gender & Age Analysis Service"
     ],
     extras: ["Python", "NLP", "Gender Analysis", "Age Analysis", "Computer Vision", "Forecast"],
-    position: { x: mainPathConfig.startX - 256, y: 2648 },
-    image: "/sprites/statues/machinelearning.png"
+    position: { x: mainPathConfig.startX - 256, y: 2628 },
+    image: "/sprites/statues/machinelearning.png",
+    centering : {x:-30, y: 0}
   }
 ];
 
@@ -390,7 +406,7 @@ export const companies: StructureData[] = companiesData.map((company, index) => 
   position: company.position,
   description: company.description,
   data: company,
-  interactionRadius: 80
+  interactionRadius: 250
 }));
 
 export const technologies: StructureData[] = technologiesData.map((tech, index) => ({
@@ -400,5 +416,5 @@ export const technologies: StructureData[] = technologiesData.map((tech, index) 
   position: tech.position,
   description: tech.description,
   data: tech,
-  interactionRadius: 60
+  interactionRadius: 100
 }));

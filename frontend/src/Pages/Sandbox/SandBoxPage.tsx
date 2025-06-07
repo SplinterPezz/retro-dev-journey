@@ -62,7 +62,7 @@ const SandboxPage: React.FC = () => {
             const timer = setTimeout(() => {
                 setShowDialog(false);
                 setSelectedStructure(null);
-            }, 100);
+            }, 0);
             return () => clearTimeout(timer);
         }
     }, [nearbyStructure, showDialog]);
@@ -140,20 +140,6 @@ const SandboxPage: React.FC = () => {
                             tileSize={worldConfig.tileSize}
                         />
                         
-                        {/* Companies (Buildings) */}
-                        <div className='structure-container'>
-                            {companies.map((company) => (
-                            <Structure
-                                key={company.id}
-                                data={company}
-                                type="building"
-                                isNearby={nearbyStructure?.id === company.id}
-                                playerPosition={playerPosition}
-                                />
-                            ))}
-                        </div>
-                        
-
                         {/* Technologies (Statues) */}
                         <div className='structure-container'>
                             {technologies.map((tech) => (
@@ -164,6 +150,19 @@ const SandboxPage: React.FC = () => {
                                     isNearby={nearbyStructure?.id === tech.id}
                                     playerPosition={playerPosition}
                                 />
+                            ))}
+                        </div>
+
+                        {/* Companies (Buildings) */}
+                        <div className='structure-container'>
+                            {companies.map((company) => (
+                                <Structure
+                                    key={company.id}
+                                    data={company}
+                                    type="building"
+                                    isNearby={nearbyStructure?.id === company.id}
+                                    playerPosition={playerPosition}
+                                    />
                             ))}
                         </div>
 

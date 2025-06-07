@@ -127,7 +127,6 @@ export class PathGenerator {
   }
 
   private updateMainPathIntersections(): void {
-    console.log(this.pathSegments)
    this.pathSegments
   .filter(segment => segment.id.startsWith('main-core-'))
   .forEach((segment, index, filteredArray) => {

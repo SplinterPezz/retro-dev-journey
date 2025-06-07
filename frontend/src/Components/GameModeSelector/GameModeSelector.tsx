@@ -7,12 +7,10 @@ const GameModeSelector: React.FC = () => {
   const [backgroundVisible, setBackgroundVisible] = useState(true);
 
   const handleStoryMode = () => {
-    console.log('Story Mode clicked!');
     navigate('/story');
   };
 
   const handleSandboxMode = () => {
-    console.log('Sandbox Mode clicked!');
     navigate('/sandbox');
   };
 

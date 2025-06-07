@@ -102,7 +102,6 @@
 
 .info-section ul {
   margin: 0;
-  padding-left: 20px;
   color: #fff;
 }
 
@@ -187,12 +186,12 @@
 
 /* Company vs Technology specific styling */
 .company-info .info-section {
-  border-left: 3px solid #8b4513;
+  border-left: 3px solid #4f2605;
   padding-left: 10px;
 }
 
 .technology-info .info-section {
-  border-left: 3px solid #708090;
+  border-left: 3px solid #949393;
   padding-left: 10px;
 }
 
