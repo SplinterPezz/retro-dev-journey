@@ -39,7 +39,7 @@ const companiesData: CompanyData[] = [
     technologies: ["Java", "Android SDK", "Objective-C"],
     description: "Development of two mobile apps for managing restaurant reservations",
     website: "https://www.linkedin.com/company/eikony/?originalSubdomain=it",
-    position: { x: mainPathConfig.startX + 726, y: 216 },
+    position: { x: mainPathConfig.startX + 646, y: 216 },
     image: "/sprites/buildings/eikony.png",
     signpost: "/signpost/eikony_signpost.png",
     easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly.",

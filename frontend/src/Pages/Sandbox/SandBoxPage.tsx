@@ -62,7 +62,7 @@ const SandboxPage: React.FC = () => {
             const timer = setTimeout(() => {
                 setShowDialog(false);
                 setSelectedStructure(null);
-            }, 0);
+            }, 50);
             return () => clearTimeout(timer);
         }
     }, [nearbyStructure, showDialog]);
