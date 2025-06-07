@@ -133,7 +133,7 @@ const technologiesData: TechnologyData[] = [
       "Mobile Application for EU project"
     ],
     extras: ["SpringBoot", "Maven", "CI/CD", "MVC", "FeignClient", "OAUTH2", "Zuul", "Kafka", "PubSub", "Redis Server", "Ribbon", "Design Pattern", "Prometheus", "MongoDB", "CassandraDB", "SQL", "MySQL", "InfluxDB", "ElasticSearch", "GCP", "AWS", "Docker", "Git"],
-    position: { x: mainPathConfig.startX + 256, y: 748 },
+    position: { x: mainPathConfig.startX + 256, y: 708 },
     image: "/sprites/statues/java.png"
   },
   {
@@ -150,7 +150,7 @@ const technologiesData: TechnologyData[] = [
       "Gender & Age Analysis Service"
     ],
     extras: ["Flask", "Notebook", "OAUTH2", "CI/CD", "Forecast", "NLP", "Scrapy", "Computer Vision", "Gender Analysis", "Age Analysis", "Meta API", "Kafka", "PubSub", "Prometheus", "MongoDB", "MySQL", "InfluxDB", "Docker", "Git"],
-    position: { x: mainPathConfig.startX - 256, y: 1024 },
+    position: { x: mainPathConfig.startX - 256, y: 984 },
     image: "/sprites/statues/python.png"
   },
   {
@@ -164,7 +164,7 @@ const technologiesData: TechnologyData[] = [
       "Chat App in real time"
     ],
     extras: ["Gin", "WebSocket", "OAUTH2", "MongoDB", "Docker", "Git"],
-    position: { x: mainPathConfig.startX + 512, y: 2816 },
+    position: { x: mainPathConfig.startX + 512, y: 2776 },
     image: "/sprites/statues/golang.png"
   },
   {
@@ -180,7 +180,7 @@ const technologiesData: TechnologyData[] = [
       "Advertising Company Platform"
     ],
     extras: ["ES7", "CI/CD", "TypeScript", "ReactJS", "React Native", "365 SDK", "GAM", "Tracking Script"],
-    position: { x: mainPathConfig.startX + 512, y: 512 },
+    position: { x: mainPathConfig.startX + 512, y: 482 },
     image: "/sprites/statues/javascript.png"
   },
   {
@@ -215,7 +215,7 @@ const technologiesData: TechnologyData[] = [
       "Contextual text with NLP"
     ],
     extras: ["2B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX - 256, y: 1536 },
+    position: { x: mainPathConfig.startX - 256, y: 1496 },
     image: "/sprites/statues/mongodb.png"
   },
   {
@@ -230,7 +230,7 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["5B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX + 256, y: 2560 },
+    position: { x: mainPathConfig.startX + 256, y: 2520 },
     image: "/sprites/statues/cassandra.png"
   },
   {
@@ -241,7 +241,7 @@ const technologiesData: TechnologyData[] = [
     description: "Centralized logging solution deployed both on cloud and self-hosted environments.",
     projects: ["Advertising Company Platform"],
     extras: ["Cloud", "Docker"],
-    position: { x: mainPathConfig.startX + 512, y: 2048 },
+    position: { x: mainPathConfig.startX + 512, y: 2008 },
     image: "/sprites/statues/elastic.png"
   },
   {
@@ -255,7 +255,7 @@ const technologiesData: TechnologyData[] = [
       "Headless CMS: ReactJS + Python + MetaAPI Hooks"
     ],
     extras: ["Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX - 256, y: 748 },
+    position: { x: mainPathConfig.startX - 256, y: 708 },
     image: "/sprites/statues/sql.png"
   },
   {
@@ -278,7 +278,7 @@ const technologiesData: TechnologyData[] = [
       "Forecast Service for revenue income"
     ],
     extras: ["Docker", "Docker Compose", "Docker Hub"],
-    position: { x: mainPathConfig.startX + 256, y: 1792 },
+    position: { x: mainPathConfig.startX + 256, y: 1752 },
     image: "/sprites/statues/docker.png"
   },
   {
@@ -289,7 +289,7 @@ const technologiesData: TechnologyData[] = [
     description: "Integrated AWS services with Java/Python. Used AWS CLI and buckets in ETL workflows.",
     projects: ["Advertising Company Platform"],
     extras: ["Java", "NiFi", "AWS Cli", "ETL"],
-    position: { x: mainPathConfig.startX - 512, y: 1920 },
+    position: { x: mainPathConfig.startX - 512, y: 1880 },
     image: "/sprites/statues/aws.png"
   },
   {
@@ -304,7 +304,7 @@ const technologiesData: TechnologyData[] = [
       "Audience Tracking Real Time"
     ],
     extras: ["Java", "Python", "Terraform", "PubSub"],
-    position: { x: mainPathConfig.startX - 256, y: 2176 },
+    position: { x: mainPathConfig.startX - 256, y: 2136 },
     image: "/sprites/statues/gcp.png"
   },
   {
@@ -321,7 +321,7 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["Java", "Python", "CI/CD", "Talend", "Nifi", "PM2", "ChronJob", "ETL", "OLAP", "Terraform"],
-    position: { x: mainPathConfig.startX + 256, y: 2304 },
+    position: { x: mainPathConfig.startX + 256, y: 2264 },
     image: "/sprites/statues/pipelines.png"
   },
   {
@@ -338,7 +338,7 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["Nifi", "Talend", "Pentaho", "Superset"],
-    position: { x: mainPathConfig.startX + 256, y: 1280 },
+    position: { x: mainPathConfig.startX + 256, y: 1240 },
     image: "/sprites/statues/etl.png"
   },
   {
@@ -377,7 +377,7 @@ const technologiesData: TechnologyData[] = [
       "Gender & Age Analysis Service"
     ],
     extras: ["Python", "NLP", "Gender Analysis", "Age Analysis", "Computer Vision", "Forecast"],
-    position: { x: mainPathConfig.startX - 256, y: 2688 },
+    position: { x: mainPathConfig.startX - 256, y: 2648 },
     image: "/sprites/statues/machinelearning.png"
   }
 ];
