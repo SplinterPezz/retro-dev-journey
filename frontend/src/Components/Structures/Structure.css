@@ -30,6 +30,14 @@
   margin-left: -70px;
 }
 
+.technology-shadow {
+  position: absolute;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  z-index: -1;
+}
+
 /* Special styling for future opportunity */
 .structure-container.future-opportunity .structure-sprite {
   background: linear-gradient(135deg, #ffd700, #ffed4e);

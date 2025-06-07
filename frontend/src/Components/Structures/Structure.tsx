@@ -84,7 +84,13 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         ) : (
           <>
           {data.data.shadow  != undefined ? 
-            <div className="tech-shadow"></div> : <></>
+            <div className="technology-shadow" 
+            style={{
+              left: data.data.shadow.position.x,
+              top: data.data.shadow.position.y,
+              width: data.data.shadow.width,
+              height: data.data.shadow.height,
+            }}/> : <></>
           }
             <img 
                 src={getStructureIcon()}

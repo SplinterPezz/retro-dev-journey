@@ -136,7 +136,7 @@ const technologiesData: TechnologyData[] = [
     extras: ["SpringBoot", "Maven", "CI/CD", "MVC", "FeignClient", "OAUTH2", "Zuul", "Kafka", "PubSub", "Redis Server", "Ribbon", "Design Pattern", "Prometheus", "MongoDB", "CassandraDB", "SQL", "MySQL", "InfluxDB", "ElasticSearch", "GCP", "AWS", "Docker", "Git"],
     position: { x: mainPathConfig.startX + 256, y: 708 },
     image: "/sprites/statues/java.png",
-    //shadow: { height: 100, width:200 , position: {x:20,y:20}},
+    shadow: { height: 50, width:220 , position: {x: 85, y:230}},
     centering : {x: -50, y: 30}
   },
   {
@@ -155,7 +155,8 @@ const technologiesData: TechnologyData[] = [
     extras: ["Flask", "Notebook", "OAUTH2", "CI/CD", "Forecast", "NLP", "Scrapy", "Computer Vision", "Gender Analysis", "Age Analysis", "Meta API", "Kafka", "PubSub", "Prometheus", "MongoDB", "MySQL", "InfluxDB", "Docker", "Git"],
     position: { x: mainPathConfig.startX - 256, y: 964 },
     image: "/sprites/statues/python.png",
-    centering : {x: 0, y: 20}
+    centering : {x: 0, y: 20},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
   },
   {
     name: "Golang",
@@ -170,7 +171,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Gin", "WebSocket", "OAUTH2", "MongoDB", "Docker", "Git"],
     position: { x: mainPathConfig.startX + 512, y: 2776 },
     image: "/sprites/statues/golang.png",
-    centering : {x: -70, y: -10}
+    centering : {x: -70, y: -10},
+    shadow: { height: 20, width:140 , position: {x: 65, y:220}},
+
   },
   {
     name: "JavaScript",
@@ -187,7 +190,8 @@ const technologiesData: TechnologyData[] = [
     extras: ["ES7", "CI/CD", "TypeScript", "ReactJS", "React Native", "365 SDK", "GAM", "Tracking Script"],
     position: { x: mainPathConfig.startX + 256, y: 442 },
     image: "/sprites/statues/javascript.png",
-    centering : {x: -70, y: 10}
+    centering : {x: -70, y: 10},
+    shadow: { height: 30, width:180 , position: {x: 60, y:230}},
   },
   {
     name: "Kafka & Google PubSub",
@@ -202,7 +206,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["10M+ Requests", "Java", "Python", "Docker", "Git"],
     position: { x: mainPathConfig.startX - 256, y: 2372 },
     image: "/sprites/statues/kafka.png",
-    centering : {x: -10, y: 10}
+    centering : {x: -10, y: 10},
+    shadow: { height: 40, width:170 , position: {x:120, y:230}},
+
   },
   {
     name: "MongoDB",
@@ -223,7 +229,9 @@ const technologiesData: TechnologyData[] = [
     ],
     extras: ["2B+ data", "Cluster", "Indexes Optimization", "Docker"],
     position: { x: mainPathConfig.startX - 256, y: 1476 },
-    image: "/sprites/statues/mongodb.png"
+    image: "/sprites/statues/mongodb.png",
+    shadow: { height: 15, width:100 , position: {x:130, y:230}},
+
   },
   {
     name: "CassandraDB",
@@ -237,9 +245,11 @@ const technologiesData: TechnologyData[] = [
       "Aggregation Service for revenue reporting with realtime data"
     ],
     extras: ["5B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX + 256, y: 2500 },
+    position: { x: mainPathConfig.startX + 256, y: 2480 },
     image: "/sprites/statues/cassandra.png",
-    centering : {x: -50, y: 0}
+    centering : {x: -50, y: 0},
+    shadow: { height: 15, width:180 , position: {x:80, y:250}},
+
   },
   {
     name: "ElasticSearch",
@@ -249,9 +259,11 @@ const technologiesData: TechnologyData[] = [
     description: "Centralized logging solution deployed both on cloud and self-hosted environments.",
     projects: ["Advertising Company Platform"],
     extras: ["Cloud", "Docker"],
-    position: { x: mainPathConfig.startX + 512, y: 1988 },
+    position: { x: mainPathConfig.startX + 512, y: 1968 },
     image: "/sprites/statues/elastic.png",
-    centering : {x: -70, y: 0}
+    centering : {x: -70, y: 0},
+    shadow: { height: 15, width:180 , position: {x:60, y:250}},
+
   },
   {
     name: "MySQL & SQL",
@@ -266,7 +278,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Cluster", "Indexes Optimization", "Docker"],
     position: { x: mainPathConfig.startX - 256, y: 698 },
     image: "/sprites/statues/sql.png",
-    centering : {x: 0, y: 10}
+    centering : {x: 10, y: 10},
+    shadow: { height: 15, width:240 , position: {x:145, y:245}},
+
   },
   {
     name: "Docker",
@@ -290,7 +304,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Docker", "Docker Compose", "Docker Hub"],
     position: { x: mainPathConfig.startX + 256, y: 1732 },
     image: "/sprites/statues/docker.png",
-    centering : {x: -40, y: 20}
+    centering : {x: -40, y: 0},
+    shadow: { height: 15, width:250 , position: {x:80, y:230}},
+
   },
   {
     name: "Amazon AWS",
@@ -301,7 +317,9 @@ const technologiesData: TechnologyData[] = [
     projects: ["Advertising Company Platform"],
     extras: ["Java", "NiFi", "AWS Cli", "ETL"],
     position: { x: mainPathConfig.startX - 512, y: 1860 },
-    image: "/sprites/statues/aws.png"
+    image: "/sprites/statues/aws.png",
+    shadow: { height:30, width:210 , position: {x:135, y:220}},
+
   },
   {
     name: "Google Cloud Platform",
@@ -317,7 +335,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Java", "Python", "Terraform", "PubSub"],
     position: { x: mainPathConfig.startX - 256, y: 2116 },
     image: "/sprites/statues/gcp.png",
-    centering : {x: -30, y: 10}
+    centering : {x: -30, y: 0},
+    shadow: { height: 30, width:220 , position: {x:110, y:220}},
+
   },
   {
     name: "Pipelines",
@@ -335,7 +355,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Java", "Python", "CI/CD", "Talend", "Nifi", "PM2", "ChronJob", "ETL", "OLAP", "Terraform"],
     position: { x: mainPathConfig.startX + 256, y: 2244 },
     image: "/sprites/statues/pipelines.png",
-    centering : {x: -60, y: 0}
+    centering : {x: -60, y: 0},
+    shadow: { height: 30, width:150 , position: {x:70, y:225}},
+
   },
   {
     name: "ETL & OLAP",
@@ -353,7 +375,8 @@ const technologiesData: TechnologyData[] = [
     extras: ["Nifi", "Talend", "Pentaho", "Superset"],
     position: { x: mainPathConfig.startX + 256, y: 1230 },
     image: "/sprites/statues/etl.png",
-    centering : {x: -50, y: 0}
+    centering : {x: -50, y: 0},
+    shadow: { height: 25, width:120 , position: {x:70, y:225}},
   },
   {
     name: "Git",
@@ -377,7 +400,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["CI/CD", "GitLab", "GitHub", "Java", "SpringBoot", "ReactJS", "Python", "Go", "Javascript"],
     position: { x: mainPathConfig.startX - 256, y: 186 },
     image: "/sprites/statues/git.png",
-    centering : {x: 60, y: 0}
+    centering : {x: 60, y: 0},
+    shadow: { height: 25, width:220 , position: {x:135, y:240}},
+
   },
   {
     name: "Artificial Intelligence",
@@ -394,7 +419,9 @@ const technologiesData: TechnologyData[] = [
     extras: ["Python", "NLP", "Gender Analysis", "Age Analysis", "Computer Vision", "Forecast"],
     position: { x: mainPathConfig.startX - 256, y: 2628 },
     image: "/sprites/statues/machinelearning.png",
-    centering : {x:-30, y: 0}
+    centering : {x:-30, y: -10},
+    shadow: { height: 25, width:200 , position: {x:105, y:225}},
+
   }
 ];
 
