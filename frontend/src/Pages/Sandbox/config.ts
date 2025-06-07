@@ -41,8 +41,6 @@ export const mainPathConfig = {
   width: tileSize
 };
 
-//CENTER orizzontal = StartX
-
 // Company data with specific positions
 const companiesData: CompanyData[] = [
   {
@@ -439,7 +437,6 @@ const technologiesData: TechnologyData[] = [
     image: "/sprites/statues/machinelearning.png",
     centering : {x:-30, y: -10},
     shadow: { height: 25, width:200 , position: {x:105, y:225}},
-
   }
 ];
 
