@@ -1,10 +1,11 @@
 import React from 'react';
-import { Position, StructureData, CompanyData } from '../../Pages/Sandbox/types';
+import { Position, StructureData, CompanyData, TechnologyData } from '../../Pages/Sandbox/types';
 import './Structure.css';
+import { structureCentering, technologyCentering } from '../../Pages/Sandbox/config';
 
 interface StructureProps {
   data: StructureData;
-  type: 'building' | 'statue';
+  type: 'building' | 'technology';
   isNearby: boolean;
   playerPosition: Position;
 }
@@ -14,7 +15,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
   // Calculate if structure should show interaction hint
   const showInteractionHint = isNearby;
 
-  // Get structure icon/sprite
   const getStructureIcon = (): string => {
     if (type === 'building') {
         const defaultBuilding = '/sprites/buildings/default.png'
@@ -22,7 +22,9 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         return companyData.image !== undefined ? companyData.image : defaultBuilding;
     }
     else {
-      return data.id;
+      const defaultTech = '/sprites/statues/default.png'
+      const techData = data.data as TechnologyData;
+      return techData.image !== undefined ? techData.image : defaultTech;
     }
   };
 
@@ -52,9 +54,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       className={getStructureClasses()}
       style={{
         position: 'absolute',
-        left: data.position.x - 256,
-        top: data.position.y - 490,
-        zIndex: 50
+        left: data.position.x + (type === 'building'? structureCentering.x : technologyCentering.x),
+        top: data.position.y + (type === 'building'? structureCentering.y : technologyCentering.y),
       }}
     >
       {/* Structure sprite/icon */}
@@ -67,33 +68,41 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
               alt={data.name}
               className="structure-building-image"
               style={{
-                width: '512px',
-                height: '512px',
-                objectFit: 'contain',
-                imageRendering: 'pixelated'
-              }}
+                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                }}
             />
-            <div className="signpost-shadow"></div>
+            
             <img 
               src={getSignpostIcon()}
               alt={data.name}
-              className="structure-building-image"
-              style={{
-                width: '128px',
-                height: '128px',
-                position: 'absolute',
-                top: '410px',
-                marginLeft:'-120px',
-                objectFit: 'contain',
-                imageRendering: 'pixelated'
-              }}
+              className="structure-signpost-image"
             />
+            <div className="signpost-shadow"></div>
           </>
           
         ) : (
-          <span className="structure-icon">
-            {getStructureIcon()}
-          </span>
+          <>
+          {data.data.shadow  != undefined ? 
+            <div className="technology-shadow" 
+            style={{
+              left: data.data.shadow.position.x,
+              top: data.data.shadow.position.y,
+              width: data.data.shadow.width,
+              height: data.data.shadow.height,
+            }}/> : <></>
+          }
+            <img 
+                src={getStructureIcon()}
+                alt={data.name}
+                style={{
+                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                }}
+                className="structure-technology-image"
+              />
+          </>
+          
         )}
         
         {/* Interaction radius indicator (debug) */}
@@ -104,8 +113,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
-              left: 256 - data.interactionRadius,
-              top: 512 - data.interactionRadius
+              left: data.data.position.x,
+              top: data.data.position.y
             }}
           />
         )}
@@ -120,9 +129,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
           </div>
         )}
       </div>
-
-      {/* Connection indicator to main path */}
-      <div className="structure-connection-line" />
     </div>
   );
 };

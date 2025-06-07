@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VolumeX, Volume2, ChevronUp, ChevronDown, Headphones } from 'lucide-react';
+import './AudioControls.css'
 
 interface AudioControlsProps {
   audioSrc: string;
@@ -15,7 +16,7 @@ interface AudioControlsProps {
   volumeStep?: number;
 }
 
-const AudioControls: React.FC<AudioControlsProps> = ({ 
+const AudioControls: React.FC<AudioControlsProps> = ({
   audioSrc,
   className = '',
   defaultVolume = 30,
@@ -61,7 +62,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
       audioRef.current.volume = volume / 100;
       audioRef.current.muted = isMuted;
       audioRef.current.loop = loop;
-      
+
       if (autoPlay && !isMuted) {
         audioRef.current.play().catch(console.error);
       }
@@ -103,7 +104,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   const increaseVolume = () => {
     const newVolume = Math.min(volume + volumeStep, 100);
     setVolume(newVolume);
-    
+
     if (newVolume > 0 && isMuted) {
       setIsMuted(false);
       if (audioRef.current) {
@@ -115,7 +116,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   const decreaseVolume = () => {
     const newVolume = Math.max(volume - volumeStep, 0);
     setVolume(newVolume);
-    
+
     if (newVolume === 0 && !isMuted) {
       setIsMuted(true);
       if (audioRef.current) {
@@ -134,75 +135,50 @@ const AudioControls: React.FC<AudioControlsProps> = ({
 
   return (
     <div className={`rpgui-content ${className}`}>
-      <audio 
+      <audio
         ref={audioRef}
         src={audioSrc}
         preload="auto"
         onLoadedData={handleAudioLoad}
         onError={handleAudioError}
       />
-      
+
       <div style={getPositionStyle()}>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className='audio-container'>
           {/* Volume Controls Button */}
-          <button 
-            className={`d-none d-sm-block rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
+          <button
+            className={`volume-controls d-none d-sm-block rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
             type="button"
             onClick={toggleVolumeControls}
-            style={{
-              padding: '8px',
-              minWidth: '50px',
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
             title="Volume Controls"
             disabled={!isLoaded}
           >
             <Headphones
-              size={24} 
+              size={24}
               color="white"
-              style={{
-                filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))',
-                opacity: isLoaded ? 1 : 0.5
-              }}
+              className={`volume-filter ${isLoaded ? '' : 'opacity-not-loaded'}`}
             />
           </button>
 
           {/* Mute/Unmute Button */}
-          <button 
-            className={`rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
+          <button
+            className={`unmute-controls rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
             type="button"
             onClick={toggleMute}
-            style={{
-              padding: '8px',
-              minWidth: '50px',
-              minHeight: '50px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
             title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
             disabled={!isLoaded}
           >
             {isMuted ? (
-              <VolumeX 
-                size={24} 
+              <VolumeX
+                size={24}
                 color="white"
-                style={{
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))',
-                  opacity: isLoaded ? 1 : 0.5
-                }}
+                className={`volume-filter ${isLoaded ? '':'opacity-not-loaded'}`}
               />
             ) : (
-              <Volume2 
-                size={24} 
+              <Volume2
+                size={24}
                 color="white"
-                style={{
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))',
-                  opacity: isLoaded ? 1 : 0.5
-                }}
+                className={`volume-filter ${isLoaded ? '':'opacity-not-loaded'}`}
               />
             )}
           </button>
@@ -210,92 +186,46 @@ const AudioControls: React.FC<AudioControlsProps> = ({
 
         {/* Volume Arrow Controls */}
         {showVolumeControls && (
-          <div 
-            className={`rpgui-container ${containerStyle}`}
-            style={{
-              padding: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '5px',
-              minWidth: '80px',
-              marginTop: position.includes('bottom') ? '0' : '10px',
-              marginBottom: position.includes('top') ? '0' : '10px'
-            }}
+          <div
+            className={`volume-buttons-container rpgui-container ${containerStyle}`}
           >
             {showVolumePercentage && (
-              <span 
-                style={{ 
-                  fontSize: '12px', 
-                  color: 'white',
-                  marginBottom: '5px',
-                  textAlign: 'center'
-                }}
-              >
+              <span className='volume-text-percentage'>
                 {volume}%
               </span>
             )}
 
             {/* Volume Up Button */}
-            <button 
-              className={`rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
+            <button
+              className={`volume-buttons rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
               type="button"
               onClick={increaseVolume}
-              style={{
-                padding: '5px',
-                minWidth: '40px',
-                minHeight: '30px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
               title={`Increase Volume (+${volumeStep}%)`}
               disabled={!isLoaded || volume >= 100}
             >
-              <ChevronUp 
-                size={18} 
+              <ChevronUp
+                size={18}
                 color="white"
-                style={{
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))',
-                  opacity: (isLoaded && volume < 100) ? 1 : 0.5
-                }}
+                className={`volume-filter ${(isLoaded && volume < 100) ? '':'opacity-not-loaded'}`}
               />
             </button>
 
             {/* Volume Down Button */}
-            <button 
-              className={`rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
+            <button
+              className={`volume-buttons rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
               type="button"
               onClick={decreaseVolume}
-              style={{
-                padding: '5px',
-                minWidth: '40px',
-                minHeight: '30px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
               title={`Decrease Volume (-${volumeStep}%)`}
               disabled={!isLoaded || volume <= 0}
             >
-              <ChevronDown 
-                size={18} 
+              <ChevronDown
+                size={18}
                 color="white"
-                style={{
-                  filter: 'drop-shadow(1px 1px 2px rgba(0,0,0,0.8))',
-                  opacity: (isLoaded && volume > 0) ? 1 : 0.5
-                }}
+                className={`volume-filter ${(isLoaded && volume > 0)? '' : 'opacity-not-loaded'}`}
               />
             </button>
 
-            <label 
-              style={{ 
-                fontSize: '10px', 
-                color: 'white',
-                marginTop: '5px',
-                textAlign: 'center'
-              }}
-            >
+            <label className='volume-text'>
               Volume
             </label>
           </div>

@@ -82,6 +82,11 @@
   pointer-events: auto;
 }
 
+.controls-info-text{
+  margin: 0;
+  font-size: 0.8rem
+}
+
 .controls-info .rpgui-container {
   padding: 10px 15px;
   background: rgba(0, 0, 0, 0.3);
@@ -137,6 +142,13 @@
   position: absolute;
   background: #8b7355;
   box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  width: 4px;
+  height: 100%;
+  background: #8b7355;
+  transform: translateX(-50%)
 }
 
 /* Minimap player indicator */
@@ -187,6 +199,11 @@
   background: #ffd700;
   border: 1px solid #ffb000;
   animation: pulse-future 1.5s infinite;
+}
+
+.structure-container{
+  position:absolute;
+  z-index:50;
 }
 
 @keyframes pulse-future {

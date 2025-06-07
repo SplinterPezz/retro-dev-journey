@@ -1,0 +1,60 @@
+.audio-container{
+    display: flex;
+    gap: 10px;
+}
+
+.volume-filter{
+    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.8));
+}
+
+.volume-text-percentage{
+    font-size: 12px;
+    color: white;
+    margin-bottom: 5px;
+    text-align: center
+}
+
+.opacity-not-loaded{
+    opacity: 0.5;
+}
+
+.volume-text{
+    font-size: 10px;
+    color: white;
+    margin-top: 5px;
+    text-align: center;
+}
+
+.volume-buttons{
+    padding: 5px;
+    min-width: 40px;
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.volume-buttons-container{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    min-width: 80px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+@media (max-width: 480px) {
+    .volume-controls{
+        padding: 8px;
+        min-width: 50px;
+        min-height: 50px;
+    }
+
+    .unmute-controls{
+        padding: 8px;
+        min-width: 50px;
+        min-height: 50px; 
+    }
+}

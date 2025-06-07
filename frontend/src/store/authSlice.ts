@@ -22,7 +22,6 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginSuccess(state, action: PayloadAction<{ id:string, user: string; token: string; expiration: number }>) {
-      console.log('loginSuccess action dispatched');
       state.id = action.payload.id;
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -30,7 +29,6 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
     },
     logoutSuccess(state) {
-      console.log('logout action dispatched');
       state.id = null;
       state.user = null;
       state.token = null;

@@ -10,6 +10,11 @@
   animation: fadeIn 0.3s ease-out;
 }
 
+.structure-title{
+  font-size:2em !important;
+  text-decoration: none !important;
+}
+
 .structure-dialog {
   animation: slideIn 0.3s ease-out;
 }
@@ -40,13 +45,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-}
-
-.dialog-title {
-  margin: 0;
-  color: #ffd700;
-  font-size: 1.4rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .dialog-close-btn {
@@ -104,7 +102,6 @@
 
 .info-section ul {
   margin: 0;
-  padding-left: 20px;
   color: #fff;
 }
 
@@ -189,12 +186,12 @@
 
 /* Company vs Technology specific styling */
 .company-info .info-section {
-  border-left: 3px solid #8b4513;
+  border-left: 3px solid #4f2605;
   padding-left: 10px;
 }
 
 .technology-info .info-section {
-  border-left: 3px solid #708090;
+  border-left: 3px solid #949393;
   padding-left: 10px;
 }
 
@@ -203,10 +200,6 @@
   .structure-dialog {
     width: 95vw !important;
     top: 10% !important;
-  }
-  
-  .dialog-title {
-    font-size: 1.2rem;
   }
   
   .dialog-content {
@@ -239,11 +232,6 @@
     position: absolute;
     top: 10px;
     right: 10px;
-  }
-  
-  .dialog-title {
-    font-size: 1.1rem;
-    text-align: center;
   }
   
   .info-section {

@@ -35,12 +35,9 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
         <div className="rpgui-content">
           <div className={`rpgui-container ${isCompany ? 'framed-golden' : 'framed'}`}>
             
-            
-            <div className="dialog-header">
-              <h3 className="dialog-title">
-                {structure.name}
-              </h3>
-            </div>
+            <h3 className="structure-title dialog-title">
+              {structure.name}
+            </h3>
 
             <div className="dialog-separator">
               <hr className={isCompany ? 'golden' : ''} />

@@ -67,6 +67,7 @@ export class PathGenerator {
       rotation: 180,
       zIndex: 1
     });
+    
   }
 
   private generateStructureBranches(): void {

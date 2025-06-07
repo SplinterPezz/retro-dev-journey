@@ -46,17 +46,13 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig }) => {
           key={tile.id}
           className="terrain-tile"
           style={{
-            position: 'absolute',
             left: tile.x,
             top: tile.y,
-            width: worldConfig.tileSize,
-            height: worldConfig.tileSize,
+            width: worldConfig.tileSize +1,
+            height: worldConfig.tileSize +1,
             backgroundImage: 'url(/sprites/terrain/main.png)',
-            backgroundSize: `${worldConfig.tileSize}px ${worldConfig.tileSize}px`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
+            backgroundSize: `${worldConfig.tileSize + 1}px ${worldConfig.tileSize + 1}px`,
             transform: `rotate(${tile.rotation}deg)`,
-            zIndex: 0
           }}
         />
       ))}

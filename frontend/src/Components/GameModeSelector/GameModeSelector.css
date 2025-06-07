@@ -7,6 +7,15 @@
     min-width: 400px;
 }
 
+.gamemode-button-size{
+    width: 200px !important;
+}
+
+.title-gamemode-box{
+    color: #ffd700 !important;
+    font-size: clamp(1.2rem, 4vw, 1.0rem) !important;
+}
+
 .game-mode-selector .rpgui-container {
     padding: 20px;
     text-align: center;

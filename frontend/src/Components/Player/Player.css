@@ -1,5 +1,8 @@
 .player-container {
   pointer-events: none;
+  position:absolute;
+  z-index: 100;
+  transition: none;
 }
 
 .player-sprite {

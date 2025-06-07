@@ -24,15 +24,7 @@ export default function HomePage() {
     <div className="rpgui-content">
       <div className="homepage-container">
         {/* Audio Controls */}
-        
-        
-        <div 
-          className={`homepage-background ${!imageLoaded ? 'loading' : ''}`}
-          style={{
-            opacity: imageLoaded ? 1 : 0,
-            transition: 'opacity 0.5s ease-in-out'
-          }}
-        />
+        <div className={`homepage-background ${imageLoaded ? '' : 'opacity-not-loaded'} ${!imageLoaded ? 'loading' : ''}`}/>
         
         {imageLoaded && <GameModeSelector />}
 
@@ -58,15 +50,7 @@ export default function HomePage() {
 
         {/* Loading indicator */}
         {!imageLoaded && (
-          <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            color: 'white',
-            fontSize: '1.2rem',
-            zIndex: 10
-          }}>
+          <div className="loader-home">
             Loading...
           </div>
         )}

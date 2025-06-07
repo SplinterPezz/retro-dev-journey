@@ -30,6 +30,14 @@
   margin-left: -70px;
 }
 
+.technology-shadow {
+  position: absolute;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  z-index: -1;
+}
+
 /* Special styling for future opportunity */
 .structure-container.future-opportunity .structure-sprite {
   background: linear-gradient(135deg, #ffd700, #ffed4e);
@@ -55,15 +63,41 @@
 
 /* Building image styling */
 .structure-building-image {
+  width: 512px;
+  height: 512px;
+  object-fit:contain;
+
+  /* Pixel perfect rendering for building sprites */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.structure-technology-image {
+  width: 256px;
+  height: 256px;
+  object-fit:contain;
+
+  /* Pixel perfect rendering for building sprites */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.structure-signpost-image {
   /* Pixel perfect rendering for building sprites */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 
-  /* Ensure image fits properly */
-  width: 100%;
-  height: 100%;
+  width:128px;
+  height: 128px;
+  position: absolute;
+  top: 410px;
+  margin-left:-120px;
   object-fit: contain;
 }
 
@@ -178,18 +212,6 @@
     opacity: 0.8;
     transform: scale(1.05);
   }
-}
-
-/* Connection line to main path */
-.structure-connection-line {
-  position: absolute;
-  top: 256px;
-  left: 256px;
-  width: 2px;
-  height: 30px;
-  transform: translate(-50%, 0);
-  z-index: -1;
-  opacity: 0.7;
 }
 
 .structure-container.future-opportunity .structure-connection-line {

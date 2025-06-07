@@ -62,7 +62,7 @@ const SandboxPage: React.FC = () => {
             const timer = setTimeout(() => {
                 setShowDialog(false);
                 setSelectedStructure(null);
-            }, 100);
+            }, 50);
             return () => clearTimeout(timer);
         }
     }, [nearbyStructure, showDialog]);
@@ -126,6 +126,8 @@ const SandboxPage: React.FC = () => {
                         style={{
                             width: worldConfig.width,
                             height: worldConfig.height,
+
+                            //magics
                             transform: `translate(${-playerPosition.x + window.innerWidth / 2}px, ${-playerPosition.y + window.innerHeight / 2}px)`
                         }}
                     >
@@ -137,28 +139,32 @@ const SandboxPage: React.FC = () => {
                             pathSegments={pathSegments} 
                             tileSize={worldConfig.tileSize}
                         />
+                        
+                        {/* Technologies (Statues) */}
+                        <div className='structure-container'>
+                            {technologies.map((tech) => (
+                                <Structure
+                                    key={tech.id}
+                                    data={tech}
+                                    type="technology"
+                                    isNearby={nearbyStructure?.id === tech.id}
+                                    playerPosition={playerPosition}
+                                />
+                            ))}
+                        </div>
 
                         {/* Companies (Buildings) */}
-                        {companies.map((company) => (
-                            <Structure
-                                key={company.id}
-                                data={company}
-                                type="building"
-                                isNearby={nearbyStructure?.id === company.id}
-                                playerPosition={playerPosition}
-                            />
-                        ))}
-
-                        {/* Technologies (Statues) */}
-                        {technologies.map((tech) => (
-                            <Structure
-                                key={tech.id}
-                                data={tech}
-                                type="statue"
-                                isNearby={nearbyStructure?.id === tech.id}
-                                playerPosition={playerPosition}
-                            />
-                        ))}
+                        <div className='structure-container'>
+                            {companies.map((company) => (
+                                <Structure
+                                    key={company.id}
+                                    data={company}
+                                    type="building"
+                                    isNearby={nearbyStructure?.id === company.id}
+                                    playerPosition={playerPosition}
+                                    />
+                            ))}
+                        </div>
 
                         {/* Player Character */}
                         <Player
@@ -168,9 +174,9 @@ const SandboxPage: React.FC = () => {
                         />
 
                         {/* Debug grid in development 
-                        {process.env.NODE_ENV === 'development' && (
-                            <div className="debug-grid" />
-                        )}
+                            {process.env.NODE_ENV === 'development' && (
+                                <div className="debug-grid" />
+                            )}
                         */}
                     </div>
                 </div>
@@ -183,15 +189,15 @@ const SandboxPage: React.FC = () => {
                             className="rpgui-button golden"
                             onClick={handleBackToHome}
                         >
-                            <p style={{ marginTop: 'revert', fontSize: '0.9rem' }}>🏠 Home</p>
+                            <p className="revert-top">🏠 Home</p>
                         </button>
                     </div>
 
                     {/* Controls Info */}
                     <div className="controls-info">
                         <div className="rpgui-container framed-grey">
-                            <p style={{ margin: 0, fontSize: '0.8rem' }}>
-                                <strong>WASD</strong> to move • <strong>Walk near</strong> structures to learn more
+                            <p className="control-info-text">
+                                <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>Walk near</strong> structures to know me!
                             </p>
                         </div>
                     </div>
@@ -201,18 +207,7 @@ const SandboxPage: React.FC = () => {
                         <div className="rpgui-container framed-grey">
                             <div className="minimap-content">
                                 {/* Main path on minimap */}
-                                <div 
-                                    className="minimap-main-path"
-                                    style={{
-                                        position: 'absolute',
-                                        left: '50%',
-                                        top: '0%',
-                                        width: '4px',
-                                        height: '100%',
-                                        background: '#8b7355',
-                                        transform: 'translateX(-50%)'
-                                    }}
-                                />
+                                <div className="minimap-main-path" />
                                 
                                 {/* Player position */}
                                 <div
@@ -230,10 +225,12 @@ const SandboxPage: React.FC = () => {
                                         className={`minimap-structure ${structure.type} ${
                                             structure.name === '???' ? 'future' : ''
                                         }`}
+
                                         style={{
                                             left: `${(structure.position.x / worldConfig.width) * 100}%`,
                                             top: `${(structure.position.y / worldConfig.height) * 100}%`
                                         }}
+
                                         title={structure.name}
                                     />
                                 ))}

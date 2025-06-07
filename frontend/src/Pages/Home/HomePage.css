@@ -19,6 +19,8 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
   z-index: -1;
+
+  transition: opacity 0.5s ease-in-out;
 }
 
 .homepage-background-alt {
@@ -59,6 +61,20 @@
   padding: 2rem;
   color: white;
   text-align: center;
+}
+
+.loader-home{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.opacity-not-loaded{
+  opacity: 0;
 }
 
 @media (max-width: 768px) {
