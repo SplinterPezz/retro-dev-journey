@@ -22,49 +22,49 @@
 
 /* Sprite animations - using available GIF files with transforms */
 .player-sprite.idle-down {
-  background-image: url('/public/sprites/player/topdown_walkingDown.gif');
+  background-image: url('/public/sprites/player/dude.gif');
 }
 
 /* Walking down - use the main walking sprite */
 .player-sprite.walking-down {
-  background-image: url('/public/sprites/player/topdown_walkingDown.gif');
+  background-image: url('/public/sprites/player/dude_walk_S.gif');
 }
 
 /* Walking up - temporarily use walking down sprite */
 .player-sprite.walking-up {
-  background-image: url('/public/sprites/player/topdown_walkingDown.gif');
+  background-image: url('/public/sprites/player/dude_walk_S.gif');
 }
 
 /* Walking left -  flip the left sprite horizontally  */
 .player-sprite.walking-left {
-  background-image: url('/public/sprites/player/topdown_walkingE.gif');
+  background-image: url('/public/sprites/player/dude_walk_E.gif');
   transform: scaleX(-1);
 }
 
 /* Walking right */
 .player-sprite.walking-right {
-  background-image: url('/public/sprites/player/topdown_walkingE.gif');
+  background-image: url('/public/sprites/player/dude_walk_E.gif');
   
 }
 
 /* Diagonal movements */
 .player-sprite.walking-up-left {
-  background-image: url('/public/sprites/player/topdown_walkingDown.gif');
+  background-image: url('/public/sprites/player/dude_walk_S.gif');
 }
 
 .player-sprite.walking-up-right {
-  background-image: url('/public/sprites/player/topdown_walkingDown.gif');
+  background-image: url('/public/sprites/player/dude_walk_S.gif');
 }
 
 /* Walking down-left - flip the SE sprite horizontally */
 .player-sprite.walking-down-left {
-  background-image: url('/public/sprites/player/topdown_walkingSE.gif');
+  background-image: url('/public/sprites/player/dude_walk_SE.gif');
   transform: scaleX(-1); /* Horizontal flip */
 }
 
 /* Walking down-right - use the SE sprite as-is */
 .player-sprite.walking-down-right {
-  background-image: url('/public/sprites/player/topdown_walkingSE.gif');
+  background-image: url('/public/sprites/player/dude_walk_SE.gif');
 }
 
 /* Player name tag */

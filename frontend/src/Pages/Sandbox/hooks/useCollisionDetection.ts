@@ -28,14 +28,6 @@ export const useCollisionDetection = (config: CollisionDetectionConfig) => {
 
   // Check collision using hitbox or fallback to radius
   const checkCollisionWithStructure = (playerPos: Position, structure: StructureData): boolean => {
-    const structureData = structure.data;
-    
-    // Use hitbox if available
-    if (structureData.collisionHitbox) {
-      return isPointInHitbox(playerPos, structureData.collisionHitbox, structure.position);
-    }
-    
-    // Fallback to radius-based collision
     const distance = calculateDistance(playerPos, structure.position);
     const effectiveRadius = structure.interactionRadius || config.interactionRadius;
     return distance <= effectiveRadius;
@@ -48,6 +40,7 @@ export const useCollisionDetection = (config: CollisionDetectionConfig) => {
 
     config.structures.forEach(structure => {
       if (checkCollisionWithStructure(config.playerPosition, structure)) {
+        
         // If using hitbox, we consider it as distance 0 for priority
         // If using radius, calculate actual distance
         let distance = 0;
@@ -82,30 +75,6 @@ export const useCollisionDetection = (config: CollisionDetectionConfig) => {
   const getDistanceToStructure = (structureId: string): number | null => {
     const structure = config.structures.find(s => s.id === structureId);
     if (!structure) return null;
-    
-    // If using hitbox, return 0 if inside, otherwise calculate distance to closest edge
-    if (structure.data.collisionHitbox) {
-      if (checkCollisionWithStructure(config.playerPosition, structure)) {
-        return 0;
-      }
-      
-      // Calculate distance to closest edge of hitbox
-      const absoluteHitbox = {
-        x: structure.position.x + structure.data.collisionHitbox.x,
-        y: structure.position.y + structure.data.collisionHitbox.y,
-        width: structure.data.collisionHitbox.width,
-        height: structure.data.collisionHitbox.height
-      };
-      
-      const closestX = Math.max(absoluteHitbox.x, 
-        Math.min(config.playerPosition.x, absoluteHitbox.x + absoluteHitbox.width));
-      const closestY = Math.max(absoluteHitbox.y, 
-        Math.min(config.playerPosition.y, absoluteHitbox.y + absoluteHitbox.height));
-      
-      return calculateDistance(config.playerPosition, { x: closestX, y: closestY });
-    }
-    
-    // Fallback to radius-based distance
     return calculateDistance(config.playerPosition, structure.position);
   };
 
