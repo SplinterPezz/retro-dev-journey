@@ -1,6 +1,20 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, ShadowInfo } from './types';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, Hitbox } from './types';
 
 export const tileSize: number = 128;
+
+const defaultBuildingHitbox: Hitbox = {
+  x: -200,
+  y: -350,
+  width: 400,
+  height: 350
+};
+
+const defaultTechnologyHitbox: Hitbox = {
+  x: -64,
+  y: -128,
+  width: 128,
+  height: 128
+};
 
 export const structureCentering: Position = {
   x: -256,
@@ -45,6 +59,12 @@ const companiesData: CompanyData[] = [
     easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly.",
     //shadow: { height: 100, width:200 , position:{x:20,y:20}}
     //centering:{x:0, y:-40}
+    collisionHitbox: {
+      x: -220,
+      y: -370,
+      width: 440,
+      height: 370
+    }
   },
   {
     id: "unipa",
