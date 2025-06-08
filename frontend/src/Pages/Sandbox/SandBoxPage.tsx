@@ -11,7 +11,7 @@ import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
 import { worldConfig, companies, technologies, mainPathConfig } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { Position, StructureData, PathSegment, Hitbox } from './types';
+import { StructureData, PathSegment, Hitbox } from '../../types/sandbox';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -239,8 +239,9 @@ const SandboxPage: React.FC = () => {
                     {/* Controls Info */}
                     <div className="controls-info">
                         <div className="rpgui-container framed-grey">
-                            <p className="control-info-text">
-                                <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>Walk near</strong> structures to know me!
+                            <p className="control-info-text mb-0">
+                                <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>SHIFT</strong> or <strong>SPACE</strong> to run
+                                <br/> <strong>Walk near</strong> structures to know me!
                             </p>
                         </div>
                     </div>

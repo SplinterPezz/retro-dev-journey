@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position, StructureData, CompanyData, TechnologyData } from '../../Pages/Sandbox/types';
+import { Position, StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
 import './Structure.css';
 import { structureCentering, technologyCentering } from '../../Pages/Sandbox/config';
 
@@ -30,7 +30,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
 
   const getSignpostIcon = (): string => {
     if (type === 'building') {
-        const defaultSignpost = '/signpost/default.png'
+        const defaultSignpost = '/sprites/signpost/default.png'
         const companyData = data.data as CompanyData;
         return companyData.signpost !== undefined ? companyData.signpost : defaultSignpost;
     }
@@ -68,8 +68,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
               alt={data.name}
               className="structure-building-image"
               style={{
-                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
-                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                  marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0
                 }}
             />
             
@@ -83,7 +83,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
           
         ) : (
           <>
-          {data.data.shadow  != undefined ? 
+          {data.data.shadow  !== undefined ? 
             <div className="technology-shadow" 
             style={{
               left: data.data.shadow.position.x,
@@ -96,8 +96,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
                 src={getStructureIcon()}
                 alt={data.name}
                 style={{
-                  marginLeft: data.data.centering != undefined ? data.data.centering.x : 0,
-                  marginTop: data.data.centering != undefined ? data.data.centering.y : 0
+                  marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,
+                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0
                 }}
                 className="structure-technology-image"
               />

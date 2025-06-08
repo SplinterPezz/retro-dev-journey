@@ -1,5 +1,5 @@
 import React from 'react';
-import { PathSegment } from '../../Pages/Sandbox/types';
+import { PathSegment } from '../../types/sandbox';
 import './PathRender.css';
 
 interface PathRendererProps {
@@ -41,8 +41,8 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
           style={{
             left: segment.position.x - 64,
             top: segment.position.y - 64,
-            width: tileSize != undefined ? tileSize+1 : tileSize,
-            height: tileSize != undefined ? tileSize+1 : tileSize,
+            width: tileSize !== undefined ? tileSize+1 : tileSize,
+            height: tileSize !== undefined ? tileSize+1 : tileSize,
             zIndex: segment.zIndex,
             backgroundImage: `url(${getPathImage(segment.type)})`,
             ...getTransformStyle(segment.rotation)
