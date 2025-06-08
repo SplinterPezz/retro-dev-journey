@@ -20,19 +20,19 @@
   image-rendering: crisp-edges;
 }
 
-/* Sprite animations - using available GIF files with transforms */
+/* Sprite animations */
 .player-sprite.idle-down {
-  background-image: url('/public/sprites/player/dude.gif');
+  background-image: url('/public/sprites/player/dude_idle.gif');
 }
 
-/* Walking down - use the main walking sprite */
+/* Walking down */
 .player-sprite.walking-down {
   background-image: url('/public/sprites/player/dude_walk_S.gif');
 }
 
-/* Walking up - temporarily use walking down sprite */
+/* Walking up */
 .player-sprite.walking-up {
-  background-image: url('/public/sprites/player/dude_walk_S.gif');
+  background-image: url('/public/sprites/player/dude_walk_N.gif');
 }
 
 /* Walking left -  flip the left sprite horizontally  */
@@ -47,19 +47,20 @@
   
 }
 
-/* Diagonal movements */
+/* Diagonal movements  -  flip the left sprite horizontally */
 .player-sprite.walking-up-left {
-  background-image: url('/public/sprites/player/dude_walk_S.gif');
+  background-image: url('/public/sprites/player/dude_walk_NE.gif');
+  transform: scaleX(-1);
 }
 
 .player-sprite.walking-up-right {
-  background-image: url('/public/sprites/player/dude_walk_S.gif');
+  background-image: url('/public/sprites/player/dude_walk_NE.gif');
 }
 
 /* Walking down-left - flip the SE sprite horizontally */
 .player-sprite.walking-down-left {
   background-image: url('/public/sprites/player/dude_walk_SE.gif');
-  transform: scaleX(-1); /* Horizontal flip */
+  transform: scaleX(-1);
 }
 
 /* Walking down-right - use the SE sprite as-is */

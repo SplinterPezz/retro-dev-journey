@@ -73,7 +73,13 @@ const companiesData: CompanyData[] = [
     position: { x: mainPathConfig.startX - 768, y: 462 },
     image: "/sprites/buildings/unipa.png",
     signpost: "/signpost/unipa_signpost.png",
-    easteregg: "Ah, UniPA. Four long years of Computer Science – plus a bonus one, just for fun. Dude didn’t finish the degree (money stuff, life stuff), but that’s probably where the spark for coding truly ignited. Thanks, UniPA!"
+    easteregg: "Ah, UniPA. Four long years of Computer Science – plus a bonus one, just for fun. Dude didn’t finish the degree (money stuff, life stuff), but that’s probably where the spark for coding truly ignited. Thanks, UniPA!",
+    collisionHitbox: {
+      x: -165,
+      y: -460,
+      width: 335,
+      height: 415
+    }
   },
   {
     id: "foryouviaggi",
@@ -84,10 +90,16 @@ const companiesData: CompanyData[] = [
       "PHP", "Python", "Java", "ReactJs", "MongoDB", "MySQL", "Facebook API"
     ],
     description: "Developed and architected an Headless CMS for web and promotion management also integrated with Facebook API for dynamic content.",
-    position: { x: mainPathConfig.startX + 768, y: 984 },
+    position: { x: mainPathConfig.startX + 768, y: 954 },
     image: "/sprites/buildings/foryouviaggi.png",
     signpost: "/signpost/foryouviaggi_signpost.png",
-    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
+    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
+    collisionHitbox: {
+      x: -175,
+      y: -467,
+      width: 345,
+      height: 445
+    }
   },
   {
     id: "alessi",
@@ -100,7 +112,13 @@ const companiesData: CompanyData[] = [
     position: { x: mainPathConfig.startX - 512, y: 1228 },
     image: "/sprites/buildings/alessi.png",
     signpost: "/signpost/alessi_signpost.png",
-    easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!"
+    easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!",
+    collisionHitbox: {
+      x: -145,
+      y: -480,
+      width: 285,
+      height: 430
+    }
   },
   {
     id: "codesour",
@@ -113,10 +131,16 @@ const companiesData: CompanyData[] = [
     ],
     description: "Developed and architected scalable backend advertising platform with event-driven microservices, processing 10M+ daily AD events. Implemented ML-based predictive analytics and deployed cloud-native infrastructure on GCP. Developed Computer Vision solution for audience analysis.",
     website: "https://codesour.tech/",
-    position: { x: mainPathConfig.startX + 512, y: 1496 },
+    position: { x: mainPathConfig.startX + 512, y: 1520 },
     image: "/sprites/buildings/codesour.png",
     signpost: "/signpost/codesour_signpost.png",
-    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins."
+    easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
+    collisionHitbox: {
+      x: -135,
+      y: -500,
+      width: 285,
+      height: 470
+    }
   },
   {
     id:"???",
@@ -129,7 +153,12 @@ const companiesData: CompanyData[] = [
     image: "/sprites/buildings/new_opportunity.png",
     signpost: "/signpost/new_opportunity_signpost.png",
     easteregg: "Classified location. Undisclosed mission. All we know is that Dude is heading there, armed with Java, Python, and a healthy skepticism of spaghetti code. Something big is coming.",
-    //centering : {x: 10, y: 10}
+    collisionHitbox: {
+      x: -185,
+      y: -480,
+      width: 375,
+      height: 450
+    }
   }
 ];
 
@@ -318,7 +347,7 @@ const technologiesData: TechnologyData[] = [
       "Forecast Service for revenue income"
     ],
     extras: ["Docker", "Docker Compose", "Docker Hub"],
-    position: { x: mainPathConfig.startX + 256, y: 1732 },
+    position: { x: mainPathConfig.startX + 156, y: 1732 },
     image: "/sprites/statues/docker.png",
     centering : {x: -40, y: 0},
     shadow: { height: 15, width:250 , position: {x:80, y:230}},

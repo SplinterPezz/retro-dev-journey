@@ -181,11 +181,11 @@ const SandboxPage: React.FC = () => {
                         />
 
                         {/* Debug hitboxes in development */}
-                        {process.env.NODE_ENV === 'development' && (
+                        {process.env.REACT_APP_ENV === 'development' && (
                             <>
                                 {/* Player hitbox */}
                                 <div 
-                                    className="debug-hitbox player-hitbox d-none"
+                                    className="debug-hitbox player-hitbox"
                                     style={{
                                         position: 'absolute',
                                         left: playerPosition.x + playerHitbox.x,
@@ -204,7 +204,7 @@ const SandboxPage: React.FC = () => {
                                     structure.data.collisionHitbox && (
                                         <div
                                             key={`hitbox-${structure.id}`}
-                                            className="debug-hitbox structure-hitbox d-none"
+                                            className="debug-hitbox structure-hitbox"
                                             style={{
                                                 position: 'absolute',
                                                 left: structure.position.x + structure.data.collisionHitbox.x,
