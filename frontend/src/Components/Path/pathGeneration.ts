@@ -1,4 +1,4 @@
-import { Position, PathGenerationConfig, PathSegment, IntersectionInfo } from '../../Pages/Sandbox/types';
+import { Position, PathGenerationConfig, PathSegment, IntersectionInfo } from '../../types/sandbox';
 
 export class PathGenerator {
   private config: PathGenerationConfig;
@@ -71,7 +71,7 @@ export class PathGenerator {
   }
 
   private generateStructureBranches(): void {
-    const { structures, tileSize } = this.config;
+    const { structures } = this.config;
 
     structures.forEach((structure, index) => {
       const structurePos = structure.position;

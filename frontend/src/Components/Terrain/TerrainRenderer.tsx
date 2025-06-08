@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { WorldConfig } from '../../Pages/Sandbox/types';
+import { WorldConfig } from '../../types/sandbox';
 import './TerrainRenderer.css';
 
 interface TerrainRendererProps {

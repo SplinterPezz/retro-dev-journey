@@ -11,7 +11,7 @@ import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
 import { worldConfig, companies, technologies, mainPathConfig } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { Position, StructureData, PathSegment, Hitbox } from './types';
+import { StructureData, PathSegment, Hitbox } from '../../types/sandbox';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();

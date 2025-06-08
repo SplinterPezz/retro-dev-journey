@@ -1,5 +1,5 @@
 import React from 'react';
-import { StructureData, Position, CompanyData, TechnologyData } from '../../Pages/Sandbox/types';
+import { StructureData, Position, CompanyData, TechnologyData } from '../../types/sandbox';
 import './StructureDialog.css';
 
 interface StructureDialogProps {

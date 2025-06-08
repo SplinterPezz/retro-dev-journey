@@ -33,6 +33,12 @@ export interface ShadowInfo{
   position: Position;
 }
 
+export interface EnvironmentData {
+  image: string;
+  shadow?: ShadowInfo;
+  position: Position;
+}
+
 export interface CompanyData {
   id: string;
   company: string;

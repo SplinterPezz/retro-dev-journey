@@ -1,20 +1,6 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, Hitbox } from './types';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position } from '../../types/sandbox';
 
 export const tileSize: number = 128;
-
-const defaultBuildingHitbox: Hitbox = {
-  x: -200,
-  y: -350,
-  width: 400,
-  height: 350
-};
-
-const defaultTechnologyHitbox: Hitbox = {
-  x: -64,
-  y: -128,
-  width: 128,
-  height: 128
-};
 
 export const structureCentering: Position = {
   x: -256,
@@ -53,7 +39,7 @@ const companiesData: CompanyData[] = [
     website: "https://www.linkedin.com/company/eikony/?originalSubdomain=it",
     position: { x: mainPathConfig.startX + 646, y: 216 },
     image: "/sprites/buildings/eikony.png",
-    signpost: "/signpost/eikony_signpost.png",
+    signpost: "/sprites/signpost/eikony_signpost.png",
     easteregg: "Once upon a time, Dude spent his days debugging Java classes in a small app development company. After 6 months of internship, he looked at the career ladder… and decided to climb a different one: university. Fair choice, honestly.",
     collisionHitbox: {
       x: -140,
@@ -72,7 +58,7 @@ const companiesData: CompanyData[] = [
     website: "https://www.unipa.it/",
     position: { x: mainPathConfig.startX - 768, y: 462 },
     image: "/sprites/buildings/unipa.png",
-    signpost: "/signpost/unipa_signpost.png",
+    signpost: "/sprites/signpost/unipa_signpost.png",
     easteregg: "Ah, UniPA. Four long years of Computer Science – plus a bonus one, just for fun. Dude didn’t finish the degree (money stuff, life stuff), but that’s probably where the spark for coding truly ignited. Thanks, UniPA!",
     collisionHitbox: {
       x: -165,
@@ -92,7 +78,7 @@ const companiesData: CompanyData[] = [
     description: "Developed and architected an Headless CMS for web and promotion management also integrated with Facebook API for dynamic content.",
     position: { x: mainPathConfig.startX + 768, y: 954 },
     image: "/sprites/buildings/foryouviaggi.png",
-    signpost: "/signpost/foryouviaggi_signpost.png",
+    signpost: "/sprites/signpost/foryouviaggi_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
     collisionHitbox: {
       x: -175,
@@ -111,7 +97,7 @@ const companiesData: CompanyData[] = [
     website: "https://alessipubblicita.it/",
     position: { x: mainPathConfig.startX - 512, y: 1228 },
     image: "/sprites/buildings/alessi.png",
-    signpost: "/signpost/alessi_signpost.png",
+    signpost: "/sprites/signpost/alessi_signpost.png",
     easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!",
     collisionHitbox: {
       x: -145,
@@ -133,7 +119,7 @@ const companiesData: CompanyData[] = [
     website: "https://codesour.tech/",
     position: { x: mainPathConfig.startX + 512, y: 1520 },
     image: "/sprites/buildings/codesour.png",
-    signpost: "/signpost/codesour_signpost.png",
+    signpost: "/sprites/signpost/codesour_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
     collisionHitbox: {
       x: -135,
@@ -151,7 +137,7 @@ const companiesData: CompanyData[] = [
     description: "Ready to bring my skills and passion to your team. Let's build something amazing together!",
     position: { x: mainPathConfig.startX - 640, y: mainPathConfig.endY - 108 },
     image: "/sprites/buildings/new_opportunity.png",
-    signpost: "/signpost/new_opportunity_signpost.png",
+    signpost: "/sprites/signpost/new_opportunity_signpost.png",
     easteregg: "Classified location. Undisclosed mission. All we know is that Dude is heading there, armed with Java, Python, and a healthy skepticism of spaghetti code. Something big is coming.",
     collisionHitbox: {
       x: -185,

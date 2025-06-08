@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position, Direction } from '../../Pages/Sandbox/types';
+import { Position, Direction } from '../../types/sandbox';
 import './Player.css';
 
 interface PlayerProps {
