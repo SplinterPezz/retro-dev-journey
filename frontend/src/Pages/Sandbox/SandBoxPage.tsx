@@ -185,7 +185,7 @@ const SandboxPage: React.FC = () => {
                             <>
                                 {/* Player hitbox */}
                                 <div 
-                                    className="debug-hitbox player-hitbox"
+                                    className="debug-hitbox player-hitbox d-none"
                                     style={{
                                         position: 'absolute',
                                         left: playerPosition.x + playerHitbox.x,
@@ -204,7 +204,7 @@ const SandboxPage: React.FC = () => {
                                     structure.data.collisionHitbox && (
                                         <div
                                             key={`hitbox-${structure.id}`}
-                                            className="debug-hitbox structure-hitbox"
+                                            className="debug-hitbox structure-hitbox d-none"
                                             style={{
                                                 position: 'absolute',
                                                 left: structure.position.x + structure.data.collisionHitbox.x,

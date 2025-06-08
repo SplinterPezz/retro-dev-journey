@@ -109,7 +109,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         {process.env.NODE_ENV === 'development' && (
           <div 
             
-            className="interaction-radius"
+            className="interaction-radius d-none"
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
