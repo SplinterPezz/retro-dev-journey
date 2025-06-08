@@ -106,15 +106,15 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         )}
         
         {/* Interaction radius indicator (debug) */}
-        {process.env.NODE_ENV === 'development' && (
+        {process.env.REACT_APP_ENV === 'development' && (
           <div 
             
-            className="interaction-radius d-none"
+            className="interaction-radius"
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
-              left: data.data.position.x,
-              top: data.data.position.y
+              left: -(data.interactionRadius) - (type === 'building' ? structureCentering.x : technologyCentering.x),
+              top: -(data.interactionRadius) - (type === 'building' ? structureCentering.y : technologyCentering.y),
             }}
           />
         )}
