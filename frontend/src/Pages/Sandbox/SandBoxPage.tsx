@@ -9,9 +9,10 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig } from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, environments } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { StructureData, PathSegment, Hitbox } from '../../types/sandbox';
+import { StructureData, PathSegment } from '../../types/sandbox';
+import Environment from '../../Components/Structures/Environment';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -32,14 +33,6 @@ const SandboxPage: React.FC = () => {
 
         return pathGenerator.generatePath();
     }, []);
-
-    // Player hitbox (optional - se non specificato userà quello di default)
-    const playerHitbox: Hitbox = {
-        x: -16, // Center the hitbox around player position
-        y: -16,
-        width: 32,
-        height: 32
-    };
 
     // Player movement hook with structure collision support
     const { playerPosition, isMoving, direction } = usePlayerMovement({
@@ -169,6 +162,17 @@ const SandboxPage: React.FC = () => {
                                     type="building"
                                     isNearby={nearbyStructure?.id === company.id}
                                     playerPosition={playerPosition}
+                                />
+                            ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            {environments.map((environment, index) => (
+                                <Environment
+                                    key={index}
+                                    image={environment.image}
+                                    position={environment.position}
+                                    shadow={environment.shadow}
                                 />
                             ))}
                         </div>

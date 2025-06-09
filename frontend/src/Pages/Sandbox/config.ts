@@ -1,6 +1,13 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position } from '../../types/sandbox';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
 
 export const tileSize: number = 128;
+
+export const playerHitbox: Hitbox = {
+  x: -16,
+  y: -16,
+  width: 32,
+  height: 32
+};
 
 export const structureCentering: Position = {
   x: -256,
@@ -26,6 +33,60 @@ export const mainPathConfig = {
   endY: worldConfig.height,
   width: tileSize
 };
+
+export const environments: EnvironmentData[]=[
+  {
+    image: '/sprites/trees/carrubba_1.png',
+    position: {x:1150,y: -80},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/carrubba_2.png',
+    position: {x:100,y:550},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/olive_1.png',
+    position: {x:1700,y:200},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/olive_2.png',
+    position: {x:200,y:1400},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/orange_1.png',
+    position: {x:1700,y:1500},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/orange_2.png',
+    position: {x:200,y:2100},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/palm_1.png',
+    position: {x:1400,y:2200},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/palm_2.png',
+    position: {x:700,y:1600},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/prickly_1.png',
+    position: {x:1600,y:2600},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  },
+  {
+    image: '/sprites/trees/prickly_2.png',
+    position: {x:1350,y:700},
+    shadow: { height: 30, width:140 , position: {x:135, y:240}}
+  }
+  
+]
 
 // Company data with specific positions
 const companiesData: CompanyData[] = [
