@@ -31,7 +31,7 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
   return (
     <>
       {/* Dialog */}
-      <div className="structure-dialog" style={getDialogStyle()}>
+      <div className="structure-dialog d-none" style={getDialogStyle()}>
         <div className="rpgui-content">
           <div className={`rpgui-container ${isCompany ? 'framed-golden' : 'framed'}`}>
             

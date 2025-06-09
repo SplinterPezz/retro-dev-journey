@@ -9,7 +9,7 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, environments } from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
 import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
@@ -167,12 +167,21 @@ const SandboxPage: React.FC = () => {
                         </div>
 
                         <div className='structure-container'>
-                            {environments.map((environment, index) => (
+                            {treesEnvironments.map((environment, index) => (
                                 <Environment
                                     key={index}
-                                    image={environment.image}
-                                    position={environment.position}
-                                    shadow={environment.shadow}
+                                    environment={environment}
+                                     size={256}
+                                />
+                            ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            {detailsEnvironments.map((environment, index) => (
+                                <Environment
+                                    key={index}
+                                    environment={environment}
+                                     size={128}
                                 />
                             ))}
                         </div>
