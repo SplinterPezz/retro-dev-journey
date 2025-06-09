@@ -25,7 +25,7 @@ services:
     depends_on:
       - database
     environment:
-    - APP_ENV=${APP_ENV:-dev}
+    - APP_ENV=${APP_ENV:-prod}
     networks:
       - retro_dev_journey
   
@@ -35,7 +35,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - APP_ENV=${APP_ENV:-dev}
+        - APP_ENV=${APP_ENV:-prod}
     ports:
       - "8422:80"
     depends_on:
