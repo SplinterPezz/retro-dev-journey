@@ -1,5 +1,3 @@
-/* src/Pages/Sandbox/SandBoxPage.css */
-
 .sandbox-loading {
   display: flex;
   align-items: center;
@@ -25,11 +23,34 @@
 }
 
 /* Main container */
+.sandbox-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/public/backgrounds/sky_sandbox.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
 .sandbox-container {
   height: 100vh;
   overflow: hidden;
   position: relative;
-  background: #87ceeb; /* Sky blue background */
+  background: transparent;
+}
+
+.sandbox-viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
 }
 
 /* Viewport that moves with the player */

@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Position, Direction, PlayerMovementConfig, StructureData, Hitbox } from '../../../types/sandbox';
+import { playerHitbox } from '../config';
 
 interface PlayerMovementConfigExtended extends PlayerMovementConfig {
   structures?: StructureData[];
   playerHitbox?: Hitbox;
 }
-
-// Default player hitbox
-const DEFAULT_PLAYER_HITBOX: Hitbox = {
-  x: -32,
-  y: -32,
-  width: 64,
-  height: 64
-};
 
 // Pure functions outside the hook
 const getDirectionFromKeys = (keys: Set<string>): Direction => {
@@ -153,8 +146,6 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   const [direction, setDirection] = useState<Direction>('idle');
   const [isMoving, setIsMoving] = useState(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
-
-  const playerHitbox = config.playerHitbox || DEFAULT_PLAYER_HITBOX;
 
   // Handle key press
   const handleKeyDown = (event: KeyboardEvent) => {

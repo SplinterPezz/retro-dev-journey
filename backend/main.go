@@ -79,6 +79,12 @@ func main() {
 	//r.POST("/register", auth.Register)
 	r.POST("/login", auth.Login)
 
+	// Public routes (no authentication required)
+	r.GET("/download/cv", handlers.DownloadCV)
+
+	// Protected routes (authentication required)
+	r.POST("/upload/cv", handlers.UploadCV)
+
 	// Start HTTP server
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),

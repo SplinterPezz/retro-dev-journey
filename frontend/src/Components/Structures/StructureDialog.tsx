@@ -113,7 +113,7 @@ const TechnologyInfo: React.FC<{ technology: TechnologyData }> = ({ technology }
     
     <div className="info-section">
       <label>Experience Level:</label>
-      <span className={`level-badge ${technology.level.toLowerCase()}`}>
+      <span className={`level-badge ${technology.level?.toLowerCase()}`}>
         {technology.level}
       </span>
     </div>
@@ -127,6 +127,19 @@ const TechnologyInfo: React.FC<{ technology: TechnologyData }> = ({ technology }
       <label>Description:</label>
       <p>{technology.description}</p>
     </div>
+    
+    {technology.extras && technology.extras.length > 0 && (
+      <div className="info-section">
+        <label>Correlated & Skills:</label>
+        <div className="tech-tags">
+          {technology.extras.map((extra, index) => (
+            <span key={index} className="tech-tag">
+              {extra}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
     
     {technology.projects && technology.projects.length > 0 && (
       <div className="info-section">

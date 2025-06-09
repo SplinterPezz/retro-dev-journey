@@ -1,6 +1,17 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position } from '../../types/sandbox';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
 
 export const tileSize: number = 128;
+
+export const downloadButtonId: string = 'download-button';
+export const maxSizeFileCV : number = 5; //MB
+export const downloadCVCooldown: number = 60;
+
+export const playerHitbox: Hitbox = {
+  x: -16,
+  y: -16,
+  width: 32,
+  height: 32
+};
 
 export const structureCentering: Position = {
   x: -256,
@@ -26,6 +37,182 @@ export const mainPathConfig = {
   endY: worldConfig.height,
   width: tileSize
 };
+
+export const downloadButton : StructureData = {
+  id: downloadButtonId,
+  name: 'download',
+  type: 'statue',
+  position: {x: 1200, y: 2900},
+  description: "Download CV!",
+  data: {
+    animatedImage: "/sprites/others/download_button.gif",
+    //cooldownImage: "/sprites/others/download_button_cooldown.png",
+    name: "download",
+    position: {x: 0, y: 0},
+    centering : {x: -130, y: -120},
+    image: "/sprites/others/download_button.png",
+  },
+  interactionRadius: 100
+}
+
+export const treesEnvironments: EnvironmentData[]=[
+  {
+    image: '/sprites/trees/carrubba_1.png',
+    position: {x:1150,y: -80},
+  },
+  {
+    image: '/sprites/trees/carrubba_2.png',
+    position: {x:100,y:550},
+  },
+  {
+    image: '/sprites/trees/olive_1.png',
+    position: {x:1700,y:200},
+  },
+  {
+    image: '/sprites/trees/olive_2.png',
+    position: {x:200,y:1400},
+  },
+  {
+    image: '/sprites/trees/orange_1.png',
+    position: {x:1700,y:1700},
+  },
+  {
+    image: '/sprites/trees/orange_2.png',
+    position: {x:200,y:2100},
+  },
+  {
+    image: '/sprites/trees/palm_1.png',
+    position: {x:1400,y:2200},
+  },
+  {
+    image: '/sprites/trees/palm_2.png',
+    position: {x:750,y:1570},
+  },
+  {
+    image: '/sprites/trees/prickly_1.png',
+    position: {x:1600,y:2600},
+  },
+  {
+    image: '/sprites/trees/prickly_2.png',
+    position: {x:1350,y:700},
+  },
+]
+
+export const detailsEnvironments: EnvironmentData[] = [
+    {
+    image: "/sprites/details/barrel_1.png",
+    position: {"x": 550, "y": 20}
+  },
+  {
+    image: "/sprites/details/barrel_2.png",
+    position: {"x": 1800, "y": 2400}
+  },
+  {
+    image: "/sprites/details/bench.png",
+    position: {"x": 830, "y": 300}
+  },
+  {
+    image: "/sprites/details/box_1.png",
+    position: {"x": 450, "y": 320}
+  },
+  {
+    image: "/sprites/details/box_2.png",
+    position: {"x": 1800, "y": 1380}
+  },
+  {
+    image: "/sprites/details/box_leaf_1.png",
+    position: {"x": 1800, "y": 900}
+  },
+  {
+    image: "/sprites/details/box_leaf_2.png",
+    position: {"x": 530, "y": 2750}
+  },
+  {
+    image: "/sprites/details/box_leaf_3.png",
+    position: {"x": 650, "y": 1100}
+  },
+  {
+    image: "/sprites/details/bucket.png",
+    position: {"x": 570, "y": 2300}
+  },
+  {
+    image: "/sprites/details/firepit.png",
+    position: {"x": 1100, "y": 1300}
+  },
+  {
+    image: "/sprites/details/flower_1.png",
+    position: {"x": 180, "y": 480}
+  },
+  {
+    image: "/sprites/details/flower_2.png",
+    position: {"x": 1580, "y": 320}
+  },
+  {
+    image: "/sprites/details/flower_3.png",
+    position: {"x": 1050, "y": 2050}
+  },
+  {
+    image: "/sprites/details/flower_4.png",
+    position: {"x": 1050, "y": 1150}
+  },
+  {
+    image: "/sprites/details/flower_5.png",
+    position: {"x": 280, "y": 1750}
+  },
+  {
+    image: "/sprites/details/flower_6.png",
+    position: {"x": 1700, "y": 1900}
+  },
+  {
+    image: "/sprites/details/pot_1.png",
+    position: {"x": 270, "y": 1180}
+  },
+  {
+    image: "/sprites/details/lamp_2.png",
+    position: {"x": 1050, "y": 870}
+  },
+  {
+    image: "/sprites/details/lamp.png",
+    position: {"x": 1050, "y": 1900}
+  },
+  {
+    image: "/sprites/details/log_1.png",
+    position: {"x": 1750, "y": 2050}
+
+  },
+  {
+    image: "/sprites/details/log_2.png",
+    position: {"x": 1250, "y": 1450}
+  },
+  {
+    image: "/sprites/details/log_3.png",
+    position: {"x": 850, "y": 1900}
+  },
+  {
+    image: "/sprites/details/pond.png",
+    position: {"x": 450, "y": 2300}
+  },
+  {
+    image: "/sprites/details/rocks_1.png",
+    position: {"x": 150, "y": 1050}
+  },
+  {
+    image: "/sprites/details/rocks_2.png",
+    position: {"x": 1850, "y": 1150}
+  },
+  {
+    image: "/sprites/details/rocks_3.png",
+    position: {"x": 320, "y": 2650}
+  },
+  {
+    image: "/sprites/details/rocks_4.png",
+    position: {"x": 1620, "y": 2350}
+  },
+  {
+    image: "/sprites/details/small_tree.png",
+    position: {"x": 870, "y": 2730}
+  }
+]
 
 // Company data with specific positions
 const companiesData: CompanyData[] = [
@@ -117,7 +304,7 @@ const companiesData: CompanyData[] = [
     ],
     description: "Developed and architected scalable backend advertising platform with event-driven microservices, processing 10M+ daily AD events. Implemented ML-based predictive analytics and deployed cloud-native infrastructure on GCP. Developed Computer Vision solution for audience analysis.",
     website: "https://codesour.tech/",
-    position: { x: mainPathConfig.startX + 512, y: 1520 },
+    position: { x: mainPathConfig.startX +652, y: 1540 },
     image: "/sprites/buildings/codesour.png",
     signpost: "/sprites/signpost/codesour_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
@@ -333,7 +520,7 @@ const technologiesData: TechnologyData[] = [
       "Forecast Service for revenue income"
     ],
     extras: ["Docker", "Docker Compose", "Docker Hub"],
-    position: { x: mainPathConfig.startX + 156, y: 1732 },
+    position: { x: mainPathConfig.startX + 256, y: 1732 },
     image: "/sprites/statues/docker.png",
     centering : {x: -40, y: 0},
     shadow: { height: 15, width:250 , position: {x:80, y:230}},
@@ -471,7 +658,7 @@ export const technologies: StructureData[] = technologiesData.map((tech, index) 
   name: tech.name,
   type: 'statue',
   position: tech.position,
-  description: tech.description,
+  description: tech.description ? tech.description : '',
   data: tech,
   interactionRadius: 100
 }));

@@ -9,9 +9,11 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig } from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { StructureData, PathSegment, Hitbox } from '../../types/sandbox';
+import { StructureData, PathSegment } from '../../types/sandbox';
+import Environment from '../../Components/Structures/Environment';
+import DownloadCV from '../../Components/Structures/DownloadCV';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -33,14 +35,6 @@ const SandboxPage: React.FC = () => {
         return pathGenerator.generatePath();
     }, []);
 
-    // Player hitbox (optional - se non specificato userà quello di default)
-    const playerHitbox: Hitbox = {
-        x: -16, // Center the hitbox around player position
-        y: -16,
-        width: 32,
-        height: 32
-    };
-
     // Player movement hook with structure collision support
     const { playerPosition, isMoving, direction } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
@@ -51,20 +45,20 @@ const SandboxPage: React.FC = () => {
             maxX: worldConfig.width - 50,
             maxY: worldConfig.height - 50
         },
-        structures: [...companies, ...technologies], // Pass structures for collision detection
+        structures: [...companies, ...technologies, downloadButton], // Pass structures for collision detection
         playerHitbox: playerHitbox
     });
 
     // Collision detection hook
     const { nearbyStructure } = useCollisionDetection({
         playerPosition,
-        structures: [...companies, ...technologies],
+        structures: [...companies, ...technologies, downloadButton],
         interactionRadius: 70
     });
 
     // Handle structure interaction
     useEffect(() => {
-        if (nearbyStructure && !showDialog) {
+        if (nearbyStructure && !showDialog && nearbyStructure.id !== downloadButton.id) {
             setSelectedStructure(nearbyStructure);
             setShowDialog(true);
         } else if (!nearbyStructure && showDialog) {
@@ -171,6 +165,34 @@ const SandboxPage: React.FC = () => {
                                     playerPosition={playerPosition}
                                 />
                             ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            {treesEnvironments.map((environment, index) => (
+                                <Environment
+                                    key={index}
+                                    environment={environment}
+                                    size={256}
+                                />
+                            ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            {detailsEnvironments.map((environment, index) => (
+                                <Environment
+                                    key={index}
+                                    environment={environment}
+                                     size={128}
+                                />
+                            ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            <DownloadCV 
+                                structure={downloadButton}
+                                isNearby={nearbyStructure?.id === downloadButtonId}
+                                playerPosition={playerPosition}
+                            />
                         </div>
 
                         {/* Player Character */}

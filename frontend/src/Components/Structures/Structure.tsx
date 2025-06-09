@@ -10,10 +10,7 @@ interface StructureProps {
   playerPosition: Position;
 }
 
-const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosition }) => {
-  
-  // Calculate if structure should show interaction hint
-  const showInteractionHint = isNearby;
+const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
 
   const getStructureIcon = (): string => {
     if (type === 'building') {
@@ -53,7 +50,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
     <div
       className={getStructureClasses()}
       style={{
-        position: 'absolute',
         left: data.position.x + (type === 'building'? structureCentering.x : technologyCentering.x),
         top: data.position.y + (type === 'building'? structureCentering.y : technologyCentering.y),
       }}
@@ -108,7 +104,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
         {/* Interaction radius indicator (debug) */}
         {process.env.REACT_APP_ENV === 'development' && (
           <div 
-            
             className="interaction-radius"
             style={{
               width: data.interactionRadius * 2,
@@ -121,9 +116,9 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, playerPosit
       </div>
 
       {/* Structure label */}
-      <div className={`structure-label ${showInteractionHint ? 'visible' : ''}`}>
+      <div className={`structure-label ${isNearby ? 'visible' : ''}`}>
         <span>{data.name}</span>
-        {(showInteractionHint && data.name === '???') && (
+        {(isNearby && data.name === '???') && (
           <div className="interaction-hint">
             {'Your next opportunity awaits!'}
           </div>
