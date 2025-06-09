@@ -37,7 +37,6 @@ const authSlice = createSlice({
     },
     checkAuthentication(state) {
       // Check if the token is still valid
-      // We can also implement some logics to ping authorization for 401 status
       if (state.expiration && Date.now() > (state.expiration * 1000)) {
         state.id = null;
         state.user = null;

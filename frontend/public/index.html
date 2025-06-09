@@ -1,46 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="%PUBLIC_URL%/rpgui/rpgui.css" rel="stylesheet" type="text/css">
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>Retro Journey Dev</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script src="%PUBLIC_URL%/rpgui/rpgui.js"></script>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="%PUBLIC_URL%/rpgui/rpgui.css" rel="stylesheet" type="text/css">
+  <meta name="theme-color" content="#000000" />
 
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+  <!-- Primary Meta Tags -->
+  <title>Retro Journey Dev - Interactive Developer Portfolio</title>
+  <meta name="title" content="Retro Journey Dev - Interactive Developer Portfolio" />
+  <meta name="description"
+    content="Interactive pixel-art CV in retro gaming style. Explore my career path, the projects I’ve worked on, and the technologies I use, all within a navigable world built with React and Go." />
+  <meta name="keywords"
+    content="developer portfolio, interactive CV, React, Go, MongoDB, pixel art, retro gaming, web development, full stack developer, gaming portfolio, interactive portfolio" />
+  <meta name="author" content="Retro Journey Dev" />
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.com/" />
+  <meta property="og:title" content="Retro Journey Dev - Interactive Developer Portfolio" />
+  <meta property="og:description"
+    content="Retro-styled interactive CV where you explore my career journey as a playable character. Built with React & Go, featuring pixel-art graphics, real-time player movement, and discoverable career milestones in a sandbox world." />
+  <meta property="og:image" content="%PUBLIC_URL%/favicon.ico" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+  <meta property="og:image:alt" content="Retro Journey Dev Logo" />
+  <meta property="og:site_name" content="Retro Journey Dev" />
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://your-domain.com/" />
+  <meta property="twitter:title" content="Retro Journey Dev - Interactive Developer Portfolio" />
+  <meta property="twitter:description"
+    content="Retro-styled interactive CV where you explore my career journey as a playable character. Built with React & Go, featuring pixel-art graphics, real-time player movement, and discoverable career milestones in a sandbox world." />
+  <meta property="twitter:image" content="%PUBLIC_URL%/favicon.ico" />
+  <meta property="twitter:image:alt" content="Retro Journey Dev Logo" />
+
+  <!-- Additional Meta Tags -->
+  <meta name="robots" content="index, follow" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+
+  <!-- iOS Meta Tags -->
+  <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Retro Journey Dev" />
+
+  <!-- Favicon and Icons -->
+  <link rel="icon" type="image/x-icon" href="%PUBLIC_URL%/favicon.ico" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="%PUBLIC_URL%/rpgui/rpgui.css" as="style" />
+  <link rel="preload" href="%PUBLIC_URL%/rpgui/rpgui.js" as="script" />
+
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Retro Journey Dev",
+    "developer": "Pezzati Mauro",
+    "url": "https://retrojourney.dev",
+    "sameAs": [
+      "https://github.com/SplinterPezz/",
+      "https://www.linkedin.com/in/mauro-pezzati/"
+    ],
+    "jobTitle": "Backend Developer",
+    "description": "Backend developer with strong skills in Java, Python, React, Go, MongoDB, CassandraDB, and MySQL. Creator of interactive portfolio experiences.",
+    "knowsAbout": [
+      "Java", "React", "Go", "MongoDB", "JavaScript", "Python", "Docker", "Cloud Computing"
+    ],
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "University of Palermo",
+      "department": "Computer Science"
+    }
+  }
+  </script>
+</head>
+
+<body>
+  <noscript>
+    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+      <h1>Retro Journey Dev</h1>
+      <p>You need to enable JavaScript to explore this interactive portfolio experience.</p>
+      <p>This is a retro-styled interactive CV built with React and Go.</p>
+    </div>
+  </noscript>
+
+  <div id="root"></div>
+
+  <!-- Load RPGUI after DOM is ready -->
+  <script src="%PUBLIC_URL%/rpgui/rpgui.js"></script>
+
+  <!-- Preconnect to external domains for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</body>
+
 </html>

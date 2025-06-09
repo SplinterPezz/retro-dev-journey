@@ -301,40 +301,5 @@
   }
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .structure-sprite {
-    width: 40px;
-    height: 40px;
-  }
 
-  .structure-icon {
-    font-size: 20px;
-  }
 
-  .structure-label span {
-    font-size: 10px;
-    padding: 2px 6px;
-  }
-
-  .interaction-hint {
-    font-size: 8px;
-    padding: 1px 4px;
-  }
-}
-
-@media (max-width: 480px) {
-  .structure-sprite {
-    width: 35px;
-    height: 35px;
-  }
-
-  .structure-icon {
-    font-size: 18px;
-  }
-
-  .structure-container {
-    left: calc(var(--x) - 17.5px) !important;
-    top: calc(var(--y) - 17.5px) !important;
-  }
-}

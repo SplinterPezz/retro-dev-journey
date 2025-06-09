@@ -17,7 +17,7 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
   const getDialogStyle = () => {
     return {
       position: 'fixed' as const,
-      top: '20%',
+      top: '10%',
       left: '50%',
       transform: 'translateX(-50%)',
       zIndex: 200,
