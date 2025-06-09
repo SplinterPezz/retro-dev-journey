@@ -39,6 +39,13 @@ export interface EnvironmentData {
   position: Position;
 }
 
+export interface EnvironmentDataAnimated {
+  image: string;
+  imageAnimated: string;
+  shadow?: ShadowInfo;
+  position: Position;
+}
+
 export interface CompanyData {
   id: string;
   company: string;
@@ -50,6 +57,7 @@ export interface CompanyData {
   logo?: string;
   position: Position;
   image: string;
+  animatedImage?: string;
   signpost?: string;
   easteregg?: string;
   shadow?: ShadowInfo;
@@ -59,14 +67,15 @@ export interface CompanyData {
 
 export interface TechnologyData {
   name: string;
-  category: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
-  yearsExperience: number;
-  description: string;
+  category?: string;
+  level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
+  yearsExperience?: number;
+  description?: string;
   projects?: string[];
   position: Position;
   extras?: string[];
   image: string;
+  animatedImage?: string;
   shadow?: ShadowInfo;
   centering?: Position;
   collisionHitbox?: Hitbox;

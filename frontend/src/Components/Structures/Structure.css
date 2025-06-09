@@ -141,8 +141,10 @@
   background-repeat: no-repeat;
   pointer-events: none;
 
-  opacity: 0.7;
+  opacity: 0.4;
   
+  z-index: 10;
+
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;

@@ -104,7 +104,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
         {/* Interaction radius indicator (debug) */}
         {process.env.REACT_APP_ENV === 'development' && (
           <div 
-            
             className="interaction-radius"
             style={{
               width: data.interactionRadius * 2,

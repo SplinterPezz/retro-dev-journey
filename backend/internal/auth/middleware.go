@@ -16,9 +16,12 @@ func JWTMiddleware(c *gin.Context) {
 		c.Next()
 		return
 	}
+
 	// Skip the routes that don't require authentication
 	// login is public
-	if c.Request.URL.Path == "/login" {
+	// download pdf is public
+	// info is public (for tracking)
+	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/download/cv" || c.Request.URL.Path == "/info" {
 		c.Next()
 		return
 	}

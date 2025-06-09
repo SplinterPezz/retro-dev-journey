@@ -9,10 +9,11 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments } from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId } from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
 import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
+import DownloadCV from '../../Components/Structures/DownloadCV';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -44,14 +45,14 @@ const SandboxPage: React.FC = () => {
             maxX: worldConfig.width - 50,
             maxY: worldConfig.height - 50
         },
-        structures: [...companies, ...technologies], // Pass structures for collision detection
+        structures: [...companies, ...technologies, downloadButton], // Pass structures for collision detection
         playerHitbox: playerHitbox
     });
 
     // Collision detection hook
     const { nearbyStructure } = useCollisionDetection({
         playerPosition,
-        structures: [...companies, ...technologies],
+        structures: [...companies, ...technologies, downloadButton],
         interactionRadius: 70
     });
 
@@ -171,7 +172,7 @@ const SandboxPage: React.FC = () => {
                                 <Environment
                                     key={index}
                                     environment={environment}
-                                     size={256}
+                                    size={256}
                                 />
                             ))}
                         </div>
@@ -184,6 +185,14 @@ const SandboxPage: React.FC = () => {
                                      size={128}
                                 />
                             ))}
+                        </div>
+
+                        <div className='structure-container'>
+                            <DownloadCV 
+                                structure={downloadButton}
+                                isNearby={nearbyStructure?.id === downloadButtonId}
+                                playerPosition={playerPosition}
+                            />
                         </div>
 
                         {/* Player Character */}

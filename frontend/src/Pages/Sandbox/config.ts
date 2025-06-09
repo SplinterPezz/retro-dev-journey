@@ -1,6 +1,7 @@
 import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
 
 export const tileSize: number = 128;
+export const downloadButtonId: string = 'download-button';
 
 export const playerHitbox: Hitbox = {
   x: -16,
@@ -34,6 +35,22 @@ export const mainPathConfig = {
   width: tileSize
 };
 
+export const downloadButton : StructureData = {
+  id: downloadButtonId,
+  name: 'download',
+  type: 'statue',
+  position: {x: 1200, y: 2900},
+  description: "Download CV!",
+  data: {
+    animatedImage: "/sprites/others/download_button.gif",
+    name: "download",
+    position: {x: 0, y: 0},
+    centering : {x: -130, y: -120},
+    image: "/sprites/others/download_button.png",
+  },
+  interactionRadius: 100
+}
+
 export const treesEnvironments: EnvironmentData[]=[
   {
     image: '/sprites/trees/carrubba_1.png',
@@ -65,7 +82,7 @@ export const treesEnvironments: EnvironmentData[]=[
   },
   {
     image: '/sprites/trees/palm_2.png',
-    position: {x:700,y:1600},
+    position: {x:750,y:1570},
   },
   {
     image: '/sprites/trees/prickly_1.png',
@@ -84,7 +101,7 @@ export const detailsEnvironments: EnvironmentData[] = [
   },
   {
     image: "/sprites/details/barrel_2.png",
-    position: {"x": 1200, "y": 2880}
+    position: {"x": 1800, "y": 2400}
   },
   {
     image: "/sprites/details/bench.png",
@@ -637,7 +654,7 @@ export const technologies: StructureData[] = technologiesData.map((tech, index) 
   name: tech.name,
   type: 'statue',
   position: tech.position,
-  description: tech.description,
+  description: tech.description ? tech.description : '',
   data: tech,
   interactionRadius: 100
 }));

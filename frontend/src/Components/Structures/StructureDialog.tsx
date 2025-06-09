@@ -113,7 +113,7 @@ const TechnologyInfo: React.FC<{ technology: TechnologyData }> = ({ technology }
     
     <div className="info-section">
       <label>Experience Level:</label>
-      <span className={`level-badge ${technology.level.toLowerCase()}`}>
+      <span className={`level-badge ${technology.level?.toLowerCase()}`}>
         {technology.level}
       </span>
     </div>
