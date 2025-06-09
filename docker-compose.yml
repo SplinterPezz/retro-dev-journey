@@ -16,7 +16,7 @@ services:
       #- ./database:/docker-entrypoint-initdb.d
   
   backend:
-    container_name: go_backend
+    container_name: go_retro_dev_journey
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -28,8 +28,22 @@ services:
     - APP_ENV=${APP_ENV:-dev}
     networks:
       - retro_dev_journey
-    volumes:
-      - ./backend:/app
+  
+  frontend:
+    container_name: react_retro_dev_journey
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - APP_ENV=${APP_ENV:-dev}
+    ports:
+      - "8422:80"
+    depends_on:
+      - backend
+    networks:
+      - retro_dev_journey
+    environment:
+      - NODE_ENV=production
 
 volumes:
   mongo_data:
