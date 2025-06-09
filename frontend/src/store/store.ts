@@ -12,7 +12,6 @@ import {
 import storage from 'redux-persist/lib/storage';
 import authSlice from './authSlice';
 
-import {} from 'node-forge';
 
 const persistConfig = {
   key: 'root',
