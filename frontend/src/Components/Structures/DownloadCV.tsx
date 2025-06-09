@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Position, StructureData } from '../../types/sandbox';
 import { downloadCV } from '../../Services/fileService';
-import { downloadButtonId, downloadCVCooldown } from '../../Pages/Sandbox/config';
+import { downloadCVCooldown } from '../../Pages/Sandbox/config';
 
 interface DownloadCVProps {
     isNearby: boolean;
@@ -17,14 +17,12 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     const downloadTriggeredRef = useRef(false);
     const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Reset download trigger when player moves away
     useEffect(() => {
         if (!isNearby) {
             downloadTriggeredRef.current = false;
         }
     }, [isNearby]);
 
-    // Auto-download when player is nearby and not in cooldown
     useEffect(() => {
         if (isNearby && !cooldownActive && !downloadTriggeredRef.current && !isDownloading) {
             handleDownload();
@@ -32,7 +30,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         }
     }, [isNearby, cooldownActive, isDownloading]);
 
-    // Cooldown timer management
     useEffect(() => {
         if (cooldownActive && cooldownTimer > 0) {
             cooldownIntervalRef.current = setTimeout(() => {
@@ -186,8 +183,8 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
                         <div
                             style={{
                                 position: 'absolute',
-                                bottom: '-50px',
-                                left: '50%',
+                                bottom: '50px',
+                                left: '0%',
                                 transform: 'translateX(-50%)',
                                 background: 'rgba(0, 0, 0, 0.8)',
                                 color: 'white',

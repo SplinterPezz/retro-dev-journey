@@ -103,34 +103,3 @@
   border-radius: 50%;
   z-index: -1;
 }
-
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .player-sprite {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .player-container {
-    left: calc(var(--x) - 12px) !important;
-    top: calc(var(--y) - 12px) !important;
-  }
-  
-  .player-nametag span {
-    font-size: 8px;
-    padding: 1px 4px;
-  }
-}
-
-@media (max-width: 480px) {
-  .player-sprite {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .player-container {
-    left: calc(var(--x) - 10px) !important;
-    top: calc(var(--y) - 10px) !important;
-  }
-}

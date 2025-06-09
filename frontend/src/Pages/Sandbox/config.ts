@@ -86,7 +86,7 @@ export const treesEnvironments: EnvironmentData[]=[
   },
   {
     image: '/sprites/trees/palm_2.png',
-    position: {x:750,y:1570},
+    position: {x:680,y:1570},
   },
   {
     image: '/sprites/trees/prickly_1.png',
@@ -202,7 +202,7 @@ export const detailsEnvironments: EnvironmentData[] = [
   },
   {
     image: "/sprites/details/rocks_3.png",
-    position: {"x": 320, "y": 2650}
+    position: {"x": 70, "y": 2650}
   },
   {
     image: "/sprites/details/rocks_4.png",
@@ -446,7 +446,7 @@ const technologiesData: TechnologyData[] = [
       "Contextual text with NLP"
     ],
     extras: ["2B+ data", "Cluster", "Indexes Optimization", "Docker"],
-    position: { x: mainPathConfig.startX - 256, y: 1476 },
+    position: { x: mainPathConfig.startX - 140, y: 1476 },
     image: "/sprites/statues/mongodb.png",
     shadow: { height: 15, width:100 , position: {x:130, y:230}},
 

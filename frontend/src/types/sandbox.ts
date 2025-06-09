@@ -78,6 +78,7 @@ export interface TechnologyData {
   image: string;
   animatedImage?: string;
   cooldownImage?: string;
+  signpost?: string;
   shadow?: ShadowInfo;
   centering?: Position;
   collisionHitbox?: Hitbox;

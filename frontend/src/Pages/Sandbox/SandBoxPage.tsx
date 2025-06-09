@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useResourceLoader } from '../../Utils/useResourceLoader';
 import AudioControls from '../../Components/AudioControls/AudioControls';
 import './SandBoxPage.css';
 import { usePlayerMovement } from './hooks/usePlayerMovement';
@@ -14,13 +15,73 @@ import { createPathGenerator } from '../../Components/Path/pathGeneration';
 import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
+import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
-    const [gameLoaded, setGameLoaded] = useState(false);
-    const [loadingProgress, setLoadingProgress] = useState(0);
+
+    // Preload images and audio resources
+    const requiredResources = useMemo(() => {
+        const images: string[] = [];
+        const audio: string[] = ['/audio/sandbox_compressed.mp3'];
+
+        // Terrain and path images
+        images.push(
+            '/sprites/terrain/main.png',
+            '/sprites/terrain/path_core.png',
+            '/sprites/terrain/path_start.png',
+            '/sprites/terrain/path_cross.png',
+            '/sprites/terrain/path_t_cross.png',
+            '/sprites/terrain/path_end.png'
+        );
+
+        // Player sprites
+        images.push(
+            '/sprites/player/dude_idle.gif',
+            '/sprites/player/dude_walk_S.gif',
+            '/sprites/player/dude_walk_N.gif',
+            '/sprites/player/dude_walk_NE.gif',
+            '/sprites/player/dude_walk_SE.gif'
+        );
+
+        // Background image
+        images.push('/backgrounds/sky_sandbox.png');
+
+        // Company building images
+        companies.forEach(company => {
+            if (company.data.image) images.push(company.data.image);
+            if (company.data.signpost) images.push(company.data.signpost);
+        });
+
+        // Technology images
+        technologies.forEach(tech => {
+            if (tech.data.image) images.push(tech.data.image);
+        });
+
+        // Environment images
+        [...treesEnvironments, ...detailsEnvironments].forEach(env => {
+            if (env.image) images.push(env.image);
+        });
+
+        // Download button
+        if (downloadButton.data.image) images.push(downloadButton.data.image);
+
+        return { images, audio };
+    }, []);
+
+    // Use the resource loader with animated progress
+    const { isLoading, progress, error } = useResourceLoader({
+        images: requiredResources.images,
+        audio: requiredResources.audio,
+        onProgress: (loaded, total) => {
+            if (process.env.REACT_APP_ENV === 'development') {
+                console.log(`Loading resources: ${loaded}/${total}`);
+            }
+        },
+        minDuration: 1000,
+    });
 
     // Generate path segments based on structure positions
     const pathSegments: PathSegment[] = useMemo(() => {
@@ -45,7 +106,7 @@ const SandboxPage: React.FC = () => {
             maxX: worldConfig.width - 50,
             maxY: worldConfig.height - 50
         },
-        structures: [...companies, ...technologies, downloadButton], // Pass structures for collision detection
+        structures: [...companies, ...technologies, downloadButton],
         playerHitbox: playerHitbox
     });
 
@@ -70,22 +131,6 @@ const SandboxPage: React.FC = () => {
         }
     }, [nearbyStructure, showDialog]);
 
-    // Loading simulation
-    useEffect(() => {
-        const loadingInterval = setInterval(() => {
-            setLoadingProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(loadingInterval);
-                    setTimeout(() => setGameLoaded(true), 50);
-                    return 100;
-                }
-                return prev + 2;
-            });
-        }, 30);
-
-        return () => clearInterval(loadingInterval);
-    }, []);
-
     // Handle back to home
     const handleBackToHome = () => {
         navigate('/');
@@ -96,23 +141,38 @@ const SandboxPage: React.FC = () => {
         setSelectedStructure(null);
     };
 
-    if (!gameLoaded) {
+    // Show loading screen while resources are loading
+    if (isLoading) {
         return (
             <div className="sandbox-loading">
                 <div className="rpgui-content">
                     <div className="rpgui-container framed">
-                        <h2>Loading Sandbox...</h2>
+                        <h2>Loading Sandbox</h2>
                         <p>Preparing your journey through my career path...</p>
-                        <div className="loading-bar">
-                            <div
-                                className="rpgui-progress"
-                                ref={(el) => {
-                                    if (el && window.RPGUI) {
-                                        window.RPGUI.set_value(el, loadingProgress / 100);
-                                    }
-                                }}
+
+                        {(error && process.env.REACT_APP_ENV === 'development') && (
+                            <p style={{ color: '#ff6b6b', fontSize: '0.9rem' }}>
+                                {error} (continuing anyway...)
+                            </p>
+                        )}
+
+                        {/* Custom Pixel Art Progress Bar */}
+                        <div className="loading-bar-container mb-3">
+                            <PixelProgressBar
+                                progress={progress}
+                                width={85}
+                                minWidth={280}
+                                height={24}
+                                variant="golden"
+                                animated={true}
+                                showPercentage={false}
                             />
                         </div>
+
+                        <p className="loading-percentage">{progress}%</p>
+                        <p className="loading-details">
+                            Loading {requiredResources.images.length + requiredResources.audio.length} resources...
+                        </p>
                     </div>
                 </div>
             </div>
@@ -136,11 +196,11 @@ const SandboxPage: React.FC = () => {
                         <TerrainRenderer worldConfig={worldConfig} />
 
                         {/* Dynamic Path System */}
-                        <PathRenderer 
-                            pathSegments={pathSegments} 
+                        <PathRenderer
+                            pathSegments={pathSegments}
                             tileSize={worldConfig.tileSize}
                         />
-                        
+
                         {/* Technologies (Statues) */}
                         <div className='structure-container'>
                             {technologies.map((tech) => (
@@ -167,6 +227,7 @@ const SandboxPage: React.FC = () => {
                             ))}
                         </div>
 
+                        {/* Environment Elements */}
                         <div className='structure-container'>
                             {treesEnvironments.map((environment, index) => (
                                 <Environment
@@ -182,13 +243,14 @@ const SandboxPage: React.FC = () => {
                                 <Environment
                                     key={index}
                                     environment={environment}
-                                     size={128}
+                                    size={128}
                                 />
                             ))}
                         </div>
 
+                        {/* Download CV Button */}
                         <div className='structure-container'>
-                            <DownloadCV 
+                            <DownloadCV
                                 structure={downloadButton}
                                 isNearby={nearbyStructure?.id === downloadButtonId}
                                 playerPosition={playerPosition}
@@ -206,7 +268,7 @@ const SandboxPage: React.FC = () => {
                         {process.env.REACT_APP_ENV === 'development' && (
                             <>
                                 {/* Player hitbox */}
-                                <div 
+                                <div
                                     className="debug-hitbox player-hitbox"
                                     style={{
                                         position: 'absolute',
@@ -220,9 +282,9 @@ const SandboxPage: React.FC = () => {
                                         zIndex: 9999
                                     }}
                                 />
-                                
+
                                 {/* Structure hitboxes */}
-                                {[...companies, ...technologies].map((structure) => 
+                                {[...companies, ...technologies].map((structure) =>
                                     structure.data.collisionHitbox && (
                                         <div
                                             key={`hitbox-${structure.id}`}
@@ -260,10 +322,10 @@ const SandboxPage: React.FC = () => {
 
                     {/* Controls Info */}
                     <div className="controls-info">
-                        <div className="rpgui-container framed-grey">
+                        <div className="rpgui-container framed-grey d-none d-sm-block">
                             <p className="control-info-text mb-0">
                                 <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>SHIFT</strong> or <strong>SPACE</strong> to run
-                                <br/> <strong>Walk near</strong> structures to know me!
+                                <br /> <strong>Walk near</strong> structures to know me!
                             </p>
                         </div>
                     </div>
@@ -274,7 +336,7 @@ const SandboxPage: React.FC = () => {
                             <div className="minimap-content">
                                 {/* Main path on minimap */}
                                 <div className="minimap-main-path" />
-                                
+
                                 {/* Player position */}
                                 <div
                                     className="minimap-player"
@@ -283,14 +345,13 @@ const SandboxPage: React.FC = () => {
                                         top: `${(playerPosition.y / worldConfig.height) * 100}%`
                                     }}
                                 />
-                                
+
                                 {/* Structures on minimap */}
                                 {[...companies, ...technologies].map((structure) => (
                                     <div
                                         key={structure.id}
-                                        className={`minimap-structure ${structure.type} ${
-                                            structure.name === '???' ? 'future' : ''
-                                        }`}
+                                        className={`minimap-structure ${structure.type} ${structure.name === '???' ? 'future' : ''
+                                            }`}
                                         style={{
                                             left: `${(structure.position.x / worldConfig.width) * 100}%`,
                                             top: `${(structure.position.y / worldConfig.height) * 100}%`

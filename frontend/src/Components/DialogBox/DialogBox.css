@@ -1,7 +1,7 @@
 /* Desktop default */
 .dialog-box-container {
   position: fixed;
-  bottom: 25%;
+  bottom: 15%;
   left: 25%;
   transform: translateX(-50%);
   z-index: 95;
@@ -26,6 +26,8 @@
   backdrop-filter: blur(3px);
   border: 2px solid #8b4513;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+  height: 70px;
+
 }
 
 .dialog-content {
@@ -87,6 +89,7 @@
   
   .dialog-box-container .rpgui-container {
     padding: 15px;
+    height: 50px;
   }
   
   .dialog-text {
@@ -112,6 +115,7 @@
   
   .dialog-box-container .rpgui-container {
     padding: 12px;
+    height: 50px;
   }
   
   .dialog-text {

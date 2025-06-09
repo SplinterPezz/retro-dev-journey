@@ -6,7 +6,7 @@ import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
-
+  
   useEffect(() => {
     // Disable scroll 
     document.body.classList.add('homepage-active');
@@ -20,6 +20,19 @@ export default function HomePage() {
     console.log("Dialog complete")
   };
 
+  useEffect(() => {
+    const checkRPGUI = () => {
+        if (window.RPGUI) {
+            console.log("LOADED!")
+        } else {
+            // Retry after a short delay
+            setTimeout(checkRPGUI, 100);
+        }
+    };
+
+    checkRPGUI();
+  }, []);
+
   return (
     <div className="rpgui-content">
       <div className="homepage-container">
@@ -32,7 +45,7 @@ export default function HomePage() {
           <IntroDialog 
             onComplete={handleDialogComplete} 
             initialDelay={3000} 
-            debugMode={false}
+            debugMode={process.env.REACT_APP_ENV === 'development'}
           />
         }
         

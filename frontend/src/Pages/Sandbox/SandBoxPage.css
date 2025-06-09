@@ -9,17 +9,9 @@
 .sandbox-loading .rpgui-container {
   place-self: anchor-center;
   text-align: center;
-  min-width: 400px;
+  min-width: 300px;
   padding: 30px;
-}
-
-.loading-bar {
-  margin-top: 20px;
-}
-
-.loading-bar .rpgui-progress {
-  width: 100%;
-  height: 20px;
+  margin: 10px;
 }
 
 /* Main container */
@@ -90,7 +82,7 @@
 /* Back button */
 .back-button {
   position: absolute;
-  top: 20px;
+  top: 18px;
   left: 20px;
   pointer-events: auto;
 }
@@ -247,7 +239,7 @@
 
 @media (max-width: 768px) {
   .back-button {
-    top: 10px;
+    top: 18px;
     left: 10px;
   }
   
@@ -267,17 +259,13 @@
     /* Scale up for mobile to make everything more visible */
     transform-origin: center center;
   }
+
+  .controls-info .rpgui-container {
+     width: 75vw;
+  }
 }
 
-@media (max-width: 480px) {
-  .controls-info .rpgui-container {
-    padding: 8px 12px;
-  }
-  
-  .controls-info p {
-    font-size: 0.7rem !important;
-  }
-  
+@media (max-width: 480px) {  
   .career-progress {
     width: 180px;
   }
@@ -290,8 +278,11 @@
     width: 120px;
     height: 80px;
   }
+
+  .sandbox-loading .rpgui-container {
+    padding: 20px 0px 20px;
+  }
   
-  /* Hide career progress on very small screens to save space */
   @media (max-width: 320px) {
     .career-progress {
       display: none;

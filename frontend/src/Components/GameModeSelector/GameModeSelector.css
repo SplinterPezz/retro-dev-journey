@@ -101,6 +101,7 @@
     .game-mode-selector {
         min-width: 300px;
         top: 15%;
+        margin-left: -5px;
     }
 
     .game-mode-title {
