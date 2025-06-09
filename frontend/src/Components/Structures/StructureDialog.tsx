@@ -31,7 +31,7 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
   return (
     <>
       {/* Dialog */}
-      <div className="structure-dialog d-none" style={getDialogStyle()}>
+      <div className="structure-dialog" style={getDialogStyle()}>
         <div className="rpgui-content">
           <div className={`rpgui-container ${isCompany ? 'framed-golden' : 'framed'}`}>
             
@@ -127,6 +127,19 @@ const TechnologyInfo: React.FC<{ technology: TechnologyData }> = ({ technology }
       <label>Description:</label>
       <p>{technology.description}</p>
     </div>
+    
+    {technology.extras && technology.extras.length > 0 && (
+      <div className="info-section">
+        <label>Correlated & Skills:</label>
+        <div className="tech-tags">
+          {technology.extras.map((extra, index) => (
+            <span key={index} className="tech-tag">
+              {extra}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
     
     {technology.projects && technology.projects.length > 0 && (
       <div className="info-section">

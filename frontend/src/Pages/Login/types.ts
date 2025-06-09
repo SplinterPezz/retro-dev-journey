@@ -16,3 +16,16 @@ export interface TokenAuth {
   expiration: number;
   user: string;
 }
+
+export interface CVInfo {
+  filename: string;
+  size: number;
+  modified_at: string;
+  exists: boolean;
+}
+
+export interface UploadResponse {
+  message: string;
+  filename: string;
+  size: number;
+}

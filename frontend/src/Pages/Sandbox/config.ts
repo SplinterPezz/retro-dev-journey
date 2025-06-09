@@ -1,7 +1,10 @@
 import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
 
 export const tileSize: number = 128;
+
 export const downloadButtonId: string = 'download-button';
+export const maxSizeFileCV : number = 5; //MB
+export const downloadCVCooldown: number = 60;
 
 export const playerHitbox: Hitbox = {
   x: -16,
@@ -43,6 +46,7 @@ export const downloadButton : StructureData = {
   description: "Download CV!",
   data: {
     animatedImage: "/sprites/others/download_button.gif",
+    //cooldownImage: "/sprites/others/download_button_cooldown.png",
     name: "download",
     position: {x: 0, y: 0},
     centering : {x: -130, y: -120},
@@ -70,7 +74,7 @@ export const treesEnvironments: EnvironmentData[]=[
   },
   {
     image: '/sprites/trees/orange_1.png',
-    position: {x:1700,y:1500},
+    position: {x:1700,y:1700},
   },
   {
     image: '/sprites/trees/orange_2.png',
@@ -113,7 +117,7 @@ export const detailsEnvironments: EnvironmentData[] = [
   },
   {
     image: "/sprites/details/box_2.png",
-    position: {"x": 1670, "y": 1380}
+    position: {"x": 1800, "y": 1380}
   },
   {
     image: "/sprites/details/box_leaf_1.png",
@@ -157,11 +161,11 @@ export const detailsEnvironments: EnvironmentData[] = [
   },
   {
     image: "/sprites/details/flower_6.png",
-    position: {"x": 1650, "y": 1850}
+    position: {"x": 1700, "y": 1900}
   },
   {
     image: "/sprites/details/pot_1.png",
-    position: {"x": 860, "y": 450}
+    position: {"x": 270, "y": 1180}
   },
   {
     image: "/sprites/details/lamp_2.png",
@@ -300,7 +304,7 @@ const companiesData: CompanyData[] = [
     ],
     description: "Developed and architected scalable backend advertising platform with event-driven microservices, processing 10M+ daily AD events. Implemented ML-based predictive analytics and deployed cloud-native infrastructure on GCP. Developed Computer Vision solution for audience analysis.",
     website: "https://codesour.tech/",
-    position: { x: mainPathConfig.startX + 512, y: 1520 },
+    position: { x: mainPathConfig.startX +652, y: 1540 },
     image: "/sprites/buildings/codesour.png",
     signpost: "/sprites/signpost/codesour_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
@@ -516,7 +520,7 @@ const technologiesData: TechnologyData[] = [
       "Forecast Service for revenue income"
     ],
     extras: ["Docker", "Docker Compose", "Docker Hub"],
-    position: { x: mainPathConfig.startX + 156, y: 1732 },
+    position: { x: mainPathConfig.startX + 256, y: 1732 },
     image: "/sprites/statues/docker.png",
     centering : {x: -40, y: 0},
     shadow: { height: 15, width:250 , position: {x:80, y:230}},

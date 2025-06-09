@@ -58,6 +58,7 @@ export interface CompanyData {
   position: Position;
   image: string;
   animatedImage?: string;
+  cooldownImage?: string;
   signpost?: string;
   easteregg?: string;
   shadow?: ShadowInfo;
@@ -76,6 +77,7 @@ export interface TechnologyData {
   extras?: string[];
   image: string;
   animatedImage?: string;
+  cooldownImage?: string;
   shadow?: ShadowInfo;
   centering?: Position;
   collisionHitbox?: Hitbox;

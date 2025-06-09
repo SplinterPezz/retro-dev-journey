@@ -58,7 +58,7 @@ const SandboxPage: React.FC = () => {
 
     // Handle structure interaction
     useEffect(() => {
-        if (nearbyStructure && !showDialog) {
+        if (nearbyStructure && !showDialog && nearbyStructure.id !== downloadButton.id) {
             setSelectedStructure(nearbyStructure);
             setShowDialog(true);
         } else if (!nearbyStructure && showDialog) {
