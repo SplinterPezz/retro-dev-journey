@@ -25,7 +25,7 @@ services:
     depends_on:
       - database
     environment:
-    - APP_ENV=${APP_ENV:-local}
+    - APP_ENV=${APP_ENV:-dev}
     networks:
       - retro_dev_journey
     volumes:
