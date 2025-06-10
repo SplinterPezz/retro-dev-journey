@@ -45,7 +45,7 @@ export const downloadButton : StructureData = {
   position: {x: 1200, y: 2900},
   description: "Download CV!",
   data: {
-    animatedImage: "/sprites/others/download_button.gif",
+    animatedImage: "/sprites/others/download_button_2_frames.gif",
     //cooldownImage: "/sprites/others/download_button_cooldown.png",
     name: "download",
     position: {x: 0, y: 0},
