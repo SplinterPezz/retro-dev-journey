@@ -124,7 +124,7 @@ const SandboxPage: React.FC = () => {
         handleJoystickStop 
     } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
-        speed: 5,
+        speed: 2,
         worldBounds: {
             minX: 50,
             minY: 50,
@@ -170,7 +170,7 @@ const SandboxPage: React.FC = () => {
     if (isLoading) {
         return (
             <div className="sandbox-loading">
-                <div className="rpgui-content">
+                <div className="sandbox-load rpgui-content">
                     <div className="rpgui-container framed">
                         <h2>Loading Sandbox</h2>
                         <p>Preparing your journey through my career path...</p>
@@ -384,7 +384,7 @@ const SandboxPage: React.FC = () => {
                                 />
                             </div>
                         )}
-                        
+
                         <div className="rpgui-container framed-grey">
                             <div className="minimap-content">
                                 {/* Main path on minimap */}

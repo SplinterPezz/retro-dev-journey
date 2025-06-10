@@ -13,7 +13,7 @@ interface JoystickState {
   intensity: number;
 }
 
-// Pure functions outside the hook
+// Convert joystick coordinates to direction
 const getDirectionFromKeys = (keys: Set<string>): Direction => {
   const up = keys.has('w') || keys.has('arrowup');
   const down = keys.has('s') || keys.has('arrowdown');
@@ -28,406 +28,263 @@ const getDirectionFromKeys = (keys: Set<string>): Direction => {
   if (down) return 'down';
   if (left) return 'left';
   if (right) return 'right';
-  
   return 'idle';
 };
 
-// Convert joystick coordinates to direction
 const getDirectionFromJoystick = (x: number | null, y: number | null): Direction => {
   if (x === null || y === null) return 'idle';
-  
-  // I valori sono già normalizzati tra -1 e 1
-  const normalizedX = x;
-  const normalizedY = y; // Invert Y because joystick Y is inverted (positive Y = up in game)
-  
-  // Dead zone threshold
   const deadZone = 0.2;
-  if (Math.abs(normalizedX) < deadZone && Math.abs(normalizedY) < deadZone) {
-    return 'idle';
-  }
-  
-  // Determine primary direction
-  const absX = Math.abs(normalizedX);
-  const absY = Math.abs(normalizedY);
-  
-  // Check for diagonal movement first (entrambi gli assi devono superare la dead zone)
+  if (Math.abs(x) < deadZone && Math.abs(y) < deadZone) return 'idle';
+  const absX = Math.abs(x), absY = Math.abs(y);
   if (absX > deadZone && absY > deadZone) {
-    if (normalizedX > 0 && normalizedY > 0) return 'up-right';
-    if (normalizedX > 0 && normalizedY < 0) return 'down-right';
-    if (normalizedX < 0 && normalizedY > 0) return 'up-left';
-    if (normalizedX < 0 && normalizedY < 0) return 'down-left';
+    if (x > 0 && y > 0) return 'up-right';
+    if (x > 0 && y < 0) return 'down-right';
+    if (x < 0 && y > 0) return 'up-left';
+    if (x < 0 && y < 0) return 'down-left';
   }
-  
-  // Cardinal directions - prendi la direzione più forte
-  if (absX > absY) {
-    return normalizedX > 0 ? 'right' : 'left';
-  } else {
-    return normalizedY > 0 ? 'up' : 'down';
-  }
+  if (absX > absY) return x > 0 ? 'right' : 'left';
+  return y > 0 ? 'up' : 'down';
 };
 
-// Get movement intensity from joystick
 const getJoystickIntensity = (x: number | null, y: number | null): number => {
   if (x === null || y === null) return 0;
-
-  const distance = Math.sqrt(x * x + y * y);
-  
-  return Math.min(distance, 1);
+  const dist = Math.sqrt(x * x + y * y);
+  return Math.min(dist, 1);
 };
 
-// Check if two hitboxes overlap
-const checkHitboxCollision = (pos1: Position, hitbox1: Hitbox, pos2: Position, hitbox2: Hitbox): boolean => {
-  const box1 = {
-    x: pos1.x + hitbox1.x,
-    y: pos1.y + hitbox1.y,
-    width: hitbox1.width,
-    height: hitbox1.height
-  };
-
-  const box2 = {
-    x: pos2.x + hitbox2.x,
-    y: pos2.y + hitbox2.y,
-    width: hitbox2.width,
-    height: hitbox2.height
-  };
-
-  return box1.x < box2.x + box2.width &&
-         box1.x + box1.width > box2.x &&
-         box1.y < box2.y + box2.height &&
-         box1.y + box1.height > box2.y;
+const checkHitboxCollision = (
+  pos1: Position, hitbox1: Hitbox,
+  pos2: Position, hitbox2: Hitbox
+): boolean => {
+  const b1 = { x: pos1.x + hitbox1.x, y: pos1.y + hitbox1.y, width: hitbox1.width, height: hitbox1.height };
+  const b2 = { x: pos2.x + hitbox2.x, y: pos2.y + hitbox2.y, width: hitbox2.width, height: hitbox2.height };
+  return b1.x < b2.x + b2.width &&
+         b1.x + b1.width > b2.x &&
+         b1.y < b2.y + b2.height &&
+         b1.y + b1.height > b2.y;
 };
 
-// Check collision with structures
 const checkStructureCollision = (
-  newPos: Position, 
-  playerHitbox: Hitbox, 
+  newPos: Position,
+  hitbox: Hitbox,
   structures?: StructureData[]
 ): boolean => {
   if (!structures) return false;
-
-  return structures.some(structure => {
-    if (!structure.data.collisionHitbox) return false;
-    
-    return checkHitboxCollision(
-      newPos, 
-      playerHitbox, 
-      structure.position, 
-      structure.data.collisionHitbox
-    );
+  return structures.some(s => {
+    if (!s.data.collisionHitbox) return false;
+    return checkHitboxCollision(newPos, hitbox, s.position, s.data.collisionHitbox);
   });
 };
 
-// Calculate new position based on direction and intensity
 const calculateNewPosition = (
-  currentPos: Position, 
-  dir: Direction, 
+  currentPos: Position,
+  dir: Direction,
   speed: number,
   intensity: number,
   worldBounds: any,
-  playerHitbox: Hitbox,
+  hitbox: Hitbox,
   structures?: StructureData[]
 ): Position => {
-  let newX = currentPos.x;
-  let newY = currentPos.y;
-  
-  // Apply intensity to speed (for joystick analog movement)
-  const effectiveSpeed = speed * intensity;
-  
-  // Diagonal movement is slower to maintain consistent speed
-  const diagonalSpeed = effectiveSpeed * 0.707; // √2/2 ≈ 0.707
+  let nx = currentPos.x, ny = currentPos.y;
+  const effSpeed = speed * intensity;
+  const diag = effSpeed * Math.SQRT1_2;
 
   switch (dir) {
-    case 'up':
-      newY -= effectiveSpeed;
-      break;
-    case 'down':
-      newY += effectiveSpeed;
-      break;
-    case 'left':
-      newX -= effectiveSpeed;
-      break;
-    case 'right':
-      newX += effectiveSpeed;
-      break;
-    case 'up-left':
-      newX -= diagonalSpeed;
-      newY -= diagonalSpeed;
-      break;
-    case 'up-right':
-      newX += diagonalSpeed;
-      newY -= diagonalSpeed;
-      break;
-    case 'down-left':
-      newX -= diagonalSpeed;
-      newY += diagonalSpeed;
-      break;
-    case 'down-right':
-      newX += diagonalSpeed;
-      newY += diagonalSpeed;
-      break;
+    case 'up': ny -= effSpeed; break;
+    case 'down': ny += effSpeed; break;
+    case 'left': nx -= effSpeed; break;
+    case 'right': nx += effSpeed; break;
+    case 'up-left': nx -= diag; ny -= diag; break;
+    case 'up-right': nx += diag; ny -= diag; break;
+    case 'down-left': nx -= diag; ny += diag; break;
+    case 'down-right': nx += diag; ny += diag; break;
   }
 
-  const newPos = { x: newX, y: newY };
+  nx = Math.max(worldBounds.minX, Math.min(worldBounds.maxX, nx));
+  ny = Math.max(worldBounds.minY, Math.min(worldBounds.maxY, ny));
+  const newPos = { x: nx, y: ny };
 
-  // Check world bounds
-  newPos.x = Math.max(worldBounds.minX, Math.min(worldBounds.maxX, newPos.x));
-  newPos.y = Math.max(worldBounds.minY, Math.min(worldBounds.maxY, newPos.y));
-
-  // Check structure collisions
-  if (checkStructureCollision(newPos, playerHitbox, structures)) {
-    // Try moving only on X axis
-    const xOnlyPos = { x: newPos.x, y: currentPos.y };
-    if (!checkStructureCollision(xOnlyPos, playerHitbox, structures)) {
-      return xOnlyPos;
-    }
-    
-    // Try moving only on Y axis
-    const yOnlyPos = { x: currentPos.x, y: newPos.y };
-    if (!checkStructureCollision(yOnlyPos, playerHitbox, structures)) {
-      return yOnlyPos;
-    }
-    
-    // No movement possible, stay at current position
+  if (checkStructureCollision(newPos, hitbox, structures)) {
+    const xPos = { x: nx, y: currentPos.y };
+    if (!checkStructureCollision(xPos, hitbox, structures)) return xPos;
+    const yPos = { x: currentPos.x, y: ny };
+    if (!checkStructureCollision(yPos, hitbox, structures)) return yPos;
     return currentPos;
   }
 
-  return newPos;
+  return (nx === currentPos.x && ny === currentPos.y) ? currentPos : newPos;
 };
 
+// Hook starts here
+interface PlayerMovementConfigExtended extends PlayerMovementConfig {
+  structures?: StructureData[];
+  playerHitbox?: Hitbox;
+}
+
+interface JoystickState {
+  isActive: boolean;
+  direction: Direction;
+  intensity: number;
+}
+
 export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
-  const [position, setPosition] = useState<Position>(config.initialPosition);
+  const [position, setPosition] = useState(config.initialPosition);
   const [direction, setDirection] = useState<Direction>('idle');
   const [isMoving, setIsMoving] = useState(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
   const [joystickState, setJoystickState] = useState<JoystickState>({
     isActive: false,
     direction: 'idle',
-    intensity: 0
+    intensity: 0,
   });
-  
-  // Refs to track focus and prevent stale closures
-  const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
+
+  const joystickRef = useRef<JoystickState>(joystickState);
   const isWindowFocusedRef = useRef(true);
+  const rafRef = useRef<number | null>(null);
+
+  const validKeys = ['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift',' '];
   
-  // Valid movement keys only
-  const validKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' '];
+  const clearAllKeys = useCallback(() => setPressedKeys(new Set()), []);
 
-  // Clear all keys - used when focus is lost or on certain events
-  const clearAllKeys = useCallback(() => {
-    setPressedKeys(new Set());
-  }, []);
+  const handleJoystickMove = useCallback((e: any) => {
+    const d = getDirectionFromJoystick(e.x, e.y);
+    const i = getJoystickIntensity(e.x, e.y);
+    const prev = joystickRef.current;
 
-  // Joystick handlers
-  const handleJoystickMove = useCallback((event: any) => {
-    const joystickDirection = getDirectionFromJoystick(event.x, event.y);
-    const intensity = getJoystickIntensity(event.x, event.y);
-    
-    setJoystickState({
-      isActive: true,
-      direction: joystickDirection,
-      intensity: intensity
-    });
+    if (prev.direction !== d || Math.abs(prev.intensity - i) > 0.05) {
+      joystickRef.current = { isActive: true, direction: d, intensity: i };
+      setJoystickState(joystickRef.current);
+    }
   }, []);
 
   const handleJoystickStop = useCallback(() => {
-    setJoystickState({
-      isActive: false,
-      direction: 'idle',
-      intensity: 0
-    });
+    joystickRef.current = { isActive: false, direction: 'idle', intensity: 0 };
+    setJoystickState(joystickRef.current);
   }, []);
 
-  // Handle key press with better validation
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    const key = event.key.toLowerCase();
-    
-    // Only handle our valid movement keys
-    if (!validKeys.includes(key)) return;
-    
-    // Prevent default behavior for movement keys
-    event.preventDefault();
-
-    if (!isWindowFocusedRef.current) return;
-    
-    // Check for problematic key combinations that might cause issues
-    if (event.ctrlKey || event.altKey || event.metaKey) {
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    const k = e.key.toLowerCase();
+    if (!validKeys.includes(k)) return;
+    e.preventDefault();
+    if (!isWindowFocusedRef.current || e.ctrlKey || e.altKey || e.metaKey) {
       clearAllKeys();
       return;
     }
-    
-    setPressedKeys(prev => new Set([...prev, key]));
+    setPressedKeys(prev => {
+      prev.add(k);
+      return new Set(prev);
+    });
   }, [clearAllKeys]);
 
-  // Handle key release with better validation
-  const handleKeyUp = useCallback((event: KeyboardEvent) => {
-    const key = event.key.toLowerCase();
-    
-    // Only handle our valid movement keys
-    if (!validKeys.includes(key)) return;
-    
+  const handleKeyUp = useCallback((e: KeyboardEvent) => {
+    const k = e.key.toLowerCase();
+    if (!validKeys.includes(k)) return;
     setPressedKeys(prev => {
-      const newKeys = new Set(prev);
-      newKeys.delete(key);
-      return newKeys;
+      prev.delete(k);
+      return new Set(prev);
     });
   }, []);
 
-  // Handle window focus/blur events
-  const handleWindowFocus = useCallback(() => {
-    isWindowFocusedRef.current = true;
-  }, []);
-
-   // Clear all keys when window loses focus
-  const handleWindowBlur = useCallback(() => {
+  const handleBlur = useCallback(() => {
     isWindowFocusedRef.current = false;
     clearAllKeys();
   }, [clearAllKeys]);
 
-  // Handle visibility change (tab switching)
-  const handleVisibilityChange = useCallback(() => {
-    if (document.hidden) {
-      isWindowFocusedRef.current = false;
-      clearAllKeys();
-    } else {
-      isWindowFocusedRef.current = true;
-    }
-  }, [clearAllKeys]);
+  const handleFocus = useCallback(() => {
+    isWindowFocusedRef.current = true;
+  }, []);
 
-  // Movement loop
+  const handleVisibility = useCallback(() => {
+    if (document.hidden) handleBlur();
+    else handleFocus();
+  }, [handleBlur, handleFocus]);
+
   useEffect(() => {
-    const gameLoop = () => {
-      // Don't process movement if window is not focused (only for keyboard)
-      if (!isWindowFocusedRef.current && !joystickState.isActive) {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+    window.addEventListener('blur', handleBlur);
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibility);
+    document.addEventListener('mouseleave', () => {
+      setTimeout(() => {
+        if (!document.hasFocus()) clearAllKeys();
+      }, 100);
+    });
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+      window.removeEventListener('blur', handleBlur);
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [handleKeyDown, handleKeyUp, handleBlur, handleFocus, handleVisibility, clearAllKeys]);
+
+  useEffect(() => {
+    const loop = () => {
+      if (!isWindowFocusedRef.current && !joystickRef.current.isActive) {
         clearAllKeys();
         return;
       }
 
-      // Determine input source priority: joystick overrides keyboard
-      let currentDirection: Direction;
-      let movementIntensity: number;
-      let isRunning: boolean;
+      const js = joystickRef.current;
+      let dir: Direction, intensity: number, run: boolean;
 
-      if (joystickState.isActive && joystickState.direction !== 'idle') {
-        // Use joystick input
-        currentDirection = joystickState.direction;
-        movementIntensity = joystickState.intensity;
-        isRunning = joystickState.intensity > 0.7; // Run when joystick is pushed far
-        
-        // Debug per il joystick
-        if (process.env.REACT_APP_ENV === 'development') {
-          console.log("Using joystick:", { 
-            direction: currentDirection, 
-            intensity: movementIntensity, 
-            isRunning 
-          });
-        }
+      if (js.isActive && js.direction !== 'idle') {
+        dir = js.direction;
+        intensity = js.intensity;
+        run = js.intensity > 0.7;
       } else {
-        // Use keyboard input
-        currentDirection = getDirectionFromKeys(pressedKeys);
-        movementIntensity = currentDirection !== 'idle' ? 1 : 0;
-        isRunning = pressedKeys.has('shift') || pressedKeys.has(' ');
+        dir = getDirectionFromKeys(pressedKeys);
+        intensity = dir !== 'idle' ? 1 : 0;
+        run = pressedKeys.has('shift') || pressedKeys.has(' ');
       }
-      
-      const moving = currentDirection !== 'idle';
-      
-      setDirection(currentDirection);
+
+      const moving = dir !== 'idle';
+      setDirection(dir);
       setIsMoving(moving);
 
       if (moving) {
-        const baseSpeed = isRunning ? config.speed * 1.5 : config.speed;
-        setPosition(currentPos => 
+        let speed = run ? config.speed * 1.5 : config.speed;
+        if(js.isActive){ 
+          //TODO: its a bit lagghy on mobile.
+          speed = run ? config.speed * 3 : config.speed * 2;
+        }
+        setPosition(cur =>
           calculateNewPosition(
-            currentPos, 
-            currentDirection, 
-            baseSpeed,
-            movementIntensity,
-            config.worldBounds, 
-            playerHitbox, 
+            cur, dir, speed, intensity,
+            config.worldBounds,
+            config.playerHitbox || playerHitbox,
             config.structures
           )
         );
       }
-    };
 
-    // Start the game loop
-    gameLoopRef.current = setInterval(gameLoop, 16); // ~60 FPS
-
-    return () => {
-      if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
-        gameLoopRef.current = null;
-      }
-    };
-  }, [pressedKeys, joystickState, config.speed, config.worldBounds, config.structures, clearAllKeys]);
-
-  // Event listeners with comprehensive cleanup
-  useEffect(() => {
-    // Keyboard events
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);    
-    
-    // Window focus events
-    window.addEventListener('focus', handleWindowFocus);
-    window.addEventListener('blur', handleWindowBlur);
-    
-    // Visibility change (tab switching)
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    // Mouse events (clicking outside might cause focus issues)
-    const handleMouseLeave = () => {
-      // Small delay to avoid clearing keys during normal gameplay
-      setTimeout(() => {
-        if (!document.hasFocus()) {
-          clearAllKeys();
-        }
-      }, 100);
-    };
-    
-    document.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      // Cleanup all event listeners
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('focus', handleWindowFocus);
-      window.removeEventListener('blur', handleWindowBlur);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      document.removeEventListener('mouseleave', handleMouseLeave);
       
-      // Clear the game loop
-      if (gameLoopRef.current) {
-        clearInterval(gameLoopRef.current);
-      }
+
+      rafRef.current = requestAnimationFrame(loop);
     };
-  }, [handleKeyDown, handleKeyUp, handleWindowFocus, handleWindowBlur, handleVisibilityChange, clearAllKeys]);
 
-  // Prevent context menu on long press (mobile)
+    rafRef.current = requestAnimationFrame(loop);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [pressedKeys, config, clearAllKeys]);
+
   useEffect(() => {
-    const preventContextMenu = (e: Event) => e.preventDefault();
-    window.addEventListener('contextmenu', preventContextMenu);
-    return () => window.removeEventListener('contextmenu', preventContextMenu);
+    const preventCtx = (e: Event) => e.preventDefault();
+    window.addEventListener('contextmenu', preventCtx);
+    return () => window.removeEventListener('contextmenu', preventCtx);
   }, []);
-
-  // Debug function for development
-  const debugInfo = process.env.REACT_APP_ENV === 'development' ? {
-    pressedKeys: Array.from(pressedKeys),
-    isWindowFocused: isWindowFocusedRef.current,
-    joystickState,
-    position,
-    direction,
-    isMoving
-  } : undefined;
 
   return {
     playerPosition: position,
     direction,
     isMoving,
     setPlayerPosition: setPosition,
-    playerHitbox,
+    playerHitbox: config.playerHitbox || playerHitbox,
     clearMovement: clearAllKeys,
-    // Joystick handlers to be passed to the Joystick component
     handleJoystickMove,
-    handleJoystickStop,
-    ...(debugInfo && { debug: debugInfo })
+    handleJoystickStop
   };
 };

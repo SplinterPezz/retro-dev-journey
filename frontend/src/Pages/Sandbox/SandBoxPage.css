@@ -6,6 +6,21 @@
   background: linear-gradient(135deg, #1e3c72, #2a5298);
 }
 
+.sandbox-load{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  position: relative; /* Add this */
+
+  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+
 .sandbox-loading .rpgui-container {
   place-self: anchor-center;
   text-align: center;

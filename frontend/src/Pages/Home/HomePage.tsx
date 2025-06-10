@@ -17,21 +17,8 @@ export default function HomePage() {
   }, []);
   
   const handleDialogComplete = () => {
-    console.log("Dialog complete")
+    process.env.REACT_APP_ENV === 'development' && console.log("Dialog complete")
   };
-
-  useEffect(() => {
-    const checkRPGUI = () => {
-        if (window.RPGUI) {
-            console.log("LOADED!")
-        } else {
-            // Retry after a short delay
-            setTimeout(checkRPGUI, 100);
-        }
-    };
-
-    checkRPGUI();
-  }, []);
 
   return (
     <div className="rpgui-content">
