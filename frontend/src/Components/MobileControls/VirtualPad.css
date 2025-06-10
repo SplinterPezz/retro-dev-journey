@@ -1,0 +1,335 @@
+.virtual-dpad-container {
+  position: fixed;
+  z-index: 1000;
+  display: none;
+  user-select: none;
+  touch-action: none;
+  pointer-events: auto;
+  
+  @media (pointer: coarse) {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+}
+
+.dpad-bottom-left {
+  bottom: 20px;
+  left: 20px;
+  flex-direction: row;
+}
+
+.dpad-bottom-right {
+  bottom: 20px;
+  right: 20px;
+  flex-direction: row-reverse;
+}
+
+.dpad-top-left {
+  top: 20px;
+  left: 20px;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.dpad-top-right {
+  top: 20px;
+  right: 20px;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+}
+
+.dpad-small {
+  --dpad-size: 40px;
+  --dpad-gap: 1px;
+  --dpad-font-size: 14px;
+  --run-width: 60px;
+  --run-height: 35px;
+}
+
+.dpad-medium {
+  --dpad-size: 50px;
+  --dpad-gap: 2px;
+  --dpad-font-size: 18px;
+  --run-width: 80px;
+  --run-height: 45px;
+}
+
+.dpad-large {
+  --dpad-size: 60px;
+  --dpad-gap: 3px;
+  --dpad-font-size: 22px;
+  --run-width: 100px;
+  --run-height: 55px;
+}
+
+.dpad-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mobile-dpad {
+  display: grid;
+  grid-template-rows: var(--dpad-size) var(--dpad-size) var(--dpad-size);
+  grid-template-columns: var(--dpad-size) var(--dpad-size) var(--dpad-size);
+  gap: var(--dpad-gap);
+  background: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-radius: 12px;
+  backdrop-filter: blur(5px);
+}
+
+.mobile-key-up {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.mobile-dpad-horizontal {
+  grid-column: 1 / 4;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  gap: var(--dpad-gap);
+}
+
+.mobile-key-left {
+  width: var(--dpad-size);
+  height: var(--dpad-size);
+}
+
+.mobile-dpad-center {
+  width: var(--dpad-size);
+  height: var(--dpad-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.dpad-center-dot {
+  width: 8px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: centerPulse 2s infinite;
+}
+
+@keyframes centerPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.mobile-key-right {
+  width: var(--dpad-size);
+  height: var(--dpad-size);
+}
+
+.mobile-key-down {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.dpad-button {
+  width: var(--dpad-size);
+  height: var(--dpad-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--dpad-font-size);
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  position: relative;
+  overflow: hidden;
+  
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.dpad-icon {
+  font-size: var(--dpad-font-size);
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.8));
+  z-index: 2;
+  position: relative;
+}
+
+.dpad-rpg .dpad-button {
+  background: linear-gradient(145deg, #8b4513, #654321);
+  border: 2px solid #5a3c28;
+  color: #ffd700;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.dpad-rpg .dpad-button:active {
+  background: linear-gradient(145deg, #654321, #4a2c17);
+  transform: scale(0.95) translateY(1px);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dpad-rpg .dpad-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 215, 0, 0.1) 50%, transparent 70%);
+  pointer-events: none;
+}
+
+.dpad-modern .dpad-button {
+  background: linear-gradient(145deg, #2c3e50, #34495e);
+  border: 1px solid #1a252f;
+  color: #ecf0f1;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dpad-modern .dpad-button:active {
+  background: linear-gradient(145deg, #1a252f, #2c3e50);
+  transform: scale(0.95);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.dpad-default .dpad-button {
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  backdrop-filter: blur(10px);
+}
+
+.dpad-default .dpad-button:active {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(0.95);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.run-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mobile-run-button {
+  width: var(--run-width) !important;
+  height: var(--run-height) !important;
+  flex-direction: column;
+  gap: 2px;
+  font-size: calc(var(--dpad-font-size) * 0.7);
+  border-radius: 10px;
+}
+
+.run-icon {
+  font-size: calc(var(--dpad-font-size) * 0.8);
+  line-height: 1;
+}
+
+.run-text {
+  font-size: calc(var(--dpad-font-size) * 0.5);
+  font-weight: bold;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+.dpad-rpg .mobile-run-button {
+  background: linear-gradient(145deg, #d4af37, #b8860b);
+  border-color: #9a7a0a;
+  color: #2c1810;
+}
+
+.dpad-rpg .mobile-run-button:active {
+  background: linear-gradient(145deg, #b8860b, #9a7a0a);
+}
+
+.dpad-debug-indicator {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 0, 0, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  animation: debugBlink 1s infinite;
+}
+
+@keyframes debugBlink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+  .virtual-dpad-container {
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    gap: 15px;
+  }
+  
+  .dpad-small {
+    --dpad-size: 35px;
+    --run-width: 50px;
+    --run-height: 30px;
+  }
+  
+  .dpad-medium {
+    --dpad-size: 45px;
+    --run-width: 70px;
+    --run-height: 40px;
+  }
+  
+  .dpad-large {
+    --dpad-size: 55px;
+    --run-width: 90px;
+    --run-height: 50px;
+  }
+}
+
+@media (max-width: 320px) {
+  .virtual-dpad-container {
+    gap: 10px;
+  }
+  
+  .mobile-dpad {
+    padding: 6px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dpad-button {
+    transition: none;
+  }
+  
+  .dpad-center-dot {
+    animation: none;
+  }
+  
+  .dpad-debug-indicator {
+    animation: none;
+  }
+}
+
+@media (hover: hover) {
+  .dpad-button:hover {
+    filter: brightness(1.1);
+  }
+}
+
+body[data-debug="true"] .virtual-dpad-container {
+  display: flex !important;
+}

@@ -16,11 +16,31 @@ import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
+import VirtualPad from '../../Components/MobileControls/VirtualPad';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
+    
+    const handleVirtualKeyPress = (key: string) => {
+        if (process.env.REACT_APP_ENV === 'development') {
+            console.log(`Virtual key pressed: ${key}`);
+        }
+    };
+
+    const handleVirtualKeyRelease = (key: string) => {
+        if (process.env.REACT_APP_ENV === 'development') {
+            console.log(`Virtual key released: ${key}`);
+        }
+    };
+
+    // Handle VirtualPad mounting notification
+    const handleVirtualPadMounted = () => {
+        if (process.env.REACT_APP_ENV === 'development') {
+            console.log('🎮 VirtualPad reported as mounted');
+        }
+    };
 
     // Preload images and audio resources
     const requiredResources = useMemo(() => {
@@ -363,6 +383,15 @@ const SandboxPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
+                
+                <VirtualPad
+                    position="bottom-left"
+                    size="medium"
+                    style="rpg"
+                    showRunButton={true}
+                    onKeyPress={handleVirtualKeyPress}
+                    onKeyRelease={handleVirtualKeyRelease}
+                />
 
                 {/* Audio Controls */}
                 <AudioControls

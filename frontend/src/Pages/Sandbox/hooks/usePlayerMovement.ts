@@ -7,12 +7,19 @@ interface PlayerMovementConfigExtended extends PlayerMovementConfig {
   playerHitbox?: Hitbox;
 }
 
-// Pure functions outside the hook
+// Detect if device has touch capabilities
+const isTouchDevice = (): boolean => {
+  return (('ontouchstart' in window) ||
+          (navigator.maxTouchPoints > 0) ||
+          // @ts-ignore
+          (navigator.msMaxTouchPoints > 0));
+};
+
 const getDirectionFromKeys = (keys: Set<string>): Direction => {
-  const up = keys.has('w') || keys.has('arrowup');
-  const down = keys.has('s') || keys.has('arrowdown');
-  const left = keys.has('a') || keys.has('arrowleft');
-  const right = keys.has('d') || keys.has('arrowright');
+  const up = keys.has('w') || keys.has('arrowup') || keys.has('mobile-up');
+  const down = keys.has('s') || keys.has('arrowdown') || keys.has('mobile-down');
+  const left = keys.has('a') || keys.has('arrowleft') || keys.has('mobile-left');
+  const right = keys.has('d') || keys.has('arrowright') || keys.has('mobile-right');
 
   if (up && left) return 'up-left';
   if (up && right) return 'up-right';
@@ -146,17 +153,35 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   const [direction, setDirection] = useState<Direction>('idle');
   const [isMoving, setIsMoving] = useState(false);
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+  const [mobileControlsReady, setMobileControlsReady] = useState(false);
   
   // Refs to track focus and prevent stale closures
   const gameLoopRef = useRef<NodeJS.Timeout | null>(null);
   const isWindowFocusedRef = useRef(true);
   
-  // Valid movement keys only
+  const mobileObserverRef = useRef<MutationObserver | null>(null);
+  const isTouch = useRef(isTouchDevice());
+  
+  // Valid movement keys (including mobile keys)
   const validKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' '];
+  const mobileKeys = ['mobile-up', 'mobile-down', 'mobile-left', 'mobile-right', 'mobile-run'];
 
   // Clear all keys - used when focus is lost or on certain events
   const clearAllKeys = useCallback(() => {
     setPressedKeys(new Set());
+  }, []);
+
+  // Mobile key management
+  const handleMobileKeyPress = useCallback((mobileKey: string) => {
+    setPressedKeys(prev => new Set([...prev, mobileKey]));
+  }, []);
+
+  const handleMobileKeyRelease = useCallback((mobileKey: string) => {
+    setPressedKeys(prev => {
+      const newKeys = new Set(prev);
+      newKeys.delete(mobileKey);
+      return newKeys;
+    });
   }, []);
 
   // Handle key press with better validation
@@ -199,7 +224,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     isWindowFocusedRef.current = true;
   }, []);
 
-   // Clear all keys when window loses focus
+  // Clear all keys when window loses focus
   const handleWindowBlur = useCallback(() => {
     isWindowFocusedRef.current = false;
     clearAllKeys();
@@ -215,18 +240,185 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     }
   }, [clearAllKeys]);
 
+  // Check if all required mobile elements are present
+  const checkMobileElementsReady = useCallback((): boolean => {
+    const requiredClasses = [
+      'mobile-key-up',
+      'mobile-key-down', 
+      'mobile-key-left',
+      'mobile-key-right',
+      'mobile-run-button'
+    ];
+
+    return requiredClasses.every(className => {
+      const element = document.querySelector(`.${className}`) as HTMLElement;
+      return element && element.offsetParent !== null; // Element exists and is visible
+    });
+  }, []);
+
+  // Setup mobile touch controls with intelligent waiting
+  useEffect(() => {
+    // If not a touch device, skip mobile setup and mark as ready
+    if (!isTouch.current) {
+      setMobileControlsReady(true);
+      return;
+    }
+
+    const setupMobileControl = (className: string, mobileKey: string): (() => void) | null => {
+      const element = document.querySelector(`.${className}`) as HTMLElement;
+      if (!element) return null;
+
+      // Touch events for mobile
+      const handleTouchStart = (e: Event) => {
+        e.preventDefault();
+        handleMobileKeyPress(mobileKey);
+      };
+
+      const handleTouchEnd = (e: Event) => {
+        e.preventDefault();
+        handleMobileKeyRelease(mobileKey);
+      };
+
+      // Mouse events for desktop testing
+      const handleMouseDown = (e: Event) => {
+        e.preventDefault();
+        handleMobileKeyPress(mobileKey);
+      };
+
+      const handleMouseUp = (e: Event) => {
+        e.preventDefault();
+        handleMobileKeyRelease(mobileKey);
+      };
+
+      const handleContextMenu = (e: Event) => {
+        e.preventDefault();
+      };
+
+      element.addEventListener('touchstart', handleTouchStart, { passive: false });
+      element.addEventListener('touchend', handleTouchEnd, { passive: false });
+      element.addEventListener('touchcancel', handleTouchEnd, { passive: false });
+      element.addEventListener('mousedown', handleMouseDown);
+      element.addEventListener('mouseup', handleMouseUp);
+      element.addEventListener('mouseleave', handleMouseUp);
+      element.addEventListener('contextmenu', handleContextMenu);
+
+      return () => {
+        element.removeEventListener('touchstart', handleTouchStart);
+        element.removeEventListener('touchend', handleTouchEnd);
+        element.removeEventListener('touchcancel', handleTouchEnd);
+        element.removeEventListener('mousedown', handleMouseDown);
+        element.removeEventListener('mouseup', handleMouseUp);
+        element.removeEventListener('mouseleave', handleMouseUp);
+        element.removeEventListener('contextmenu', handleContextMenu);
+      };
+    };
+
+    const initializeMobileControls = (): (() => void)[] => {
+      const cleanupFunctions = [
+        setupMobileControl('mobile-key-up', 'mobile-up'),
+        setupMobileControl('mobile-key-down', 'mobile-down'),
+        setupMobileControl('mobile-key-left', 'mobile-left'),
+        setupMobileControl('mobile-key-right', 'mobile-right'),
+        setupMobileControl('mobile-run-button', 'mobile-run'),
+      ].filter((cleanup): cleanup is (() => void) => cleanup !== null);
+
+      if (cleanupFunctions.length === 5) {
+        setMobileControlsReady(true);
+        if (process.env.REACT_APP_ENV === 'development') {
+          console.log('🎮 Mobile controls initialized successfully');
+        }
+      }
+
+      return cleanupFunctions;
+    };
+
+    // Try immediate initialization
+    if (checkMobileElementsReady()) {
+      const cleanupFunctions = initializeMobileControls();
+      return () => {
+        cleanupFunctions.forEach(cleanup => cleanup());
+      };
+    }
+
+    // If elements not ready, set up a MutationObserver to wait for them
+    let cleanupFunctions: (() => void)[] = [];
+    let retryCount = 0;
+    const maxRetries = 50; // 5 seconds max wait
+
+    const retryInitialization = () => {
+      retryCount++;
+      
+      if (checkMobileElementsReady()) {
+        cleanupFunctions = initializeMobileControls();
+        if (mobileObserverRef.current) {
+          mobileObserverRef.current.disconnect();
+          mobileObserverRef.current = null;
+        }
+      } else if (retryCount < maxRetries) {
+        // Continue waiting
+        setTimeout(retryInitialization, 100);
+      } else {
+        // Timeout - proceed without mobile controls
+        if (process.env.REACT_APP_ENV === 'development') {
+          console.warn('⚠️ Mobile controls initialization timeout');
+        }
+        setMobileControlsReady(true);
+      }
+    };
+
+    // Set up MutationObserver to watch for DOM changes
+    mobileObserverRef.current = new MutationObserver(() => {
+      if (checkMobileElementsReady()) {
+        cleanupFunctions = initializeMobileControls();
+        if (mobileObserverRef.current) {
+          mobileObserverRef.current.disconnect();
+          mobileObserverRef.current = null;
+        }
+      }
+    });
+
+    // Start observing
+    mobileObserverRef.current.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+
+    // Also start the retry timer
+    setTimeout(retryInitialization, 100);
+
+    return () => {
+      if (mobileObserverRef.current) {
+        mobileObserverRef.current.disconnect();
+        mobileObserverRef.current = null;
+      }
+      cleanupFunctions.forEach(cleanup => cleanup());
+    };
+  }, [handleMobileKeyPress, handleMobileKeyRelease, checkMobileElementsReady]);
+
   // Movement loop
   useEffect(() => {
+    // Don't start game loop until mobile controls are ready (if on touch device)
+    if (isTouch.current && !mobileControlsReady) {
+      return;
+    }
+
     const gameLoop = () => {
-      // Don't process movement if window is not focused
+      // Don't process movement if window is not focused (except for mobile controls)
       if (!isWindowFocusedRef.current) {
-        clearAllKeys();
-        return;
+        setPressedKeys(prev => {
+          const newKeys = new Set(prev);
+          validKeys.forEach(key => newKeys.delete(key)); // Keep mobile keys
+          return newKeys;
+        });
+        
+        // If no mobile keys are pressed, don't process movement
+        const hasMobileKeys = Array.from(pressedKeys).some(key => mobileKeys.includes(key));
+        if (!hasMobileKeys) return;
       }
 
       const currentDirection = getDirectionFromKeys(pressedKeys);
       const moving = currentDirection !== 'idle';
-      const isRunning = pressedKeys.has('shift') || pressedKeys.has(' ');
+      const isRunning = pressedKeys.has('shift') || pressedKeys.has(' ') || pressedKeys.has('mobile-run');
       
       setDirection(currentDirection);
       setIsMoving(moving);
@@ -255,7 +447,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
         gameLoopRef.current = null;
       }
     };
-  }, [pressedKeys, config.speed, config.worldBounds, config.structures, clearAllKeys]);
+  }, [pressedKeys, config.speed, config.worldBounds, config.structures, clearAllKeys, mobileControlsReady]);
 
   // Event listeners with comprehensive cleanup
   useEffect(() => {
@@ -270,12 +462,16 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     // Visibility change (tab switching)
     document.addEventListener('visibilitychange', handleVisibilityChange);
     
-    // Mouse events (clicking outside might cause focus issues)
     const handleMouseLeave = () => {
       // Small delay to avoid clearing keys during normal gameplay
       setTimeout(() => {
         if (!document.hasFocus()) {
-          clearAllKeys();
+          // Only clear keyboard keys, not mobile keys
+          setPressedKeys(prev => {
+            const newKeys = new Set(prev);
+            validKeys.forEach(key => newKeys.delete(key));
+            return newKeys;
+          });
         }
       }, 100);
     };
@@ -311,7 +507,11 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     isWindowFocused: isWindowFocusedRef.current,
     position,
     direction,
-    isMoving
+    isMoving,
+    mobileKeysActive: Array.from(pressedKeys).filter(key => mobileKeys.includes(key)),
+    isRunning: pressedKeys.has('shift') || pressedKeys.has(' ') || pressedKeys.has('mobile-run'),
+    isTouchDevice: isTouch.current,
+    mobileControlsReady
   } : undefined;
 
   return {
@@ -321,6 +521,9 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     setPlayerPosition: setPosition,
     playerHitbox,
     clearMovement: clearAllKeys,
+    // Status info
+    mobileControlsReady,
+    isTouchDevice: isTouch.current,
     ...(debugInfo && { debug: debugInfo })
   };
 };
