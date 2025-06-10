@@ -23,7 +23,7 @@ const SandboxPage: React.FC = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const [isMobile, setIsMobile] = useState(false);
-
+    
     // Check if device is mobile
     useEffect(() => {
         const checkMobile = () => {
@@ -170,7 +170,7 @@ const SandboxPage: React.FC = () => {
     if (isLoading) {
         return (
             <div className="sandbox-loading">
-                <div className="rpgui-content">
+                <div className="sandbox-load rpgui-content">
                     <div className="rpgui-container framed">
                         <h2>Loading Sandbox</h2>
                         <p>Preparing your journey through my career path...</p>
@@ -384,7 +384,7 @@ const SandboxPage: React.FC = () => {
                                 />
                             </div>
                         )}
-                        
+
                         <div className="rpgui-container framed-grey">
                             <div className="minimap-content">
                                 {/* Main path on minimap */}

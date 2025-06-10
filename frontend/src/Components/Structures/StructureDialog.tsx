@@ -1,6 +1,7 @@
 import React from 'react';
 import { StructureData, Position, CompanyData, TechnologyData } from '../../types/sandbox';
 import './StructureDialog.css';
+import { Height } from '@mui/icons-material';
 
 interface StructureDialogProps {
   structure: StructureData;
@@ -16,14 +17,17 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
   // Calculate dialog position relative to viewport
   const getDialogStyle = () => {
     return {
-      position: 'fixed' as const,
-      top: '10%',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 200,
-      maxWidth: '90vw',
-      width: '400px'
-    };
+    position: 'fixed' as const,
+    top: '10%',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 200,
+    maxWidth: '90vw',
+    width: '400px',
+    height: '100vh',
+    boxSizing: 'border-box' as const,
+    minWidth: '200px',
+  };
   };
 
   

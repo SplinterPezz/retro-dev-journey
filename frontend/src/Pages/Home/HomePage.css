@@ -104,3 +104,11 @@
   background: #000;
   z-index: -2;
 }
+
+.rpgui-button[disabled],
+.rpgui-button:disabled {
+  -webkit-filter: grayscale(100%);
+  color: #999;
+  cursor: not-allowed;
+  pointer-events: none;
+}
