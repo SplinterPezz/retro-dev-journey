@@ -245,11 +245,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       setIsMoving(moving);
 
       if (moving) {
-        let speed = run ? config.speed * 1.5 : config.speed;
-        if(js.isActive){ 
-          //TODO: its a bit lagghy on mobile.
-          speed = run ? config.speed * 3 : config.speed * 2;
-        }
+        const speed = run ? config.speed * 1.5 : config.speed;
         setPosition(cur =>
           calculateNewPosition(
             cur, dir, speed, intensity,
