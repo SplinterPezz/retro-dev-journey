@@ -245,7 +245,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       setIsMoving(moving);
 
       if (moving) {
-        let speed = run ? config.speed * 1.5 : config.speed;
+        const speed = run ? config.speed * 1.5 : config.speed;
         setPosition(cur =>
           calculateNewPosition(
             cur, dir, speed, intensity,
