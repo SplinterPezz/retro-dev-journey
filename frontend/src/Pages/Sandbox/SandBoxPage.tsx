@@ -23,7 +23,7 @@ const SandboxPage: React.FC = () => {
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const [isMobile, setIsMobile] = useState(false);
-    
+
     // Check if device is mobile
     useEffect(() => {
         const checkMobile = () => {
@@ -124,7 +124,7 @@ const SandboxPage: React.FC = () => {
         handleJoystickStop 
     } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
-        speed: 5,
+        speed: 2,
         worldBounds: {
             minX: 50,
             minY: 50,
