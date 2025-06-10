@@ -1,15 +1,3 @@
-.structure-dialog-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(3px);
-  z-index: 150;
-  animation: fadeIn 0.3s ease-out;
-}
-
 .structure-title{
   font-size:2em !important;
   text-decoration: none !important;
@@ -47,7 +35,7 @@
   margin-bottom: 15px;
 }
 
-.dialog-content {
+.dialog-content-structure {
   margin-bottom: 20px;
   max-height: 60vh;
   overflow-y: auto;
@@ -181,8 +169,8 @@
     top: 10% !important;
   }
   
-  .dialog-content {
-    max-height: 50vh;
+  .dialog-content-structure {
+    max-height: 38vh;
   }
   
   .tech-tags {

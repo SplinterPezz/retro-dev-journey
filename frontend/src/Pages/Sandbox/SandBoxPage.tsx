@@ -16,11 +16,30 @@ import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
+import { Joystick } from 'react-joystick-component';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Check if device is mobile
+    useEffect(() => {
+        const checkMobile = () => {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const mobileKeywords = ['mobile', 'android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
+            const isMobileUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            const isSmallScreen = window.innerWidth <= 768;
+            
+            setIsMobile(isMobileUA || (isTouchDevice && isSmallScreen));
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     // Preload images and audio resources
     const requiredResources = useMemo(() => {
@@ -97,7 +116,13 @@ const SandboxPage: React.FC = () => {
     }, []);
 
     // Player movement hook with structure collision support
-    const { playerPosition, isMoving, direction } = usePlayerMovement({
+    const { 
+        playerPosition, 
+        isMoving, 
+        direction, 
+        handleJoystickMove,
+        handleJoystickStop 
+    } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
         speed: 5,
         worldBounds: {
@@ -319,19 +344,47 @@ const SandboxPage: React.FC = () => {
                             <p className="revert-top">🏠 Home</p>
                         </button>
                     </div>
-
+                    
                     {/* Controls Info */}
                     <div className="controls-info">
-                        <div className="rpgui-container framed-grey d-none d-sm-block">
+                        
+                        
+                        {/* Mobile controls info */}
+                        {isMobile ? (
+                            <div className="rpgui-container framed-grey">
+                                <p className="control-info-text mb-0">
+                                    <strong>Use joystick</strong> to move around
+                                    <br /> <strong>Walk near</strong> structures to know me!
+                                </p>
+                            </div>
+                        ) : 
+                        <div className="rpgui-container framed-grey">
                             <p className="control-info-text mb-0">
                                 <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>SHIFT</strong> or <strong>SPACE</strong> to run
                                 <br /> <strong>Walk near</strong> structures to know me!
                             </p>
                         </div>
+                        }
                     </div>
 
                     {/* Mini Map */}
                     <div className="minimap">
+                        {/* Mobile Joystick */}
+                        {isMobile && (
+                            <div className="mobile-joystick">
+                                <Joystick
+                                    size={100}
+                                    sticky={false}
+                                    baseColor="#4950579e"
+                                    stickColor="rgb(210 125 44)"
+                                    move={handleJoystickMove}
+                                    stop={handleJoystickStop}
+                                    throttle={16}
+                                    minDistance={15}
+                                />
+                            </div>
+                        )}
+                        
                         <div className="rpgui-container framed-grey">
                             <div className="minimap-content">
                                 {/* Main path on minimap */}
@@ -376,7 +429,7 @@ const SandboxPage: React.FC = () => {
                     autoPlay={false}
                     showVolumePercentage={true}
                 />
-
+                
                 {/* Structure Info Dialog */}
                 {showDialog && selectedStructure && (
                     <StructureDialog

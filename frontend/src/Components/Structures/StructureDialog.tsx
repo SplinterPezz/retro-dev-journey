@@ -43,7 +43,7 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
               <hr className={isCompany ? 'golden' : ''} />
             </div>
             
-            <div className="dialog-content">
+            <div className="dialog-content-structure">
               {isCompany && companyData ? (
                 <CompanyInfo company={companyData} />
               ) : (

@@ -89,7 +89,7 @@
 
 /* Controls info */
 .controls-info {
-  position: absolute;
+  position: fixed;
   bottom: 20px;
   left: 20px;
   pointer-events: auto;
@@ -125,9 +125,10 @@
 
 /* Minimap */
 .minimap {
-  position: absolute;
-  bottom: 20px;
+  position: fixed;
   right: 20px;
+  transform: translateX(-50%);
+  bottom: 20px;
   width: 200px;
   height: 150px;
   pointer-events: auto;
@@ -230,6 +231,43 @@
   }
 }
 
+
+.mobile-joystick {
+  bottom: 170px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  pointer-events: auto;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* Style the joystick base to match RPG theme */
+.mobile-joystick div[style*="position: relative"] {
+  border: 3px solid #8b4513 !important;
+  box-shadow: 
+    inset 2px 2px 0 rgba(255, 255, 255, 0.2),
+    inset -2px -2px 0 rgba(0, 0, 0, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Style the joystick stick */
+.mobile-joystick div[style*="position: absolute"] {
+  border: 2px solid #b8860b !important;
+  box-shadow: 
+    inset 1px 1px 0 rgba(255, 255, 255, 0.3),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
 /* Responsive design */
 @media (max-width: 1024px) {
   .career-progress {
@@ -238,6 +276,10 @@
 }
 
 @media (max-width: 768px) {
+  .mobile-joystick {
+    bottom: 110px;
+  }
+
   .back-button {
     top: 18px;
     left: 10px;
@@ -261,11 +303,15 @@
   }
 
   .controls-info .rpgui-container {
-     width: 75vw;
+     width: 60vw;
   }
 }
 
-@media (max-width: 480px) {  
+@media (max-width: 480px) {
+  .mobile-joystick {
+    bottom: 90px;
+  }
+
   .career-progress {
     width: 180px;
   }
@@ -277,6 +323,7 @@
   .minimap {
     width: 120px;
     height: 80px;
+    left: 80%;
   }
 
   .sandbox-loading .rpgui-container {
