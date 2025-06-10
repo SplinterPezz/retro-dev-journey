@@ -1,0 +1,222 @@
+import { useState, useEffect } from 'react';
+import { Position, Direction, PlayerMovementConfig, StructureData, Hitbox } from '../../../types/sandbox';
+import { playerHitbox } from '../config';
+
+interface PlayerMovementConfigExtended extends PlayerMovementConfig {
+  structures?: StructureData[];
+  playerHitbox?: Hitbox;
+}
+
+// Pure functions outside the hook
+const getDirectionFromKeys = (keys: Set<string>): Direction => {
+  const up = keys.has('w') || keys.has('arrowup');
+  const down = keys.has('s') || keys.has('arrowdown');
+  const left = keys.has('a') || keys.has('arrowleft');
+  const right = keys.has('d') || keys.has('arrowright');
+
+  if (up && left) return 'up-left';
+  if (up && right) return 'up-right';
+  if (down && left) return 'down-left';
+  if (down && right) return 'down-right';
+  if (up) return 'up';
+  if (down) return 'down';
+  if (left) return 'left';
+  if (right) return 'right';
+  
+  return 'idle';
+};
+
+// Check if two hitboxes overlap
+const checkHitboxCollision = (pos1: Position, hitbox1: Hitbox, pos2: Position, hitbox2: Hitbox): boolean => {
+  const box1 = {
+    x: pos1.x + hitbox1.x,
+    y: pos1.y + hitbox1.y,
+    width: hitbox1.width,
+    height: hitbox1.height
+  };
+
+  const box2 = {
+    x: pos2.x + hitbox2.x,
+    y: pos2.y + hitbox2.y,
+    width: hitbox2.width,
+    height: hitbox2.height
+  };
+
+  return box1.x < box2.x + box2.width &&
+         box1.x + box1.width > box2.x &&
+         box1.y < box2.y + box2.height &&
+         box1.y + box1.height > box2.y;
+};
+
+// Check collision with structures
+const checkStructureCollision = (
+  newPos: Position, 
+  playerHitbox: Hitbox, 
+  structures?: StructureData[]
+): boolean => {
+  if (!structures) return false;
+
+  return structures.some(structure => {
+    if (!structure.data.collisionHitbox) return false;
+    
+    return checkHitboxCollision(
+      newPos, 
+      playerHitbox, 
+      structure.position, 
+      structure.data.collisionHitbox
+    );
+  });
+};
+
+// Calculate new position based on direction
+const calculateNewPosition = (
+  currentPos: Position, 
+  dir: Direction, 
+  speed: number,
+  worldBounds: any,
+  playerHitbox: Hitbox,
+  structures?: StructureData[]
+): Position => {
+  let newX = currentPos.x;
+  let newY = currentPos.y;
+  
+  // Diagonal movement is slower to maintain consistent speed
+  const diagonalSpeed = speed * 0.707; // √2/2 ≈ 0.707
+
+  switch (dir) {
+    case 'up':
+      newY -= speed;
+      break;
+    case 'down':
+      newY += speed;
+      break;
+    case 'left':
+      newX -= speed;
+      break;
+    case 'right':
+      newX += speed;
+      break;
+    case 'up-left':
+      newX -= diagonalSpeed;
+      newY -= diagonalSpeed;
+      break;
+    case 'up-right':
+      newX += diagonalSpeed;
+      newY -= diagonalSpeed;
+      break;
+    case 'down-left':
+      newX -= diagonalSpeed;
+      newY += diagonalSpeed;
+      break;
+    case 'down-right':
+      newX += diagonalSpeed;
+      newY += diagonalSpeed;
+      break;
+  }
+
+  const newPos = { x: newX, y: newY };
+
+  // Check world bounds
+  newPos.x = Math.max(worldBounds.minX, Math.min(worldBounds.maxX, newPos.x));
+  newPos.y = Math.max(worldBounds.minY, Math.min(worldBounds.maxY, newPos.y));
+
+  // Check structure collisions
+  if (checkStructureCollision(newPos, playerHitbox, structures)) {
+    // Try moving only on X axis
+    const xOnlyPos = { x: newPos.x, y: currentPos.y };
+    if (!checkStructureCollision(xOnlyPos, playerHitbox, structures)) {
+      return xOnlyPos;
+    }
+    
+    // Try moving only on Y axis
+    const yOnlyPos = { x: currentPos.x, y: newPos.y };
+    if (!checkStructureCollision(yOnlyPos, playerHitbox, structures)) {
+      return yOnlyPos;
+    }
+    
+    // No movement possible, stay at current position
+    return currentPos;
+  }
+
+  return newPos;
+};
+
+export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
+  const [position, setPosition] = useState<Position>(config.initialPosition);
+  const [direction, setDirection] = useState<Direction>('idle');
+  const [isMoving, setIsMoving] = useState(false);
+  const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
+
+  // Handle key press
+  const handleKeyDown = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    if (['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' '].includes(key)) {
+      event.preventDefault();
+      setPressedKeys(prev => new Set([...prev, key]));
+    }
+  };
+
+  // Handle key release
+  const handleKeyUp = (event: KeyboardEvent) => {
+    const key = event.key.toLowerCase();
+    setPressedKeys(prev => {
+      const newKeys = new Set(prev);
+      newKeys.delete(key);
+      return newKeys;
+    });
+  };
+
+  // Movement loop
+  useEffect(() => {
+    const gameLoop = setInterval(() => {
+      const currentDirection = getDirectionFromKeys(pressedKeys);
+      const moving = currentDirection !== 'idle';
+      const isRunning = pressedKeys.has('shift') || pressedKeys.has(' ');
+      
+      setDirection(currentDirection);
+      setIsMoving(moving);
+
+      if (moving) {
+        const currentSpeed = isRunning ? config.speed * 1.5 : config.speed;
+        setPosition(currentPos => 
+          calculateNewPosition(
+            currentPos, 
+            currentDirection, 
+            currentSpeed, 
+            config.worldBounds, 
+            playerHitbox, 
+            config.structures
+          )
+        );
+      }
+    }, 16); // ~60 FPS
+
+    return () => clearInterval(gameLoop);
+  }, [pressedKeys, config.speed, config.worldBounds, playerHitbox, config.structures]);
+
+  // Event listeners
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
+
+  // Prevent context menu on long press (mobile)
+  useEffect(() => {
+    const preventContextMenu = (e: Event) => e.preventDefault();
+    window.addEventListener('contextmenu', preventContextMenu);
+    return () => window.removeEventListener('contextmenu', preventContextMenu);
+  }, []);
+
+  return {
+    playerPosition: position,
+    direction,
+    isMoving,
+    setPlayerPosition: setPosition,
+    playerHitbox
+  };
+};
