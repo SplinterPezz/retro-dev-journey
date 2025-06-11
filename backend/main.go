@@ -74,7 +74,7 @@ func main() {
 	})
 
 	// Routes for HTTP-based interactions
-	r.GET("/hello", handlers.HelloWorld)
+	//r.GET("/hello", handlers.HelloWorld)
 
 	//r.POST("/register", auth.Register)
 	r.POST("/login", auth.Login)
@@ -84,6 +84,9 @@ func main() {
 
 	// Protected routes (authentication required)
 	r.POST("/upload/cv", handlers.UploadCV)
+
+	// Tracking Route for users
+	r.POST("/info", handlers.TrackData)
 
 	// Start HTTP server
 	server := &http.Server{

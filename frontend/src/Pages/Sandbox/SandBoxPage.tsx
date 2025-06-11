@@ -17,12 +17,18 @@ import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 import { Joystick } from 'react-joystick-component';
+import { useTracking } from "../../hooks/tracking";
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+
+    const { trackInteraction } = useTracking({
+        page: 'sandbox',
+        enabled: true
+      });
 
     // Check if device is mobile
     useEffect(() => {
@@ -155,6 +161,13 @@ const SandboxPage: React.FC = () => {
             return () => clearTimeout(timer);
         }
     }, [nearbyStructure, showDialog]);
+
+    // Track interaction with structure with isNearby
+    useEffect(() => {
+        if (nearbyStructure) {
+            trackInteraction(nearbyStructure.data.id);
+        }
+    }, [nearbyStructure, trackInteraction]);
 
     // Handle back to home
     const handleBackToHome = () => {
@@ -422,7 +435,6 @@ const SandboxPage: React.FC = () => {
                     audioSrc="/audio/sandbox_compressed.mp3"
                     defaultVolume={15}
                     defaultMuted={true}
-                    position="top-right"
                     buttonStyle="normal"
                     containerStyle="framed-grey"
                     loop={true}

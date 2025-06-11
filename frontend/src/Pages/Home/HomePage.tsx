@@ -1,60 +1,93 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, MouseEventHandler } from "react";
 import AudioControls from "../../Components/AudioControls/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
 import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
+import { useTracking } from "../../hooks/tracking";
+import { downloadCV } from '../../Services/fileService';
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
-  
+
+  const { trackInteraction } = useTracking({
+    page: 'homepage',
+    enabled: true
+  });
+
   useEffect(() => {
-    // Disable scroll 
     document.body.classList.add('homepage-active');
 
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.src = '/backgrounds/3dcjfz5xxyw21.gif';
+    img.src = '/backgrounds/home_page.gif';
   }, []);
-  
+
   const handleDialogComplete = () => {
     process.env.REACT_APP_ENV === 'development' && console.log("Dialog complete")
   };
 
+  const handleDownloadCV = (platform: string ) => {
+    try {
+      downloadCV();
+    }
+    catch(error){
+      process.env.REACT_APP_ENV === 'development' && console.error('Download failed:', error);
+    }
+    trackInteraction(platform);
+  };
+
+  const handleTrkSocial = (platform: string ) => {
+    trackInteraction(platform);
+  }
+
   return (
-    <div className="rpgui-content">
-      <div className="homepage-container">
-        {/* Audio Controls */}
-        <div className={`homepage-background ${imageLoaded ? '' : 'opacity-not-loaded'} ${!imageLoaded ? 'loading' : ''}`}/>
-        
-        {imageLoaded && <GameModeSelector />}
+    <>
+      <div className="rpgui-content">
+        {!imageLoaded ?
+          <>
+            <div className='homepage-background opacity-not-loaded loading' />
+            <div className="loader-home">
+              Loading...
+            </div>
+          </>
+          :
+          <div className="homepage-container">
+            <div className='homepage-background' />
+            <GameModeSelector handleDownloadClick={handleDownloadCV}/>
+            <IntroDialog
+              onComplete={handleDialogComplete}
+              initialDelay={3000}
+              debugMode={process.env.REACT_APP_ENV === 'development'}
+            />
+            <div>
+              <div className="social-container">
+                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
+                  <img className="social-image me-4" src="/sprites/others/linkedin.png" />
+                </a>
+                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
+                  <img className="social-image" src="/sprites/others/github.png" />
+                </a>
+              </div>
 
-        {imageLoaded && 
-          <IntroDialog 
-            onComplete={handleDialogComplete} 
-            initialDelay={3000} 
-            debugMode={process.env.REACT_APP_ENV === 'development'}
-          />
-        }
-        
-        <AudioControls 
-          audioSrc="/audio/home_compressed.mp3"
-          defaultVolume={20}
-          defaultMuted={true}
-          position="top-right"
-          buttonStyle="normal"
-          containerStyle="framed-grey"
-          loop={true}
-          autoPlay={false}
-          showVolumePercentage={true}
-        />
+              <AudioControls
+                audioSrc="/audio/home_compressed.mp3"
+                defaultVolume={20}
+                defaultMuted={true}
+                buttonStyle="normal"
+                containerStyle="framed-grey"
+                loop={true}
+                autoPlay={false}
+                showVolumePercentage={true}
+                className="home-page"
+              />
 
-        {/* Loading indicator */}
-        {!imageLoaded && (
-          <div className="loader-home">
-            Loading...
+            </div>
           </div>
-        )}
+        }
       </div>
-    </div>
+
+
+    </>
+
   );
 }

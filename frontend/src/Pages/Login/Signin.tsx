@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import { RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
-import { LoginModel } from "./types";
+import { LoginModel } from "../../types/api";
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
   height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",

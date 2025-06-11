@@ -15,7 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -23,6 +22,7 @@ import (
 // Global variable to hold the MongoDB client
 var Client *mongo.Client
 var usersCollection *mongo.Collection
+var trkCollection *mongo.Collection
 
 // InitMongoDB initializes the MongoDB connection and assigns it to the global Client variable
 func InitMongoDB() {
@@ -67,13 +67,14 @@ func InitMongoDB() {
 		log.Fatal("Failed to ping MongoDB:", err)
 	}
 
-	// Select the database and initialize the usersCollection
+	// Select the database and initialize the colletions
 	dbName := os.Getenv("DB_NAME") // Get the database name from environment variable
 	if dbName == "" {
 		log.Fatal("DB_NAME is not set in environment variables")
 	}
 
-	usersCollection = Client.Database(dbName).Collection("users")       // Set the users collection
+	usersCollection = Client.Database(dbName).Collection("users") // Set the users collection
+	trkCollection = Client.Database(dbName).Collection("trk")     // Set the trk collection
 
 	fmt.Println("Connected to MongoDB and initialized users collection!")
 	//ROOT_USERNAME='admin'
@@ -90,15 +91,14 @@ func InitMongoDB() {
 		fmt.Println("Root user doesnt exists, creating Root user")
 
 		CreateRootUser()
-		
+
 	} else {
 		fmt.Println("Root user already exists, skip creating user.")
 	}
-	
 
 }
 
-func CreateRootUser()  (string, error) {
+func CreateRootUser() (string, error) {
 	rootUsername := os.Getenv("ROOT_USERNAME")
 	rootPassword := os.Getenv("ROOT_PASSWORD")
 	rootEmail := os.Getenv("ROOT_EMAIL")
@@ -112,27 +112,26 @@ func CreateRootUser()  (string, error) {
 		Password: rootPassword,
 		Email:    rootEmail,
 	}
-	
+
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatal("Could not hash password : " , err.Error())
+		log.Fatal("Could not hash password : ", err.Error())
 	}
-	
+
 	user.Password = string(hashedPassword)
 	userId, err := CreateUser(user)
 
 	// Create the user in the database
 	if err != nil {
-		log.Fatal("Could not create user : " , err.Error())
+		log.Fatal("Could not create user : ", err.Error())
 	}
 
 	fmt.Println("Root user created with Id : ", userId)
 
-
 	// Generate JWT token for the newly created user
 	token, _, err := utils.GenerateJWT(user.Username)
 	if err != nil {
-		log.Fatal("Could not create token : " , err.Error())
+		log.Fatal("Could not create token : ", err.Error())
 	}
 
 	fmt.Println("Root user created.")
@@ -279,3 +278,10 @@ func FindUserById(userID string) (*models.User, error) {
 	return &user, nil
 }
 
+func SaveTrackData(trackData models.TrackData) {
+	_, err := trkCollection.InsertOne(context.Background(), trackData)
+
+	if err != nil {
+		fmt.Println("Error on insert TrackData", err)
+	}
+}

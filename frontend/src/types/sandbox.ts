@@ -48,7 +48,7 @@ export interface EnvironmentDataAnimated {
 
 export interface CompanyData {
   id: string;
-  company: string;
+  name: string;
   role: string;
   period: string;
   technologies: string[];
@@ -67,6 +67,7 @@ export interface CompanyData {
 }
 
 export interface TechnologyData {
+  id: string;
   name: string;
   category?: string;
   level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';

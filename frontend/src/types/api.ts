@@ -17,13 +17,6 @@ export interface TokenAuth {
   user: string;
 }
 
-export interface CVInfo {
-  filename: string;
-  size: number;
-  modified_at: string;
-  exists: boolean;
-}
-
 export interface UploadResponse {
   message: string;
   filename: string;

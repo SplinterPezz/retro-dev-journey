@@ -115,7 +115,6 @@ const calculateNewPosition = (
   return (nx === currentPos.x && ny === currentPos.y) ? currentPos : newPos;
 };
 
-// Hook starts here
 interface PlayerMovementConfigExtended extends PlayerMovementConfig {
   structures?: StructureData[];
   playerHitbox?: Hitbox;

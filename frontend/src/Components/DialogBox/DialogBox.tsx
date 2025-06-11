@@ -79,7 +79,7 @@ const DialogBox: React.FC<DialogBoxProps> = ({
   }
 
   return (
-    <div className={`dialog-box-container ${isVisible ? 'visible' : 'hidden'}`}>
+    <div className={`dialog-box-container d-none d-sm-block ${isVisible ? 'visible' : 'hidden'}`}>
       <div className="rpgui-content">
         <div className="rpgui-container framed">
           <div className="dialog-content">

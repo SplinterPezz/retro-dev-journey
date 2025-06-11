@@ -60,7 +60,7 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   // In modalità debug, mostra solo un messaggio statico
   if (debugMode) {
     return (
-      <div className="dialog-box-container visible">
+      <div className="dialog-box-container visible d-none d-sm-block">
         <div className="rpgui-content">
           <div className="rpgui-container framed">
             <div className="dialog-content">
