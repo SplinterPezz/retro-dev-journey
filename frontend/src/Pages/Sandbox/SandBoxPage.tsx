@@ -130,7 +130,7 @@ const SandboxPage: React.FC = () => {
         handleJoystickStop 
     } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
-        speed: 2,
+        speed: 3.5,
         worldBounds: {
             minX: 50,
             minY: 50,
