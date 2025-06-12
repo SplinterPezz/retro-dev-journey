@@ -6,14 +6,12 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import Link from "@mui/material/Link";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Card from "../../Components/Common/Card";
 import { styled } from "@mui/material/styles";
-import ForgotPassword from "./ForgotPassword";
-import { SitemarkIcon } from "../../Components/Common/CustomIcons";
+
 import { login } from "../../Services/authService";
 import "./login.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,38 +21,79 @@ import { useNavigate } from "react-router-dom";
 import { LoginModel } from "../../types/api";
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
-  height: "calc((1 - var(--template-frame-height, 0)) * 100dvh)",
-  minHeight: "100%",
+  height: "100vh",
+  minHeight: "100vh",
+  width: "100vw",
+  position: "relative",
   padding: theme.spacing(2),
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  overflow: "hidden",
   [theme.breakpoints.up("sm")]: {
     padding: theme.spacing(4),
   },
   "&::before": {
     content: '""',
-    display: "block",
-    position: "absolute",
-    zIndex: -1,
-    inset: 0,
-    backgroundImage:
-      "radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))",
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundImage: "url('/backgrounds/login.png')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    ...theme.applyStyles("dark", {
-      backgroundImage:
-        "radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))",
-    }),
+    backgroundAttachment: "fixed",
+    zIndex: -2,
   },
+  "&::after": {
+    content: '""',
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    background: "rgba(0, 0, 0, 0.4)",
+    zIndex: -1,
+  }
+}));
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  background: "rgba(255, 255, 255, 0.95)",
+  backdropFilter: "blur(10px)",
+  border: "1px solid rgba(255, 255, 255, 0.2)",
+  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+  borderRadius: theme.spacing(2),
+  padding: theme.spacing(3),
+  maxWidth: "450px",
+  width: "100%",
+  position: "relative",
+  zIndex: 1,
+  [theme.breakpoints.down("sm")]: {
+    margin: theme.spacing(2),
+    padding: theme.spacing(2),
+  }
 }));
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/admin');
     }
   }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    document.body.classList.add('login-active');
+
+    return () => {
+      document.body.classList.remove('login-active');
+    };
+  }, []);
 
   // State for form inputs
   const [email, setEmail] = useState("");
@@ -88,7 +127,7 @@ export default function SignIn() {
     setOpenErrorMessage(false);
   };
 
-  const triggerError = (message: string, status:string) => {
+  const triggerError = (message: string, status: string) => {
     setErrorMessage(message);
     setErrorStatus(status)
     setOpenErrorMessage(true);
@@ -127,7 +166,7 @@ export default function SignIn() {
           hasNumber = true;
         }
         else if (/[\p{P}\p{S}]/u.test(char)) {
-        // Check for punctuation or symbols using Unicode properties
+          // Check for punctuation or symbols using Unicode properties
           hasSpecial = true;
         }
       }
@@ -140,7 +179,6 @@ export default function SignIn() {
       if (!emailData) return "Please enter a valid email address.";
       return "";
     };
-
 
     const errorMessage = validateEmail(email);
 
@@ -239,14 +277,14 @@ export default function SignIn() {
           token: loginToken.token,
           expiration: loginToken.expiration,
         }));
-        
+
       } else if (loginToken.fieldError && loginToken.error) {
         handleErrorField(loginToken.fieldError, loginToken.error);
       } else {
-        triggerError('Something went wrong : '+ loginToken.error, "error")
+        triggerError('Something went wrong : ' + loginToken.error, "error")
       }
     } catch (err) {
-      triggerError('Something went wrong : '+ err, "error")
+      triggerError('Something went wrong : ' + err, "error")
     }
   };
 
@@ -259,13 +297,6 @@ export default function SignIn() {
     setUsernameErrorMessage("");
   };
 
-  const toggleAuthMode = () => {
-    setEmail("");
-    setPassword("");
-    setUsername("");
-    resetErrors();
-  };
-
   return (
     <>
       <CssBaseline enableColorScheme />
@@ -274,21 +305,43 @@ export default function SignIn() {
         open={openErrorMessage}
         autoHideDuration={2500}
         onClose={handleCloseErrorMessage}
+        sx={{ zIndex: 9999 }}
       >
-        <Alert onClose={handleCloseErrorMessage} severity={errorStatus === "error" ? "error":"success"} sx={{ width: "100%" }}>
+        <Alert onClose={handleCloseErrorMessage} severity={errorStatus === "error" ? "error" : "success"} sx={{ width: "100%" }}>
           {errorMessage}
         </Alert>
       </Snackbar>
-      <SignInContainer direction="column" justifyContent="space-between">
-        <Card variant="outlined">
-          <SitemarkIcon />
+
+      <SignInContainer direction="column" justifyContent="center" alignItems="center">
+        <StyledCard variant="outlined">
           <Typography
             component="h1"
             variant="h4"
-            sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
+            sx={{
+              width: "100%",
+              fontSize: "clamp(1.5rem, 8vw, 2.15rem)",
+              textAlign: "center",
+              marginBottom: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 1,
+              color: "#333",
+              fontWeight: "bold"
+            }}
           >
             {"Sign In"}
+            <img
+              style={{
+                width: "50px",
+                height: "50px",
+                imageRendering: "pixelated"
+              }}
+              src='/sprites/player/dude_turn.gif'
+              alt="Character animation"
+            />
           </Typography>
+
           <Box
             component="form"
             onSubmit={handleSubmit}
@@ -301,7 +354,16 @@ export default function SignIn() {
             }}
           >
             <FormControl>
-              <FormLabel htmlFor="email">
+              <FormLabel
+                htmlFor="email"
+                sx={{
+                  color: "#333",
+                  fontWeight: "600",
+                  "&.Mui-focused": {
+                    color: "#1976d2"
+                  }
+                }}
+              >
                 {"Email / Username"}
               </FormLabel>
               <TextField
@@ -320,11 +382,33 @@ export default function SignIn() {
                 variant="outlined"
                 color={emailError ? "error" : "primary"}
                 className={emailShake ? "shake" : ""}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    },
+                    "&.Mui-focused": {
+                      backgroundColor: "rgba(255, 255, 255, 1)",
+                    }
+                  }
+                }}
               />
             </FormControl>
 
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel
+                htmlFor="password"
+                sx={{
+                  color: "#333",
+                  fontWeight: "600",
+                  "&.Mui-focused": {
+                    color: "#1976d2"
+                  }
+                }}
+              >
+                Password
+              </FormLabel>
               <TextField
                 error={passwordError}
                 helperText={passwordErrorMessage}
@@ -335,40 +419,51 @@ export default function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete={"current-password"}
-                autoFocus
                 required
                 fullWidth
                 variant="outlined"
                 color={passwordError ? "error" : "primary"}
                 className={passwordShake ? "shake" : ""}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
+                    },
+                    "&.Mui-focused": {
+                      backgroundColor: "rgba(255, 255, 255, 1)",
+                    }
+                  }
+                }}
               />
             </FormControl>
 
-            <ForgotPassword open={open} handleClose={handleClose} />
-
             <Button
+              className="mt-3"
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ "primary.main &:hover": "primary.dark"}}
+              sx={{
+                marginTop: 2,
+                padding: "12px",
+                fontSize: "1.1rem",
+                fontWeight: "bold",
+                textTransform: "none",
+                borderRadius: "8px",
+                background: "#1976d2",
+                "&:hover": {
+                  background: "#1565c0",
+
+                }
+              }}
             >
               {"Sign In"}
             </Button>
-
-            <Link
-                component="button"
-                type="button"
-                onClick={handleClickOpen}
-                variant="body2"
-                sx={{ alignSelf: "center" }}
-              >
-                Forgot your password?
-              </Link>
           </Box>
 
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           </Box>
-        </Card>
+        </StyledCard>
       </SignInContainer>
     </>
   );

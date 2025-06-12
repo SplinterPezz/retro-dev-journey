@@ -5,9 +5,11 @@ import "./HomePage.css";
 import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
 import { useTracking } from "../../hooks/tracking";
 import { downloadCV } from '../../Services/fileService';
+import { useNavigate } from 'react-router-dom';
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const navigate = useNavigate();
 
   const { trackInteraction } = useTracking({
     page: 'homepage',
@@ -25,6 +27,10 @@ export default function HomePage() {
   const handleDialogComplete = () => {
     process.env.REACT_APP_ENV === 'development' && console.log("Dialog complete")
   };
+
+  const handleAdminPage = () => {
+    navigate("/admin")
+  }
 
   const handleDownloadCV = (platform: string ) => {
     try {
@@ -61,12 +67,16 @@ export default function HomePage() {
             />
             <div>
               <div className="social-container">
+                <a onClick={handleAdminPage}>
+                  <img className="social-image me-4" src="/sprites/player/dude_turn.gif" />
+                </a>
                 <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
                   <img className="social-image me-4" src="/sprites/others/linkedin.png" />
                 </a>
                 <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
                   <img className="social-image" src="/sprites/others/github.png" />
                 </a>
+                
               </div>
 
               <AudioControls
