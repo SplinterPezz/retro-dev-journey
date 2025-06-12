@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { MouseEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './GameModeSelector.css';
 
-const GameModeSelector: React.FC = () => {
+interface GameSelectorProps {
+  handleDownloadClick(platform:string): void
+}
+
+const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) => {
   const navigate = useNavigate();
   const [backgroundVisible, setBackgroundVisible] = useState(true);
 
@@ -48,7 +52,7 @@ const GameModeSelector: React.FC = () => {
             Exploration Modes:
           </label>
 
-          <div className="game-mode-buttons">
+          <div className="game-mode-buttons mt-2">
             <button
               className="rpgui-button golden gamemode-button-size"
               type="button"
@@ -73,6 +77,15 @@ const GameModeSelector: React.FC = () => {
           <p className="game-mode-hint">
             Choose wisely, adventurer!
           </p>
+
+          <button
+            className="rpgui-button mt-3"
+            type="button"
+            style={{width:"250px"}}
+            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {handleDownloadClick('download')}}
+          >
+            <p className='revert-top'>Download CV</p>
+          </button>
         </div>
       </div>
     </div>

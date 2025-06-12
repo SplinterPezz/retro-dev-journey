@@ -1,7 +1,6 @@
 import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
 
 export const tileSize: number = 128;
-
 export const downloadButtonId: string = 'download-button';
 export const maxSizeFileCV : number = 5; //MB
 export const downloadCVCooldown: number = 60;
@@ -46,7 +45,7 @@ export const downloadButton : StructureData = {
   description: "Download CV!",
   data: {
     animatedImage: "/sprites/others/download_button_2_frames.gif",
-    //cooldownImage: "/sprites/others/download_button_cooldown.png",
+    id: "download",
     name: "download",
     position: {x: 0, y: 0},
     centering : {x: -130, y: -120},
@@ -218,7 +217,7 @@ export const detailsEnvironments: EnvironmentData[] = [
 const companiesData: CompanyData[] = [
   {
     id: "eikony",
-    company: "Eikony (IT)",
+    name: "Eikony (IT)",
     role: "IT Intern",
     period: "2014 - 2014",
     technologies: ["Java", "Android SDK", "Objective-C"],
@@ -237,7 +236,7 @@ const companiesData: CompanyData[] = [
   },
   {
     id: "unipa",
-    company: "University - Computer Science",
+    name: "University - Computer Science",
     role: "Student",
     period: "2015 - 2019",
     technologies: ["Java", "MySQL", "C", "Open Data", "CSN"],
@@ -256,7 +255,7 @@ const companiesData: CompanyData[] = [
   },
   {
     id: "foryouviaggi",
-    company: "ForYou Viaggi (IT)",
+    name: "ForYou Viaggi (IT)",
     role: "Software Developer",
     period: "2020 - 2020",
     technologies: [
@@ -276,7 +275,7 @@ const companiesData: CompanyData[] = [
   },
   {
     id: "alessi",
-    company: "Alessi S.p.a (IT)",
+    name: "Alessi S.p.a (IT)",
     role: "Software Developer",
     period: "2018 - 2019",
     technologies: ["JavaScript", "PHP", "MySQL", "SQL", "Talend", "Pentaho", "365 API"],
@@ -295,7 +294,7 @@ const companiesData: CompanyData[] = [
   },
   {
     id: "codesour",
-    company: "CodeSour (IT)",
+    name: "CodeSour (IT)",
     role: "Software Developer",
     period: "2019 - 2025",
     technologies: [
@@ -317,7 +316,7 @@ const companiesData: CompanyData[] = [
   },
   {
     id:"???",
-    company: "???",
+    name: "???",
     role: "Your Next Great Hire",
     period: "2025 - Future",
     technologies: ["Your Tech Stack", "Innovation", "Growth"],
@@ -338,6 +337,7 @@ const companiesData: CompanyData[] = [
 // Technology data with specific positions
 const technologiesData: TechnologyData[] = [
   {
+    id: "java",
     name: "Java",
     category: "Programming Language",
     level: "Expert",
@@ -358,6 +358,7 @@ const technologiesData: TechnologyData[] = [
     centering : {x: -50, y: 30}
   },
   {
+    id: "python",
     name: "Python",
     category: "Programming Language",
     level: "Expert",
@@ -377,6 +378,7 @@ const technologiesData: TechnologyData[] = [
     shadow: { height: 30, width:140 , position: {x:135, y:240}}
   },
   {
+    id: "golang",
     name: "Golang",
     category: "Programming Language",
     level: "Beginner",
@@ -394,6 +396,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "javascript",
     name: "JavaScript",
     category: "Programming Language",
     level: "Advanced",
@@ -412,6 +415,7 @@ const technologiesData: TechnologyData[] = [
     shadow: { height: 30, width:180 , position: {x: 60, y:230}},
   },
   {
+    id: "kafka",
     name: "Kafka & Google PubSub",
     category: "Messaging and Queue",
     level: "Advanced",
@@ -429,6 +433,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "mongodb",
     name: "MongoDB",
     category: "Database",
     level: "Expert",
@@ -452,6 +457,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "cassandradb",
     name: "CassandraDB",
     category: "Database",
     level: "Advanced",
@@ -470,6 +476,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "elastic",
     name: "ElasticSearch",
     category: "Other",
     level: "Intermediate",
@@ -484,6 +491,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "sql",
     name: "MySQL & SQL",
     category: "Database",
     level: "Expert",
@@ -501,6 +509,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "docker",
     name: "Docker",
     category: "Dev/Ops",
     level: "Expert",
@@ -527,6 +536,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "aws",
     name: "Amazon AWS",
     category: "Cloud",
     level: "Intermediate",
@@ -540,6 +550,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "gcp",
     name: "Google Cloud Platform",
     category: "Cloud",
     level: "Advanced",
@@ -558,6 +569,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "pipelines",
     name: "Pipelines",
     category: "Other",
     level: "Expert",
@@ -578,6 +590,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "etl",
     name: "ETL & OLAP",
     category: "Other",
     level: "Expert",
@@ -597,6 +610,7 @@ const technologiesData: TechnologyData[] = [
     shadow: { height: 25, width:120 , position: {x:70, y:225}},
   },
   {
+    id: "git",
     name: "Git",
     category: "Dev/Ops",
     level: "Expert",
@@ -623,6 +637,7 @@ const technologiesData: TechnologyData[] = [
 
   },
   {
+    id: "ai",
     name: "Artificial Intelligence",
     category: "Other",
     level: "Beginner",
@@ -645,7 +660,7 @@ const technologiesData: TechnologyData[] = [
 // Convert to structure data
 export const companies: StructureData[] = companiesData.map((company, index) => ({
   id: `company-${index}`,
-  name: company.company,
+  name: company.name,
   type: 'building',
   position: company.position,
   description: company.description,

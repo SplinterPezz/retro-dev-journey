@@ -13,7 +13,6 @@
 
 .title-gamemode-box{
     color: #ffd700 !important;
-    font-size: clamp(1.2rem, 4vw, 1.0rem) !important;
 }
 
 .game-mode-selector .rpgui-container {
@@ -23,11 +22,8 @@
     backdrop-filter: blur(2px);
 }
 
-.game-mode-title {
-    margin-bottom: 15px;
-    color: #ffd700;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    font-size: 1.5rem;
+.title-gamemode-box {
+    font-size: 1.6em !important; 
 }
 
 
@@ -88,8 +84,8 @@
         padding: 0 10px;
     }
 
-    .game-mode-title {
-        font-size: 1.3rem;
+    .title-gamemode-box {
+        font-size: 1.38em !important;
     }
 
     .game-mode-description p {
@@ -100,12 +96,12 @@
 @media (max-width: 480px) {
     .game-mode-selector {
         min-width: 300px;
-        top: 15%;
+        top: 6%;
         margin-left: -5px;
     }
 
-    .game-mode-title {
-        font-size: 1.2rem;
+    .title-gamemode-box {
+        font-size: 1.17em !important;
     }
 
     .game-mode-selector .rpgui-container {

@@ -45,13 +45,30 @@
     margin-bottom: 10px;
 }
 
+.volume-position{
+    position: fixed;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+    top: 20px;
+    right: 20px;
+}
+
 @media (max-width: 480px) {
     .volume-controls{
         padding: 8px;
         min-width: 50px;
         min-height: 50px;
     }
-
+    
+    .volume-position.home-page{
+        top: unset;
+        bottom: 20px;
+        right: 20px;
+    }
+    
     .unmute-controls{
         padding: 8px;
         min-width: 50px;

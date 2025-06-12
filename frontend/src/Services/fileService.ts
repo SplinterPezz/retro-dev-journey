@@ -1,5 +1,5 @@
 import { fetchFromApi } from '../Utils/apiService';
-import { ApiError, CVInfo, UploadResponse } from '../Pages/Login/types';
+import { ApiError, UploadResponse } from '../types/api';
 import { maxSizeFileCV } from '../Pages/Sandbox/config';
 
 export const downloadCV = async (): Promise<void> => {

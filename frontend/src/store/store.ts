@@ -11,17 +11,18 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authSlice from './authSlice';
-
+import trackingSlice from './trackingSlice';
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth']
+  whitelist: ['auth', 'tracking']
 };
 
 const rootReducer = combineReducers({
-  auth: authSlice
+  auth: authSlice,
+  tracking: trackingSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

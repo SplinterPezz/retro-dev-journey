@@ -9,7 +9,6 @@ interface AudioControlsProps {
   defaultMuted?: boolean;
   loop?: boolean;
   autoPlay?: boolean;
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
   showVolumePercentage?: boolean;
   containerStyle?: 'framed' | 'framed-golden' | 'framed-grey';
   buttonStyle?: 'normal' | 'golden';
@@ -23,7 +22,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   defaultMuted = true,
   loop = true,
   autoPlay = false,
-  position = 'top-right',
   showVolumePercentage = true,
   containerStyle = 'framed-grey',
   buttonStyle = 'normal',
@@ -34,28 +32,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   const [showVolumeControls, setShowVolumeControls] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
-
-  const getPositionStyle = () => {
-    const baseStyle = {
-      position: 'fixed' as const,
-      zIndex: 1000,
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: '10px',
-      alignItems: 'flex-end' as const
-    };
-
-    switch (position) {
-      case 'top-left':
-        return { ...baseStyle, top: '20px', left: '20px', alignItems: 'flex-start' as const };
-      case 'bottom-right':
-        return { ...baseStyle, bottom: '20px', right: '20px' };
-      case 'bottom-left':
-        return { ...baseStyle, bottom: '20px', left: '20px', alignItems: 'flex-start' as const };
-      default:
-        return { ...baseStyle, top: '20px', right: '20px' };
-    }
-  };
 
   useEffect(() => {
     if (audioRef.current) {
@@ -134,7 +110,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   };
 
   return (
-    <div className={`rpgui-content ${className}`}>
+    <div className={`rpgui-content`}>
       <audio
         ref={audioRef}
         src={audioSrc}
@@ -143,7 +119,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
         onError={handleAudioError}
       />
 
-      <div style={getPositionStyle()}>
+      <div className={`volume-position ${className}`}>
         <div className='audio-container'>
           {/* Volume Controls Button */}
           <button
