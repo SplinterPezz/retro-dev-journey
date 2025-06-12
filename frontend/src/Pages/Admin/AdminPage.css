@@ -1,10 +1,10 @@
 /* Admin page main container */
 .admin-container {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   position: relative;
   padding: 20px;
-  overflow-y: auto;
+  overflow: hidden; /* Prevent body scroll */
 }
 
 /* Background image */
@@ -22,19 +22,20 @@
   z-index: -1;
 }
 
-/* Main content wrapper */
+/* Main content wrapper - Now flex container */
 .admin-content {
   position: relative;
   z-index: 1;
   max-width: 95%;
   margin: 0 auto;
-  min-height: calc(100vh - 40px);
+  height: calc(100vh - 40px);
   display: flex;
   flex-direction: column;
 }
 
-/* Header section */
+/* Header section - Fixed */
 .admin-header {
+  flex-shrink: 0; /* Don't shrink */
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -48,7 +49,7 @@
 
 .admin-title {
   color: #ffd700 !important;
-  font-size: 2.5rem !important;
+  font-size: 1.5rem !important;
   margin: 0 0 10px 0;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   font-weight: bold;
@@ -67,30 +68,34 @@
   margin-top: 5px;
 }
 
-/* Main dashboard content */
 .admin-main-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
-.main-dashboard {
-  padding: 30px;
-  background: rgba(139, 69, 19, 0.15) !important;
-  backdrop-filter: blur(5px);
-  border: 2px solid rgba(255, 215, 0, 0.3) !important;
-  max-width: 1200px;
-  width: 100%;
-  text-align: center;
+    overflow-x: hidden;
+    align-items: self-start;
+    padding-right: 5px;
+    max-width: 1200px;
+    width: 90%;
+    min-width: 320px;
+    place-self: center;
+    margin-bottom: 0px;
+    padding-right: 10px;
+    margin-right: -25px;
 }
 
 .date-picker{
     width: 170px;
 }
 
+.date-picker.start{
+    margin-right: 20px ;
+}
+
+.apexcharts-title-text{
+    margin-bottom: 20px !important;
+}
+
 .dashboard-title {
   color: #ffd700 !important;
-  font-size: 1.8rem !important;
+  font-size: 1.2rem !important;
   text-align: start !important;
   margin-bottom: 10px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
@@ -110,7 +115,11 @@
     top: 20px;
     right: 0;
     margin-right: 20px;
-  }
+}
+
+.rpgui-container.main-dashboard{
+    position: relative;
+}
 
 /* Responsive design */
 @media (max-width: 1024px) {
@@ -119,7 +128,7 @@
   }
   
   .admin-title {
-    font-size: 2.2rem !important;
+    font-size: 1.3rem !important;
   }
   
   .main-dashboard {
@@ -129,56 +138,27 @@
 }
 
 @media (max-width: 768px) {
-  .admin-container {
-    padding: 15px;
-  }
-  
-  .admin-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 15px;
-  }
-  
-  .admin-title-section {
-    order: 1;
-  }
-  
-  .back-button {
-    order: 0;
-    align-self: center;
-  }
   
   .admin-title {
-    font-size: 1.8rem !important;
+    font-size: 1.3rem !important;
   }
   
   .admin-subtitle {
     font-size: 1rem;
   }
   
-  .main-dashboard {
-    padding: 20px;
-    max-width: 700px;
-  }
-  
-  .dashboard-header-content {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-  
-  .dashboard-info {
-    order: 1;
-  }
-  
   .date-picker-section {
+    position: relative;
     order: 0;
     align-self: center;
+    top: 0;
+    right: 0;
+    margin: 0;
   }
   
   .dashboard-title {
-    font-size: 1.5rem !important;
+    font-size: 1.1rem !important;
+    margin-top: 10px !important;
   }
   
   .dashboard-description {
@@ -190,14 +170,20 @@
 @media (max-width: 480px) {
   .admin-container {
     padding: 10px;
+    height: 100vh;
   }
   
   .admin-content {
     max-width: 100%;
+    height: calc(100vh - 20px);
+  }
+  
+  .admin-header {
+    margin-bottom: 15px;
   }
   
   .admin-title {
-    font-size: 1.5rem !important;
+    font-size: 1.1rem !important;
   }
   
   .main-dashboard {
@@ -214,15 +200,26 @@
   }
   
   .dashboard-title {
-    font-size: 1.3rem !important;
+    font-size: 1.0rem !important;
+    margin-top: 15px !important;
   }
   
   .dashboard-description {
     font-size: 0.9rem;
   }
+
+  .date-pickers-container{
+    text-align: end;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  .date-picker.start{
+    margin-right: 0px !important;
+    margin-bottom: 10px;
+}
 }
 
-/* Background attachment fix for mobile */
 @media (max-width: 768px) {
   .admin-background {
     background-attachment: scroll;

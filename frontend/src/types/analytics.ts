@@ -36,7 +36,6 @@ export interface BrowserStats {
   count: number;
 }
 
-// API Response interfaces
 export interface DailyUsersResponse {
   data: DailyUserStats[];
   start_date: string;
