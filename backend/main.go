@@ -88,6 +88,7 @@ func main() {
 	// Tracking Route for users
 	r.POST("/info", handlers.TrackData)
 
+	// Protected routes (authentication required)
 	analyticsGroup := r.Group("/analytics")
 	{
 		// 1. Daily unique users

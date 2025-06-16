@@ -12,7 +12,7 @@ export const downloadCV = async (): Promise<void> => {
     }
     
     const contentDisposition = response.headers.get('Content-Disposition');
-    let filename = 'cv.pdf';
+    let filename = 'pezzati mauro cv.pdf';
     
     if (contentDisposition) {
       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
@@ -47,14 +47,6 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
         error: 'File size exceeds 5MB limit'
       };
     }
-    
-    if (file.type !== 'application/pdf') {
-      return {
-        success: false,
-        error: 'Only PDF files are allowed'
-      };
-    }
-    
     // Create FormData for file upload
     const formData = new FormData();
     formData.append('cv', file);
@@ -62,8 +54,6 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     const response = await fetchFromApi<UploadResponse>('/upload/cv', {
       method: 'POST',
       body: formData,
-      headers: {
-      }
     });
     
     return response;

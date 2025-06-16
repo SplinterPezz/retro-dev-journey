@@ -20,7 +20,7 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, p
       top: '10%',
       left: '50%',
       transform: 'translateX(-50%)',
-      zIndex: 200,
+      zIndex: 100,
       maxWidth: '90vw',
       width: '400px',
       height: '100vh',

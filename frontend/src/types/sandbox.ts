@@ -49,6 +49,7 @@ export interface EnvironmentDataAnimated {
 export interface CompanyData {
   id: string;
   name: string;
+  shortName?: string;
   role: string;
   period: string;
   technologies: string[];
@@ -69,6 +70,7 @@ export interface CompanyData {
 export interface TechnologyData {
   id: string;
   name: string;
+  shortName?: string;
   category?: string;
   level?: 'Beginner' | 'Intermediate' | 'Advanced' | 'Expert';
   yearsExperience?: number;
@@ -131,10 +133,18 @@ export interface PathGenerationConfig {
   endPosition: Position;
   structures: StructureData[];
   tileSize: number;
-  pathWidth: number;
 }
 
 export interface IntersectionInfo {
   count: number;
   directions: ('left' | 'right')[];
+}
+
+export interface DailyQuest {
+  id: string;
+  done: boolean;
+  name: string;
+  shortName: string;
+  icon: string;
+  type: 'building' | 'statue' | 'extra';
 }

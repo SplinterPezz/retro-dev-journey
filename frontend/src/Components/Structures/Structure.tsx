@@ -1,7 +1,7 @@
 import React from 'react';
 import { Position, StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
 import './Structure.css';
-import { structureCentering, technologyCentering } from '../../Pages/Sandbox/config';
+import { structureCentering, technologyCentering, defaultBuilding, defaultSignpost, defaultStatue } from '../../Pages/Sandbox/config';
 
 interface StructureProps {
   data: StructureData;
@@ -14,20 +14,17 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
 
   const getStructureIcon = (): string => {
     if (type === 'building') {
-        const defaultBuilding = '/sprites/buildings/default.png'
         const companyData = data.data as CompanyData;
         return companyData.image !== undefined ? companyData.image : defaultBuilding;
     }
     else {
-      const defaultTech = '/sprites/statues/default.png'
       const techData = data.data as TechnologyData;
-      return techData.image !== undefined ? techData.image : defaultTech;
+      return techData.image !== undefined ? techData.image : defaultStatue;
     }
   };
 
   const getSignpostIcon = (): string => {
     if (type === 'building') {
-        const defaultSignpost = '/sprites/signpost/default.png'
         const companyData = data.data as CompanyData;
         return companyData.signpost !== undefined ? companyData.signpost : defaultSignpost;
     }

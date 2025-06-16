@@ -51,7 +51,7 @@ export default function HomePage() {
       <div className="rpgui-content">
         {!imageLoaded ?
           <>
-            <div className='homepage-background opacity-not-loaded loading' />
+            <div className='homepage-background opacity-not-loaded-black loading' />
             <div className="loader-home">
               Loading...
             </div>

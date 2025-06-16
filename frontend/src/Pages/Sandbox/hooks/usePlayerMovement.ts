@@ -81,12 +81,13 @@ const calculateNewPosition = (
   dir: Direction,
   speed: number,
   intensity: number,
+  deltaTime: number,
   worldBounds: any,
   hitbox: Hitbox,
   structures?: StructureData[]
 ): Position => {
   let nx = currentPos.x, ny = currentPos.y;
-  const effSpeed = speed * intensity;
+  const effSpeed = speed * intensity * deltaTime;
   const diag = effSpeed * Math.SQRT1_2;
 
   switch (dir) {
@@ -115,17 +116,6 @@ const calculateNewPosition = (
   return (nx === currentPos.x && ny === currentPos.y) ? currentPos : newPos;
 };
 
-interface PlayerMovementConfigExtended extends PlayerMovementConfig {
-  structures?: StructureData[];
-  playerHitbox?: Hitbox;
-}
-
-interface JoystickState {
-  isActive: boolean;
-  direction: Direction;
-  intensity: number;
-}
-
 export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   const [position, setPosition] = useState(config.initialPosition);
   const [direction, setDirection] = useState<Direction>('idle');
@@ -140,6 +130,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   const joystickRef = useRef<JoystickState>(joystickState);
   const isWindowFocusedRef = useRef(true);
   const rafRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number>(0);
 
   const validKeys = ['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright','shift',' '];
   
@@ -220,11 +211,18 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   }, [handleKeyDown, handleKeyUp, handleBlur, handleFocus, handleVisibility, clearAllKeys]);
 
   useEffect(() => {
-    const loop = () => {
+    const loop = (currentTime: number) => {
       if (!isWindowFocusedRef.current && !joystickRef.current.isActive) {
         clearAllKeys();
+        lastTimeRef.current = currentTime;
+        rafRef.current = requestAnimationFrame(loop);
         return;
       }
+
+      const deltaTime = lastTimeRef.current === 0 
+        ? 1/60 // First frame assumes 60fps 
+        : Math.min((currentTime - lastTimeRef.current) / 1000, 1/30); // Cap at 30fps minimum
+      lastTimeRef.current = currentTime;
 
       const js = joystickRef.current;
       let dir: Direction, intensity: number, run: boolean;
@@ -244,19 +242,21 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       setIsMoving(moving);
 
       if (moving) {
-        const speed = run ? config.speed * 1.5 : config.speed;
+        let speed = run ? config.speed * 1.5 : config.speed;
+        
+        if (js.isActive && js.direction !== 'idle') {
+          speed = speed / 1.5;
+        }
         setPosition(cur =>
           calculateNewPosition(
             cur, dir, speed, intensity,
+            deltaTime,
             config.worldBounds,
             config.playerHitbox || playerHitbox,
             config.structures
           )
         );
       }
-
-      
-
       rafRef.current = requestAnimationFrame(loop);
     };
 

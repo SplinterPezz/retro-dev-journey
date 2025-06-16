@@ -89,6 +89,12 @@
     margin-right: 20px ;
 }
 
+.chart-container{
+  background: rgb(43 34 30 / 16%);
+  border-radius: 8px;
+  padding: 10px;
+}
+
 .apexcharts-title-text{
     margin-bottom: 20px !important;
 }
@@ -167,10 +173,18 @@
   }
 }
 
+@media (max-width: 992px){
+  .chart-container{
+    text-align: -webkit-center;
+  }
+}
+
 @media (max-width: 480px) {
   .admin-container {
-    padding: 10px;
-    height: 100vh;
+    padding: 0px;
+    height: 95vh;
+    margin-top: 20px;
+    margin-bottom:10px;
   }
   
   .admin-content {
