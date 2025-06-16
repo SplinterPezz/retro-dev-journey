@@ -5,6 +5,12 @@ export const downloadButtonId: string = 'download-button';
 export const maxSizeFileCV : number = 5; //MB
 export const downloadCVCooldown: number = 60;
 
+export const questPrefix: string = '-quest'
+
+export const defaultStatue: string = '/sprites/statues/default.png';
+export const defaultBuilding: string = '/sprites/buildings/default.png';
+export const defaultSignpost: string = '/sprites/signpost/default.png';
+
 export const playerHitbox: Hitbox = {
   x: -16,
   y: -16,
@@ -218,6 +224,7 @@ const companiesData: CompanyData[] = [
   {
     id: "eikony",
     name: "Eikony (IT)",
+    shortName: "Eikony",
     role: "IT Intern",
     period: "2014 - 2014",
     technologies: ["Java", "Android SDK", "Objective-C"],
@@ -237,6 +244,7 @@ const companiesData: CompanyData[] = [
   {
     id: "unipa",
     name: "University - Computer Science",
+    shortName: "Uni",
     role: "Student",
     period: "2015 - 2019",
     technologies: ["Java", "MySQL", "C", "Open Data", "CSN"],
@@ -256,6 +264,7 @@ const companiesData: CompanyData[] = [
   {
     id: "foryouviaggi",
     name: "ForYou Viaggi (IT)",
+    shortName: "ForYou",
     role: "Software Developer",
     period: "2020 - 2020",
     technologies: [
@@ -276,6 +285,7 @@ const companiesData: CompanyData[] = [
   {
     id: "alessi",
     name: "Alessi S.p.a (IT)",
+    shortName: "Alessi",
     role: "Software Developer",
     period: "2018 - 2019",
     technologies: ["JavaScript", "PHP", "MySQL", "SQL", "Talend", "Pentaho", "365 API"],
@@ -295,6 +305,7 @@ const companiesData: CompanyData[] = [
   {
     id: "codesour",
     name: "CodeSour (IT)",
+    shortName: "CodeSour",
     role: "Software Developer",
     period: "2019 - 2025",
     technologies: [
@@ -317,6 +328,7 @@ const companiesData: CompanyData[] = [
   {
     id:"???",
     name: "???",
+    shortName: "???",
     role: "Your Next Great Hire",
     period: "2025 - Future",
     technologies: ["Your Tech Stack", "Innovation", "Growth"],
@@ -380,6 +392,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "golang",
     name: "Golang",
+    shortName: "Go",
     category: "Programming Language",
     level: "Beginner",
     yearsExperience: 1,
@@ -398,6 +411,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "javascript",
     name: "JavaScript",
+    shortName: "JS",
     category: "Programming Language",
     level: "Advanced",
     yearsExperience: 3,
@@ -417,6 +431,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "kafka",
     name: "Kafka & Google PubSub",
+    shortName: "PubSub",
     category: "Messaging and Queue",
     level: "Advanced",
     yearsExperience: 3,
@@ -435,6 +450,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "mongodb",
     name: "MongoDB",
+    shortName:"Mongo",
     category: "Database",
     level: "Expert",
     yearsExperience: 4,
@@ -459,6 +475,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "cassandradb",
     name: "CassandraDB",
+    shortName:"Cassandra",
     category: "Database",
     level: "Advanced",
     yearsExperience: 3,
@@ -478,6 +495,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "elastic",
     name: "ElasticSearch",
+    shortName: "ELK",
     category: "Other",
     level: "Intermediate",
     yearsExperience: 2,
@@ -493,6 +511,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "sql",
     name: "MySQL & SQL",
+    shortName: "MySQL",
     category: "Database",
     level: "Expert",
     yearsExperience: 5,
@@ -538,6 +557,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "aws",
     name: "Amazon AWS",
+    shortName: "AWS",
     category: "Cloud",
     level: "Intermediate",
     yearsExperience: 2,
@@ -552,6 +572,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "gcp",
     name: "Google Cloud Platform",
+    shortName: "GCP",
     category: "Cloud",
     level: "Advanced",
     yearsExperience: 3,
@@ -571,6 +592,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "pipelines",
     name: "Pipelines",
+    shortName: "CI/CD",
     category: "Other",
     level: "Expert",
     yearsExperience: 5,
@@ -592,6 +614,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "etl",
     name: "ETL & OLAP",
+    shortName: "ETL",
     category: "Other",
     level: "Expert",
     yearsExperience: 5,
@@ -639,6 +662,7 @@ const technologiesData: TechnologyData[] = [
   {
     id: "ai",
     name: "Artificial Intelligence",
+    shortName: "AI",
     category: "Other",
     level: "Beginner",
     yearsExperience: 1,
@@ -659,7 +683,7 @@ const technologiesData: TechnologyData[] = [
 
 // Convert to structure data
 export const companies: StructureData[] = companiesData.map((company, index) => ({
-  id: `company-${index}`,
+  id: company.id,
   name: company.name,
   type: 'building',
   position: company.position,
@@ -669,7 +693,7 @@ export const companies: StructureData[] = companiesData.map((company, index) => 
 }));
 
 export const technologies: StructureData[] = technologiesData.map((tech, index) => ({
-  id: `tech-${index}`,
+  id: tech.id,
   name: tech.name,
   type: 'statue',
   position: tech.position,

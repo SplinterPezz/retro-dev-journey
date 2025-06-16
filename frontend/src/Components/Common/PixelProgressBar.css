@@ -56,7 +56,7 @@
 }
 
 .pixel-progress-bar.golden .pixel-progress-fill {
-  background: linear-gradient(to bottom, #d27d2c, #854c30);
+  background: linear-gradient(to bottom, #ffd703, #ebc500);
   /*box-shadow: inset 0 1px 0 rgba(255, 255, 135, 0.8);*/
 }
 

@@ -75,7 +75,11 @@
 
 .opacity-not-loaded{
   opacity: 0.9;
-  background: black;
+}
+
+.opacity-not-loaded-black{
+  opacity: 0.9;
+  background-color: black;
 }
 
 .social-image{

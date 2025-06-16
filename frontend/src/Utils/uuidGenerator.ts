@@ -1,4 +1,4 @@
-import { DeviceInfo } from '../types/tracking';
+import { DeviceInfo, PageType, ViewType } from '../types/tracking';
 
 
 // Generate a deterministic UUID based on user agent
@@ -70,6 +70,6 @@ export const getDeviceInfo = (): DeviceInfo => {
   };
 };
 
-export const createInteractionKey = (page: string, type: string, info: string, date: string): string => {
+export const createInteractionKey = (page: PageType, type: ViewType, info: string, date: string): string => {
   return `${page}-${type}-${info}-${date}`;
 };

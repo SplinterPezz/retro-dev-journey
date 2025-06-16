@@ -1,0 +1,216 @@
+/* DailyQuest.css - Cleaned Version */
+.daily-quest-container {
+  position: fixed;
+  top: 20px;
+  left: 5px;
+  width: 280px;
+  pointer-events: auto;
+}
+
+.daily-quest-container .rpgui-container {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  width: 55vw;
+  max-width: 35vh;
+  min-width: 120px;
+  margin-top: 100px;
+  margin-left: 20px;
+}
+
+/* Header */
+.quest-header {
+  margin-bottom: 10px;
+}
+
+.quest-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.quest-title {
+  color: #ffd700 !important;
+  font-size: 0.95rem !important;
+  margin: 0 0 8px 0 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+  text-align: center !important;
+  margin-right: 10px !important;
+  text-decoration: none !important;
+}
+
+/* Progress Bar */
+.quest-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.quest-progress-bar {
+  flex: 1;
+  height: 10px;
+  background: #2c1810;
+  border: 1px solid #1a0f08;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(to bottom, #ffd703, #ebc500);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.quest-progress-text {
+  color: #ffd700;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: right;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Quest Icon */
+.quest-icon-container {
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.quest-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 3px;
+  
+  /* Pixel perfect rendering */
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.quest-type-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #ffd700;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.quest-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-start: 4px;
+}
+
+.quest-name {
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Quest Status */
+.quest-status {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.quest-status.done {
+  color: #4caf50;
+}
+
+.quest-status.todo {
+  color: #888;
+}
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .daily-quest-container {
+    width: 250px;
+    top: 15px;
+    left: 0px;
+  }
+  
+  .daily-quest-container .rpgui-container {
+    padding: 10px;
+    width: 50vw;
+  }
+  
+  .quest-title {
+    font-size: 0.9rem !important;
+  }
+  
+  .quest-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .quest-name {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-collapsed-mobile {
+    margin-left: 0px !important;
+  }
+
+  .daily-quest-container {
+    width: 220px;
+    top: 10px;
+    left: 0px;
+  }
+
+  .quest-progress-container {
+    gap: 6px;
+  }
+  
+  .quest-progress-text {
+    font-size: 0.7rem;
+    min-width: 25px;
+  }
+  
+  .quest-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .quest-type-badge {
+    font-size: 7px;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .quest-name {
+    font-size: 0.65rem;
+    text-overflow: unset;
+  }
+  
+  .quest-status {
+    font-size: 0.9rem;
+  }
+}

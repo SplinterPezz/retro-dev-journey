@@ -10,7 +10,7 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId } from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId, questPrefix} from './config';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
 import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
@@ -18,6 +18,7 @@ import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 import { Joystick } from 'react-joystick-component';
 import { useTracking } from "../../hooks/tracking";
+import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -129,7 +130,7 @@ const SandboxPage: React.FC = () => {
         handleJoystickStop 
     } = usePlayerMovement({
         initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
-        speed: 3.5,
+        speed: 270,
         worldBounds: {
             minX: 50,
             minY: 50,
@@ -161,12 +162,12 @@ const SandboxPage: React.FC = () => {
         }
     }, [nearbyStructure, showDialog]);
 
-    // Track interaction with structure with isNearby
+    // Track interaction with structure with isNearby also for quest
     useEffect(() => {
         if (nearbyStructure) {
-            trackInteraction(nearbyStructure.data.id);
+            trackInteraction(nearbyStructure.data.id + questPrefix);
         }
-    }, [nearbyStructure, trackInteraction]);
+    }, [nearbyStructure]);
 
     // Handle back to home
     const handleBackToHome = () => {
@@ -217,6 +218,7 @@ const SandboxPage: React.FC = () => {
     }
 
     return (
+        
         <div className="rpgui-content">
             <div className="sandbox-container">
                 {/* Game Viewport */}
@@ -345,8 +347,10 @@ const SandboxPage: React.FC = () => {
                     </div>
                 </div>
 
+                
                 {/* UI Overlay */}
                 <div className="sandbox-ui">
+                    
                     {/* Back to Home Button */}
                     <div className="back-button ms-3">
                         <button
@@ -365,15 +369,15 @@ const SandboxPage: React.FC = () => {
                         {isMobile ? (
                             <div className="rpgui-container framed-grey">
                                 <p className="control-info-text mb-0">
-                                    <strong>Use joystick</strong> to move around
-                                    <br /> <strong>Walk near</strong> structures to know me!
+                                    <strong className='controls-info-yellow'>Use joystick</strong> to move around
+                                    <br /> <strong className='controls-info-yellow'>Follow the sparks</strong>!
                                 </p>
                             </div>
                         ) : 
                         <div className="rpgui-container framed-grey">
                             <p className="control-info-text mb-0">
-                                <strong>WASD</strong> or <strong>ARROWS</strong> to move • <strong>SHIFT</strong> or <strong>SPACE</strong> to run
-                                <br /> <strong>Walk near</strong> structures to know me!
+                                <strong className='controls-info-yellow'>WASD</strong> or <strong className='controls-info-yellow'>ARROWS</strong> to move • <strong className='controls-info-yellow'>SHIFT</strong> or <strong className='controls-info-yellow'>SPACE</strong> to run
+                                <br /> <strong className='controls-info-yellow'>Follow the sparks</strong> to know me!
                             </p>
                         </div>
                         }
@@ -428,19 +432,19 @@ const SandboxPage: React.FC = () => {
                         </div>
                     </div>
                 </div>
-
-                {/* Audio Controls */}
-                <AudioControls
-                    audioSrc="/audio/sandbox_compressed.mp3"
-                    defaultVolume={15}
-                    defaultMuted={true}
-                    buttonStyle="normal"
-                    containerStyle="framed-grey"
-                    loop={true}
-                    autoPlay={false}
-                    showVolumePercentage={true}
-                />
                 
+                {/* Audio Controls */}
+                    <AudioControls
+                        audioSrc="/audio/sandbox_compressed.mp3"
+                        defaultVolume={15}
+                        defaultMuted={true}
+                        buttonStyle="normal"
+                        containerStyle="framed-grey"
+                        loop={true}
+                        autoPlay={false}
+                        showVolumePercentage={true}
+                    />
+                    
                 {/* Structure Info Dialog */}
                 {showDialog && selectedStructure && (
                     <StructureDialog
@@ -449,6 +453,10 @@ const SandboxPage: React.FC = () => {
                         position={playerPosition}
                     />
                 )}
+                <DailyQuestComponent 
+                    questPrefix={questPrefix}
+                    showProgress={true}
+                />
             </div>
         </div>
     );

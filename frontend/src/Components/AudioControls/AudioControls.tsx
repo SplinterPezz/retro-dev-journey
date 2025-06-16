@@ -163,7 +163,7 @@ const AudioControls: React.FC<AudioControlsProps> = ({
         {/* Volume Arrow Controls */}
         {showVolumeControls && (
           <div
-            className={`volume-buttons-container rpgui-container ${containerStyle}`}
+            className={`volume-buttons-container rpgui-container ${containerStyle} d-none d-sm-flex`}
           >
             {showVolumePercentage && (
               <span className='volume-text-percentage'>

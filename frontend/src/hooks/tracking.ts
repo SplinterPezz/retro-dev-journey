@@ -8,7 +8,7 @@ import { generateUUIDFromUserAgent, getDeviceInfo,
   createInteractionKey 
 } from '../Utils/uuidGenerator';
 
-import { PageType, timeTrackingIntervals } from '../types/tracking';
+import { PageType, timeTrackingIntervals, ViewType } from '../types/tracking';
 
 interface UseTrackingProps {
   page: PageType;
@@ -46,20 +46,28 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     sendTrackingData(trackingData);
   }, [uuid, page, enabled]);
 
-  // Send interaction tracking data
-  const trackInteraction = useCallback((info: string) => {
+  // Send interaction tracking data.
+  // Return the actual interaction stored
+  const trackInteraction = useCallback((info: string) : string[] => {
     if(process.env.REACT_APP_ENV === 'development' && !uuid) {
       console.log("Something went wrong, uuid should already initialized on trackInteraction")
-      return;
+      return interactions;
     }
 
-    if (!uuid || !enabled) return;
+    if (!uuid || !enabled) return interactions;
 
     const interactionKey = createInteractionKey(page, 'interaction', info, new Date().toISOString().slice(0,10));
-    
+    if (process.env.REACT_APP_ENV === 'development'){
+      console.log("Interaction data interactionKey : ",interactionKey)
+    }
+
     // Check if this interaction was already tracked
     if (interactions.includes(interactionKey)) {
-      return;
+      if (process.env.REACT_APP_ENV === 'development'){
+        console.log("Data already sent for: ", interactionKey)
+      }
+      
+      return interactions;
     }
 
     // Add to tracked interactions
@@ -75,6 +83,8 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     };
 
     sendTrackingData(trackingData);
+    
+    return [...interactions, interactionKey];
   }, [uuid, page, enabled, interactions, dispatch]);
 
   useEffect(() => {
@@ -90,11 +100,18 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     timeTrackingIntervals.forEach(seconds => {
       const timeout = setTimeout(() => {
         const interactionKey = createInteractionKey(page, 'view', seconds.toString(), startTimeRef.current.toISOString().slice(0,10));
-        console.log(interactionKey)
+        
+        if (process.env.REACT_APP_ENV === 'development'){
+          console.log("View data interactionKey : ",interactionKey)
+        }
+        
         if (interactions.includes(interactionKey)) {
-          console.log("Data already sent for: ", interactionKey)
+          if (process.env.REACT_APP_ENV === 'development'){
+            console.log("Data already sent for: ", interactionKey)
+          }
           return;
         }
+
         dispatch(addInteraction(interactionKey));
 
         sendViewData(seconds);
