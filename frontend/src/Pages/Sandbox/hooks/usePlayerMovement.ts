@@ -244,7 +244,8 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       setIsMoving(moving);
 
       if (moving) {
-        const speed = run ? config.speed * 1.5 : config.speed;
+        const defaultSpeed = js.isActive ? (config.speed / 1.5) : config.speed
+        const speed = run ? defaultSpeed * 1.5 : defaultSpeed;
         setPosition(cur =>
           calculateNewPosition(
             cur, dir, speed, intensity,
@@ -254,9 +255,6 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
           )
         );
       }
-
-      
-
       rafRef.current = requestAnimationFrame(loop);
     };
 

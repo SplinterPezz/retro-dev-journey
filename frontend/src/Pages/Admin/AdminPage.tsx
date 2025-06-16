@@ -15,8 +15,10 @@ import {
   getDeviceStats,
   getBrowserStats
 } from '../../Services/analyticsService';
-
+import { downloadCV, uploadCV } from '../../Services/fileService';
 import { DailyUsersResponse } from '../../types/analytics';
+
+type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
 
 export default function AdminPage() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs().subtract(30, 'day'));
@@ -38,6 +40,8 @@ export default function AdminPage() {
   const [chartDownloads, setChartDownloads] = useState(apexDailyDownloads);
   const [chartDevices, setChartDevices] = useState(apexDevicesDonut);
   const [chartBrowsers, setChartBrowsers] = useState(apexBrowsersPie);
+
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
 
   const fetchData = async () => {
     if (!startDate || !endDate) return;
@@ -261,6 +265,50 @@ export default function AdminPage() {
     }
   };
 
+  const handleDownloadCV = () => {
+      try {
+        downloadCV();
+      }
+      catch(error){
+        process.env.REACT_APP_ENV === 'development' && console.error('Download failed:', error);
+      }
+  };
+
+  const handleUploadCV = async (file: File) => {
+    setUploadStatus('waiting');
+    
+    try {
+      const response = await uploadCV(file);
+      if ('message' in response) {
+        setUploadStatus('success');
+      } else {
+        setUploadStatus('error');
+      }
+    } catch (error) {
+      setUploadStatus('error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size must be less than 5MB');
+        e.target.value = '';
+        return;
+      }
+      handleUploadCV(file);
+    }
+  };
+
+  const getUploadColor = (): string => {
+    if(uploadStatus === 'error') return 'red';
+    if(uploadStatus === 'idle') return 'white';
+    if(uploadStatus === 'success') return 'green';
+    return 'gray';
+  }
 
   useEffect(() => {
     fetchData();
@@ -339,56 +387,38 @@ export default function AdminPage() {
 
               {/* Charts */}
               {!loading && !error && (
-                <> 
-                  {(browsers && devices ) && (
-                  <div className="row mt-4">
-                    {/* Devices Donut Chart */}
-                    <div className="col-12 col-md-6 mb-4">
-                      <div style={{
-                        background: 'rgba(20, 20, 20, 0.6)',
-                        borderRadius: '8px',
-                        padding: '15px',
-                        border: '1px solid rgba(255, 215, 0, 0.2)',
-                        height: '100%'
-                      }}>
-                        <ReactApexChart 
-                          options={chartDevices.options} 
-                          series={chartDevices.series} 
-                          type="donut" 
-                          height={300}
-                        />
+                <>
+                  {(browsers && devices) && (
+                    <div className="chart-container row pb-0 m-2 mt-4 mb-4">
+                      {/* Devices Donut Chart */}
+                      <div className="col-12 col-md-6 mb-4">
+                        <div>
+                          <ReactApexChart
+                            options={chartDevices.options}
+                            series={chartDevices.series}
+                            type="donut"
+                            height={300}
+                          />
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Browsers Pie Chart */}
-                    <div className="col-12 col-md-6 mb-4">
-                      <div style={{
-                        background: 'rgba(20, 20, 20, 0.6)',
-                        borderRadius: '8px',
-                        padding: '15px',
-                        border: '1px solid rgba(255, 215, 0, 0.2)',
-                        height: '100%'
-                      }}>
-                        <ReactApexChart 
-                          options={chartBrowsers.options} 
-                          series={chartBrowsers.series} 
-                          type="pie" 
-                          width="100%"
-                          height={300}
-                        />
+                      {/* Browsers Pie Chart */}
+                      <div className="col-12 col-md-6 mb-4">
+                        <div>
+                          <ReactApexChart
+                            options={chartBrowsers.options}
+                            series={chartBrowsers.series}
+                            type="pie"
+                            height={300}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
                   )}
 
                   {/* Daily Users Chart */}
                   {uniqueUsers && (
-                    <div className="chart-container" style={{
-                      background: 'rgb(43 34 30 / 16%)',
-                      borderRadius: '8px',
-                      padding: '10px',
-                      paddingRight: '30px',
-                    }}>
+                    <div className="chart-container mt-4 m-2">
                       <ReactApexChart
                         options={chartUniqueUsers.options}
                         series={chartUniqueUsers.series}
@@ -400,12 +430,7 @@ export default function AdminPage() {
 
                   {/* Page Time Chart */}
                   {pageTime && (
-                    <div className="chart-container mt-4" style={{
-                      background: 'rgb(43 34 30 / 16%)',
-                      borderRadius: '8px',
-                      padding: '10px',
-                      paddingRight: '30px',
-                    }}>
+                    <div className="chart-container mt-4 m-2">
                       <ReactApexChart
                         options={chartPageTime.options}
                         series={chartPageTime.series}
@@ -417,12 +442,7 @@ export default function AdminPage() {
 
                   {/* Interactions Chart */}
                   {interactions && (
-                    <div className="chart-container mt-4" style={{
-                      background: 'rgb(43 34 30 / 16%)',
-                      borderRadius: '8px',
-                      padding: '10px',
-                      paddingRight: '15px',
-                    }}>
+                    <div className="chart-container mt-4 m-2">
                       <ReactApexChart
                         options={chartInteractions.options}
                         series={chartInteractions.series}
@@ -436,12 +456,7 @@ export default function AdminPage() {
 
                   {/* Downloads Chart */}
                   {downloads && (
-                    <div className="chart-container mt-4" style={{
-                      background: 'rgb(43 34 30 / 16%)',
-                      borderRadius: '8px',
-                      padding: '10px',
-                      paddingRight: '15px',
-                    }}>
+                    <div className="chart-container mt-4 m-2">
                       <ReactApexChart
                         options={chartDownloads.options}
                         series={chartDownloads.series}
@@ -451,6 +466,47 @@ export default function AdminPage() {
                       />
                     </div>
                   )}
+
+                  <div className="row mt-4 chart-container m-2">
+                    <div className='col-12 col-lg-6 dashboard-title' style={{alignContent:"center"}}>
+                      UPDATE CV:
+                    </div>
+                    <div className='col-12 col-lg-3 mb-3 mt-3'>
+                      <button
+                        className="rpgui-button"
+                        style={{width:"240px", height:"75px"}}
+                        type="button"
+                        onClick={x=> handleDownloadCV()}
+                      >
+                        <p className='revert-top'>DOWNLOAD</p>
+                      </button>
+                    </div>
+                    <div className='col-12 col-lg-3 mb-3 mt-3'>
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        style={{ display: 'none' }}
+                        id="cv-upload-input"
+                        onChange={handleFileSelection}
+                      />
+                      <button
+                        className="rpgui-button golden"
+                        style={{width:"240px", height:"75px"}}
+                        type="button"
+                        onClick={() => document.getElementById('cv-upload-input')?.click()}
+                        disabled = {uploadStatus === ('waiting') ? true : false}
+                      >
+                        <p className='revert-top' 
+                          style={{
+                            marginTop:"20px",
+                            color: getUploadColor()
+                          }}>
+                          UPLOAD
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+
                 </>
               )}
             </div>

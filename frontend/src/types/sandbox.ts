@@ -131,7 +131,6 @@ export interface PathGenerationConfig {
   endPosition: Position;
   structures: StructureData[];
   tileSize: number;
-  pathWidth: number;
 }
 
 export interface IntersectionInfo {

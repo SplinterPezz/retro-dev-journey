@@ -115,7 +115,6 @@ const SandboxPage: React.FC = () => {
             endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
             structures: [...companies, ...technologies],
             tileSize: worldConfig.tileSize,
-            pathWidth: mainPathConfig.width
         });
 
         return pathGenerator.generatePath();

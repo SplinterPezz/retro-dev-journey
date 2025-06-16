@@ -2,7 +2,7 @@ import { store } from "../store/store";
 import { checkAuthentication, logout } from "../store/authSlice";
 import { ApiError } from "../types/api";
 
-const whitelist = ["/login", "/info"]
+const whitelist = ["/login", "/info", "/download/cv"]
 
 export async function fetchFromApi<T>(
   endpoint: string,
@@ -28,15 +28,17 @@ export async function fetchFromApi<T>(
     }
 
     // Prepare headers
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-      'Accept':'*/*',
-      ...(options?.headers || {}),
+    let headers: Record<string, string> = {
+      'Accept': '*/*',
+      ...((options?.headers as Record<string, string>) || {}),
     };
 
-    // Add token to headers if it exists and is valid
+    if (!(options?.body instanceof FormData)) {
+      headers['Content-Type'] = 'application/json';
+    }
+
     if (token && !isInWhitelist) {
-      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+      headers['Authorization'] = `Bearer ${token}`;
     }
     
     const response = await fetch(`${baseUrl}${endpoint}`, {
