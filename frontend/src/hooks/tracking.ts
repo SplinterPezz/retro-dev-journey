@@ -9,6 +9,7 @@ import { generateUUIDFromUserAgent, getDeviceInfo,
 } from '../Utils/uuidGenerator';
 
 import { PageType, timeTrackingIntervals, ViewType } from '../types/tracking';
+import { questPrefix } from '../Pages/Sandbox/config';
 
 interface UseTrackingProps {
   page: PageType;
@@ -72,12 +73,12 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
 
     // Add to tracked interactions
     dispatch(addInteraction(interactionKey));
-
+    
     const trackingData: TrkData = {
       date: new Date(),
       uuid,
       type: 'interaction',
-      info,
+      info: info.replace(questPrefix, ""),
       page,
       ...deviceInfoRef.current
     };

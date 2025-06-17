@@ -113,7 +113,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
       </div>
 
       {/* Structure label */}
-      <div className={`structure-label ${isNearby ? 'visible' : ''}`}>
+      <div className={`d-none structure-label ${isNearby ? 'visible' : ''}`}>
         <span>{data.name}</span>
         {(isNearby && data.name === '???') && (
           <div className="interaction-hint">

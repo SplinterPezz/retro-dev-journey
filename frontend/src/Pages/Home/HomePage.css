@@ -89,15 +89,21 @@
 }
 
 .social-container {
-  position: absolute;
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  
+  right: 330px;
   top: 20px;
-  right: 350px;
-  z-index: 10;
 }
 
 @media (max-width: 575px ){
   .social-container {
-    right: 200px;
+    top: unset;
+    bottom: 20px;
+    right: 20px;
   }
 }
 
@@ -118,8 +124,6 @@
   }
 
   .social-container {
-    top: unset;
-    bottom: 20px;
     right: 100px;
   }
 }
