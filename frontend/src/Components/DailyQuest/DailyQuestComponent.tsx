@@ -102,8 +102,8 @@ const QuestItem = styled.div<{ isCompleted: boolean; index: number; isVisible: b
   width: 100%;
   box-sizing: border-box;
   background: ${props => props.isCompleted 
-    ? 'rgba(76, 175, 80, 0.2)' 
-    : 'rgba(255, 255, 255, 0.05)'};
+    ? 'rgb(39 132 43 / 62%)' 
+    : 'rgb(22 13 13 / 45%)'};
   border-color: ${props => props.isCompleted 
     ? 'rgba(76, 175, 80, 0.3)' 
     : 'rgba(255, 255, 255, 0.1)'};
@@ -267,7 +267,10 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
           <div className="quest-header">
             <div className="quest-header-content">
               <h4 className="quest-title">
-                Daily Quests ({completedQuests.length}/{dailyQuests.length})
+                Daily Quests
+              </h4>
+              <h4 className="quest-title d-none d-sm-block">
+                ({completedQuests.length}/{dailyQuests.length})
               </h4>
               
               <ToggleButton 

@@ -360,29 +360,6 @@ const SandboxPage: React.FC = () => {
                             <p className="revert-top">🏠 Home</p>
                         </button>
                     </div>
-                    
-                    {/* Controls Info */}
-                    <div className="controls-info">
-                        
-                        
-                        {/* Mobile controls info */}
-                        {isMobile ? (
-                            <div className="rpgui-container framed-grey">
-                                <p className="control-info-text mb-0">
-                                    <strong className='controls-info-yellow'>Use joystick</strong> to move around
-                                    <br /> <strong className='controls-info-yellow'>Follow the sparks</strong>!
-                                </p>
-                            </div>
-                        ) : 
-                        <div className="rpgui-container framed-grey">
-                            <p className="control-info-text mb-0">
-                                <strong className='controls-info-yellow'>WASD</strong> or <strong className='controls-info-yellow'>ARROWS</strong> to move • <strong className='controls-info-yellow'>SHIFT</strong> or <strong className='controls-info-yellow'>SPACE</strong> to run
-                                <br /> <strong className='controls-info-yellow'>Follow the sparks</strong> to know me!
-                            </p>
-                        </div>
-                        }
-                    </div>
-
                     {/* Mini Map */}
                     <div className="minimap">
                         {/* Mobile Joystick */}

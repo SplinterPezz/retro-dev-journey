@@ -102,47 +102,10 @@
   pointer-events: auto;
 }
 
-/* Controls info */
-.controls-info {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  pointer-events: auto;
-}
-
-.controls-info-text{
-  margin: 0;
-  font-size: 0.8rem
-}
-
-.controls-info .rpgui-container {
-  padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(2px);
-}
-
-/* Career progress info */
-.career-progress {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  pointer-events: auto;
-}
-
-.career-progress .rpgui-container {
-  padding: 15px;
-  background: rgba(139, 69, 19, 0.2);
-  backdrop-filter: blur(3px);
-  text-align: center;
-}
-
 /* Minimap */
 .minimap {
   position: fixed;
   right: 20px;
-  transform: translateX(-50%);
   bottom: 20px;
   width: 200px;
   height: 150px;
@@ -248,14 +211,14 @@
 
 
 .mobile-joystick {
-  bottom: 170px;
+  bottom: 40px;
   position: fixed;
-  left: 50%;
+  right: 200px;
   transform: translateX(-50%);
   z-index: 1001;
   pointer-events: auto;
-  display: flex;
-
+  display: flex
+;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -281,86 +244,6 @@
     inset 1px 1px 0 rgba(255, 255, 255, 0.3),
     inset -1px -1px 0 rgba(0, 0, 0, 0.2),
     0 2px 4px rgba(0, 0, 0, 0.3) !important;
-}
-
-.controls-info-yellow {
-  color: #ffd700 !important;
-  font-size: 0.95rem !important;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
-  text-decoration: none !important;
-}
-
-/* Responsive design */
-@media (max-width: 1024px) {
-  .career-progress {
-    width: 250px;
-  }
-}
-
-@media (max-width: 768px) {
-  .mobile-joystick {
-    bottom: 110px;
-  }
-
-  .back-button {
-    top: 18px;
-    left: 10px;
-  }
-  
-  .controls-info {
-    bottom: 10px;
-    left: 10px;
-  }
-  
-  .minimap {
-    bottom: 10px;
-    right: 10px;
-    width: 150px;
-    height: 100px;
-  }
-  
-  .sandbox-world {
-    /* Scale up for mobile to make everything more visible */
-    transform-origin: center center;
-  }
-
-  .controls-info .rpgui-container {
-     width: 60vw;
-  }
-}
-
-@media (max-width: 480px) {
-  .mobile-joystick {
-    bottom: 90px;
-  }
-
-  .career-progress {
-    width: 180px;
-  }
-  
-  .career-progress .rpgui-container {
-    padding: 8px;
-  }
-  
-  .minimap {
-    width: 120px;
-    height: 80px;
-    left: 80%;
-  }
-
-  .sandbox-loading .rpgui-container {
-    padding: 20px 0px 20px;
-  }
-  
-  @media (max-width: 320px) {
-    .career-progress {
-      display: none;
-    }
-    
-    .minimap {
-      display: none;
-    }
-  }
 }
 
 /* World boundaries visualization (development) */
@@ -426,6 +309,12 @@
   animation: collision-pulse 0.5s ease-in-out;
 }
 
+/* Only show in development */
+body[data-debug="true"] .debug-hitbox {
+  display: block;
+}
+
+
 @keyframes collision-pulse {
   0%, 100% {
     opacity: 0.7;
@@ -437,7 +326,48 @@
   }
 }
 
-/* Only show in development */
-body[data-debug="true"] .debug-hitbox {
-  display: block;
+@media (max-width: 768px) {
+  .mobile-joystick{
+    right: 150px;
+    bottom: 55px;
+  }
+
+  .back-button {
+    top: 18px;
+    left: 10px;
+  }
+  
+  
+  .minimap {
+    bottom: 10px;
+    width: 150px;
+    height: 100px;
+  }
+  
+  .sandbox-world {
+    /* Scale up for mobile to make everything more visible */
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-joystick{
+    right: 110px;
+    bottom: 45px;
+  }
+
+  .minimap {
+    width: 120px;
+    height: 80px;
+  }
+
+  .sandbox-loading .rpgui-container {
+    padding: 20px 0px 20px;
+  }
+}
+
+@media (max-width: 320px) {
+    .mobile-joystick{
+      right: 100px
+    }
 }
