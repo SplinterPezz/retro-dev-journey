@@ -95,7 +95,6 @@ export default function SignIn() {
     };
   }, []);
 
-  // State for form inputs
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
@@ -104,7 +103,6 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorStatus, setErrorStatus] = useState("");
 
-  // State for input errors
   const [emailError, setEmailError] = useState(false);
   const [emailShake, setEmailShake] = useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = useState("");

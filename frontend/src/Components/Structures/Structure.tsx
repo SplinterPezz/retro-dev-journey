@@ -53,7 +53,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
     >
       {/* Structure sprite/icon */}
       <div className="structure-sprite">
-        {/* Check if it's a building with image path or emoji */}
         {type === 'building' ? (
           <>
             <img 

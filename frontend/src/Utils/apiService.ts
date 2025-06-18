@@ -12,7 +12,6 @@ export async function fetchFromApi<T>(
   const isInWhitelist = whitelist.includes(endpoint)
   
   try {
-    // Get the current state from Redux store
     const state = store.getState();
     const { token } = state.auth;
     store.dispatch(checkAuthentication());
@@ -27,7 +26,6 @@ export async function fetchFromApi<T>(
       } as ApiError;
     }
 
-    // Prepare headers
     let headers: Record<string, string> = {
       'Accept': '*/*',
       ...((options?.headers as Record<string, string>) || {}),
@@ -65,7 +63,6 @@ export async function fetchFromApi<T>(
         responseBody ||
         response.statusText;
 
-      // Check for field-specific errors
       if (isJson && responseBody?.fieldError) {
         return {
           success: false,

@@ -19,19 +19,23 @@ import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 import { Joystick } from 'react-joystick-component';
 import { useTracking } from "../../hooks/tracking";
 import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent';
+import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const [isMobile, setIsMobile] = useState(false);
+    const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
+    const canPlayerMove = tipsAcceptedDesktop || tipsAcceptedMobile;
 
     const { trackInteraction } = useTracking({
         page: 'sandbox',
         enabled: true
       });
 
-    // Check if device is mobile
     useEffect(() => {
         const checkMobile = () => {
             const userAgent = navigator.userAgent.toLowerCase();
@@ -53,7 +57,6 @@ const SandboxPage: React.FC = () => {
         const images: string[] = [];
         const audio: string[] = ['/audio/sandbox_compressed.mp3'];
 
-        // Terrain and path images
         images.push(
             '/sprites/terrain/main.png',
             '/sprites/terrain/path_core.png',
@@ -63,7 +66,6 @@ const SandboxPage: React.FC = () => {
             '/sprites/terrain/path_end.png'
         );
 
-        // Player sprites
         images.push(
             '/sprites/player/dude_idle.gif',
             '/sprites/player/dude_walk_S.gif',
@@ -72,26 +74,21 @@ const SandboxPage: React.FC = () => {
             '/sprites/player/dude_walk_SE.gif'
         );
 
-        // Background image
         images.push('/backgrounds/sky_sandbox.png');
 
-        // Company building images
         companies.forEach(company => {
             if (company.data.image) images.push(company.data.image);
             if (company.data.signpost) images.push(company.data.signpost);
         });
 
-        // Technology images
         technologies.forEach(tech => {
             if (tech.data.image) images.push(tech.data.image);
         });
 
-        // Environment images
         [...treesEnvironments, ...detailsEnvironments].forEach(env => {
             if (env.image) images.push(env.image);
         });
 
-        // Download button
         if (downloadButton.data.image) images.push(downloadButton.data.image);
 
         return { images, audio };
@@ -138,7 +135,8 @@ const SandboxPage: React.FC = () => {
             maxY: worldConfig.height - 50
         },
         structures: [...companies, ...technologies, downloadButton],
-        playerHitbox: playerHitbox
+        playerHitbox: playerHitbox,
+        canMove: canPlayerMove
     });
 
     // Collision detection hook
@@ -194,7 +192,6 @@ const SandboxPage: React.FC = () => {
                             </p>
                         )}
 
-                        {/* Custom Pixel Art Progress Bar */}
                         <div className="loading-bar-container mb-3">
                             <PixelProgressBar
                                 progress={progress}
@@ -350,7 +347,7 @@ const SandboxPage: React.FC = () => {
                 
                 {/* UI Overlay */}
                 <div className="sandbox-ui">
-                    
+                    <WelcomeDialog isMobile={isMobile}/>
                     {/* Back to Home Button */}
                     <div className="back-button ms-3">
                         <button
@@ -426,8 +423,6 @@ const SandboxPage: React.FC = () => {
                 {showDialog && selectedStructure && (
                     <StructureDialog
                         structure={selectedStructure}
-                        onClose={handleDialogClose}
-                        position={playerPosition}
                     />
                 )}
                 <DailyQuestComponent 

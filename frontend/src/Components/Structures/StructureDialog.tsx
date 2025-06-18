@@ -4,37 +4,16 @@ import './StructureDialog.css';
 
 interface StructureDialogProps {
   structure: StructureData;
-  onClose: () => void;
-  position: Position;
 }
 
-const StructureDialog: React.FC<StructureDialogProps> = ({ structure, onClose, position }) => {
+const StructureDialog: React.FC<StructureDialogProps> = ({ structure }) => {
   const isCompany = structure.type === 'building';
   const companyData = isCompany ? structure.data as CompanyData : null;
   const techData = !isCompany ? structure.data as TechnologyData : null;
 
-  // Calculate dialog position relative to viewport
-  const getDialogStyle = () => {
-    return {
-      position: 'fixed' as const,
-      top: '10%',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 100,
-      maxWidth: '90vw',
-      width: '400px',
-      height: '100vh',
-      boxSizing: 'border-box' as const,
-      minWidth: '200px',
-    };
-  };
-
-  
-
   return (
     <>
-      {/* Dialog */}
-      <div className="structure-dialog" style={getDialogStyle()}>
+      <div className="structure-dialog">
         <div className="rpgui-content">
           <div className={`rpgui-container ${isCompany ? 'framed-golden' : 'framed'}`}>
             

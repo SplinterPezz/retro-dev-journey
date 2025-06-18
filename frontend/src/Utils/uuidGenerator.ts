@@ -1,7 +1,5 @@
 import { DeviceInfo, PageType, ViewType } from '../types/tracking';
 
-
-// Generate a deterministic UUID based on user agent
 export const generateUUIDFromUserAgent = (): string => {
   const userAgent = navigator.userAgent;
   const screen = `${window.screen.width}x${window.screen.height}`;
@@ -26,15 +24,12 @@ export const getDeviceInfo = (): DeviceInfo => {
   const screenWidth = window.screen.width;
   const screenHeight = window.screen.height;
   
-  // Determine device type
   const device: 'desktop' | 'mobile' = screenWidth <= 768 || 
     /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent) 
     ? 'mobile' : 'desktop';
   
-  // Screen resolution
   const screenResolution = `${screenWidth}x${screenHeight}`;
   
-  // Detect browser
   let browser = 'unknown';
   if (userAgent.includes('chrome') && !userAgent.includes('edg')) {
     browser = 'chrome';
@@ -48,7 +43,6 @@ export const getDeviceInfo = (): DeviceInfo => {
     browser = 'opera';
   }
   
-  // Detect OS
   let os = 'unknown';
   if (userAgent.includes('windows')) {
     os = 'windows';

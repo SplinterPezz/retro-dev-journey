@@ -4,6 +4,15 @@
 }
 
 .structure-dialog {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: 90vw;
+  width: 400px;
+  box-sizing: border-box;
+  min-width: 200px;
   animation: slideIn 0.3s ease-out;
 }
 
@@ -27,7 +36,6 @@
   }
 }
 
-/* Dialog content styling */
 .dialog-header {
   display: flex;
   justify-content: space-between;
@@ -45,7 +53,6 @@
   text-align: center;
 }
 
-/* Info sections */
 .info-section {
   margin-bottom: 15px;
 }
@@ -76,7 +83,6 @@
   margin-bottom: 5px;
 }
 
-/* Technology tags */
 .tech-tags {
   display: flex;
   flex-wrap: wrap;
@@ -94,7 +100,6 @@
   white-space: nowrap;
 }
 
-/* Experience level badges */
 .level-badge {
   padding: 4px 12px;
   border-radius: 15px;
@@ -124,7 +129,6 @@
   color: white;
 }
 
-/* Company link */
 .company-link {
   color: #61dafb;
   text-decoration: none;
@@ -137,7 +141,6 @@
   text-decoration: underline;
 }
 
-/* Project list */
 .project-list {
   list-style-type: none;
   padding-left: 0;
@@ -151,7 +154,6 @@
   border-left: 3px solid #ffd700;
 }
 
-/* Company vs Technology specific styling */
 .company-info .info-section {
   border-left: 3px solid #4f2605;
   padding-left: 10px;
@@ -162,7 +164,6 @@
   padding-left: 10px;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .structure-dialog {
     width: 100vw !important;

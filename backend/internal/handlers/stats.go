@@ -45,7 +45,7 @@ func parseDateRange(c *gin.Context) (models.DateRangeFilter, error) {
 	}, nil
 }
 
-// 1. Get daily unique users
+// Get daily unique users
 // GET /analytics/daily-users?start_date=2025-01-01&end_date=2025-01-31
 func GetDailyUniqueUsers(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)
@@ -72,7 +72,7 @@ func GetDailyUniqueUsers(c *gin.Context) {
 	})
 }
 
-// 2. Get average time per page per day
+// Get average time per page per day
 // GET /analytics/page-time?start_date=2025-01-01&end_date=2025-01-31
 func GetPageTimeStats(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)
@@ -99,7 +99,7 @@ func GetPageTimeStats(c *gin.Context) {
 	})
 }
 
-// 3. Get daily downloads
+// Get daily downloads
 // GET /analytics/downloads?start_date=2025-01-01&end_date=2025-01-31
 func GetDownloadStats(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)
@@ -132,7 +132,7 @@ func GetDownloadStats(c *gin.Context) {
 	})
 }
 
-// 4. Get interaction stats
+// Get interaction stats
 // GET /analytics/interactions?start_date=2025-01-01&end_date=2025-01-31
 func GetInteractionStats(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)
@@ -165,7 +165,7 @@ func GetInteractionStats(c *gin.Context) {
 	})
 }
 
-// 5. Get device usage stats
+// Get device usage stats
 // GET /analytics/devices?start_date=2025-01-01&end_date=2025-01-31
 func GetDeviceStats(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)
@@ -198,7 +198,7 @@ func GetDeviceStats(c *gin.Context) {
 	})
 }
 
-// 6. Get browser usage stats
+// Get browser usage stats
 // GET /analytics/browsers?start_date=2025-01-01&end_date=2025-01-31
 func GetBrowserStats(c *gin.Context) {
 	dateFilter, err := parseDateRange(c)

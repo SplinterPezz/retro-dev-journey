@@ -27,7 +27,6 @@ const DialogBox: React.FC<DialogBoxProps> = ({
 
   useEffect(() => {
     if (currentMessageIndex >= messages.length) {
-      // All messages completed
       if (onComplete) {
         onComplete();
       }
@@ -36,13 +35,11 @@ const DialogBox: React.FC<DialogBoxProps> = ({
 
     const currentMessage = messages[currentMessageIndex];
     
-    // Wait for the delay before showing the message
     const delayTimeout = setTimeout(() => {
       setIsVisible(true);
       setIsTyping(true);
       setDisplayedText('');
-      
-      // Start typing animation
+
       let charIndex = 0;
       const fullText = `${currentMessage.speaker}: ${currentMessage.text}`;
       

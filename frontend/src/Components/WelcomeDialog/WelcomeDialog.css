@@ -1,0 +1,182 @@
+.welcome-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 250;
+  backdrop-filter: blur(3px);
+}
+
+.welcome-dialog {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  max-width: 90vw;
+  box-sizing: border-box;
+  min-width: 280px;
+}
+
+.welcome-dialog.mobile {
+  width: 350px;
+}
+
+.welcome-dialog.desktop {
+  width: 450px;
+}
+
+.welcome-dialog {
+  animation: welcomeSlideIn 0.4s ease-out;
+}
+
+@keyframes welcomeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-40px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.welcome-title {
+  font-size: 1.8em !important;
+  text-decoration: none !important;
+  color: #ffd700 !important;
+  text-align: center;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  font-weight: bold;
+}
+
+.welcome-content {
+  margin-bottom: 20px;
+  pointer-events: auto;
+  position: relative;
+}
+
+.welcome-info-section {
+  margin-bottom: 20px;
+}
+
+.welcome-section-label {
+  display: block;
+  color: #ffd700;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.welcome-description {
+  margin: 0;
+  color: #fff;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
+  border-radius: 4px;
+  border-left: 3px solid #ffd700;
+}
+
+.welcome-dialog .controls-info {
+  margin-top: 8px;
+}
+
+.welcome-dialog .controls-info .rpgui-container {
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(2px);
+}
+
+.welcome-dialog .control-info-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.controls-info-yellow {
+  color: #ffd700 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.accept-button {
+  width: 60vw;
+  max-width: 335px !important;
+  font-size: 1rem;
+  height: 75px !important;
+}
+
+.accept-button.button-mobile {
+  max-width: 250px !important;
+  font-size: 0.8rem !important;
+  min-width: 200px !important;
+}
+
+.accept-button-container {
+  place-self: anchor-center;
+}
+
+@media (max-width: 768px) {
+  .welcome-dialog {
+    width: 95vw !important;
+    top: 15% !important;
+  }
+  
+  .welcome-title {
+    font-size: 1.5em !important;
+  }
+  
+  .welcome-section-label {
+    font-size: 0.9rem;
+  }
+  
+  .welcome-description {
+    font-size: 0.9rem;
+    padding: 10px;
+  }
+  
+  .welcome-dialog .control-info-text {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-dialog {
+    width: 98vw !important;
+    top: 10% !important;
+  }
+  
+  .welcome-title {
+    font-size: 1.3em !important;
+  }
+  
+  .welcome-info-section {
+    margin-bottom: 15px;
+  }
+  
+  .welcome-description {
+    font-size: 0.85rem;
+    padding: 8px;
+  }
+  
+  .welcome-button-section {
+    margin-top: 20px;
+    padding-top: 12px;
+  }
+}
+
+.welcome-dialog .rpgui-container.framed-golden {
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.3),
+    inset 0 0 20px rgba(255, 215, 0, 0.1);
+  border: 3px solid rgba(255, 215, 0, 0.6);
+}

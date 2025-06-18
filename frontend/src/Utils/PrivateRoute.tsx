@@ -11,7 +11,6 @@ const PrivateRoute = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    // Dispatch checkAuthentication to validate token
     dispatch(checkAuthentication());
   }, [dispatch]);
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEventHandler } from "react";
+import { useState, useEffect } from "react";
 import AudioControls from "../../Components/AudioControls/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
@@ -95,9 +95,6 @@ export default function HomePage() {
           </div>
         }
       </div>
-
-
     </>
-
   );
 }

@@ -25,9 +25,10 @@ services:
     depends_on:
       - database
     environment:
-    - APP_ENV=${APP_ENV:-dev}
+    - APP_ENV=${APP_ENV:-prod}
     networks:
       - retro_dev_journey
+      - nginx_reverse_proxy
   
   frontend:
     container_name: react_retro_dev_journey
@@ -35,7 +36,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        - APP_ENV=${APP_ENV:-dev}
+        - APP_ENV=${APP_ENV:-prod}
     ports:
       - "8422:80"
     depends_on:
@@ -53,3 +54,5 @@ networks:
   retro_dev_journey:
     name : retro_dev_journey
     driver: bridge
+  nginx_reverse_proxy:
+    external: true

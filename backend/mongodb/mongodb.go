@@ -245,6 +245,8 @@ func FindUserByUsernameOrEmail(usernameOrEmail string) (*models.User, error) {
 }
 
 // CreateUser inserts a new user into the MongoDB collection
+// Function used to create root user on startup.
+// Function disabled in API
 func CreateUser(user models.User) (string, error) {
 	// Insert the User into the collection
 	data, err := usersCollection.InsertOne(context.Background(), user)

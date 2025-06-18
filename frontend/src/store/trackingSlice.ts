@@ -10,7 +10,7 @@ const extractDateFromKey = (key: string): string | null => {
   const parts = key.split('-');
   if (parts.length >= 3) {
 
-    // Get the last 3 parts: YYYY-MM-DD
+    // YYYY-MM-DD
     const dateParts = parts.slice(-3);
     if (dateParts.length === 3 && 
         dateParts[0].length === 4 && // YYYY
@@ -49,7 +49,6 @@ const trackingSlice = createSlice({
     resetInteractions(state) {
       state.interactions = [];
     },
-    // New action to clean old interactions
     cleanOldInteractions(state) {
       state.interactions = cleanOldInteractionsFunction(state.interactions);
     },

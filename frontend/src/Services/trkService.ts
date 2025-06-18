@@ -15,13 +15,11 @@ export const sendTrackingData = async (data: TrkData): Promise<void> => {
       body: JSON.stringify(payload),
     });
     
-    // Log tracking data in development
     if (process.env.REACT_APP_ENV === 'development') {
       console.log('Tracking data sent:', payload);
     }
     
   } catch (error) {
-    // Silently fail for tracking to not disrupt user experience
     if (process.env.REACT_APP_ENV === 'development') {
       console.error('Failed to send tracking data:', error);
     }

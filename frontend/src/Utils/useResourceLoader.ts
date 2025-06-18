@@ -63,6 +63,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
           console.warn(`Failed to load resource: ${resource}`, error);
         } finally {
           loadedCount++;
+
           // Only update progress immediately if no minimum duration is set
           if (minDuration === 0) {
             updateProgress();
@@ -96,7 +97,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
     const simulateLoadingAnimation = (duration: number, progressCallback?: (progress: number) => void): Promise<void> => {
       return new Promise(resolve => {
         const startTime = Date.now();
-        const interval = 30; // Update every 30ms
+        const interval = 30;
         
         const animate = () => {
           const elapsed = Date.now() - startTime;

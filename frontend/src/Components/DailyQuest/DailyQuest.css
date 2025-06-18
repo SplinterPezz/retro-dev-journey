@@ -1,4 +1,3 @@
-/* DailyQuest.css - Cleaned Version */
 .daily-quest-container {
   position: fixed;
   top: 20px;
@@ -19,7 +18,6 @@
   margin-left: 20px;
 }
 
-
 .quest-header-content {
   display: flex;
   justify-content: space-between;
@@ -37,7 +35,6 @@
   text-decoration: none !important;
 }
 
-/* Progress Bar */
 .quest-progress-container {
   display: flex;
   align-items: center;
@@ -70,7 +67,6 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Quest Icon */
 .quest-icon-container {
   position: relative;
   flex-shrink: 0;
@@ -83,7 +79,6 @@
   object-fit: contain;
   border-radius: 3px;
   
-  /* Pixel perfect rendering */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -125,7 +120,6 @@
   padding-left: 2px;
 }
 
-/* Quest Status */
 .quest-status {
   flex-shrink: 0;
   font-size: 1rem;
@@ -142,8 +136,6 @@
 }
 
 
-
-/* Responsive */
 @media (max-width: 768px) {
   .daily-quest-container {
     width: 250px;

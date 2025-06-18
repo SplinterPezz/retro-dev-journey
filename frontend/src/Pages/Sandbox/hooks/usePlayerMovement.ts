@@ -5,6 +5,7 @@ import { playerHitbox } from '../config';
 interface PlayerMovementConfigExtended extends PlayerMovementConfig {
   structures?: StructureData[];
   playerHitbox?: Hitbox;
+  canMove?: boolean;
 }
 
 interface JoystickState {
@@ -137,6 +138,8 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
   const clearAllKeys = useCallback(() => setPressedKeys(new Set()), []);
 
   const handleJoystickMove = useCallback((e: any) => {
+    if (config.canMove === false) return;
+
     const d = getDirectionFromJoystick(e.x, e.y);
     const i = getJoystickIntensity(e.x, e.y);
     const prev = joystickRef.current;
@@ -145,7 +148,7 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       joystickRef.current = { isActive: true, direction: d, intensity: i };
       setJoystickState(joystickRef.current);
     }
-  }, []);
+  }, [config.canMove]);
 
   const handleJoystickStop = useCallback(() => {
     joystickRef.current = { isActive: false, direction: 'idle', intensity: 0 };
@@ -156,15 +159,19 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
     const k = e.key.toLowerCase();
     if (!validKeys.includes(k)) return;
     e.preventDefault();
+
+    if (config.canMove === false) return;
+
     if (!isWindowFocusedRef.current || e.ctrlKey || e.altKey || e.metaKey) {
       clearAllKeys();
       return;
     }
+
     setPressedKeys(prev => {
       prev.add(k);
       return new Set(prev);
     });
-  }, [clearAllKeys]);
+  }, [clearAllKeys, config.canMove]);
 
   const handleKeyUp = useCallback((e: KeyboardEvent) => {
     const k = e.key.toLowerCase();

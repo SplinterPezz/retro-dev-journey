@@ -4,7 +4,6 @@ import { RootState } from '../../store/store';
 import { companies, technologies, downloadButton, defaultBuilding, defaultStatue } from '../../Pages/Sandbox/config';
 import './DailyQuest.css';
 import { DailyQuest } from '../../types/sandbox';
-import { PageType, ViewType } from '../../types/tracking';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
@@ -15,7 +14,6 @@ interface DailyQuestProps {
   maxVisible?: number;
 }
 
-// Emotion styled components for animations
 const slideDown = keyframes`
   from {
     max-height: 0;
@@ -61,7 +59,6 @@ const QuestListContainer = styled.div<{ isVisible: boolean }>`
   transform: translateY(${props => props.isVisible ? '0' : '-10px'});
   transition: transform 0.3s ease-in-out;
 
-  /* Custom scrollbar styling */
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -108,7 +105,6 @@ const QuestItem = styled.div<{ isCompleted: boolean; index: number; isVisible: b
     ? 'rgba(76, 175, 80, 0.3)' 
     : 'rgba(255, 255, 255, 0.1)'};
   
-  /* Staggered animation */
   transform: translateX(${props => props.isVisible ? '0' : '-20px'});
   opacity: ${props => props.isVisible ? 1 : 0};
   transition: transform 0.4s ease-out, opacity 0.4s ease-out;
@@ -241,7 +237,6 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
   const completionPercentage = (completedQuests.length / dailyQuests.length) * 100;
   
   const displayedQuests = maxVisible ? dailyQuests.slice(0, maxVisible) : dailyQuests;
-  const hasMoreQuests = maxVisible && dailyQuests.length > maxVisible;
 
   const getQuestTypeIcon = (type: DailyQuest['type']): string => {
     switch (type) {
