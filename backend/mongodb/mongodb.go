@@ -408,7 +408,7 @@ func GetDailyDownloads(dateFilter models.DateRangeFilter) ([]models.DownloadStat
 				"$lt":  dateFilter.EndDate.AddDate(0, 0, 1).Format("2006-01-02"),
 			},
 			"type": "interaction",
-			"info": "download",
+			"info": bson.M{"$regex": "download", "$options": "i"},
 		}}},
 
 		// Extract date from datetime
