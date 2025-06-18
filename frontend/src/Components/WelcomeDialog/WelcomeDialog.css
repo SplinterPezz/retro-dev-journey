@@ -18,6 +18,8 @@
   max-width: 90vw;
   box-sizing: border-box;
   min-width: 280px;
+
+  height: -webkit-fill-available;
 }
 
 .welcome-dialog.mobile {
@@ -122,7 +124,9 @@
 }
 
 .accept-button-container {
-  place-self: anchor-center;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
 }
 
 @media (max-width: 768px) {
