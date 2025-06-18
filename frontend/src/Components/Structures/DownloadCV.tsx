@@ -155,7 +155,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
                                 border: `1px solid ${getStatusColor()}`,
                                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
                                 zIndex: 100,
-                                animation: isDownloading ? 'pulse 1s infinite' : 'none'
                             }}
                         >
                             {getStatusMessage()}
