@@ -16,11 +16,9 @@
 
   position: absolute;
 
-  /* Smooth transitions for dynamic path changes */
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Animation for newly generated path segments */
 .path-segment.new {
   animation: pathAppear 0.5s ease-out;
 }
@@ -36,16 +34,13 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .path-segment {
-    /* Scale down path segments on mobile if needed */
     transform-origin: center center;
   }
 }
 
 @media (max-width: 480px) {
   .path-segment {
-    /* Further scaling for very small screens */
   }
 }

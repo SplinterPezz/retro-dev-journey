@@ -71,7 +71,7 @@ export const treesEnvironments: EnvironmentData[]=[
   },
   {
     image: '/sprites/trees/olive_1.png',
-    position: {x:1700,y:200},
+    position: {x:1750,y:150},
   },
   {
     image: '/sprites/trees/olive_2.png',
@@ -219,7 +219,6 @@ export const detailsEnvironments: EnvironmentData[] = [
   }
 ]
 
-// Company data with specific positions
 const companiesData: CompanyData[] = [
   {
     id: "eikony",
@@ -271,7 +270,7 @@ const companiesData: CompanyData[] = [
       "PHP", "Python", "Java", "ReactJs", "MongoDB", "MySQL", "Facebook API"
     ],
     description: "Developed and architected an Headless CMS for web and promotion management also integrated with Facebook API for dynamic content.",
-    position: { x: mainPathConfig.startX + 768, y: 954 },
+    position: { x: mainPathConfig.startX - 512, y: 1228 },
     image: "/sprites/buildings/foryouviaggi.png",
     signpost: "/sprites/signpost/foryouviaggi_signpost.png",
     easteregg: "Codesour. The final form. Here, Dude became the backend warrior he was always meant to be – Java master, MongoDB/Cassandra tamer, Python spellcaster. Built a GCP beast handling thousands of requests per second. Daily scrums, Jira... the usual grind. But now? A new chapter begins.",
@@ -291,7 +290,7 @@ const companiesData: CompanyData[] = [
     technologies: ["JavaScript", "PHP", "MySQL", "SQL", "Talend", "Pentaho", "365 API"],
     description: "Developed a monitoring tool for advertising and managed internal databases.",
     website: "https://alessipubblicita.it/",
-    position: { x: mainPathConfig.startX - 512, y: 1228 },
+    position: { x: mainPathConfig.startX + 768, y: 954 },
     image: "/sprites/buildings/alessi.png",
     signpost: "/sprites/signpost/alessi_signpost.png",
     easteregg: "Alessi – a Sicilian giant in outdoor advertising. Here, Dude leveled up: Talend pipelines, database wizardry, little apps keeping track of big ad campaigns. Not bad for a guy who once feared SQL!",
@@ -346,7 +345,6 @@ const companiesData: CompanyData[] = [
   }
 ];
 
-// Technology data with specific positions
 const technologiesData: TechnologyData[] = [
   {
     id: "java",
@@ -681,7 +679,6 @@ const technologiesData: TechnologyData[] = [
   }
 ];
 
-// Convert to structure data
 export const companies: StructureData[] = companiesData.map((company, index) => ({
   id: company.id,
   name: company.name,

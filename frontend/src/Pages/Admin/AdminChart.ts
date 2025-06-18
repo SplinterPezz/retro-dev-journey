@@ -85,7 +85,6 @@ export const blackCalendarTheme = createTheme({
   },
 });
 
-// Styled DatePicker for RPG theme - Black Edition
 export const StyledTextField = styled(TextField)({
   '& .MuiInputBase-root': {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -561,7 +560,6 @@ export const apexDevicesDonut = {
   } as ApexOptions,
 };
 
-// Pie chart configuration for browsers
 export const apexBrowsersPie = {
   series: [] as number[],
   options: {

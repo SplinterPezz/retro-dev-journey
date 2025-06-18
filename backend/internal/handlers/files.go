@@ -19,49 +19,41 @@ const (
 func DownloadCV(c *gin.Context) {
 	cvPath := filepath.Join(CVDirectory, CVFilename)
 
-	// Check if file exists
 	if _, err := os.Stat(cvPath); os.IsNotExist(err) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "CV file not found"})
 		return
 	}
 
-	// Set headers for PDF download
 	c.Header("Content-Type", "application/pdf")
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", CVFilename))
 	c.Header("Content-Transfer-Encoding", "binary")
 	c.Header("Cache-Control", "no-cache")
 
-	// Serve the file
 	c.File(cvPath)
 }
 
 func UploadCV(c *gin.Context) {
-	// Get the uploaded file
 	file, err := c.FormFile("cv")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "No file uploaded"})
 		return
 	}
 
-	// Validate file size
 	if file.Size > MaxFileSize {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "File size exceeds 5MB limit"})
 		return
 	}
 
-	// Validate file type (check extension and MIME type)
 	if filepath.Ext(file.Filename) != ".pdf" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Only PDF files are allowed"})
 		return
 	}
 
-	// Create directory if it doesn't exist
 	if err := os.MkdirAll(CVDirectory, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create upload directory"})
 		return
 	}
 
-	// Open the uploaded file
 	src, err := file.Open()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to open uploaded file"})
@@ -77,7 +69,6 @@ func UploadCV(c *gin.Context) {
 		return
 	}
 
-	// Reset file pointer
 	src.Close()
 	src, err = file.Open()
 	if err != nil {
@@ -92,10 +83,8 @@ func UploadCV(c *gin.Context) {
 		return
 	}
 
-	// Create the destination file path
 	cvPath := filepath.Join(CVDirectory, CVFilename)
 
-	// Create the destination file
 	dst, err := os.Create(cvPath)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create destination file"})
@@ -103,7 +92,6 @@ func UploadCV(c *gin.Context) {
 	}
 	defer dst.Close()
 
-	// Copy the uploaded file to destination
 	_, err = io.Copy(dst, src)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to save file"})

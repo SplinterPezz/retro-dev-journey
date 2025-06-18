@@ -8,7 +8,8 @@ import { generateUUIDFromUserAgent, getDeviceInfo,
   createInteractionKey 
 } from '../Utils/uuidGenerator';
 
-import { PageType, timeTrackingIntervals, ViewType } from '../types/tracking';
+import { PageType, timeTrackingIntervals } from '../types/tracking';
+import { questPrefix } from '../Pages/Sandbox/config';
 
 interface UseTrackingProps {
   page: PageType;
@@ -22,7 +23,6 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
   const startTimeRef = useRef<Date>(new Date());
   const deviceInfoRef = useRef(getDeviceInfo());
 
-  // Initialize UUID on first use
   useEffect(() => {
     if (!uuid && enabled) {
       const generatedUUID = generateUUIDFromUserAgent();
@@ -30,7 +30,6 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     }
   }, [uuid, enabled, dispatch]);
 
-  // Send view tracking data
   const sendViewData = useCallback((timeSpent: number) => {
     if (!uuid || !enabled) return;
 
@@ -70,14 +69,13 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
       return interactions;
     }
 
-    // Add to tracked interactions
     dispatch(addInteraction(interactionKey));
 
     const trackingData: TrkData = {
       date: new Date(),
       uuid,
       type: 'interaction',
-      info,
+      info: info.replace(questPrefix, ""),
       page,
       ...deviceInfoRef.current
     };

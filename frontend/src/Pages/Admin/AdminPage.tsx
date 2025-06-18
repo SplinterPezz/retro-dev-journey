@@ -55,7 +55,6 @@ export default function AdminPage() {
         end_date: endDate.format('YYYY-MM-DD')
       };
 
-      // Fetch both datasets
       const [usersResponse, pageTimeResponse, interactionsResponse, downloadResponse, devicesResponse, browsersResponse] = await Promise.all([
         getDailyUniqueUsers(dateRange),
         getPageTimeStats(dateRange),
@@ -65,7 +64,6 @@ export default function AdminPage() {
         getBrowserStats(dateRange)
       ]);
 
-      // Handle Daily Users Data
       if ('data' in usersResponse) {
         setUniqueUsers(true)
 
@@ -90,7 +88,6 @@ export default function AdminPage() {
         }));
       }
 
-      // Handle Page Time Data
       if ('data' in pageTimeResponse) {
         setPageTime(true)
 
@@ -119,7 +116,7 @@ export default function AdminPage() {
           });
 
           return {
-            name: page.charAt(0).toUpperCase() + page.slice(1), // Capitalize page name
+            name: page.charAt(0).toUpperCase() + page.slice(1),
             data: data
           };
         });

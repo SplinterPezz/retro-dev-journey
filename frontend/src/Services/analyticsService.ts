@@ -1,5 +1,3 @@
-// frontend/src/Services/analyticsService.ts
-
 import { fetchFromApi } from '../Utils/apiService';
 import { 
   DateRangeFilter, 
@@ -13,7 +11,6 @@ import {
 
 import { ApiError } from '../types/api';
 
-// Get daily unique users
 export async function getDailyUniqueUsers(dateFilter?: DateRangeFilter): Promise<DailyUsersResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
@@ -32,7 +29,6 @@ export async function getDailyUniqueUsers(dateFilter?: DateRangeFilter): Promise
   return response as ApiError;
 }
 
-// Get page time statistics
 export async function getPageTimeStats(dateFilter?: DateRangeFilter): Promise<PageTimeResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
@@ -51,7 +47,6 @@ export async function getPageTimeStats(dateFilter?: DateRangeFilter): Promise<Pa
   return response as ApiError;
 }
 
-// Get download statistics
 export async function getDownloadStats(dateFilter?: DateRangeFilter): Promise<DownloadsResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
@@ -70,7 +65,6 @@ export async function getDownloadStats(dateFilter?: DateRangeFilter): Promise<Do
   return response as ApiError;
 }
 
-// Get interaction statistics
 export async function getInteractionStats(dateFilter?: DateRangeFilter): Promise<InteractionsResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
@@ -89,7 +83,6 @@ export async function getInteractionStats(dateFilter?: DateRangeFilter): Promise
   return response as ApiError;
 }
 
-// Get device statistics
 export async function getDeviceStats(dateFilter?: DateRangeFilter): Promise<DevicesResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
@@ -108,7 +101,6 @@ export async function getDeviceStats(dateFilter?: DateRangeFilter): Promise<Devi
   return response as ApiError;
 }
 
-// Get browser statistics
 export async function getBrowserStats(dateFilter?: DateRangeFilter): Promise<BrowsersResponse | ApiError> {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);

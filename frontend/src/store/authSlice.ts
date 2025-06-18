@@ -36,7 +36,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
     },
     checkAuthentication(state) {
-      // Check if the token is still valid
       if (state.expiration && Date.now() > (state.expiration * 1000)) {
         state.id = null;
         state.user = null;

@@ -25,6 +25,11 @@ export interface UserTrackingState {
   interactions: string[];
 }
 
+export interface WelcomeUser {
+  tipsAcceptedDesktop: boolean;
+  tipsAcceptedMobile: boolean;
+}
+
 export interface DeviceInfo {
   device: DeviceType;
   screenResolution: string;

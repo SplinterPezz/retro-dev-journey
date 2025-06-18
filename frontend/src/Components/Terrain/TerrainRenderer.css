@@ -13,7 +13,6 @@
 }
 
 .terrain-tile {
-  /* Pixel perfect rendering for terrain */
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
@@ -28,26 +27,20 @@
   background-position: center;
   z-index: 0;
 
-  /* Force hardware acceleration */
   will-change: transform;
   
-  /* Ensure smooth transitions if needed */
   transition: none;
   position: absolute;
-  /* Force compositing layer */
   isolation: isolate;
 }
 
-/* Performance optimization for large numbers of tiles */
 .terrain-tile {
   will-change: auto;
   contain: layout style paint;
 }
 
-/* Browser-specific fixes */
 @supports (-webkit-appearance: none) {
   .terrain-tile {
-    /* Safari/WebKit specific */
     -webkit-transform: translateZ(0);
     -webkit-font-smoothing: none;
   }
@@ -55,7 +48,6 @@
 
 @-moz-document url-prefix() {
   .terrain-tile {
-    /* Firefox specific */
     image-rendering: crisp-edges;
     transform: translateZ(0.1px);
   }

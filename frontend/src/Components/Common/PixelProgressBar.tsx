@@ -28,16 +28,12 @@ const PixelProgressBar: React.FC<PixelProgressBarProps> = ({
         className={`pixel-progress-bar ${variant} ${animated ? 'animated' : ''}`}
         style={{ width: `${width}%`, height: `${height}px`, minWidth:`${minWidth}px` }}
       >
-        {/* Background border (pixel art style) */}
         <div className="pixel-progress-border">
-          {/* Inner background */}
           <div className="pixel-progress-background">
-            {/* Progress fill */}
             <div 
               className="pixel-progress-fill"
               style={{ width: `${clampedProgress}%` }}
             >
-              {/* Shine effect */}
               {animated && (
                 <div className="pixel-progress-shine" />
               )}

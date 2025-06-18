@@ -20,7 +20,6 @@
   animation: shake 0.5s ease-in-out;
 }
 
-/* Login page specific styles */
 .login-background {
   position: absolute;
   top: 0;
@@ -48,7 +47,6 @@ html.login-active {
   height: 100vh !important;
 }
 
-/* Custom scrollbar for login forms if needed */
 .login-form-container::-webkit-scrollbar {
   width: 8px;
 }

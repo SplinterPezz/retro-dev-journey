@@ -1,4 +1,4 @@
-import React, { useState, useEffect, MouseEventHandler } from "react";
+import { useState, useEffect } from "react";
 import AudioControls from "../../Components/AudioControls/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
@@ -66,18 +66,7 @@ export default function HomePage() {
               debugMode={process.env.REACT_APP_ENV === 'development'}
             />
             <div>
-              <div className="social-container">
-                <a onClick={handleAdminPage}>
-                  <img className="social-image me-4" src="/sprites/player/dude_turn.gif" />
-                </a>
-                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
-                  <img className="social-image me-4" src="/sprites/others/linkedin.png" />
-                </a>
-                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
-                  <img className="social-image" src="/sprites/others/github.png" />
-                </a>
-                
-              </div>
+              
 
               <AudioControls
                 audioSrc="/audio/home_compressed.mp3"
@@ -92,12 +81,20 @@ export default function HomePage() {
               />
 
             </div>
+            <div className="social-container">
+                <a onClick={handleAdminPage}>
+                  <img className="social-image me-4" src="/sprites/player/dude_turn.gif" />
+                </a>
+                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
+                  <img className="social-image me-4" src="/sprites/others/linkedin.png" />
+                </a>
+                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
+                  <img className="social-image" src="/sprites/others/github.png" />
+                </a>
+              </div>
           </div>
         }
       </div>
-
-
     </>
-
   );
 }

@@ -2,7 +2,6 @@ package models
 
 import "time"
 
-// User represents a basic user model used in both authentication and MongoDB
 type User struct {
 	ID       string `json:"id" bson:"_id,omitempty"`
 	Username string `json:"username"`
@@ -37,7 +36,7 @@ type PageTimeStats struct {
 	Date        string  `json:"date" bson:"date"`
 	Page        string  `json:"page" bson:"page"`
 	AverageTime float64 `json:"averageTime" bson:"averageTime"`
-	UniqueUsers int     `json:"uniqueUsers" bson:"uniqueUsers"` // Changed from TotalViews
+	UniqueUsers int     `json:"uniqueUsers" bson:"uniqueUsers"`
 }
 
 type DownloadStats struct {

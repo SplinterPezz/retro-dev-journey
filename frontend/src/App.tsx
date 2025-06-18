@@ -1,4 +1,3 @@
-// Alternative approach: App.tsx level initialization
 import './App.css';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';

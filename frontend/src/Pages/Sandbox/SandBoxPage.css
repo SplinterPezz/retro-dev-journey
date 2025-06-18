@@ -13,7 +13,7 @@
   height: 100vh;
   min-height: 100vh;
   width: 100%;
-  position: relative; /* Add this */
+  position: relative;
 
   height: 100vh;
   min-height: 100vh;
@@ -29,7 +29,6 @@
   margin: 10px;
 }
 
-/* Main container */
 .sandbox-container::before {
   content: "";
   position: fixed;
@@ -60,7 +59,6 @@
   background: transparent;
 }
 
-/* Viewport that moves with the player */
 .sandbox-viewport {
   width: 100vw;
   height: 100vh;
@@ -68,22 +66,19 @@
   position: relative;
 }
 
-/* Game world container */
 .sandbox-world {
   position: relative;
   transition: transform 0.1s ease-out;
   
-  /* Pixel perfect rendering */
+  
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   
-  /* Fallback background color */
   background-color: #90ee90;
 }
 
-/* UI Overlay */
 .sandbox-ui {
   position: fixed;
   top: 0;
@@ -94,7 +89,6 @@
   z-index: 1000;
 }
 
-/* Back button */
 .back-button {
   position: absolute;
   top: 18px;
@@ -102,47 +96,9 @@
   pointer-events: auto;
 }
 
-/* Controls info */
-.controls-info {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  pointer-events: auto;
-}
-
-.controls-info-text{
-  margin: 0;
-  font-size: 0.8rem
-}
-
-.controls-info .rpgui-container {
-  padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(2px);
-}
-
-/* Career progress info */
-.career-progress {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 300px;
-  pointer-events: auto;
-}
-
-.career-progress .rpgui-container {
-  padding: 15px;
-  background: rgba(139, 69, 19, 0.2);
-  backdrop-filter: blur(3px);
-  text-align: center;
-}
-
-/* Minimap */
 .minimap {
   position: fixed;
   right: 20px;
-  transform: translateX(-50%);
   bottom: 20px;
   width: 200px;
   height: 150px;
@@ -166,7 +122,6 @@
   overflow: hidden;
 }
 
-/* Minimap main path */
 .minimap-main-path {
   position: absolute;
   background: #8b7355;
@@ -180,7 +135,6 @@
   transform: translateX(-50%)
 }
 
-/* Minimap player indicator */
 .minimap-player {
   position: absolute;
   width: 6px;
@@ -204,7 +158,6 @@
   }
 }
 
-/* Minimap structure indicators */
 .minimap-structure {
   position: absolute;
   width: 4px;
@@ -248,14 +201,14 @@
 
 
 .mobile-joystick {
-  bottom: 170px;
+  bottom: 40px;
   position: fixed;
-  left: 50%;
+  right: 200px;
   transform: translateX(-50%);
   z-index: 1001;
   pointer-events: auto;
-  display: flex;
-
+  display: flex
+;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -265,7 +218,6 @@
   image-rendering: crisp-edges;
 }
 
-/* Style the joystick base to match RPG theme */
 .mobile-joystick div[style*="position: relative"] {
   border: 3px solid #8b4513 !important;
   box-shadow: 
@@ -274,7 +226,6 @@
     0 4px 8px rgba(0, 0, 0, 0.4) !important;
 }
 
-/* Style the joystick stick */
 .mobile-joystick div[style*="position: absolute"] {
   border: 2px solid #b8860b !important;
   box-shadow: 
@@ -283,87 +234,6 @@
     0 2px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
-.controls-info-yellow {
-  color: #ffd700 !important;
-  font-size: 0.95rem !important;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
-  text-decoration: none !important;
-}
-
-/* Responsive design */
-@media (max-width: 1024px) {
-  .career-progress {
-    width: 250px;
-  }
-}
-
-@media (max-width: 768px) {
-  .mobile-joystick {
-    bottom: 110px;
-  }
-
-  .back-button {
-    top: 18px;
-    left: 10px;
-  }
-  
-  .controls-info {
-    bottom: 10px;
-    left: 10px;
-  }
-  
-  .minimap {
-    bottom: 10px;
-    right: 10px;
-    width: 150px;
-    height: 100px;
-  }
-  
-  .sandbox-world {
-    /* Scale up for mobile to make everything more visible */
-    transform-origin: center center;
-  }
-
-  .controls-info .rpgui-container {
-     width: 60vw;
-  }
-}
-
-@media (max-width: 480px) {
-  .mobile-joystick {
-    bottom: 90px;
-  }
-
-  .career-progress {
-    width: 180px;
-  }
-  
-  .career-progress .rpgui-container {
-    padding: 8px;
-  }
-  
-  .minimap {
-    width: 120px;
-    height: 80px;
-    left: 80%;
-  }
-
-  .sandbox-loading .rpgui-container {
-    padding: 20px 0px 20px;
-  }
-  
-  @media (max-width: 320px) {
-    .career-progress {
-      display: none;
-    }
-    
-    .minimap {
-      display: none;
-    }
-  }
-}
-
-/* World boundaries visualization (development) */
 .world-boundaries {
   position: absolute;
   top: 0;
@@ -375,17 +245,14 @@
   z-index: 9999;
 }
 
-/* Performance optimizations */
 .sandbox-world * {
   will-change: transform;
 }
 
-/* Smooth camera following */
 .sandbox-viewport.smooth-camera .sandbox-world {
   transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Debug grid (development only) */
 .debug-grid {
   position: absolute;
   top: 0;
@@ -395,7 +262,7 @@
   background-image: 
     linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 128px 128px; /* Match tile size (changed from 256px to 128px) */
+  background-size: 128px 128px;
   pointer-events: none;
   z-index: 9998;
 }
@@ -421,10 +288,14 @@
   box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
 }
 
-/* Animate hitboxes when collision occurs */
 .debug-hitbox.collision {
   animation: collision-pulse 0.5s ease-in-out;
 }
+
+body[data-debug="true"] .debug-hitbox {
+  display: block;
+}
+
 
 @keyframes collision-pulse {
   0%, 100% {
@@ -437,7 +308,47 @@
   }
 }
 
-/* Only show in development */
-body[data-debug="true"] .debug-hitbox {
-  display: block;
+@media (max-width: 768px) {
+  .mobile-joystick{
+    right: 150px;
+    bottom: 55px;
+  }
+
+  .back-button {
+    top: 18px;
+    left: 10px;
+  }
+  
+  
+  .minimap {
+    bottom: 10px;
+    width: 150px;
+    height: 100px;
+  }
+  
+  .sandbox-world {
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-joystick{
+    right: 110px;
+    bottom: 45px;
+  }
+
+  .minimap {
+    width: 120px;
+    height: 80px;
+  }
+
+  .sandbox-loading .rpgui-container {
+    padding: 20px 0px 20px;
+  }
+}
+
+@media (max-width: 320px) {
+    .mobile-joystick{
+      right: 100px
+    }
 }

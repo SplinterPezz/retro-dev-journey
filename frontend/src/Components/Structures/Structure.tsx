@@ -53,7 +53,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
     >
       {/* Structure sprite/icon */}
       <div className="structure-sprite">
-        {/* Check if it's a building with image path or emoji */}
         {type === 'building' ? (
           <>
             <img 
@@ -113,7 +112,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
       </div>
 
       {/* Structure label */}
-      <div className={`structure-label ${isNearby ? 'visible' : ''}`}>
+      <div className={`d-none structure-label ${isNearby ? 'visible' : ''}`}>
         <span>{data.name}</span>
         {(isNearby && data.name === '???') && (
           <div className="interaction-hint">

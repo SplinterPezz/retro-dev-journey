@@ -73,40 +73,27 @@ func main() {
 		c.Status(http.StatusOK)
 	})
 
-	// Routes for HTTP-based interactions
-	//r.GET("/hello", handlers.HelloWorld)
-
 	//r.POST("/register", auth.Register)
 	r.POST("/login", auth.Login)
 
 	// Public routes (no authentication required)
 	r.GET("/download/cv", handlers.DownloadCV)
 
-	// Protected routes (authentication required)
-	r.POST("/upload/cv", handlers.UploadCV)
-
 	// Tracking Route for users
 	r.POST("/info", handlers.TrackData)
 
 	// Protected routes (authentication required)
+
+	r.POST("/upload/cv", handlers.UploadCV)
+
+	// Analytics Routes for admin area
 	analyticsGroup := r.Group("/analytics")
 	{
-		// 1. Daily unique users
 		analyticsGroup.GET("/daily-users", handlers.GetDailyUniqueUsers)
-
-		// 2. Average time per page per day
 		analyticsGroup.GET("/page-time", handlers.GetPageTimeStats)
-
-		// 3. Daily downloads per page
 		analyticsGroup.GET("/downloads", handlers.GetDownloadStats)
-
-		// 4. Interaction stats grouped by info
 		analyticsGroup.GET("/interactions", handlers.GetInteractionStats)
-
-		// 5. Device usage stats (bonus)
 		analyticsGroup.GET("/devices", handlers.GetDeviceStats)
-
-		// 6. Browser usage stats (bonus)
 		analyticsGroup.GET("/browsers", handlers.GetBrowserStats)
 	}
 
