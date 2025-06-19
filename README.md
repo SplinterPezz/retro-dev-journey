@@ -12,10 +12,10 @@
 
 **React + Go + MongoDB**
 <div align="left">
-  <img src="./frontend/public/sprites/player/dude_walk_S.gif" height="150">
-  <img src="./frontend/public/sprites/statues/react.png" height="150">
-  <img src="./frontend/public/sprites/statues/golang.png" height="150">
-  <img src="./frontend/public/sprites/statues/mongodb.png" height="150">
+  <img src="./frontend/public/sprites/player/dude_walk_S.gif" width="150">
+  <img src="./frontend/public/sprites/statues/react.png" width="150">
+  <img src="./frontend/public/sprites/statues/golang.png" width="150">
+  <img src="./frontend/public/sprites/statues/mongodb.png" width="150">
 </div>
 
 > 🚀 **FULL Development Timeline:** 2 weeks development + 1 week debugging
@@ -54,13 +54,34 @@ This allows you to manually input passwords and usernames with sensible default 
 
 ### What the Setup Scripts Do:
 - **Environment File Creation**: Automatically generates `.env` files for both frontend and backend
-- **Database Configuration**: Sets up MongoDB connection strings and credentials
-- **JWT Security**: Generates secure JWT secrets for authentication
-- **Admin User**: Creates initial admin user for dashboard access
-- **Docker Orchestration**: Configures multi-container deployment with proper networking
+- **Database Configuration**: Sets up MongoDB connection strings and credentials with env files
+- **JWT Security**: Generates secure JWT secrets for authentication and password encrypt
+- **Docker Containers**: Configures multi-container deployment with proper networking
+
+<div align="left">
+  <img src="./docs/screenshoots/other/setup.png" width="800">
+</div>
+
+# Auto Setup
+
+<div align="left">
+  <img src="./docs/screenshoots/other/setup_auto.png" width="800">
+</div>
 
 The Docker setup leverages multi-stage builds to optimize container sizes and includes health checks to ensure all services are running correctly. The compose configuration handles service dependencies, ensuring MongoDB starts before the backend, which starts before the frontend.
 
+<div align="left">
+  <img src="./docs/screenshoots/other/docker_1.png" width="800">
+  <img src="./docs/screenshoots/other/docker_stats.png" width="800">
+</div>
+
+The environment files could be optimized by using a single env file for both the database and backend, but I preferred to keep them separated.
+
+<div align="left">
+  <img src="./docs/screenshoots/other/BE_env.png" width="250">
+  <img src="./docs/screenshoots/other/FE_env.png" width="250">
+  <img src="./docs/screenshoots/other/mongo_env.png" width="250">
+</div>
 
 ---
 
@@ -100,45 +121,45 @@ The Docker setup leverages multi-stage builds to optimize container sizes and in
 
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/homepage.png" height="500">
-  <img src="./docs/screenshoots/desktop/sandbox.png"  height="500">
+  <img src="./docs/screenshoots/desktop/homepage.png" width="800">
+  <img src="./docs/screenshoots/desktop/sandbox.png"  width="800">
 </div>
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/login.png"  height="500">
-  <img src="./docs/screenshoots/desktop/admin.png"  height="500">
+  <img src="./docs/screenshoots/desktop/login.png"  width="800">
+  <img src="./docs/screenshoots/desktop/admin.png"  width="800">
 </div>
 
 
 ### Mobile
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/homepage.png" height="550">
-  <img src="./docs/screenshoots/mobile/welcome.png" height="550">
-  <img src="./docs/screenshoots/mobile/sandbox.png" height="550">
+  <img src="./docs/screenshoots/mobile/homepage.png" width="250">
+  <img src="./docs/screenshoots/mobile/welcome.png" width="250">
+  <img src="./docs/screenshoots/mobile/sandbox.png" width="250">
 </div>
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/sandbox_quest.png" height="550">
-  <img src="./docs/screenshoots/mobile/login.png" height="550">
-  <img src="./docs/screenshoots/mobile/admin_1.png" height="550">
+  <img src="./docs/screenshoots/mobile/sandbox_quest.png" width="250">
+  <img src="./docs/screenshoots/mobile/login.png" width="250">
+  <img src="./docs/screenshoots/mobile/admin_1.png" width="250">
 </div>
 
 ---
 
 ## ✨ Key Features
 
-- 🎮 **Interactive 2D World** - Navigate through a pixel-art landscape representing career progression
+- 🎮 **Interactive World** - Navigate through a pixel-art world representing career progression
 - 📊 **Real-time Analytics** - Track user interactions with MongoDB storage and admin dashboard
 - 📱 **Responsive Design** - Optimized for both desktop and mobile with touch controls
 - 🛤️ **Dynamic Path Generation** - Automatically generated paths connecting career milestones
 - 🎯 **Quest System** - Daily quest tracking for user engagement
 - 🎵 **Audio Controls** - Immersive background music with volume controls
-- 📄 **CV Management** - Secure upload/download functionality for CV files in the admin area.
+- 📄 **CV Management** - Secure upload/download functionality for CV files for fast update.
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Tech Stack & Library
 
 ### Backend (Go)
 ```
@@ -160,10 +181,10 @@ golang.org/x/crypto v0.36.0              // Cryptographic functions
   "react-redux": "^9.2.0",
   "redux-persist": "^6.0.0",
   "react-router-dom": "^7.6.1",
-  "framer-motion": "^12.15.0",
-  "@mui/material": "^7.1.1", // Can be easly removed, used for login card and admin buttons.
+  "framer-motion": "^12.15.0", // Can be easly removed, used for some basic animations
+  "@mui/material": "^7.1.1", // Can be easly removed, used for login card and admin area.
   "react-apexcharts": "^1.7.0",
-  "react-joystick-component": "^6.2.1"
+  "react-joystick-component": "^6.2.1" // Can be easly removed by creating a custom one
 }
 ```
 
@@ -299,7 +320,15 @@ retro-dev-journey/
 │   ├── .env.dev           # Env File for development
 │   ├── .env.local         # Env File for localhost
 │   └── .env.prod          # Env File for production
-├── database/              # Database initialization
+│ 
+├── database/              # Database folder for future init script
+├── .env                   # Env File for database
+│ 
+├── setup.sh               # Interactive setup script with configuration wizard
+├── setup-auto.sh          # Automated setup with auto-generated credentials
+├── setup-configure.sh     # Manual setup for user-provided credentials
+├── clean_env.sh           # Utility to remove all generated .env files
+│ 
 └── README.md              # Project documentation
 ```
 
@@ -312,21 +341,25 @@ public/sprites/
 │   ├── unipa.png          # University
 │   ├── codesour.png       # Current company
 │   └── new_opportunity.png # Future opportunities
+│ 
 ├── statues/               # Technology representations
 │   ├── java.png           # Java technology
 │   ├── python.png         # Python technology
 │   ├── javascript.png     # JavaScript technology
 │   └── [other_tech].png   # Additional technologies
+│ 
 ├── terrain/               # Ground and path textures
 │   ├── main.png           # Grass texture
 │   ├── path_core.png      # Basic path segment
 │   ├── path_cross.png     # Path intersection
 │   └── path_t_cross.png   # T-junction path
+│ 
 ├── player/                # Character animations
 │   ├── dude_idle.gif      # Idle animation
 │   ├── dude_walk_N.gif    # Walking north
 │   ├── dude_walk_S.gif    # Walking south
 │   └── dude_walk_E.gif    # Walking east/west
+│ 
 ├── trees/                 # Environmental decorations
 ├── details/               # Small decorative elements
 └── signpost/              # Company signposts
@@ -338,10 +371,12 @@ public/sprites/
 </div>
 
 <div align="left">
-  <img src="./frontend/public/sprites/player/dude_idle.gif" width="250">
   <img src="./frontend/public/sprites/player/dude_turn.gif" width="250">
+  <img src="./frontend/public/sprites/player/dude_idle.gif" width="250">
   <img src="./frontend/public/sprites/player/dude_walk_E.gif" width="250">
   <img src="./frontend/public/sprites/player/dude_walk_SE.gif" width="250">
+  <img src="./frontend/public/sprites/player/dude_walk_S.gif" width="250">
+  <img src="./frontend/public/sprites/player/dude_walk_N.gif" width="250">
 </div>
 
 # Environments
@@ -351,22 +386,29 @@ public/sprites/
   <img src="./frontend/public/sprites/trees/prickly_1.png" width="150">
   <img src="./frontend/public/sprites/trees/olive_1.png" width="150">
   <img src="./frontend/public/sprites/trees/orange_2.png" width="150">
+  <img src="./frontend/public/sprites/trees/carrubba_2.png" width="150">
+</div>
 
-  <img src="./frontend/public/sprites/statues/golang.png" width="150">
+<div align="left">
+  <img src="./frontend/public/sprites/statues/docker.png" width="150">
   <img src="./frontend/public/sprites/statues/python.png" width="150">
   <img src="./frontend/public/sprites/statues/java.png" width="150">
-  <img src="./frontend/public/sprites/statues/mongodb.png" width="150">
+  <img src="./frontend/public/sprites/statues/sql.png" width="150">
+  <img src="./frontend/public/sprites/statues/javascript.png" width="150">
+</div>
 
+<div align="left">
   <img src="./frontend/public/sprites/signpost/codesour_signpost.png" width="150">
   <img src="./frontend/public/sprites/signpost/alessi_signpost.png" width="150">
   <img src="./frontend/public/sprites/signpost/eikony_signpost.png" width="150">
+  <img src="./frontend/public/sprites/signpost/unipa_signpost.png" width="150">
   <img src="./frontend/public/sprites/signpost/new_opportunity_signpost.png" width="150">
+</div>
 
-  
+<div align="left">
   <img src="./frontend/public/sprites/buildings/unipa.png" width="250">
   <img src="./frontend/public/sprites/buildings/eikony.png" width="250">
   <img src="./frontend/public/sprites/buildings/new_opportunity.png" width="250">
-
 </div>
 
 
@@ -520,9 +562,13 @@ The application features a 2D isometric-style world where users can:
 - View detailed information dialogs when approaching structures
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/sandbox_quest.png" height="550">
-  <img src="./docs/screenshoots/desktop/sandbox_structures.png" height="550">
-  <img src="./docs/screenshoots/mobile/sandbox_tech.png" height="550">
+  <img src="./docs/screenshoots/mobile/sandbox_quest.png" width="250">
+  <img src="./docs/screenshoots/mobile/sandbox_tech.png" width="250">
+  <img src="./docs/screenshoots/mobile/sandbox_structures.png" width="250">
+</div>
+
+<div align="left">
+  <img src="./docs/screenshoots/desktop/sandbox_structures.png" width="760">
 </div>
 
 ### Real-time Analytics
@@ -540,19 +586,19 @@ The analytics system employs a sophisticated event-driven architecture that capt
 
 The tracking implements smart deduplication - rapid-fire interactions from the same user are filtered to prevent spam and ensure accurate metrics. Time tracking uses a progressive system that records milestones at 30 seconds, 1 minute, 2 minutes, 5 minutes, and 10 minutes, providing insights into engagement depth without overwhelming the database with constant updates.
 
-<div align="left">
-  <img src="./docs/screenshoots/mobile/admin_1.png" height="550">
-  <img src="./docs/screenshoots/desktop/admin.png" height="550">
-</div>
+# Desktop
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/admin_2.png" height="550">
-  <img src="./docs/screenshoots/mobile/admin_2.png" height="550">
+<img src="./docs/screenshoots/desktop/admin.png" width="800">
+<img src="./docs/screenshoots/desktop/admin_2.png" width="800">
+<img src="./docs/screenshoots/desktop/admin_3.png" width="800">
 </div>
 
+# Mobile
 <div align="left">
-  <img src="./docs/screenshoots/mobile/admin_3.png" height="550">
-  <img src="./docs/screenshoots/desktop/admin_3.png" height="550">
+  <img src="./docs/screenshoots/mobile/admin_1.png" width="250">
+  <img src="./docs/screenshoots/mobile/admin_2.png" width="250">
+  <img src="./docs/screenshoots/mobile/admin_3.png" width="250">
 </div>
 
 #### Privacy-Focused Approach
@@ -663,7 +709,10 @@ The game implements precise hitbox-based collision detection for both player mov
 - **Smooth Movement:** Implements sliding along collision boundaries for natural movement feel
 - **Debug Visualization:** Development mode shows hitboxes for easy debugging and adjustment
 
-
+<div align="left">
+  <img src="./docs/screenshoots/desktop/sandbox_debug.png" width="800">
+  <img src="./docs/screenshoots/desktop/sandbox_debug_2.png" width="800">
+</div>
 
 Each structure can define custom collision boundaries separate from their visual representation, allowing for fine-tuned interaction zones. For example, a building might have a smaller collision box than its sprite to allow players to walk closer to the visual structure while still preventing overlap.
 
@@ -680,6 +729,12 @@ The application implements a comprehensive resource loading system:
 The resource loader uses a priority-based system where critical game elements (player sprites, terrain textures, core UI elements) load first, followed by secondary assets (environmental decorations, background music). This ensures the core game experience is available quickly while additional content loads in the background.
 
 The system implements intelligent preloading based on user behavior - as players approach different areas of the game world, nearby assets are preloaded to prevent loading delays during exploration. Failed asset loads are handled gracefully with fallback sprites and automatic retry mechanisms.
+
+The loading page doesnt have a background for obvious reasons.
+
+<div align="left">
+  <img src="./docs/screenshoots/desktop/loading.png" width="800">
+</div>
 
 ---
 
@@ -778,11 +833,12 @@ Multiple deployment environments support the development lifecycle:
 ## 🔮 Future Development
 
 ### Planned Features
+- **Easter Eggs:** Tons of Easter Eggs.
 - **Story Mode:** Guided narrative experience with scripted career journey
 - **Multilingual Support:** Internationalization for global accessibility
 - **Enhanced Analytics:** Machine learning insights and predictive analytics
 - **Social Features:** Career milestone sharing and visitor interaction
-- **Mobile Application:** Native mobile app for enhanced mobile experience
+- **Linkedin API Integration**: Update career information with linkedin API
 
 ### Technical Roadmap
 - **WebGL Rendering:** Hardware-accelerated graphics for better performance
@@ -808,7 +864,7 @@ While I've implemented all the interactive features and functionality you see, *
 
 **This project is a learning experience** where I focused on creating a functional, engaging user experience rather than perfect frontend architecture. I'm actively working to improve my frontend skills and welcome any suggestions or contributions that follow React/TypeScript best practices.
 
-**My strength lies in the backend implementation** - the Go server, MongoDB optimization, analytics pipelines, JWT authentication, and system architecture are where you'll find my expertise.
+**While my strengths are in backend development**—Go servers, MongoDB optimization, analytics aggregation, JWT authentication, and system architecture—the focus of this project was elsewhere.
 ---
 
 ## 🙏 Acknowledgments
@@ -827,9 +883,8 @@ While I've implemented all the interactive features and functionality you see, *
 **Visual Assets:**
 - **Midjourney (Paid Version):** Used for creating most sprites, buildings, backgrounds, and environmental elements
 - **Sample Assets Folder:** Contains online samples for reference only - not used for commercial purposes and not owned by this project
-- **Pixel Art Disclaimer:** While I'd love to create all pixel art by hand, time constraints and budget limitations made AI assistance necessary for the scope of this project or me neither.
+- **Pixel Art Disclaimer:** While I'd love to create all pixel art by hand, time constraints and budget limitations made AI assistance necessary for the scope of this project.
 - **Aseprite Software:** A proprietary, source-available image editor designed primarily for pixel art drawing and animation.
-**Code Assistance:**
 - **Claude.ai:** Assisted with some mathematical functions for player movement, collision detection algorithms, and hitbox calculations.
 
 **Audio:**
@@ -841,8 +896,6 @@ While I've implemented all the interactive features and functionality you see, *
 
 ### Design Inspiration
 The project draws inspiration from classic RPG games while maintaining modern web standards and accessibility principles.
-
-> **INSERT SCREENSHOT HERE:** Split-screen view showing both the interactive game world and the admin analytics dashboard side by side
 
 ---
 
