@@ -59,28 +59,28 @@ This allows you to manually input passwords and usernames with sensible default 
 - **Docker Containers**: Configures multi-container deployment with proper networking
 
 <div align="left">
-  <img src="./docs/screenshoots/other/setup.png" width="800">
+  <img src="./screenshots/other/setup.png" width="800">
 </div>
 
 # Auto Setup
 
 <div align="left">
-  <img src="./docs/screenshoots/other/setup_auto.png" width="800">
+  <img src="./screenshots/other/setup_auto.png" width="800">
 </div>
 
 The Docker setup leverages multi-stage builds to optimize container sizes and includes health checks to ensure all services are running correctly. The compose configuration handles service dependencies, ensuring MongoDB starts before the backend, which starts before the frontend.
 
 <div align="left">
-  <img src="./docs/screenshoots/other/docker_1.png" width="800">
-  <img src="./docs/screenshoots/other/docker_stats.png" width="800">
+  <img src="./screenshots/other/docker_1.png" width="800">
+  <img src="./screenshots/other/docker_stats.png" width="800">
 </div>
 
 The environment files could be optimized by using a single env file for both the database and backend, but I preferred to keep them separated.
 
 <div align="left">
-  <img src="./docs/screenshoots/other/BE_env.png" width="250">
-  <img src="./docs/screenshoots/other/FE_env.png" width="250">
-  <img src="./docs/screenshoots/other/mongo_env.png" width="250">
+  <img src="./screenshots/other/BE_env.png" width="250">
+  <img src="./screenshots/other/FE_env.png" width="250">
+  <img src="./screenshots/other/mongo_env.png" width="250">
 </div>
 
 ---
@@ -121,28 +121,28 @@ The environment files could be optimized by using a single env file for both the
 
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/homepage.png" width="800">
-  <img src="./docs/screenshoots/desktop/sandbox.png"  width="800">
+  <img src="./screenshots/desktop/homepage.png" width="800">
+  <img src="./screenshots/desktop/sandbox.png"  width="800">
 </div>
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/login.png"  width="800">
-  <img src="./docs/screenshoots/desktop/admin.png"  width="800">
+  <img src="./screenshots/desktop/login.png"  width="800">
+  <img src="./screenshots/desktop/admin.png"  width="800">
 </div>
 
 
 ### Mobile
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/homepage.png" width="250">
-  <img src="./docs/screenshoots/mobile/welcome.png" width="250">
-  <img src="./docs/screenshoots/mobile/sandbox.png" width="250">
+  <img src="./screenshots/mobile/homepage.png" width="250">
+  <img src="./screenshots/mobile/welcome.png" width="250">
+  <img src="./screenshots/mobile/sandbox.png" width="250">
 </div>
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/sandbox_quest.png" width="250">
-  <img src="./docs/screenshoots/mobile/login.png" width="250">
-  <img src="./docs/screenshoots/mobile/admin_1.png" width="250">
+  <img src="./screenshots/mobile/sandbox_quest.png" width="250">
+  <img src="./screenshots/mobile/login.png" width="250">
+  <img src="./screenshots/mobile/admin_1.png" width="250">
 </div>
 
 ---
@@ -562,13 +562,13 @@ The application features a pixel-art top-down style, where users can:
 - View detailed information dialogs when approaching structures
 
 <div align="left">
-  <img src="./docs/screenshoots/mobile/sandbox_quest.png" width="250">
-  <img src="./docs/screenshoots/mobile/sandbox_tech.png" width="250">
-  <img src="./docs/screenshoots/mobile/sandbox_structures.png" width="250">
+  <img src="./screenshots/mobile/sandbox_quest.png" width="250">
+  <img src="./screenshots/mobile/sandbox_tech.png" width="250">
+  <img src="./screenshots/mobile/sandbox_structures.png" width="250">
 </div>
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/sandbox_structures.png" width="760">
+  <img src="./screenshots/desktop/sandbox_structures.png" width="760">
 </div>
 
 ### Real-time Analytics
@@ -589,16 +589,16 @@ The tracking implements smart deduplication - rapid-fire interactions from the s
 # Desktop
 
 <div align="left">
-<img src="./docs/screenshoots/desktop/admin.png" width="800">
-<img src="./docs/screenshoots/desktop/admin_2.png" width="800">
-<img src="./docs/screenshoots/desktop/admin_3.png" width="800">
+<img src="./screenshots/desktop/admin.png" width="800">
+<img src="./screenshots/desktop/admin_2.png" width="800">
+<img src="./screenshots/desktop/admin_3.png" width="800">
 </div>
 
 # Mobile
 <div align="left">
-  <img src="./docs/screenshoots/mobile/admin_1.png" width="250">
-  <img src="./docs/screenshoots/mobile/admin_2.png" width="250">
-  <img src="./docs/screenshoots/mobile/admin_3.png" width="250">
+  <img src="./screenshots/mobile/admin_1.png" width="250">
+  <img src="./screenshots/mobile/admin_2.png" width="250">
+  <img src="./screenshots/mobile/admin_3.png" width="250">
 </div>
 
 #### Privacy-Focused Approach
@@ -626,8 +626,8 @@ The quest system leverages Redux Persist to maintain progress across browser ses
 Quest progress is calculated in real-time using interaction data from the Redux store, with completion status persisting locally but resetting daily to encourage repeat visits. The implementation includes smooth animations for progress bar updates and expandable quest panels that conserve screen space while maintaining accessibility.
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/quest_list.png" width="300">
-  <img src="./docs/screenshoots/desktop/quest_list_2.png" width="400">
+  <img src="./screenshots/desktop/quest_list.png" width="300">
+  <img src="./screenshots/desktop/quest_list_2.png" width="400">
 </div>
 
 ---
@@ -713,8 +713,8 @@ The game implements precise hitbox-based collision detection for both player mov
 - **Debug Visualization:** Development mode shows hitboxes for easy debugging and adjustment
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/sandbox_debug.png" width="800">
-  <img src="./docs/screenshoots/desktop/sandbox_debug_2.png" width="800">
+  <img src="./screenshots/desktop/sandbox_debug.png" width="800">
+  <img src="./screenshots/desktop/sandbox_debug_2.png" width="800">
 </div>
 
 Each structure can define custom collision boundaries separate from their visual representation, allowing for fine-tuned interaction zones. For example, a building might have a smaller collision box than its sprite to allow players to walk closer to the visual structure while still preventing overlap.
@@ -736,7 +736,7 @@ The system implements intelligent preloading based on user behavior - as players
 The loading page doesnt have a background for obvious reasons.
 
 <div align="left">
-  <img src="./docs/screenshoots/desktop/loading.png" width="800">
+  <img src="./screenshots/desktop/loading.png" width="800">
 </div>
 
 ---
