@@ -8,7 +8,7 @@ export const blackCalendarTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: {
-          backgroundColor: 'rgba(0, 0, 0, 0.95)',
+          backgroundColor: 'rgb(28 14 7)',
           color: '#ffffff',
           border: '2px solid #333',
         },
@@ -29,7 +29,7 @@ export const blackCalendarTheme = createTheme({
         root: {
           color: '#ffffff',
           '&:hover': {
-            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+            backgroundColor: 'rgba(255, 217, 0, 0.1)',
           },
           '&.Mui-selected': {
             backgroundColor: '#ffd700',
@@ -87,7 +87,7 @@ export const blackCalendarTheme = createTheme({
 
 export const StyledTextField = styled(TextField)({
   '& .MuiInputBase-root': {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgb(56 42 35)',
     borderRadius: '4px',
     border: '2px solid #333',
     color: '#fff',

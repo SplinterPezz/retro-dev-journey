@@ -28,7 +28,7 @@ services:
     - APP_ENV=${APP_ENV:-prod}
     networks:
       - retro_dev_journey
-      - nginx_reverse_proxy
+    #  - nginx_reverse_proxy
 
   frontend:
     container_name: react_retro_dev_journey
@@ -43,7 +43,7 @@ services:
       - backend
     networks:
       - retro_dev_journey
-      - nginx_reverse_proxy
+    #  - nginx_reverse_proxy
     environment:
       - NODE_ENV=production
 
@@ -55,5 +55,5 @@ networks:
   retro_dev_journey:
     name : retro_dev_journey
     driver: bridge
-  nginx_reverse_proxy:
-    external: true
+  #nginx_reverse_proxy:
+  #  external: true

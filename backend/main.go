@@ -77,14 +77,14 @@ func main() {
 	r.POST("/login", auth.Login)
 
 	// Public routes (no authentication required)
-	r.GET("/download/cv", handlers.DownloadCV)
+	r.GET("/cv/download", handlers.DownloadCV)
 
 	// Tracking Route for users
 	r.POST("/info", handlers.TrackData)
 
 	// Protected routes (authentication required)
 
-	r.POST("/upload/cv", handlers.UploadCV)
+	r.POST("/cv/upload", handlers.UploadCV)
 
 	// Analytics Routes for admin area
 	analyticsGroup := r.Group("/analytics")
