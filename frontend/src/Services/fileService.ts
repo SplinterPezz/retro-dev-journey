@@ -2,10 +2,11 @@ import { fetchFromApi } from '../Utils/apiService';
 import { ApiError, UploadResponse } from '../types/api';
 import { maxSizeFileCV } from '../Pages/Sandbox/config';
 
+// Custom fetch for download CV as Blob
 export const downloadCV = async (): Promise<void> => {
   try {
     const baseUrl = process.env.REACT_APP_API_URL || '';
-    const response = await fetch(`${baseUrl}/download/cv`);
+    const response = await fetch(`${baseUrl}/cv/download`);
     
     if (!response.ok) {
       throw new Error('Failed to download CV');
@@ -51,7 +52,7 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     const formData = new FormData();
     formData.append('cv', file);
     
-    const response = await fetchFromApi<UploadResponse>('/upload/cv', {
+    const response = await fetchFromApi<UploadResponse>('/cv/upload', {
       method: 'POST',
       body: formData,
     });

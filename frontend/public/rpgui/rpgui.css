@@ -227,7 +227,7 @@ inside your html file.
   -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-
+  /* pixelated enlargement filter (to keep the pixel-art style when enlarging pictures) */
   -ms-interpolation-mode: nearest-neighbor;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: -webkit-crisp-edges;
