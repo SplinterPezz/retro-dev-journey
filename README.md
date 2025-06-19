@@ -590,14 +590,14 @@ Quest progress is calculated in real-time using interaction data from the Redux 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
 | `/login` | POST | User authentication with JWT token generation |
-| `/download/cv` | GET | Download the current CV file |
+| `/cv/download` | GET | Download the current CV file |
 | `/info` | POST | Submit tracking data for analytics |
 
 ### Protected Endpoints (JWT Required)
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/upload/cv` | POST | Upload new CV file (admin only) |
+| `/cv/upload` | POST | Upload new CV file (admin only) |
 | `/analytics/daily-users` | GET | Get daily unique user statistics |
 | `/analytics/page-time` | GET | Get average time spent per page |
 | `/analytics/downloads` | GET | Get CV download statistics |
