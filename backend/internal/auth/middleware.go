@@ -21,7 +21,7 @@ func JWTMiddleware(c *gin.Context) {
 	// login is public
 	// download pdf is public
 	// info is public (for tracking)
-	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/download/cv" || c.Request.URL.Path == "/info" {
+	if c.Request.URL.Path == "/login" || c.Request.URL.Path == "/cv/download" || c.Request.URL.Path == "/info" {
 		c.Next()
 		return
 	}
