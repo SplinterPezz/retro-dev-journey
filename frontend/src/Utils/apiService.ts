@@ -2,7 +2,7 @@ import { store } from "../store/store";
 import { checkAuthentication, logout } from "../store/authSlice";
 import { ApiError } from "../types/api";
 
-const whitelist = ["/login", "/info", "/download/cv"]
+const whitelist = ["/login", "/info", "/cv/download"]
 
 export async function fetchFromApi<T>(
   endpoint: string,
