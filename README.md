@@ -553,7 +553,7 @@ air
 
 ### Interactive Game World
 
-The application features a 2D isometric-style world where users can:
+The application features a pixel-art top-down style, where users can:
 
 - Navigate using WASD/Arrow keys (desktop) or joystick (mobile)
 - Explore career milestones represented as buildings
@@ -582,7 +582,7 @@ The application implements comprehensive user tracking:
 - **Download Tracking:** CV download statistics
 - **Quest Completion:** User engagement metrics
 
-The analytics system employs a sophisticated event-driven architecture that captures user interactions without impacting performance. Each interaction is immediately queued and batch-processed to MongoDB using optimized aggregation pipelines. The system uses anonymous UUID generation based on device fingerprinting (screen resolution, timezone, user agent) to track unique users while maintaining complete privacy.
+The analytics system employs a sophisticated event-driven architecture that captures user interactions without impacting performance. Each interaction is immediately queued and batch-processed to MongoDB using optimized aggregation pipelines for dashboard analytics. The system uses anonymous UUID generation based on device fingerprinting (screen resolution, timezone, user agent) to track unique users while maintaining complete privacy.
 
 The tracking implements smart deduplication - rapid-fire interactions from the same user are filtered to prevent spam and ensure accurate metrics. Time tracking uses a progressive system that records milestones at 30 seconds, 1 minute, 2 minutes, 5 minutes, and 10 minutes, providing insights into engagement depth without overwhelming the database with constant updates.
 
@@ -625,7 +625,10 @@ The quest system leverages Redux Persist to maintain progress across browser ses
 
 Quest progress is calculated in real-time using interaction data from the Redux store, with completion status persisting locally but resetting daily to encourage repeat visits. The implementation includes smooth animations for progress bar updates and expandable quest panels that conserve screen space while maintaining accessibility.
 
-> **INSERT SCREENSHOT HERE:** Daily quest panel showing quest list with completion status, progress bar, and expandable interface
+<div align="left">
+  <img src="./docs/screenshoots/desktop/quest_list.png" width="300">
+  <img src="./docs/screenshoots/desktop/quest_list_2.png" width="400">
+</div>
 
 ---
 
