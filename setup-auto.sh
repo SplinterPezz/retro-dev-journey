@@ -68,6 +68,7 @@ echo "📁 Creating root .env file..."
 cat > .env << 'EOF'
 MONGO_USERNAME=${MONGO_USERNAME}
 MONGO_PASSWORD=${MONGO_PASSWORD}
+APP_ENV=dev
 EOF
 
 # Replace variables in the file
@@ -103,10 +104,15 @@ sed -i.bak "s/\${MONGO_PASSWORD}/$MONGO_PASSWORD/g" backend/.env.local
 sed -i.bak "s/\${JWT_SECRET}/$JWT_SECRET/g" backend/.env.local
 sed -i.bak "s/\${ROOT_USERNAME}/$ROOT_USERNAME/g" backend/.env.local
 sed -i.bak "s/\${ROOT_PASSWORD}/$ROOT_PASSWORD/g" backend/.env.local
-rm backend/.env.local.bak 2>/dev/null || true
 
 # Backend .env.dev (same as local for auto)
 cp backend/.env.local backend/.env.dev
+
+# Change mongoDB connection on localhost
+sed -i.bak "s|mongodb://db_retro_dev_journey:27017|mongodb://localhost:8420|g" backend/.env.local
+
+# Delete the bk env file
+rm backend/.env.local.bak 2>/dev/null || true
 
 # Backend .env.prod
 cat > backend/.env.prod << 'EOF'

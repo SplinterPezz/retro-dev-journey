@@ -3,7 +3,7 @@ package auth
 import (
 	"backend/internal/models"
 	"backend/internal/utils"
-	
+
 	"backend/mongodb"
 	"fmt"
 	"net/http"
@@ -151,7 +151,7 @@ func validateEmail(email string) bool {
 
 func stripUserFields(user *models.User) {
 	user.Email = strings.ToLower(stripSpaces(user.Email))
-	user.Username = strings.ToLower(stripSpaces(user.Username))
+	user.Username = stripSpaces(user.Username)
 	user.Password = stripSpaces(user.Password)
 }
 

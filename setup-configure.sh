@@ -120,16 +120,26 @@ if [ -z "$ROOT_USERNAME" ]; then
 fi
 
 read_password "Root Password" "ROOT_PASSWORD"
-while ! [[ ${#ROOT_PASSWORD} -ge 8 && "$ROOT_PASSWORD" =~ [A-Z] && "$ROOT_PASSWORD" =~ [a-z] && "$ROOT_PASSWORD" =~ [0-9] ]]; do
-    echo "Invalid Root Password. It must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number."
-    read_password "Please re-enter Root Password" "ROOT_PASSWORD"
-done
+
+if [ -z "$ROOT_PASSWORD" ]; then
+    ROOT_PASSWORD=$(generate_password 16)
+    echo "   Generated Root Password: [HIDDEN]"
+else
+    while ! [[ ${#ROOT_PASSWORD} -ge 8 && "$ROOT_PASSWORD" =~ [A-Z] && "$ROOT_PASSWORD" =~ [a-z] && "$ROOT_PASSWORD" =~ [0-9] ]]; do
+        echo "Invalid Root Password. It must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number."
+        read_password "Please re-enter Root Password" "ROOT_PASSWORD"
+    done
+fi
 
 echo ""
 echo "🌐 Domain Configuration"
 echo "======================="
+
 read_input "Frontend Domain (without https://)" "retrojourney.dev" "FRONTEND_DNS"
+FRONTEND_DNS=$(echo "$FRONTEND_DNS" | tr '[:upper:]' '[:lower:]')
+
 read_input "Backend API Domain (without https://)" "api.retrojourney.dev" "BACKEND_DNS"
+BACKEND_DNS=$(echo "$BACKEND_DNS" | tr '[:upper:]' '[:lower:]')
 
 # Construct email
 ROOT_EMAIL="it@$FRONTEND_DNS"
@@ -159,6 +169,7 @@ echo "Creating root .env file..."
 cat > .env << EOF
 MONGO_USERNAME=$MONGO_USERNAME
 MONGO_PASSWORD=$MONGO_PASSWORD
+APP_ENV=dev
 EOF
 
 # Create backend directory if it doesn't exist
@@ -185,6 +196,12 @@ EOF
 
 # Backend .env.dev (same as local for development)
 cp backend/.env.local backend/.env.dev
+
+# Change mongoDB connection on localhost
+sed -i.bak "s|mongodb://db_retro_dev_journey:27017|mongodb://localhost:8420|g" backend/.env.local
+
+# Delete the bk env file.
+rm backend/.env.local.bak 2>/dev/null || true
 
 # Backend .env.prod
 cat > backend/.env.prod << EOF
