@@ -161,47 +161,48 @@ func stripSpaces(value string) string {
 
 // Login handles user login by verifying credentials and issuing JWT token
 func Login(c *gin.Context) {
-	var user models.User
+	var loginData models.LoginRequest
 	// Bind the incoming JSON request to the user struct
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&loginData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input"})
 		return
 	}
 
-	stripUserFields(&user)
-	//Frontend should block these request
-	if user.Email == "" && user.Username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Username or Email are required", "fieldError": "email"})
+	identifier := stripSpaces(loginData.Identifier)
+	password := stripSpaces(loginData.Password)
+
+	if identifier == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Username or Email are required", "fieldError": "identifier"})
 		return
 	}
 
-	//Frontend should block these request
-	if user.Password == "" {
+	if password == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Password required", "fieldError": "password"})
 		return
 	}
 
-	emailOrUsername := user.Username
-	if emailOrUsername == "" {
-		emailOrUsername = user.Email
+	var storedUser *models.User
+	var err error
+
+	if validateEmail(identifier) {
+		identifier = strings.ToLower(identifier)
+		storedUser, err = mongodb.FindUserByEmail(identifier, false)
+	} else {
+		storedUser, err = mongodb.FindUserByUsername(identifier, false)
 	}
 
-	// Find the user by username in the database
-	storedUser, err := mongodb.FindUserByUsernameOrEmail(emailOrUsername)
 	if err != nil || storedUser == nil {
-		// If user is not found or any DB error occurs, return Unauthorized error
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid credentials", "fieldError": "unauthorized"})
 		return
 	}
 
-	// Compare the stored hashed password with the provided password
-	if err := bcrypt.CompareHashAndPassword([]byte(storedUser.Password), []byte(user.Password)); err != nil {
-		// If password doesn't match, return Unauthorized error
+	// Verifica password
+	if err := bcrypt.CompareHashAndPassword([]byte(storedUser.Password), []byte(password)); err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"message": "Invalid credentials", "fieldError": "unauthorized"})
 		return
 	}
 
-	// Generate JWT token for the logged-in user
+	// Genera Token
 	token, expiration, err := utils.GenerateJWT(storedUser.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create token"})

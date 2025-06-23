@@ -125,8 +125,8 @@ if [ -z "$ROOT_PASSWORD" ]; then
     ROOT_PASSWORD=$(generate_password 16)
     echo "   Generated Root Password: [HIDDEN]"
 else
-    while ! [[ ${#ROOT_PASSWORD} -ge 8 && "$ROOT_PASSWORD" =~ [A-Z] && "$ROOT_PASSWORD" =~ [a-z] && "$ROOT_PASSWORD" =~ [0-9] ]]; do
-        echo "Invalid Root Password. It must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number."
+    while ! [[ ${#ROOT_PASSWORD} -ge 8 && "$ROOT_PASSWORD" =~ [A-Z] && "$ROOT_PASSWORD" =~ [a-z] && "$ROOT_PASSWORD" =~ [0-9] && "$ROOT_PASSWORD" =~ ^[a-zA-Z0-9]+$ ]]; do
+        echo "Invalid Root Password. It must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number (no special characters)."
         read_password "Please re-enter Root Password" "ROOT_PASSWORD"
     done
 fi

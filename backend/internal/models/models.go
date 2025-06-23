@@ -9,6 +9,11 @@ type User struct {
 	Email    string `json:"email"`
 }
 
+type LoginRequest struct {
+	Identifier string `json:"identifier"`
+	Password   string `json:"password"`
+}
+
 type UserResponse struct {
 	ID       string `json:"id" bson:"_id,omitempty"`
 	Username string `json:"username"`

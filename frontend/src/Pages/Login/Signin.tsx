@@ -245,7 +245,7 @@ export default function SignIn() {
     }
 
     const loginPayload: LoginModel = {
-      email: email,
+      identifier: email,
       password: password,
     };
     try {

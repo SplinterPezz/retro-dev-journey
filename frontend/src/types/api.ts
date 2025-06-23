@@ -6,7 +6,7 @@ export interface ApiError {
 }
 
 export interface LoginModel {
-  email: string;
+  identifier: string;
   password: string;
 }
 

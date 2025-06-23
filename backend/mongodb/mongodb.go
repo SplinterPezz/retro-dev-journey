@@ -84,7 +84,7 @@ func InitMongoDB() {
 		log.Fatal("ROOT_USERNAME missing on env file")
 	}
 
-	storedUser, err := FindUserByUsernameOrEmail(rootUsername)
+	storedUser, err := FindUserByUsername(rootUsername, false)
 	if err != nil || storedUser == nil {
 		fmt.Println("Root user doesnt exists, creating Root user")
 
@@ -223,21 +223,16 @@ func FindUserByUsername(username string, returnErrorIfNotFound bool) (*models.Us
 	return &user, nil
 }
 
-func FindUserByUsernameOrEmail(usernameOrEmail string) (*models.User, error) {
+func FindUserByEmail(username string, returnErrorIfNotFound bool) (*models.User, error) {
 	var user models.User
-	// Use bson.M{} to search for the user by username or email
-	err := usersCollection.FindOne(
-		context.Background(),
-		bson.M{
-			"$or": []interface{}{
-				bson.M{"username": usernameOrEmail},
-				bson.M{"email": usernameOrEmail},
-			},
-		},
-	).Decode(&user)
+	// Search for the user by username
+	err := usersCollection.FindOne(context.Background(), bson.M{"email": username}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return nil, fmt.Errorf("user not found")
+			if returnErrorIfNotFound {
+				return nil, fmt.Errorf("user not found")
+			}
+			return nil, nil // No error returned if user is not found for registration check
 		}
 		return nil, fmt.Errorf("error finding user: %v", err)
 	}
