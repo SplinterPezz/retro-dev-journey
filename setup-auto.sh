@@ -13,18 +13,43 @@ echo ""
 # Function to generate random alphanumeric string
 generate_password() {
     local length=${1:-16}
-    
-    # Use openssl for more reliable random generation
-    if command -v openssl >/dev/null 2>&1; then
-        openssl rand -base64 $((length * 2)) | tr -dc 'a-zA-Z0-9' | head -c $length
-    else
-        # Fallback: use /dev/random with LC_ALL=C to avoid locale issues
-        LC_ALL=C tr -dc 'a-zA-Z0-9' < /dev/urandom | head -c $length
+
+    if [ "$length" -lt 8 ]; then
+        echo "Password length must be at least 8 characters." >&2
+        return 1
     fi
+
+    local password=""
+    local upper_chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    local lower_chars="abcdefghijklmnopqrstuvwxyz"
+    local digits="0123456789"
+    local all_chars="${upper_chars}${lower_chars}${digits}"
+
+    # Use openssl or fallback for random generation
+    get_random_chars() {
+        if command -v openssl >/dev/null 2>&1; then
+            openssl rand -base64 48 | tr -dc "$1" | head -c "$2"
+        else
+            LC_ALL=C tr -dc "$1" < /dev/urandom | head -c "$2"
+        fi
+    }
+
+    # Ensure at least one uppercase, one lowercase, one digit
+    password+=$(get_random_chars "$upper_chars" 1)
+    password+=$(get_random_chars "$lower_chars" 1)
+    password+=$(get_random_chars "$digits" 1)
+
+    # Fill the rest with random allowed characters
+    password+=$(get_random_chars "$all_chars" $((length - 3)))
+
+    # Shuffle password to randomize character positions
+    password=$(echo "$password" | fold -w1 | shuf | tr -d '\n')
+
+    echo "$password"
 }
 
 # Generate values
-MONGO_USERNAME="retro_dev_journey_$(generate_password 8)"
+MONGO_USERNAME="retro_dev_journey_$(generate_password 10)"
 MONGO_PASSWORD=$(generate_password 24)
 JWT_SECRET=$(generate_password 32)
 ROOT_USERNAME=$(generate_password 12)

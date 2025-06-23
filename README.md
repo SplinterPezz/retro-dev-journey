@@ -36,7 +36,6 @@ Want to try it right away? The application includes automated setup scripts for 
 ```bash
 git clone https://github.com/SplinterPezz/retro-dev-journey
 cd retro-dev-journey
-docker network create retro_dev_journey
 sh setup-auto.sh && docker compose up -d
 ```
 This will automatically create environment files (.env) with randomly generated secure passwords and usernames. Perfect for testing or development environments on localhost.
@@ -45,12 +44,11 @@ This will automatically create environment files (.env) with randomly generated 
 ```bash
 git clone https://github.com/SplinterPezz/retro-dev-journey
 cd retro-dev-journey
-docker network create retro_dev_journey
 sh setup.sh && docker compose up -d
 ```
 This allows you to manually input passwords and usernames with sensible default values. Ideal when you want control over the configuration.
 
-> 🎯 **That's it!** The application will be available at `http://localhost:3000` and the admin panel at `http://localhost:3000/admin`
+> 🎯 **That's it!** The application will be available at `http://localhost:8422` and the admin panel at `http://localhost:8422/admin`
 
 ### What the Setup Scripts Do:
 - **Environment File Creation**: Automatically generates `.env` files for both frontend and backend
@@ -250,9 +248,9 @@ docker --version  # Should be 28.1.1+
    ```
 
 ### Access the Application
-- **Frontend:** http://localhost:3000
+- **Frontend:** http://localhost:8422
 - **Backend API:** http://localhost:8421
-- **Admin Dashboard:** http://localhost:3000/admin (requires login)
+- **Admin Dashboard:** http://localhost:8422/admin (requires login)
 
 ---
 

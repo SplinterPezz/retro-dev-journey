@@ -113,8 +113,6 @@ export default function SignIn() {
   const [usernameShake, setUsernameShake] = useState(false);
   const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
 
-  const [open, setOpen] = useState(false);
-
   const handleCloseErrorMessage = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -131,14 +129,6 @@ export default function SignIn() {
     setOpenErrorMessage(true);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
   const validateInputs = () => {
     let isValid = true;
 
@@ -147,7 +137,6 @@ export default function SignIn() {
       let hasUpper = false;
       let hasLower = false;
       let hasNumber = false;
-      let hasSpecial = false;
 
       // Check minimum length
       if (password_data.length >= 8) {
@@ -163,14 +152,10 @@ export default function SignIn() {
         } else if (/[0-9]/.test(char)) {
           hasNumber = true;
         }
-        else if (/[\p{P}\p{S}]/u.test(char)) {
-          // Check for punctuation or symbols using Unicode properties
-          hasSpecial = true;
-        }
       }
 
       // Check all conditions
-      return hasMinLen && hasUpper && hasLower && hasNumber && hasSpecial;
+      return hasMinLen && hasUpper && hasLower && hasNumber;
     };
 
     const validateEmail = (emailData: string) => {
@@ -191,7 +176,7 @@ export default function SignIn() {
     // Password validation
     if (!password || !validatePassword(password)) {
       var messagePassword =
-        "Password should be 8+ characters with uppercase, lowercase, number, and special character";
+        "Password should be 8+ characters with uppercase, lowercase and number";
       passwordErrorImpl(messagePassword);
       isValid = false;
     } else {
