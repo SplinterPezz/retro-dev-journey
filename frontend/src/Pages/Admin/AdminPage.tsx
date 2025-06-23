@@ -64,7 +64,7 @@ export default function AdminPage() {
         getBrowserStats(dateRange)
       ]);
 
-      if ('data' in usersResponse) {
+      if ('data' in usersResponse && usersResponse.data !== null) {
         setUniqueUsers(true)
 
         const categories = usersResponse.data.map(item =>
@@ -88,7 +88,7 @@ export default function AdminPage() {
         }));
       }
 
-      if ('data' in pageTimeResponse) {
+      if ('data' in pageTimeResponse && pageTimeResponse.data !== null) {
         setPageTime(true)
 
         // Group data by page
@@ -134,7 +134,7 @@ export default function AdminPage() {
         }));
       }
 
-      if ('data' in interactionsResponse) {
+      if ('data' in interactionsResponse && interactionsResponse.data !== null) {
         setInteractions(true);
 
         // Sort by count descending and take top 10 for better readability
@@ -166,7 +166,7 @@ export default function AdminPage() {
         }));
       }
 
-      if ('data' in downloadResponse) {
+      if ('data' in downloadResponse && downloadResponse.data !== null) {
         setDownloads(true);
 
         // Group data by page
@@ -212,7 +212,7 @@ export default function AdminPage() {
         }));
       }
 
-      if ('data' in devicesResponse) {
+      if ('data' in devicesResponse && devicesResponse.data !== null) {
         setDevices(true);
 
         const labels = devicesResponse.data.map(item =>
@@ -231,7 +231,7 @@ export default function AdminPage() {
         }));
       }
 
-      if ('data' in browsersResponse) {
+      if ('data' in browsersResponse && browsersResponse.data !== null) {
         setBrowsers(true);
 
         const labels = browsersResponse.data.map(item =>
@@ -251,12 +251,13 @@ export default function AdminPage() {
       }
 
 
-      if ('error' in usersResponse || 'error' in pageTimeResponse) {
+      if ('error' in usersResponse || 'error' in pageTimeResponse || 'error' in browsersResponse || 'error' in devicesResponse || 'error' in interactionsResponse || 'error' in downloadResponse) {
         setError('Failed to fetch some data');
       }
 
     } catch (err) {
       setError('An error occurred while fetching data');
+      process.env.REACT_APP_ENV === 'development' && console.log("Error: on fetch: ", err);
     } finally {
       setLoading(false);
     }
@@ -464,7 +465,11 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  <div className="row mt-4 chart-container m-2">
+                  
+
+                </>
+              )}
+              <div className="row mt-4 chart-container m-2">
                     <div className='col-12 col-lg-6 dashboard-title' style={{alignContent:"center"}}>
                       UPDATE CV:
                     </div>
@@ -503,9 +508,6 @@ export default function AdminPage() {
                       </button>
                     </div>
                   </div>
-
-                </>
-              )}
             </div>
           </div>
         </div>
