@@ -86,6 +86,7 @@
   width: 56px;
   height: 56px;
   cursor: pointer;
+  margin-right: 20px;
 }
 
 .social-container {
@@ -103,7 +104,7 @@
   .social-container {
     top: unset;
     bottom: 20px;
-    right: 20px;
+    right: 65px;
   }
 }
 
@@ -124,7 +125,11 @@
   }
 
   .social-container {
-    right: 100px;
+    right: 135px;
+  }
+
+  .social-image{
+    margin-right: 0px;
   }
 }
 

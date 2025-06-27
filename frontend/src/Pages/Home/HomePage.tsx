@@ -83,10 +83,10 @@ export default function HomePage() {
             </div>
             <div className="social-container">
                 <a onClick={handleAdminPage}>
-                  <img className="social-image me-4" src="/sprites/player/dude_turn.gif" />
+                  <img className="social-image" src="/sprites/player/dude_turn.gif" />
                 </a>
                 <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
-                  <img className="social-image me-4" src="/sprites/others/linkedin.png" />
+                  <img className="social-image" src="/sprites/others/linkedin.png" />
                 </a>
                 <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
                   <img className="social-image" src="/sprites/others/github.png" />

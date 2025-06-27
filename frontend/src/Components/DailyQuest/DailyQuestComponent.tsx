@@ -6,6 +6,7 @@ import './DailyQuest.css';
 import { DailyQuest } from '../../types/sandbox';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
+import { useIubenda } from '../../hooks/useIubenda';
 
 interface DailyQuestProps {
   questPrefix: string;
@@ -193,6 +194,36 @@ const CompleteMessage = styled.div<{ isVisible: boolean }>`
   }
 `;
 
+const ConsentMessage = styled.div`
+  margin-top: 10px;
+  padding: 8px;
+  background: rgba(255, 165, 0, 0.3);
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  border-radius: 3px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  animation: consentPulse 3s infinite;
+
+  @keyframes consentPulse {
+    0%, 100% {
+      opacity: 0.8;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.01);
+    }
+  }
+
+  @media (max-width: 480px) {
+    font-size: 0.65rem;
+    padding: 6px;
+  }
+`;
+
 const DailyQuestComponent: React.FC<DailyQuestProps> = ({ 
   questPrefix, 
   className = '',
@@ -200,7 +231,10 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
   maxVisible 
 }) => {
   const { interactions } = useSelector((state: RootState) => state.tracking);
+  const { consentGiven, isLoading } = useIubenda();
   const [isCollapsed, setIsCollapsed] = useState(true);
+  
+  const isConsentAccepted = consentGiven === true;
   
   const dailyQuests: DailyQuest[] = useMemo(() => {
     const companyQuests: DailyQuest[] = companies.map((company) => ({
@@ -262,22 +296,26 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
           <div className="quest-header">
             <div className="quest-header-content">
               <h4 className="quest-title">
-                Daily Quests
+                {isConsentAccepted ? 'Daily Quests' : 'Cookies for Quests!'}
               </h4>
-              <h4 className="quest-title d-none d-sm-block">
-                ({completedQuests.length}/{dailyQuests.length})
-              </h4>
+              {isConsentAccepted && (
+                <h4 className="quest-title d-none d-sm-block">
+                  ({completedQuests.length}/{dailyQuests.length})
+                </h4>
+              )}
               
-              <ToggleButton 
-                isCollapsed={isCollapsed}
-                onClick={toggleCollapse}
-                title={isCollapsed ? "Show quest list" : "Hide quest list"}
-              >
-                ▼
-              </ToggleButton>
+              {isConsentAccepted && (
+                <ToggleButton 
+                  isCollapsed={isCollapsed}
+                  onClick={toggleCollapse}
+                  title={isCollapsed ? "Show quest list" : "Hide quest list"}
+                >
+                  ▼
+                </ToggleButton>
+              )}
             </div>
             
-            {showProgress && (
+            {isConsentAccepted && showProgress && (
               <div className="quest-progress-container">
                 <div className="quest-progress-bar">
                   <div 
@@ -292,46 +330,67 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
             )}
           </div>
 
-          {/* Animated Quest Content */}
-          <AnimatedQuestContent isVisible={!isCollapsed}>
-            <QuestListContainer isVisible={!isCollapsed}>
-              {displayedQuests.map((quest, index) => (
-                <QuestItem 
-                  key={quest.id}
-                  isCompleted={quest.done}
-                  index={index}
-                  isVisible={!isCollapsed}
-                >
-                  <div className="quest-icon-container">
-                    <img 
-                      src={quest.icon}
-                      alt={quest.name}
-                      className="quest-icon"
-                    />
-                    <span className="quest-type-badge">
-                      {getQuestTypeIcon(quest.type)}
-                    </span>
-                  </div>
-                  
-                  <div className="quest-info">
-                    <span className="quest-name d-none d-sm-block">{quest.name}</span>
-                    <span className="quest-name d-block d-sm-none">{quest.shortName}</span>
-                  </div>
-                  
-                  <div className={`quest-status ${quest.done ? 'done' : 'todo'}`}>
-                    {quest.done ? '✓' : '○'}
-                  </div>
-                </QuestItem>
-              ))}
-            </QuestListContainer>
+          {/* Content based on consent status */}
+          {isConsentAccepted ? (
+            <>
+              {/* Animated Quest Content */}
+              <AnimatedQuestContent isVisible={!isCollapsed}>
+                <QuestListContainer isVisible={!isCollapsed}>
+                  {displayedQuests.map((quest, index) => (
+                    <QuestItem 
+                      key={quest.id}
+                      isCompleted={quest.done}
+                      index={index}
+                      isVisible={!isCollapsed}
+                    >
+                      <div className="quest-icon-container">
+                        <img 
+                          src={quest.icon}
+                          alt={quest.name}
+                          className="quest-icon"
+                        />
+                        <span className="quest-type-badge">
+                          {getQuestTypeIcon(quest.type)}
+                        </span>
+                      </div>
+                      
+                      <div className="quest-info">
+                        <span className="quest-name d-none d-sm-block">{quest.name}</span>
+                        <span className="quest-name d-block d-sm-none">{quest.shortName}</span>
+                      </div>
+                      
+                      <div className={`quest-status ${quest.done ? 'done' : 'todo'}`}>
+                        {quest.done ? '✓' : '○'}
+                      </div>
+                    </QuestItem>
+                  ))}
+                </QuestListContainer>
 
-            {/* Animated Complete Message */}
-            {completedQuests.length === dailyQuests.length && (
-              <CompleteMessage isVisible={!isCollapsed} className="d-none d-sm-block">
-                All quests completed! Well done, adventurer!
-              </CompleteMessage>
-            )}
-          </AnimatedQuestContent>
+                {/* Animated Complete Message */}
+                {completedQuests.length === dailyQuests.length && (
+                  <CompleteMessage isVisible={!isCollapsed} className="d-none d-sm-block">
+                    All quests completed! Well done, adventurer!
+                  </CompleteMessage>
+                )}
+              </AnimatedQuestContent>
+            </>
+          ) : (
+            <>
+              {/* Consent Required Message */}
+              {!isLoading && (
+                <ConsentMessage>
+                  Please accept cookies to enable quest tracking and see your progress!
+                </ConsentMessage>
+              )}
+              
+              {/* Loading Message */}
+              {isLoading && (
+                <ConsentMessage>
+                  Loading consent status...
+                </ConsentMessage>
+              )}
+            </>
+          )}
         </div>
     </div>
   );

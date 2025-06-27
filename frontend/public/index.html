@@ -84,7 +84,74 @@
     }
   }
   </script>
+  <script type="text/javascript" src="https://cdn.iubenda.com/cs/ccpa/stable/cs.js" charset="UTF-8" async></script>
+  <script type="text/javascript" src="https://cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
 </head>
+<script type="text/javascript">
+  var _iub = _iub || [];
+  _iub.csConfiguration = {
+    "siteId":4127806,
+    "cookiePolicyId":76048064,
+    "lang":"en-GB",
+    "storage":{"type":"local_storage","useSiteId":true},
+    "enableCcpa": true,
+    "enableLgpd": true,
+    "countryDetection": true,
+    "invalidateConsentWithoutLog": true,
+    "whitelabel": false,
+    "purposes": "1,3,4,5",
+    "cookiePolicyInOtherWindow": true,
+    "askConsentAtCookiePolicyUpdate": true,
+    "enableRemoteConsent": true,
+    "rebuildIframe": true,
+    "consentOnContinuedBrowsing": false,
+    "perPurposeConsent": true,
+    "banner": {
+      "acceptButtonDisplay": true,
+      "customizeButtonDisplay": true,
+      "rejectButtonDisplay": true,
+      "listPurposes": true,
+      "explicitWithdrawal": true,
+      "closeButtonRejects": false,
+      "position": "bottom"
+    },
+    "callback": {
+      "onConsentGiven": function () {
+        window.iubendaConsent = true;
+        if (window.iubendaConsentCallback) {
+          window.iubendaConsentCallback(true);
+        }
+      },
+      "onConsentRejected": function () {
+        window.iubendaConsent = false;
+        if (window.iubendaConsentCallback) {
+          window.iubendaConsentCallback(false);
+        }
+      },
+      "onConsentFirstGiven": function () {
+        window.iubendaConsent = true;
+        if (window.iubendaConsentCallback) {
+          window.iubendaConsentCallback(true);
+        }
+      },
+      "onPreferenceExpressed": function () {
+        if (window.iubendaConsentCallback) {
+          const consent = window._iub.cs.api.isConsentGiven();
+          window.iubendaConsentCallback(!!consent);
+        }
+      },
+      "onConsentChanged": function () {
+        if (window.iubendaConsentCallback) {
+          const consent = window._iub.cs.api.isConsentGiven();
+          window.iubendaConsentCallback(!!consent);
+        }
+      }
+    }
+  };
+</script>
+
+<script type="text/javascript" src="https://cs.iubenda.com/autoblocking/4127806.js"></script>
+<script type="text/javascript" src="//cdn.iubenda.com/cs/iubenda_cs.js" charset="UTF-8" async></script>
 
 <body>
   <noscript>
@@ -99,7 +166,7 @@
 
   <!-- Load RPGUI after DOM is ready -->
   <script src="%PUBLIC_URL%/rpgui/rpgui.js"></script>
-
+  
   <!-- Preconnect to external domains for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
