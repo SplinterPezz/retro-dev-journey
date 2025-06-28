@@ -117,37 +117,31 @@
     },
     "callback": {
       "onConsentGiven": function () {
-        window.iubendaConsent = true;
-        if (window.iubendaConsentCallback) {
-          window.iubendaConsentCallback(true);
-        }
-      },
-      "onConsentRejected": function () {
-        window.iubendaConsent = false;
-        if (window.iubendaConsentCallback) {
-          window.iubendaConsentCallback(false);
-        }
+        handleIubendaConsent(true);
       },
       "onConsentFirstGiven": function () {
-        window.iubendaConsent = true;
-        if (window.iubendaConsentCallback) {
-          window.iubendaConsentCallback(true);
-        }
+        handleIubendaConsent(true);
       },
-      "onPreferenceExpressed": function () {
-        if (window.iubendaConsentCallback) {
-          const consent = window._iub.cs.api.isConsentGiven();
-          window.iubendaConsentCallback(!!consent);
-        }
+      "onConsentRejected": function () {
+        handleIubendaConsent(false);
       },
-      "onConsentChanged": function () {
-        if (window.iubendaConsentCallback) {
-          const consent = window._iub.cs.api.isConsentGiven();
-          window.iubendaConsentCallback(!!consent);
-        }
+      "onConsentChanged": function (consentObject) {
+        handleIubendaConsent(consentObject?.consent ?? null);
+      },
+      "onPreferenceExpressed": function (consentObject) {
+        handleIubendaConsent(consentObject?.consent ?? null);
       }
     }
   };
+
+  function handleIubendaConsent(consent) {
+    console.log("Iubenda Callback ricevuto:", consent);
+    window.iubendaConsent = consent;
+
+    if (typeof window.iubendaConsentCallback === 'function') {
+      window.iubendaConsentCallback(consent);
+    }
+  }
 </script>
 
 <script type="text/javascript" src="https://cs.iubenda.com/autoblocking/4127806.js"></script>

@@ -1,13 +1,12 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
-import { setUUID, addInteraction } from '../store/trackingSlice';
+import { setUUID, addInteraction, clearAllTrackingData } from '../store/trackingSlice';
 import { TrkData } from '../types/tracking';
 import { sendTrackingData } from '../Services/trkService';
 import { generateUUIDFromUserAgent, getDeviceInfo, 
   createInteractionKey 
 } from '../Utils/uuidGenerator';
-import { useIubenda } from './useIubenda';
 
 import { PageType, timeTrackingIntervals } from '../types/tracking';
 import { questPrefix } from '../Pages/Sandbox/config';
@@ -20,7 +19,7 @@ interface UseTrackingProps {
 export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
   const dispatch = useDispatch();
   const { uuid, interactions } = useSelector((state: RootState) => state.tracking);
-  const { consentGiven, isLoading } = useIubenda();
+  const { consentGiven, isLoading } = useSelector((state: RootState) => state.consent);
   
   const startTimeRef = useRef<Date>(new Date());
   const deviceInfoRef = useRef(getDeviceInfo());
@@ -38,6 +37,15 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
       }
     }
   }, [uuid, isTrackingAllowed, isLoading, dispatch]);
+
+  useEffect(() => {
+  if (consentGiven === false && uuid) {
+    if (process.env.REACT_APP_ENV === 'development') {
+      console.log("Consent revoked, clearing all tracking data");
+    }
+    dispatch(clearAllTrackingData());
+  }
+}, [consentGiven, uuid, dispatch]);
 
   const sendViewData = useCallback((timeSpent: number) => {
     if (!uuid || !isTrackingAllowed) {
@@ -167,9 +175,9 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
   }, [consentGiven, isLoading, enabled, isTrackingAllowed, uuid]);
 
   return {
-    trackInteraction,
-    isTrackingEnabled: isTrackingAllowed && !!uuid,
     consentGiven,
-    isLoading: isLoading
+    isLoading,
+    trackInteraction,
+    isTrackingEnabled: isTrackingAllowed && !!uuid
   };
 };

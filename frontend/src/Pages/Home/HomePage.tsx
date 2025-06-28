@@ -6,11 +6,13 @@ import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
 import { useTracking } from "../../hooks/tracking";
 import { downloadCV } from '../../Services/fileService';
 import { useNavigate } from 'react-router-dom';
+import { useIubenda } from "../../hooks/useIubenda";
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const navigate = useNavigate();
-
+  useIubenda();
+  
   const { trackInteraction } = useTracking({
     page: 'homepage',
     enabled: true

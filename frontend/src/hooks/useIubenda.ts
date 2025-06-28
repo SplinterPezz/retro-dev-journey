@@ -1,100 +1,81 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { setConsentGiven as setConsentInStore } from '../store/consentSlice';
 import { clearAllTrackingData } from '../store/trackingSlice';
-
-interface IubendaHookReturn {
-    consentGiven: boolean | null;
-    isLoading: boolean;
-    checkConsent: () => boolean | null;
-}
 
 declare global {
     interface Window {
-        _iub?: { cs?: { api?: { isConsentGiven: () => boolean | null } } };
+        _iub?: {
+            cs?: {
+                api?: {
+                    isConsentGiven: () => boolean;
+                };
+            };
+        };
         iubendaConsent?: boolean;
         iubendaConsentCallback?: (consent: boolean) => void;
+        iubendaConsentFirstGiven?: (consent: boolean) => void;
+        iubendaPreferenceExpressed?: (consent: boolean) => void;
+        iubendaConsentChanged?: (consent: boolean) => void;
     }
 }
 
-export const useIubenda = (): IubendaHookReturn => {
-    const [consentGiven, setConsentGiven] = useState<boolean | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+export const useIubenda = () => {
     const dispatch = useDispatch();
 
-    const checkConsent = useCallback((): boolean | null => {
-        return window._iub?.cs?.api?.isConsentGiven?.() ?? window.iubendaConsent ?? null;
-    }, []);
+    const updateConsent = useCallback((newConsent: boolean | null) => {
+        if (newConsent === null) return;
 
-    const clearTrackingIfNeeded = useCallback(() => {
-        if (process.env.REACT_APP_ENV === 'development') {
-            console.log('Consent revoked - clearing all tracking data');
+        if (newConsent === false) {
+            dispatch(clearAllTrackingData());
         }
-        dispatch(clearAllTrackingData());
+
+        dispatch(setConsentInStore(newConsent));
     }, [dispatch]);
 
-    const handleConsentChange = useCallback((newConsent: boolean) => {
-        if (process.env.REACT_APP_ENV === 'development') {
-            console.log('Iubenda consent changed:', newConsent);
-        }
+    const checkConsent = useCallback((): boolean | null => {
+    if (
+        !window._iub || 
+        !window._iub.cs || 
+        !window._iub.cs.api || 
+        typeof window._iub.cs.api.isConsentGiven !== 'function'
+    ) {
+        return null;
+    }
 
-        if (consentGiven === true && newConsent === false) {
-            clearTrackingIfNeeded();
-        }
-
-        setConsentGiven(newConsent);
-        setIsLoading(false);
-    }, [consentGiven, clearTrackingIfNeeded]);
+    try {
+        return window._iub.cs.api.isConsentGiven() ?? window.iubendaConsent ?? null;
+    } catch (error) {
+        console.warn('Error calling isConsentGiven:', error);
+        return null;
+    }
+}, []);
 
     useEffect(() => {
-        window.iubendaConsentCallback = handleConsentChange;
+        // Set callback handlers for iubenda events
+        const handler = (consent: boolean) => updateConsent(consent);
+
+        window.iubendaConsentCallback = handler;
+        window.iubendaConsentFirstGiven = handler;
+        window.iubendaPreferenceExpressed = handler;
+        window.iubendaConsentChanged = handler;
 
         const initialConsent = checkConsent();
         if (initialConsent !== null) {
-            handleConsentChange(initialConsent);
+            updateConsent(initialConsent);
         } else {
-            const timeout = setTimeout(() => {
+            // Optionally, fallback or timeout if consent not available immediately
+            setTimeout(() => {
                 const delayedConsent = checkConsent();
-                if (delayedConsent !== null) {
-                    handleConsentChange(delayedConsent);
-                } else {
-                    setIsLoading(false);
-                }
+                if (delayedConsent !== null) updateConsent(delayedConsent);
             }, 2000);
-
-            return () => clearTimeout(timeout);
         }
 
         return () => {
-            if (window.iubendaConsentCallback === handleConsentChange) {
-                window.iubendaConsentCallback = undefined;
-            }
+            window.iubendaConsentCallback = undefined;
+            window.iubendaConsentFirstGiven = undefined;
+            window.iubendaPreferenceExpressed = undefined;
+            window.iubendaConsentChanged = undefined;
         };
-    }, [checkConsent, handleConsentChange]);
-
-    useEffect(() => {
-        if (!isLoading) return;
-
-        const interval = setInterval(() => {
-            const currentConsent = checkConsent();
-            if (currentConsent !== null && currentConsent !== consentGiven) {
-                handleConsentChange(currentConsent);
-            }
-        }, 1000);
-
-        const timeout = setTimeout(() => {
-            setIsLoading(false);
-            clearInterval(interval);
-        }, 10000);
-
-        return () => {
-            clearInterval(interval);
-            clearTimeout(timeout);
-        };
-    }, [consentGiven, isLoading, checkConsent, handleConsentChange]);
-
-    return {
-        consentGiven,
-        isLoading,
-        checkConsent
-    };
+    }, [checkConsent, updateConsent]);
 };

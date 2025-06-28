@@ -6,7 +6,6 @@ import './DailyQuest.css';
 import { DailyQuest } from '../../types/sandbox';
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { useIubenda } from '../../hooks/useIubenda';
 
 interface DailyQuestProps {
   questPrefix: string;
@@ -231,7 +230,7 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
   maxVisible 
 }) => {
   const { interactions } = useSelector((state: RootState) => state.tracking);
-  const { consentGiven, isLoading } = useIubenda();
+  const { consentGiven, isLoading } = useSelector((state: RootState) => state.consent);
   const [isCollapsed, setIsCollapsed] = useState(true);
   
   const isConsentAccepted = consentGiven === true;
