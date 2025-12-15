@@ -22,6 +22,7 @@ import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent
 import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { useIubenda } from "../../hooks/useIubenda";
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -30,7 +31,8 @@ const SandboxPage: React.FC = () => {
     const [isMobile, setIsMobile] = useState(false);
     const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
     const canPlayerMove = tipsAcceptedDesktop || tipsAcceptedMobile;
-
+    useIubenda();
+    
     const { trackInteraction } = useTracking({
         page: 'sandbox',
         enabled: true

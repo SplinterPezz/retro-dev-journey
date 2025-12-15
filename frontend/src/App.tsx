@@ -13,6 +13,7 @@ import SandboxPage from './Pages/Sandbox/SandBoxPage';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import PrivacyRedirect from './Components/PrivacyRedirect/PrivacyRedirect';
 
 const AppInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useEffect(() => {
@@ -33,6 +34,16 @@ function App() {
               <Route path="/story" element={<HomePage />} />
               <Route path="/sandbox" element={<SandboxPage />} />
               <Route path="/login" element={<SignIn />} />
+
+              <Route path="/privacy-policy" element={<PrivacyRedirect urlPath="legal?an=no&s_ck=false&newmarkup=yes" />} />
+              <Route path="/policy" element={<PrivacyRedirect urlPath="legal?an=no&s_ck=false&newmarkup=yes" />} />
+              <Route path="/privacy" element={<PrivacyRedirect urlPath="legal?an=no&s_ck=false&newmarkup=yes" />} />
+
+              <Route path="/cookie" element={<PrivacyRedirect urlPath="cookie-policy?an=no&s_ck=false&newmarkup=yes" />} />
+              <Route path="/cookies" element={<PrivacyRedirect urlPath="cookie-policy?an=no&s_ck=false&newmarkup=yes" />} />
+              <Route path="/cookie-policy" element={<PrivacyRedirect urlPath="cookie-policy?an=no&s_ck=false&newmarkup=yes" />} />
+
+
               <Route path="/admin" element={<PrivateRoute />}>
                 <Route path="/admin" element={<AdminPage />} />
               </Route>

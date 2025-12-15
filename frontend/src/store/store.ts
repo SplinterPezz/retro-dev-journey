@@ -13,18 +13,20 @@ import storage from 'redux-persist/lib/storage';
 import authSlice from './authSlice';
 import trackingSlice, { cleanOldInteractions } from './trackingSlice';
 import welcomeSlice from './welcomeSlice'
+import contentSlice from './consentSlice'
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth', 'tracking', 'welcome']
+  whitelist: ['auth', 'tracking', 'welcome', 'consent']
 };
 
 const rootReducer = combineReducers({
   auth: authSlice,
   tracking: trackingSlice,
-  welcome: welcomeSlice
+  welcome: welcomeSlice,
+  consent: contentSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

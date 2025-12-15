@@ -9,7 +9,6 @@ const initialState: UserTrackingState = {
 const extractDateFromKey = (key: string): string | null => {
   const parts = key.split('-');
   if (parts.length >= 3) {
-
     // YYYY-MM-DD
     const dateParts = parts.slice(-3);
     if (dateParts.length === 3 && 
@@ -52,6 +51,10 @@ const trackingSlice = createSlice({
     cleanOldInteractions(state) {
       state.interactions = cleanOldInteractionsFunction(state.interactions);
     },
+    clearAllTrackingData(state) {
+      state.uuid = '';
+      state.interactions = [];
+    },
     initializeTracking(state, action: PayloadAction<{ uuid?: string }>) {
       state.interactions = cleanOldInteractionsFunction(state.interactions);
       if (action.payload.uuid) {
@@ -62,10 +65,11 @@ const trackingSlice = createSlice({
 });
 
 export const { 
-  setUUID, 
+  setUUID,
   addInteraction, 
   resetInteractions, 
   cleanOldInteractions,
+  clearAllTrackingData,
   initializeTracking 
 } = trackingSlice.actions;
 
