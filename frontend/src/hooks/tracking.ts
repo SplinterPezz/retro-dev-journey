@@ -9,7 +9,7 @@ import { generateUUIDFromUserAgent, getDeviceInfo,
 } from '../Utils/uuidGenerator';
 
 import { PageType, timeTrackingIntervals } from '../types/tracking';
-import { questPrefix } from '../Pages/Sandbox/config';
+import { questPrefix } from '../config/sandbox';
 
 interface UseTrackingProps {
   page: PageType;

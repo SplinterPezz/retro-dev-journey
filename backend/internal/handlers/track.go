@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/auth"
 	"backend/internal/models"
 	"backend/mongodb"
 	"net/http"
@@ -9,6 +10,13 @@ import (
 )
 
 func TrackData(c *gin.Context) {
+	cfg := auth.GetTenant(c)
+	db, ok := mongodb.GetTenantDB(cfg.ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unknown tenant"})
+		return
+	}
+
 	var trackData models.TrackData
 	if err := c.ShouldBindJSON(&trackData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid input for tracking Data"})
@@ -20,5 +28,5 @@ func TrackData(c *gin.Context) {
 		return
 	}
 
-	mongodb.SaveTrackData(trackData)
+	mongodb.SaveTrackData(db, trackData)
 }

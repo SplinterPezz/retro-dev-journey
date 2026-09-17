@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { companies, technologies, downloadButton, defaultBuilding, defaultStatue } from '../../Pages/Sandbox/config';
+import { companies, technologies, downloadButton, defaultBuilding, defaultStatue, hideDownloadButtonInSandbox } from '../../config/sandbox';
 import './DailyQuest.css';
 import { DailyQuest } from '../../types/sandbox';
 import styled from '@emotion/styled';
@@ -253,6 +253,10 @@ const DailyQuestComponent: React.FC<DailyQuestProps> = ({
       icon: tech.data.image || defaultStatue,
       type: 'statue',
     }));
+
+    if (hideDownloadButtonInSandbox) {
+      return [...companyQuests, ...technologyQuests];
+    }
 
     const downloadQuest: DailyQuest = {
       id: downloadButton.data.id + questPrefix,

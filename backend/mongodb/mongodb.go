@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"backend/internal/models"
+	"backend/internal/tenant"
 	"backend/internal/utils"
 
 	"context"
@@ -19,17 +20,29 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Global variable to hold the MongoDB client
+// Global variable to hold the MongoDB client. A single client/connection
+// pool is shared across every tenant — only the database name differs.
 var Client *mongo.Client
-var usersCollection *mongo.Collection
-var trkCollection *mongo.Collection
 
-// InitMongoDB initializes the MongoDB connection and assigns it to the global Client variable
+// TenantDB groups the collections for one tenant's logical database.
+type TenantDB struct {
+	Users *mongo.Collection
+	Trk   *mongo.Collection
+}
+
+var tenantDBs map[string]*TenantDB
+
+// InitMongoDB connects to MongoDB once and initializes one logical
+// database per configured tenant (see internal/tenant).
 func InitMongoDB() {
 	// Load environment variables from .env file
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
+	}
+
+	if err := tenant.LoadFromEnv(); err != nil {
+		log.Fatal("Failed to load tenant configuration: ", err)
 	}
 
 	// Get MongoDB connection details from environment variables
@@ -67,48 +80,44 @@ func InitMongoDB() {
 		log.Fatal("Failed to ping MongoDB:", err)
 	}
 
-	dbName := os.Getenv("DB_NAME")
-	if dbName == "" {
-		log.Fatal("DB_NAME is not set in environment variables")
+	tenantDBs = make(map[string]*TenantDB)
+
+	for _, cfg := range tenant.All() {
+		db := &TenantDB{
+			Users: Client.Database(cfg.DBName).Collection("users"),
+			Trk:   Client.Database(cfg.DBName).Collection("trk"),
+		}
+		tenantDBs[cfg.ID] = db
+
+		CreateAnalyticsIndexes(db)
+		fmt.Printf("Connected tenant %q to database %q\n", cfg.ID, cfg.DBName)
+
+		storedUser, err := FindUserByUsername(db, cfg.RootUsername, false)
+		if err != nil || storedUser == nil {
+			fmt.Printf("Root user for tenant %q doesn't exist, creating it\n", cfg.ID)
+			CreateRootUser(db, cfg)
+		} else {
+			fmt.Printf("Root user for tenant %q already exists, skip creating user.\n", cfg.ID)
+		}
 	}
-
-	usersCollection = Client.Database(dbName).Collection("users")
-	trkCollection = Client.Database(dbName).Collection("trk")
-
-	CreateAnalyticsIndexes()
-
-	fmt.Println("Connected to MongoDB and initialized collection with !")
-
-	rootUsername := os.Getenv("ROOT_USERNAME")
-	if rootUsername == "" {
-		log.Fatal("ROOT_USERNAME missing on env file")
-	}
-
-	storedUser, err := FindUserByUsername(rootUsername, false)
-	if err != nil || storedUser == nil {
-		fmt.Println("Root user doesnt exists, creating Root user")
-
-		CreateRootUser()
-
-	} else {
-		fmt.Println("Root user already exists, skip creating user.")
-	}
-
 }
 
-func CreateRootUser() (string, error) {
-	rootUsername := os.Getenv("ROOT_USERNAME")
-	rootPassword := os.Getenv("ROOT_PASSWORD")
-	rootEmail := os.Getenv("ROOT_EMAIL")
+// GetTenantDB returns the collections for the given tenant id.
+// Callers (handlers) resolve the tenant id from the request context.
+func GetTenantDB(tenantID string) (*TenantDB, bool) {
+	db, ok := tenantDBs[tenantID]
+	return db, ok
+}
 
-	if rootUsername == "" || rootPassword == "" || rootEmail == "" {
-		log.Fatal("ROOT_USERNAME or ROOT_PASSWORD or ROOT_EMAIL missing on env file")
+func CreateRootUser(db *TenantDB, cfg *tenant.Config) (string, error) {
+	if cfg.RootUsername == "" || cfg.RootPassword == "" || cfg.RootEmail == "" {
+		log.Fatal("Root username/password/email missing for tenant ", cfg.ID)
 	}
 
 	user := models.User{
-		Username: rootUsername,
-		Password: rootPassword,
-		Email:    rootEmail,
+		Username: cfg.RootUsername,
+		Password: cfg.RootPassword,
+		Email:    cfg.RootEmail,
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -117,7 +126,7 @@ func CreateRootUser() (string, error) {
 	}
 
 	user.Password = string(hashedPassword)
-	userId, err := CreateUser(user)
+	userId, err := CreateUser(db, user)
 
 	// Create the user in the database
 	if err != nil {
@@ -127,7 +136,7 @@ func CreateRootUser() (string, error) {
 	fmt.Println("Root user created with Id : ", userId)
 
 	// Generate JWT token for the newly created user
-	token, _, err := utils.GenerateJWT(user.Username)
+	token, _, err := utils.GenerateJWT(user.Username, cfg.ID, cfg.JWTSecret)
 	if err != nil {
 		log.Fatal("Could not create token : ", err.Error())
 	}
@@ -137,22 +146,14 @@ func CreateRootUser() (string, error) {
 	return token, err
 }
 
-// GetDatabase returns a MongoDB database by name
-func GetDatabase(dbName string) *mongo.Database {
-	if Client == nil {
-		log.Fatal("MongoDB client is not initialized")
-	}
-	return Client.Database(dbName)
-}
-
-func GetUserByIds(userIds []string) ([]*models.UserResponse, error) {
+func GetUserByIds(db *TenantDB, userIds []string) ([]*models.UserResponse, error) {
 	objectIds, err := convertToObjectIDs(userIds)
 	if err != nil {
 		return nil, fmt.Errorf("invalid chat ID format: %v", err)
 	}
 	filter := bson.M{"_id": bson.M{"$in": objectIds}}
 
-	cursor, err := usersCollection.Find(context.Background(), filter)
+	cursor, err := db.Users.Find(context.Background(), filter)
 	if err != nil {
 		return nil, err
 	}
@@ -194,10 +195,10 @@ func CloseMongoDB() {
 	}
 }
 
-func FindUserByEmailRegistration(email string) (*models.User, error) {
+func FindUserByEmailRegistration(db *TenantDB, email string) (*models.User, error) {
 	var user models.User
 	// Use bson.M{} to search for the user by username
-	err := usersCollection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
+	err := db.Users.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
@@ -207,10 +208,10 @@ func FindUserByEmailRegistration(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func FindUserByUsername(username string, returnErrorIfNotFound bool) (*models.User, error) {
+func FindUserByUsername(db *TenantDB, username string, returnErrorIfNotFound bool) (*models.User, error) {
 	var user models.User
 	// Search for the user by username
-	err := usersCollection.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
+	err := db.Users.FindOne(context.Background(), bson.M{"username": username}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			if returnErrorIfNotFound {
@@ -223,10 +224,10 @@ func FindUserByUsername(username string, returnErrorIfNotFound bool) (*models.Us
 	return &user, nil
 }
 
-func FindUserByEmail(username string, returnErrorIfNotFound bool) (*models.User, error) {
+func FindUserByEmail(db *TenantDB, username string, returnErrorIfNotFound bool) (*models.User, error) {
 	var user models.User
 	// Search for the user by username
-	err := usersCollection.FindOne(context.Background(), bson.M{"email": username}).Decode(&user)
+	err := db.Users.FindOne(context.Background(), bson.M{"email": username}).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			if returnErrorIfNotFound {
@@ -239,12 +240,12 @@ func FindUserByEmail(username string, returnErrorIfNotFound bool) (*models.User,
 	return &user, nil
 }
 
-// CreateUser inserts a new user into the MongoDB collection
+// CreateUser inserts a new user into the tenant's users collection.
 // Function used to create root user on startup.
 // Function disabled in API
-func CreateUser(user models.User) (string, error) {
+func CreateUser(db *TenantDB, user models.User) (string, error) {
 	// Insert the User into the collection
-	data, err := usersCollection.InsertOne(context.Background(), user)
+	data, err := db.Users.InsertOne(context.Background(), user)
 	if err != nil {
 		return "", fmt.Errorf("error inserting user: %v", err)
 	}
@@ -256,7 +257,7 @@ func CreateUser(user models.User) (string, error) {
 	return id.Hex(), nil
 }
 
-func FindUserById(userID string) (*models.User, error) {
+func FindUserById(db *TenantDB, userID string) (*models.User, error) {
 	var user models.User
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
@@ -264,7 +265,7 @@ func FindUserById(userID string) (*models.User, error) {
 	}
 
 	filter := bson.M{"_id": userObjectId}
-	err = usersCollection.FindOne(context.Background(), filter).Decode(&user)
+	err = db.Users.FindOne(context.Background(), filter).Decode(&user)
 	if err != nil {
 		return nil, err
 	}
@@ -272,17 +273,15 @@ func FindUserById(userID string) (*models.User, error) {
 	return &user, nil
 }
 
-func SaveTrackData(trackData models.TrackData) {
-	_, err := trkCollection.InsertOne(context.Background(), trackData)
+func SaveTrackData(db *TenantDB, trackData models.TrackData) {
+	_, err := db.Trk.InsertOne(context.Background(), trackData)
 
 	if err != nil {
 		fmt.Println("Error on insert TrackData", err)
 	}
 }
 
-func GetDailyUniqueUsers(dateFilter models.DateRangeFilter) ([]models.DailyUserStats, error) {
-	fmt.Println("dateFilter", dateFilter)
-
+func GetDailyUniqueUsers(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.DailyUserStats, error) {
 	pipeline := mongo.Pipeline{
 
 		// Match date range
@@ -316,7 +315,7 @@ func GetDailyUniqueUsers(dateFilter models.DateRangeFilter) ([]models.DailyUserS
 		{{Key: "$sort", Value: bson.M{"_id": 1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating daily unique users: %v", err)
 	}
@@ -330,7 +329,7 @@ func GetDailyUniqueUsers(dateFilter models.DateRangeFilter) ([]models.DailyUserS
 	return results, nil
 }
 
-func GetAverageTimePerPage(dateFilter models.DateRangeFilter) ([]models.PageTimeStats, error) {
+func GetAverageTimePerPage(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.PageTimeStats, error) {
 	pipeline := mongo.Pipeline{
 		// Match date range and view type - extend end date to include full day
 		{{Key: "$match", Value: bson.M{
@@ -380,7 +379,7 @@ func GetAverageTimePerPage(dateFilter models.DateRangeFilter) ([]models.PageTime
 		{{Key: "$sort", Value: bson.M{"date": 1, "page": 1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating page time stats: %v", err)
 	}
@@ -394,7 +393,7 @@ func GetAverageTimePerPage(dateFilter models.DateRangeFilter) ([]models.PageTime
 	return results, nil
 }
 
-func GetDailyDownloads(dateFilter models.DateRangeFilter) ([]models.DownloadStats, error) {
+func GetDailyDownloads(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.DownloadStats, error) {
 	pipeline := mongo.Pipeline{
 		// Match date range, interaction type, and download info
 		{{Key: "$match", Value: bson.M{
@@ -430,7 +429,7 @@ func GetDailyDownloads(dateFilter models.DateRangeFilter) ([]models.DownloadStat
 		{{Key: "$sort", Value: bson.M{"date": 1, "page": 1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating download stats: %v", err)
 	}
@@ -444,7 +443,7 @@ func GetDailyDownloads(dateFilter models.DateRangeFilter) ([]models.DownloadStat
 	return results, nil
 }
 
-func GetInteractionStats(dateFilter models.DateRangeFilter) ([]models.InteractionStats, error) {
+func GetInteractionStats(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.InteractionStats, error) {
 	pipeline := mongo.Pipeline{
 		// Match date range and interaction type
 		{{Key: "$match", Value: bson.M{
@@ -466,7 +465,7 @@ func GetInteractionStats(dateFilter models.DateRangeFilter) ([]models.Interactio
 		{{Key: "$sort", Value: bson.M{"count": -1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating interaction stats: %v", err)
 	}
@@ -480,7 +479,7 @@ func GetInteractionStats(dateFilter models.DateRangeFilter) ([]models.Interactio
 	return results, nil
 }
 
-func GetDeviceStats(dateFilter models.DateRangeFilter) ([]models.DeviceStats, error) {
+func GetDeviceStats(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.DeviceStats, error) {
 	pipeline := mongo.Pipeline{
 		// Match date range
 		{{Key: "$match", Value: bson.M{
@@ -508,7 +507,7 @@ func GetDeviceStats(dateFilter models.DateRangeFilter) ([]models.DeviceStats, er
 		{{Key: "$sort", Value: bson.M{"count": -1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating device stats: %v", err)
 	}
@@ -522,7 +521,7 @@ func GetDeviceStats(dateFilter models.DateRangeFilter) ([]models.DeviceStats, er
 	return results, nil
 }
 
-func GetBrowserStats(dateFilter models.DateRangeFilter) ([]models.BrowserStats, error) {
+func GetBrowserStats(db *TenantDB, dateFilter models.DateRangeFilter) ([]models.BrowserStats, error) {
 	pipeline := mongo.Pipeline{
 
 		// Match date range and browser exists
@@ -552,7 +551,7 @@ func GetBrowserStats(dateFilter models.DateRangeFilter) ([]models.BrowserStats, 
 		{{Key: "$sort", Value: bson.M{"count": -1}}},
 	}
 
-	cursor, err := trkCollection.Aggregate(context.Background(), pipeline)
+	cursor, err := db.Trk.Aggregate(context.Background(), pipeline)
 	if err != nil {
 		return nil, fmt.Errorf("error aggregating browser stats: %v", err)
 	}
@@ -566,8 +565,8 @@ func GetBrowserStats(dateFilter models.DateRangeFilter) ([]models.BrowserStats, 
 	return results, nil
 }
 
-func CreateAnalyticsIndexes() {
-	if trkCollection == nil {
+func CreateAnalyticsIndexes(db *TenantDB) {
+	if db == nil || db.Trk == nil {
 		log.Fatal("Analytics collection not initialized")
 		return
 	}
@@ -662,7 +661,7 @@ func CreateAnalyticsIndexes() {
 
 	// Create indexes with error handling
 	ctx := context.Background()
-	names, err := trkCollection.Indexes().CreateMany(ctx, indexes)
+	names, err := db.Trk.Indexes().CreateMany(ctx, indexes)
 	if err != nil {
 		log.Printf("Error creating indexes: %v", err)
 		return

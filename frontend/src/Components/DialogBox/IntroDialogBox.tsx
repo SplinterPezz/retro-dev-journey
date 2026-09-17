@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DialogBox from './DialogBox';
+import { introDialogMessages, introDialogTypingSpeed, introDialogMessageDuration, forceIntroDialogAnimation } from '../../config/content';
 
 interface IntroDialogProps {
   onComplete?: () => void;
@@ -8,12 +9,13 @@ interface IntroDialogProps {
   debugMode?: boolean;
 }
 
-const IntroDialog: React.FC<IntroDialogProps> = ({ 
-  onComplete, 
+const IntroDialog: React.FC<IntroDialogProps> = ({
+  onComplete,
   autoStart = true,
   initialDelay = 2000,
-  debugMode = false
+  debugMode: debugModeProp = false
 }) => {
+  const debugMode = debugModeProp && !forceIntroDialogAnimation;
   const [showDialog, setShowDialog] = useState(debugMode);
 
   useEffect(() => {
@@ -26,23 +28,10 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
     }
   }, [autoStart, initialDelay, debugMode]);
 
-  const messages = [
-    {
-      speaker: "Dude",
-      text: "Look how beautiful Italy is...",
-      delay: debugMode ? 0 : 1000
-    },
-    {
-      speaker: "????", 
-      text: "Bro, but ur leaving Italy...",
-      delay: debugMode ? 0 : 500
-    },
-    {
-      speaker: "Dude",
-      text: "Ur right.. thats my CV then...",
-      delay: debugMode ? 0 : 500
-    }
-  ];
+  const messages = introDialogMessages.map((message) => ({
+    ...message,
+    delay: debugMode ? 0 : message.delay
+  }));
 
   const handleDialogComplete = () => {
     if (!debugMode) {
@@ -58,13 +47,14 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   }
 
   if (debugMode) {
+    const lastMessage = introDialogMessages[introDialogMessages.length - 1];
     return (
       <div className="dialog-box-container visible d-none d-sm-block">
         <div className="rpgui-content">
           <div className="rpgui-container framed">
             <div className="dialog-content">
               <p className="dialog-text">
-                Dude: ur right.. thats my CV then..
+                {lastMessage.speaker}: {lastMessage.text}
               </p>
             </div>
           </div>
@@ -77,8 +67,8 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
     <DialogBox
       messages={messages}
       onComplete={handleDialogComplete}
-      typingSpeed={50}
-      messageDuration={3000}
+      typingSpeed={introDialogTypingSpeed}
+      messageDuration={introDialogMessageDuration}
     />
   );
 };

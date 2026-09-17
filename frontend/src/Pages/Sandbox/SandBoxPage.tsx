@@ -10,7 +10,8 @@ import Structure from '../../Components/Structures/Structure';
 import StructureDialog from '../../Components/Structures/StructureDialog';
 import PathRenderer from '../../Components/Path/PathRender';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId, questPrefix} from './config';
+import { worldConfig, companies, technologies, mainPathConfig, playerHitbox, treesEnvironments, detailsEnvironments, downloadButton, downloadButtonId, questPrefix, terrainAutoRotate, pathGenerationEnabled, mainTerrainImage, hideDownloadButtonInSandbox, sandboxAudioTrack, sandboxDefaultVolume, sandboxBackgroundImage, playerSpawnPosition} from '../../config/sandbox';
+import { playerSpritePrefix } from '../../config/player';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
 import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
@@ -23,6 +24,14 @@ import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useIubenda } from "../../hooks/useIubenda";
+
+interface SandboxContainerCSSProperties extends React.CSSProperties {
+    '--sandbox-background-image'?: string;
+}
+
+const sandboxContainerStyle: SandboxContainerCSSProperties = {
+    '--sandbox-background-image': `url(${sandboxBackgroundImage})`,
+};
 
 const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
@@ -57,10 +66,10 @@ const SandboxPage: React.FC = () => {
     // Preload images and audio resources
     const requiredResources = useMemo(() => {
         const images: string[] = [];
-        const audio: string[] = ['/audio/sandbox_compressed.mp3'];
+        const audio: string[] = [sandboxAudioTrack];
 
         images.push(
-            '/sprites/terrain/main.png',
+            mainTerrainImage,
             '/sprites/terrain/path_core.png',
             '/sprites/terrain/path_start.png',
             '/sprites/terrain/path_cross.png',
@@ -69,14 +78,14 @@ const SandboxPage: React.FC = () => {
         );
 
         images.push(
-            '/sprites/player/dude_idle.gif',
-            '/sprites/player/dude_walk_S.gif',
-            '/sprites/player/dude_walk_N.gif',
-            '/sprites/player/dude_walk_NE.gif',
-            '/sprites/player/dude_walk_SE.gif'
+            `/sprites/player/${playerSpritePrefix}_idle.gif`,
+            `/sprites/player/${playerSpritePrefix}_walk_S.gif`,
+            `/sprites/player/${playerSpritePrefix}_walk_N.gif`,
+            `/sprites/player/${playerSpritePrefix}_walk_NE.gif`,
+            `/sprites/player/${playerSpritePrefix}_walk_SE.gif`
         );
 
-        images.push('/backgrounds/sky_sandbox.png');
+        images.push(sandboxBackgroundImage);
 
         companies.forEach(company => {
             if (company.data.image) images.push(company.data.image);
@@ -91,7 +100,7 @@ const SandboxPage: React.FC = () => {
             if (env.image) images.push(env.image);
         });
 
-        if (downloadButton.data.image) images.push(downloadButton.data.image);
+        if (!hideDownloadButtonInSandbox && downloadButton.data.image) images.push(downloadButton.data.image);
 
         return { images, audio };
     }, []);
@@ -110,6 +119,10 @@ const SandboxPage: React.FC = () => {
 
     // Generate path segments based on structure positions
     const pathSegments: PathSegment[] = useMemo(() => {
+        if (!pathGenerationEnabled) {
+            return [];
+        }
+
         const pathGenerator = createPathGenerator({
             startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
             endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
@@ -120,15 +133,20 @@ const SandboxPage: React.FC = () => {
         return pathGenerator.generatePath();
     }, []);
 
+    // Structures the player can collide with / interact with (download button excluded when hidden)
+    const interactiveStructures = hideDownloadButtonInSandbox
+        ? [...companies, ...technologies]
+        : [...companies, ...technologies, downloadButton];
+
     // Player movement hook with structure collision support
-    const { 
-        playerPosition, 
-        isMoving, 
-        direction, 
+    const {
+        playerPosition,
+        isMoving,
+        direction,
         handleJoystickMove,
-        handleJoystickStop 
+        handleJoystickStop
     } = usePlayerMovement({
-        initialPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY + 50 },
+        initialPosition: playerSpawnPosition,
         speed: 270,
         worldBounds: {
             minX: 50,
@@ -136,7 +154,8 @@ const SandboxPage: React.FC = () => {
             maxX: worldConfig.width - 50,
             maxY: worldConfig.height - 50
         },
-        structures: [...companies, ...technologies, downloadButton],
+        structures: interactiveStructures,
+        environments: [...treesEnvironments, ...detailsEnvironments],
         playerHitbox: playerHitbox,
         canMove: canPlayerMove
     });
@@ -144,7 +163,7 @@ const SandboxPage: React.FC = () => {
     // Collision detection hook
     const { nearbyStructure } = useCollisionDetection({
         playerPosition,
-        structures: [...companies, ...technologies, downloadButton],
+        structures: interactiveStructures,
         interactionRadius: 70
     });
 
@@ -219,7 +238,7 @@ const SandboxPage: React.FC = () => {
     return (
         
         <div className="rpgui-content">
-            <div className="sandbox-container">
+            <div className="sandbox-container" style={sandboxContainerStyle}>
                 {/* Game Viewport */}
                 <div className="sandbox-viewport">
                     <div
@@ -231,7 +250,7 @@ const SandboxPage: React.FC = () => {
                         }}
                     >
                         {/* Terrain Background (Grass) */}
-                        <TerrainRenderer worldConfig={worldConfig} />
+                        <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
 
                         {/* Dynamic Path System */}
                         <PathRenderer
@@ -287,13 +306,15 @@ const SandboxPage: React.FC = () => {
                         </div>
 
                         {/* Download CV Button */}
-                        <div className='structure-container'>
-                            <DownloadCV
-                                structure={downloadButton}
-                                isNearby={nearbyStructure?.id === downloadButtonId}
-                                playerPosition={playerPosition}
-                            />
-                        </div>
+                        {!hideDownloadButtonInSandbox && (
+                            <div className='structure-container'>
+                                <DownloadCV
+                                    structure={downloadButton}
+                                    isNearby={nearbyStructure?.id === downloadButtonId}
+                                    playerPosition={playerPosition}
+                                />
+                            </div>
+                        )}
 
                         {/* Player Character */}
                         <Player
@@ -333,6 +354,27 @@ const SandboxPage: React.FC = () => {
                                                 top: structure.position.y + structure.data.collisionHitbox.y,
                                                 width: structure.data.collisionHitbox.width,
                                                 height: structure.data.collisionHitbox.height,
+                                                border: '2px solid red',
+                                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                                pointerEvents: 'none',
+                                                zIndex: 9998
+                                            }}
+                                        />
+                                    )
+                                )}
+
+                                {/* Environment hitboxes */}
+                                {[...treesEnvironments, ...detailsEnvironments].map((environment, index) =>
+                                    environment.collisionHitbox && (
+                                        <div
+                                            key={`env-hitbox-${index}`}
+                                            className="debug-hitbox structure-hitbox"
+                                            style={{
+                                                position: 'absolute',
+                                                left: environment.position.x + environment.collisionHitbox.x,
+                                                top: environment.position.y + environment.collisionHitbox.y,
+                                                width: environment.collisionHitbox.width,
+                                                height: environment.collisionHitbox.height,
                                                 border: '2px solid red',
                                                 backgroundColor: 'rgba(255, 0, 0, 0.1)',
                                                 pointerEvents: 'none',
@@ -411,8 +453,8 @@ const SandboxPage: React.FC = () => {
                 
                 {/* Audio Controls */}
                     <AudioControls
-                        audioSrc="/audio/sandbox_compressed.mp3"
-                        defaultVolume={15}
+                        audioSrc={sandboxAudioTrack}
+                        defaultVolume={sandboxDefaultVolume}
                         defaultMuted={true}
                         buttonStyle="normal"
                         containerStyle="framed-grey"

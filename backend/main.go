@@ -11,6 +11,7 @@ import (
 
 	"backend/internal/auth"
 	"backend/internal/handlers"
+	"backend/internal/tenant"
 	"backend/mongodb"
 
 	"github.com/gin-contrib/cors"
@@ -52,26 +53,23 @@ func main() {
 
 	// Create a Gin router instance
 	r := gin.Default()
-	r.Use(auth.JWTMiddleware) // Apply JWT middleware globally
-	//config := cors.DefaultConfig()
-	//allowOrigin := os.Getenv("ALLOW_ORIGIN")
+
+	// CORS accepts any Origin that belongs to a configured tenant. This must
+	// run before TenantMiddleware so that OPTIONS preflight requests (which
+	// gin-contrib/cors answers directly) never reach it.
 	config := cors.Config{
-		AllowOrigins:     []string{os.Getenv("ALLOW_ORIGIN")},                 // Allow your frontend origin
+		AllowOriginFunc: func(origin string) bool {
+			_, ok := tenant.ByOrigin(origin)
+			return ok
+		},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}, // Allow all necessary methods
-		AllowHeaders:     []string{"Content-Type", "Authorization"},           // Include Authorization header
-		ExposeHeaders:    []string{"Content-Length"},                          // Optional: Expose headers to the client
-		AllowCredentials: true,                                                // Allow cookies and credentials if needed
+		AllowHeaders:     []string{"Content-Type", "Authorization"},          // Include Authorization header
+		ExposeHeaders:    []string{"Content-Length"},                        // Optional: Expose headers to the client
+		AllowCredentials: true,                                              // Allow cookies and credentials if needed
 	}
 	r.Use(cors.New(config))
-
-	r.Use(cors.New(config))
-	r.OPTIONS("/*path", func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", os.Getenv("ALLOW_ORIGIN"))
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Status(http.StatusOK)
-	})
+	r.Use(auth.TenantMiddleware) // Resolve which tenant this request belongs to
+	r.Use(auth.JWTMiddleware)    // Apply JWT middleware globally
 
 	//r.POST("/register", auth.Register)
 	r.POST("/login", auth.Login)

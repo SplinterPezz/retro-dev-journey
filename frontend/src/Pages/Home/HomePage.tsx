@@ -7,6 +7,8 @@ import { useTracking } from "../../hooks/tracking";
 import { downloadCV } from '../../Services/fileService';
 import { useNavigate } from 'react-router-dom';
 import { useIubenda } from "../../hooks/useIubenda";
+import { playerSpritePrefix } from "../../config/player";
+import { homeAudioTrack, homeDefaultVolume, homeBackgroundImage } from "../../config/home";
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -23,7 +25,7 @@ export default function HomePage() {
 
     const img = new Image();
     img.onload = () => setImageLoaded(true);
-    img.src = '/backgrounds/home_page.gif';
+    img.src = homeBackgroundImage;
   }, []);
 
   const handleDialogComplete = () => {
@@ -53,14 +55,14 @@ export default function HomePage() {
       <div className="rpgui-content">
         {!imageLoaded ?
           <>
-            <div className='homepage-background opacity-not-loaded-black loading' />
+            <div className='homepage-background opacity-not-loaded-black loading' style={{ backgroundImage: `url(${homeBackgroundImage})` }} />
             <div className="loader-home">
               Loading...
             </div>
           </>
           :
           <div className="homepage-container">
-            <div className='homepage-background' />
+            <div className='homepage-background' style={{ backgroundImage: `url(${homeBackgroundImage})` }} />
             <GameModeSelector handleDownloadClick={handleDownloadCV}/>
             <IntroDialog
               onComplete={handleDialogComplete}
@@ -71,8 +73,8 @@ export default function HomePage() {
               
 
               <AudioControls
-                audioSrc="/audio/home_compressed.mp3"
-                defaultVolume={20}
+                audioSrc={homeAudioTrack}
+                defaultVolume={homeDefaultVolume}
                 defaultMuted={true}
                 buttonStyle="normal"
                 containerStyle="framed-grey"
@@ -85,7 +87,7 @@ export default function HomePage() {
             </div>
             <div className="social-container">
                 <a onClick={handleAdminPage}>
-                  <img className="social-image" src="/sprites/player/dude_turn.gif" />
+                  <img className="social-image" src={`/sprites/player/${playerSpritePrefix}_turn.gif`} />
                 </a>
                 <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
                   <img className="social-image" src="/sprites/others/linkedin.png" />

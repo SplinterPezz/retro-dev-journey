@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react';
 import { WorldConfig } from '../../types/sandbox';
+import { mainTerrainImage } from '../../config/sandbox';
 import './TerrainRenderer.css';
 
 interface TerrainRendererProps {
   worldConfig: WorldConfig;
+  autoRotate?: boolean;
 }
 
 interface TerrainTile {
@@ -13,7 +15,7 @@ interface TerrainTile {
   rotation: number;
 }
 
-const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig }) => {
+const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRotate = true }) => {
   // Generate terrain tiles based on world size and tile size
   const terrainTiles: TerrainTile[] = useMemo(() => {
     const tiles: TerrainTile[] = [];
@@ -22,22 +24,23 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig }) => {
     // Calculate how many tiles we need in each direction
     const tilesX = Math.ceil(width / tileSize);
     const tilesY = Math.ceil(height / tileSize);
-    
+
     for (let x = 0; x < tilesX; x++) {
       for (let y = 0; y < tilesY; y++) {
-        const randomRotation =
-          possibleRotations[Math.floor(Math.random() * possibleRotations.length)];
+        const rotation = autoRotate
+          ? possibleRotations[Math.floor(Math.random() * possibleRotations.length)]
+          : 0;
         tiles.push({
           id: `terrain-${x}-${y}`,
           x: x * tileSize,
           y: y * tileSize,
-          rotation: randomRotation
+          rotation
         });
       }
     }
-    
+
     return tiles;
-  }, [worldConfig]);
+  }, [worldConfig, autoRotate]);
 
   return (
     <div className="terrain-renderer">
@@ -50,7 +53,7 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig }) => {
             top: tile.y,
             width: worldConfig.tileSize +1,
             height: worldConfig.tileSize +1,
-            backgroundImage: 'url(/sprites/terrain/main.png)',
+            backgroundImage: `url(${mainTerrainImage})`,
             backgroundSize: `${worldConfig.tileSize + 1}px ${worldConfig.tileSize + 1}px`,
             transform: `rotate(${tile.rotation}deg)`,
           }}
