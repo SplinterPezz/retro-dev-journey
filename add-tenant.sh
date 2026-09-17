@@ -122,7 +122,7 @@ while true; do
     NEW_ID=$(echo "$NEW_ID" | tr -cd '[:alnum:]' | tr '[:upper:]' '[:lower:]')
     if [ -z "$NEW_ID" ]; then
         echo "❌ Tenant id can't be empty, skipping."
-    elif grep -qi "^${NEW_ID^^}_ALLOW_ORIGIN=" "$ENV_FILE"; then
+    elif grep -qi "^$(echo "$NEW_ID" | tr '[:lower:]' '[:upper:]')_ALLOW_ORIGIN=" "$ENV_FILE"; then
         echo "❌ Tenant '$NEW_ID' already exists in $ENV_FILE, skipping."
     else
         read_input "Frontend origin for this tenant (e.g. https://example.com or http://localhost:3001)" "" "NEW_ALLOW_ORIGIN"
