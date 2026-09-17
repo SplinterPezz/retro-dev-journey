@@ -18,7 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import { RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
+import { playerSpritePrefix } from "../../config/player";
 import { LoginModel } from "../../types/api";
+import { loginBackgroundImage } from "../../config/login";
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
   height: "100vh",
@@ -40,7 +42,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundImage: "url('/backgrounds/login.png')",
+    backgroundImage: `url(${loginBackgroundImage})`,
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
@@ -320,7 +322,7 @@ export default function SignIn() {
                 height: "50px",
                 imageRendering: "pixelated"
               }}
-              src='/sprites/player/dude_turn.gif'
+              src={`/sprites/player/${playerSpritePrefix}_turn.gif`}
               alt="Character animation"
             />
           </Typography>

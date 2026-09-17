@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Position, Direction, PlayerMovementConfig, StructureData, Hitbox } from '../../../types/sandbox';
-import { playerHitbox } from '../config';
+import { Position, Direction, PlayerMovementConfig, StructureData, EnvironmentData, Hitbox } from '../../../types/sandbox';
+import { playerHitbox } from '../../../config/sandbox';
 
 interface PlayerMovementConfigExtended extends PlayerMovementConfig {
   structures?: StructureData[];
+  environments?: EnvironmentData[];
   playerHitbox?: Hitbox;
   canMove?: boolean;
 }
@@ -68,12 +69,18 @@ const checkHitboxCollision = (
 const checkStructureCollision = (
   newPos: Position,
   hitbox: Hitbox,
-  structures?: StructureData[]
+  structures?: StructureData[],
+  environments?: EnvironmentData[]
 ): boolean => {
-  if (!structures) return false;
-  return structures.some(s => {
+  const hitsStructure = !!structures?.some(s => {
     if (!s.data.collisionHitbox) return false;
     return checkHitboxCollision(newPos, hitbox, s.position, s.data.collisionHitbox);
+  });
+  if (hitsStructure) return true;
+
+  return !!environments?.some(e => {
+    if (!e.collisionHitbox) return false;
+    return checkHitboxCollision(newPos, hitbox, e.position, e.collisionHitbox);
   });
 };
 
@@ -85,7 +92,8 @@ const calculateNewPosition = (
   deltaTime: number,
   worldBounds: any,
   hitbox: Hitbox,
-  structures?: StructureData[]
+  structures?: StructureData[],
+  environments?: EnvironmentData[]
 ): Position => {
   let nx = currentPos.x, ny = currentPos.y;
   const effSpeed = speed * intensity * deltaTime;
@@ -106,11 +114,11 @@ const calculateNewPosition = (
   ny = Math.max(worldBounds.minY, Math.min(worldBounds.maxY, ny));
   const newPos = { x: nx, y: ny };
 
-  if (checkStructureCollision(newPos, hitbox, structures)) {
+  if (checkStructureCollision(newPos, hitbox, structures, environments)) {
     const xPos = { x: nx, y: currentPos.y };
-    if (!checkStructureCollision(xPos, hitbox, structures)) return xPos;
+    if (!checkStructureCollision(xPos, hitbox, structures, environments)) return xPos;
     const yPos = { x: currentPos.x, y: ny };
-    if (!checkStructureCollision(yPos, hitbox, structures)) return yPos;
+    if (!checkStructureCollision(yPos, hitbox, structures, environments)) return yPos;
     return currentPos;
   }
 
@@ -260,7 +268,8 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
             deltaTime,
             config.worldBounds,
             config.playerHitbox || playerHitbox,
-            config.structures
+            config.structures,
+            config.environments
           )
         );
       }

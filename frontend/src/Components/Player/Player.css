@@ -22,50 +22,50 @@
 
 /* Sprite animations */
 .player-sprite.idle-down {
-  background-image: url('/public/sprites/player/dude_idle.gif');
+  background-image: var(--player-sprite-idle);
 }
 
 /* Walking down */
 .player-sprite.walking-down {
-  background-image: url('/public/sprites/player/dude_walk_S.gif');
+  background-image: var(--player-sprite-walk-s);
 }
 
 /* Walking up */
 .player-sprite.walking-up {
-  background-image: url('/public/sprites/player/dude_walk_N.gif');
+  background-image: var(--player-sprite-walk-n);
 }
 
 /* Walking left -  flip the left sprite horizontally  */
 .player-sprite.walking-left {
-  background-image: url('/public/sprites/player/dude_walk_E.gif');
+  background-image: var(--player-sprite-walk-e);
   transform: scaleX(-1);
 }
 
 /* Walking right */
 .player-sprite.walking-right {
-  background-image: url('/public/sprites/player/dude_walk_E.gif');
-  
+  background-image: var(--player-sprite-walk-e);
+
 }
 
 /* Diagonal movements  -  flip the left sprite horizontally */
 .player-sprite.walking-up-left {
-  background-image: url('/public/sprites/player/dude_walk_NE.gif');
+  background-image: var(--player-sprite-walk-ne);
   transform: scaleX(-1);
 }
 
 .player-sprite.walking-up-right {
-  background-image: url('/public/sprites/player/dude_walk_NE.gif');
+  background-image: var(--player-sprite-walk-ne);
 }
 
 /* Walking down-left - flip the SE sprite horizontally */
 .player-sprite.walking-down-left {
-  background-image: url('/public/sprites/player/dude_walk_SE.gif');
+  background-image: var(--player-sprite-walk-se);
   transform: scaleX(-1);
 }
 
 /* Walking down-right - use the SE sprite as-is */
 .player-sprite.walking-down-right {
-  background-image: url('/public/sprites/player/dude_walk_SE.gif');
+  background-image: var(--player-sprite-walk-se);
 }
 
 /* Player name tag */

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Position, StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
 import './Structure.css';
-import { structureCentering, technologyCentering, defaultBuilding, defaultSignpost, defaultStatue } from '../../Pages/Sandbox/config';
+import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/sandbox';
 
 interface StructureProps {
   data: StructureData;
@@ -23,14 +23,12 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
     }
   };
 
-  const getSignpostIcon = (): string => {
+  const getSignpostIcon = (): string | undefined => {
     if (type === 'building') {
         const companyData = data.data as CompanyData;
-        return companyData.signpost !== undefined ? companyData.signpost : defaultSignpost;
+        return companyData.signpost;
     }
-    else {
-      return data.id;
-    }
+    return undefined;
   };
 
   // Get special classes for the structure
@@ -55,24 +53,29 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
       <div className="structure-sprite">
         {type === 'building' ? (
           <>
-            <img 
+            <img
               src={getStructureIcon()}
               alt={data.name}
               className="structure-building-image"
               style={{
                   marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,
-                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0
+                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0,
+                  ...(data.data.imageSize !== undefined ? { width: data.data.imageSize.width, height: data.data.imageSize.height } : {})
                 }}
             />
-            
-            <img 
-              src={getSignpostIcon()}
-              alt={data.name}
-              className="structure-signpost-image"
-            />
-            <div className="signpost-shadow"></div>
+
+            {getSignpostIcon() !== undefined && (
+              <>
+                <img
+                  src={getSignpostIcon()}
+                  alt={data.name}
+                  className="structure-signpost-image"
+                />
+                <div className="signpost-shadow"></div>
+              </>
+            )}
           </>
-          
+
         ) : (
           <>
           {data.data.shadow  !== undefined ? 
@@ -84,12 +87,13 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
               height: data.data.shadow.height,
             }}/> : <></>
           }
-            <img 
+            <img
                 src={getStructureIcon()}
                 alt={data.name}
                 style={{
                   marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,
-                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0
+                  marginTop: data.data.centering !== undefined ? data.data.centering.y : 0,
+                  ...(data.data.imageSize !== undefined ? { width: data.data.imageSize.width, height: data.data.imageSize.height } : {})
                 }}
                 className="structure-technology-image"
               />

@@ -1,6 +1,6 @@
 import { fetchFromApi } from '../Utils/apiService';
 import { ApiError, UploadResponse } from '../types/api';
-import { maxSizeFileCV } from '../Pages/Sandbox/config';
+import { maxSizeFileCV } from '../config/sandbox';
 
 // Custom fetch for download CV as Blob
 export const downloadCV = async (): Promise<void> => {

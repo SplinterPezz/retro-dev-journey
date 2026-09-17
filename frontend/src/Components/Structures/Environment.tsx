@@ -10,6 +10,9 @@ interface EnvironmentDataProps {
 const halfSizeEnv = ['flower', 'rock', 'bucket', 'lamp']
 
 const Environment: React.FC<EnvironmentDataProps> = ({ size, environment }) => {
+    const defaultSize = halfSizeEnv.some(el => environment.image.includes(el)) ? size / 2 : size;
+    const width = environment.imageSize !== undefined ? environment.imageSize.width : defaultSize;
+    const height = environment.imageSize !== undefined ? environment.imageSize.height : defaultSize;
 
     return (
         <>
@@ -25,8 +28,8 @@ const Environment: React.FC<EnvironmentDataProps> = ({ size, environment }) => {
                     <img
                         src={environment.image}
                         style={{
-                            width: halfSizeEnv.some(el => environment.image.includes(el)) ? size / 2 : size,
-                            height: halfSizeEnv.some(el => environment.image.includes(el)) ? size / 2 : size,
+                            width,
+                            height,
                         }}
                         className="structure-technology-image" />
                 </div>

@@ -17,6 +17,13 @@ import (
 
 // Register handles user registration by creating a new user
 func Register(c *gin.Context) {
+	cfg := GetTenant(c)
+	db, ok := mongodb.GetTenantDB(cfg.ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unknown tenant"})
+		return
+	}
+
 	var user models.User
 
 	// Bind the incoming JSON request to the user struct
@@ -35,7 +42,7 @@ func Register(c *gin.Context) {
 	}
 
 	// Check if the email or username is already registered
-	if fieldError, err := checkIfUserExists(user.Email, user.Username); err != nil {
+	if fieldError, err := checkIfUserExists(db, user.Email, user.Username); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"message": err.Error(), "fieldError": fieldError})
 		return
 	}
@@ -47,7 +54,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	user.Password = string(hashedPassword)
-	userId, err := mongodb.CreateUser(user)
+	userId, err := mongodb.CreateUser(db, user)
 
 	// Create the user in the database
 	if err != nil {
@@ -56,7 +63,7 @@ func Register(c *gin.Context) {
 	}
 
 	// Generate JWT token for the newly created user
-	token, expiration, err := utils.GenerateJWT(user.Username)
+	token, expiration, err := utils.GenerateJWT(user.Username, cfg.ID, cfg.JWTSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create token : " + err.Error()})
 		return
@@ -66,15 +73,15 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token, "expiration": expiration, "id": userId, "user": user.Username})
 }
 
-func checkIfUserExists(email, username string) (string, error) {
+func checkIfUserExists(db *mongodb.TenantDB, email, username string) (string, error) {
 	// Check if the email is already in use
-	userEmail, err := mongodb.FindUserByEmailRegistration(email)
+	userEmail, err := mongodb.FindUserByEmailRegistration(db, email)
 	if err == nil && userEmail != nil {
 		return "email", fmt.Errorf("this email is already registered")
 	}
 
 	// Check if the username is already in use
-	existingUser, err := mongodb.FindUserByUsername(username, false)
+	existingUser, err := mongodb.FindUserByUsername(db, username, false)
 	if err == nil && existingUser != nil {
 		return "username", fmt.Errorf("username already exists")
 	}
@@ -161,6 +168,13 @@ func stripSpaces(value string) string {
 
 // Login handles user login by verifying credentials and issuing JWT token
 func Login(c *gin.Context) {
+	cfg := GetTenant(c)
+	db, ok := mongodb.GetTenantDB(cfg.ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unknown tenant"})
+		return
+	}
+
 	var loginData models.LoginRequest
 	// Bind the incoming JSON request to the user struct
 	if err := c.ShouldBindJSON(&loginData); err != nil {
@@ -186,9 +200,9 @@ func Login(c *gin.Context) {
 
 	if validateEmail(identifier) {
 		identifier = strings.ToLower(identifier)
-		storedUser, err = mongodb.FindUserByEmail(identifier, false)
+		storedUser, err = mongodb.FindUserByEmail(db, identifier, false)
 	} else {
-		storedUser, err = mongodb.FindUserByUsername(identifier, false)
+		storedUser, err = mongodb.FindUserByUsername(db, identifier, false)
 	}
 
 	if err != nil || storedUser == nil {
@@ -203,7 +217,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Genera Token
-	token, expiration, err := utils.GenerateJWT(storedUser.Username)
+	token, expiration, err := utils.GenerateJWT(storedUser.Username, cfg.ID, cfg.JWTSecret)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create token"})
 		return

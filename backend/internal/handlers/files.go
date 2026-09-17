@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/auth"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,13 +12,12 @@ import (
 )
 
 const (
-	CVDirectory = "./uploads"
-	CVFilename  = "pezzati_mauro_developer.pdf"
 	MaxFileSize = 5 * 1024 * 1024
 )
 
 func DownloadCV(c *gin.Context) {
-	cvPath := filepath.Join(CVDirectory, CVFilename)
+	cfg := auth.GetTenant(c)
+	cvPath := filepath.Join(cfg.UploadDir, cfg.CVFilename)
 
 	if _, err := os.Stat(cvPath); os.IsNotExist(err) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "CV file not found"})
@@ -25,7 +25,7 @@ func DownloadCV(c *gin.Context) {
 	}
 
 	c.Header("Content-Type", "application/pdf")
-	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", CVFilename))
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", cfg.CVFilename))
 	c.Header("Content-Transfer-Encoding", "binary")
 	c.Header("Cache-Control", "no-cache")
 
@@ -33,6 +33,8 @@ func DownloadCV(c *gin.Context) {
 }
 
 func UploadCV(c *gin.Context) {
+	cfg := auth.GetTenant(c)
+
 	file, err := c.FormFile("cv")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "No file uploaded"})
@@ -49,7 +51,7 @@ func UploadCV(c *gin.Context) {
 		return
 	}
 
-	if err := os.MkdirAll(CVDirectory, 0755); err != nil {
+	if err := os.MkdirAll(cfg.UploadDir, 0755); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create upload directory"})
 		return
 	}
@@ -83,7 +85,7 @@ func UploadCV(c *gin.Context) {
 		return
 	}
 
-	cvPath := filepath.Join(CVDirectory, CVFilename)
+	cvPath := filepath.Join(cfg.UploadDir, cfg.CVFilename)
 
 	dst, err := os.Create(cvPath)
 	if err != nil {
@@ -100,7 +102,7 @@ func UploadCV(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "CV uploaded successfully",
-		"filename": CVFilename,
+		"filename": cfg.CVFilename,
 		"size":     file.Size,
 	})
 }

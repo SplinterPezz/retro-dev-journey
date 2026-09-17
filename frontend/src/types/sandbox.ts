@@ -33,10 +33,17 @@ export interface ShadowInfo{
   position: Position;
 }
 
+export interface ImageSize {
+  width: number;
+  height: number;
+}
+
 export interface EnvironmentData {
   image: string;
   shadow?: ShadowInfo;
   position: Position;
+  imageSize?: ImageSize;
+  collisionHitbox?: Hitbox;
 }
 
 export interface EnvironmentDataAnimated {
@@ -65,6 +72,8 @@ export interface CompanyData {
   shadow?: ShadowInfo;
   centering?: Position;
   collisionHitbox?: Hitbox;
+  imageSize?: ImageSize;
+  interactionRadius?: number;
 }
 
 export interface TechnologyData {
@@ -85,6 +94,8 @@ export interface TechnologyData {
   shadow?: ShadowInfo;
   centering?: Position;
   collisionHitbox?: Hitbox;
+  imageSize?: ImageSize;
+  interactionRadius?: number;
 }
 
 export interface WorldConfig {

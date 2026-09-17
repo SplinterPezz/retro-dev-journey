@@ -1,4 +1,4 @@
-import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../../types/sandbox';
+import { WorldConfig, StructureData, CompanyData, TechnologyData, Position, EnvironmentData, Hitbox } from '../types/sandbox';
 
 export const tileSize: number = 128;
 export const downloadButtonId: string = 'download-button';
@@ -7,9 +7,18 @@ export const downloadCVCooldown: number = 60;
 
 export const questPrefix: string = '-quest'
 
+export const sandboxAudioTrack: string = '/audio/sandbox_compressed.mp3';
+export const sandboxDefaultVolume: number = 15;
+export const sandboxBackgroundImage: string = '/backgrounds/sky_sandbox.png';
+
+// Feature flags
+export const terrainAutoRotate: boolean = true; // set to false to disable random rotation of terrain tiles
+export const pathGenerationEnabled: boolean = true; // set to false to disable path generation and rendering
+export const hideDownloadButtonInSandbox: boolean = false; // default false (button visible); set to true to hide the Download CV button in the sandbox
+
 export const defaultStatue: string = '/sprites/statues/default.png';
 export const defaultBuilding: string = '/sprites/buildings/default.png';
-export const defaultSignpost: string = '/sprites/signpost/default.png';
+export const mainTerrainImage: string = '/sprites/terrain/main.png';
 
 export const playerHitbox: Hitbox = {
   x: -16,
@@ -41,6 +50,12 @@ export const mainPathConfig = {
   startY: 100,
   endY: worldConfig.height,
   width: tileSize
+};
+
+// Player spawn position (where the character appears when entering the sandbox)
+export const playerSpawnPosition: Position = {
+  x: mainPathConfig.startX,
+  y: mainPathConfig.startY + 50
 };
 
 export const downloadButton : StructureData = {
@@ -686,7 +701,7 @@ export const companies: StructureData[] = companiesData.map((company, index) => 
   position: company.position,
   description: company.description,
   data: company,
-  interactionRadius: 250
+  interactionRadius: company.interactionRadius !== undefined ? company.interactionRadius : 250
 }));
 
 export const technologies: StructureData[] = technologiesData.map((tech, index) => ({
@@ -696,5 +711,5 @@ export const technologies: StructureData[] = technologiesData.map((tech, index) 
   position: tech.position,
   description: tech.description ? tech.description : '',
   data: tech,
-  interactionRadius: 100
+  interactionRadius: tech.interactionRadius !== undefined ? tech.interactionRadius : 100
 }));

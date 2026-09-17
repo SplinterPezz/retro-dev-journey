@@ -17,6 +17,7 @@ import {
 } from '../../Services/analyticsService';
 import { downloadCV, uploadCV } from '../../Services/fileService';
 import { DailyUsersResponse } from '../../types/analytics';
+import { analyticsBackgroundImage } from '../../config/admin';
 
 type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
 
@@ -320,7 +321,7 @@ export default function AdminPage() {
   return (
     <div className="rpgui-content">
       <div className="admin-container">
-        <div className="admin-background" />
+        <div className="admin-background" style={{ backgroundImage: `url(${analyticsBackgroundImage})` }} />
         <div className="admin-content">
           {/* Header */}
           <div className="admin-header">

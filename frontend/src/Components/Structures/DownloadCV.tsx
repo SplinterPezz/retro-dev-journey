@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Position, StructureData } from '../../types/sandbox';
 import { downloadCV } from '../../Services/fileService';
-import { downloadCVCooldown } from '../../Pages/Sandbox/config';
+import { downloadCVCooldown } from '../../config/sandbox';
 
 interface DownloadCVProps {
     isNearby: boolean;

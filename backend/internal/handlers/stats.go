@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"backend/internal/auth"
 	"backend/internal/models"
 	"backend/mongodb"
 	"net/http"
@@ -48,6 +49,12 @@ func parseDateRange(c *gin.Context) (models.DateRangeFilter, error) {
 // Get daily unique users
 // GET /analytics/daily-users?start_date=2025-01-01&end_date=2025-01-31
 func GetDailyUniqueUsers(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -56,7 +63,7 @@ func GetDailyUniqueUsers(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetDailyUniqueUsers(dateFilter)
+	stats, err := mongodb.GetDailyUniqueUsers(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get daily unique users",
@@ -75,6 +82,12 @@ func GetDailyUniqueUsers(c *gin.Context) {
 // Get average time per page per day
 // GET /analytics/page-time?start_date=2025-01-01&end_date=2025-01-31
 func GetPageTimeStats(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -83,7 +96,7 @@ func GetPageTimeStats(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetAverageTimePerPage(dateFilter)
+	stats, err := mongodb.GetAverageTimePerPage(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get page time stats",
@@ -102,6 +115,12 @@ func GetPageTimeStats(c *gin.Context) {
 // Get daily downloads
 // GET /analytics/downloads?start_date=2025-01-01&end_date=2025-01-31
 func GetDownloadStats(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -110,7 +129,7 @@ func GetDownloadStats(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetDailyDownloads(dateFilter)
+	stats, err := mongodb.GetDailyDownloads(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get download stats",
@@ -135,6 +154,12 @@ func GetDownloadStats(c *gin.Context) {
 // Get interaction stats
 // GET /analytics/interactions?start_date=2025-01-01&end_date=2025-01-31
 func GetInteractionStats(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -143,7 +168,7 @@ func GetInteractionStats(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetInteractionStats(dateFilter)
+	stats, err := mongodb.GetInteractionStats(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get interaction stats",
@@ -168,6 +193,12 @@ func GetInteractionStats(c *gin.Context) {
 // Get device usage stats
 // GET /analytics/devices?start_date=2025-01-01&end_date=2025-01-31
 func GetDeviceStats(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -176,7 +207,7 @@ func GetDeviceStats(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetDeviceStats(dateFilter)
+	stats, err := mongodb.GetDeviceStats(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get device stats",
@@ -201,6 +232,12 @@ func GetDeviceStats(c *gin.Context) {
 // Get browser usage stats
 // GET /analytics/browsers?start_date=2025-01-01&end_date=2025-01-31
 func GetBrowserStats(c *gin.Context) {
+	db, ok := mongodb.GetTenantDB(auth.GetTenant(c).ID)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unknown tenant"})
+		return
+	}
+
 	dateFilter, err := parseDateRange(c)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -209,7 +246,7 @@ func GetBrowserStats(c *gin.Context) {
 		return
 	}
 
-	stats, err := mongodb.GetBrowserStats(dateFilter)
+	stats, err := mongodb.GetBrowserStats(db, dateFilter)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to get browser stats",

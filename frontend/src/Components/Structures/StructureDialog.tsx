@@ -59,7 +59,7 @@ const CompanyInfo: React.FC<{ company: CompanyData }> = ({ company }) => (
     </div>
     
     <div className="info-section">
-      <label>Technologies Used:</label>
+      <label>Skill Used:</label>
       <div className="tech-tags">
         {company.technologies.map((tech, index) => (
           <span key={index} className="tech-tag">

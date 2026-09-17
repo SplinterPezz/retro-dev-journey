@@ -1,6 +1,22 @@
 import React, { MouseEventHandler, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './GameModeSelector.css';
+import {
+  gameModeTitlePrefix,
+  gameModeTitleEasterEggWord,
+  gameModeTitleSuffix,
+  gameModeDescription,
+  explorationModesLabel,
+  storyModeButtonText,
+  sandboxModeButtonText,
+  gameModeHint,
+  downloadCVButtonText,
+  storyModeEnabled,
+  storyModeVisible,
+  sandboxModeVisible,
+  easterEggEnabled,
+  easterEggBlurAmount,
+} from '../../config/gameModeSelector';
 
 interface GameSelectorProps {
   handleDownloadClick(platform:string): void
@@ -19,6 +35,9 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
   };
 
   const toggleBackground = () => {
+    if (!easterEggEnabled) {
+      return;
+    }
     setBackgroundVisible(!backgroundVisible);
   };
 
@@ -28,54 +47,62 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
         className="rpgui-container framed-golden w-100"
         style={{
           background: backgroundVisible ? 'rgba(0, 0, 0, 0.1)' : 'rgb(133 76 48)',
-          backdropFilter: backgroundVisible ? 'blur(2px)' : 'none'
+          backdropFilter: backgroundVisible ? `blur(${easterEggBlurAmount}px)` : 'none'
         }}
       >
         <h2 className="title-gamemode-box mb-3 mb-md-4 " >
-          Get to Know{' '}
-          <span 
-            className="easter-egg-btn"
-            onClick={toggleBackground}
-            title=""
-          >
-            Me
-          </span>
-           !
+          {gameModeTitlePrefix}{' '}
+          {easterEggEnabled ? (
+            <span
+              className="easter-egg-btn"
+              onClick={toggleBackground}
+              title=""
+            >
+              {gameModeTitleEasterEggWord}
+            </span>
+          ) : (
+            <span>{gameModeTitleEasterEggWord}</span>
+          )}
+          {gameModeTitleSuffix}
         </h2>
 
         <div className="game-mode-description">
-          <p>Pick your preferred way to discover my journey</p>
+          <p>{gameModeDescription}</p>
         </div>
 
         <div className="game-mode-buttons-container">
           <label className="game-mode-label">
-            Exploration Modes:
+            {explorationModesLabel}
           </label>
 
           <div className="game-mode-buttons mt-2">
-            <button
-              className="rpgui-button golden gamemode-button-size"
-              type="button"
-              onClick={handleStoryMode}
-              disabled
-            >
-              <p className='revert-top'>Story Mode</p>
-            </button>
+            {storyModeVisible && (
+              <button
+                className="rpgui-button golden gamemode-button-size"
+                type="button"
+                onClick={handleStoryMode}
+                disabled={!storyModeEnabled}
+              >
+                <p className='revert-top'>{storyModeButtonText}</p>
+              </button>
+            )}
 
-            <button
-              className="rpgui-button golden gamemode-button-size"
-              type="button"
-              onClick={handleSandboxMode}
-            >
-              <p className='revert-top'>Sandbox</p>
-            </button>
+            {sandboxModeVisible && (
+              <button
+                className="rpgui-button golden gamemode-button-size"
+                type="button"
+                onClick={handleSandboxMode}
+              >
+                <p className='revert-top'>{sandboxModeButtonText}</p>
+              </button>
+            )}
           </div>
         </div>
 
         <div className="game-mode-footer">
           <hr className="golden" />
           <p className="game-mode-hint">
-            Choose wisely, adventurer!
+            {gameModeHint}
           </p>
 
           <button
@@ -84,7 +111,7 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
             style={{width:"250px"}}
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {handleDownloadClick('download')}}
           >
-            <p className='revert-top'>Download CV</p>
+            <p className='revert-top'>{downloadCVButtonText}</p>
           </button>
         </div>
       </div>
