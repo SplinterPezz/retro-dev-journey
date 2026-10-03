@@ -1,0 +1,27 @@
+{
+  "cell": 32,
+  "base": {
+    "hair_dark": "#bf6427", "hair": "#df7126", "hair_shade": "#b28250",
+    "skin": "#eec39a", "skin_shade": "#d9a066",
+    "glasses": "#000000", "lens": "#cbdbfc", "iris": "#663931",
+    "shirt_a": "#306082", "shirt_b": "#448fc4", "shirt_c": "#bbc9e6",
+    "inner": "#222034", "pants": "#0c2043", "pants_light": "#0b2e6e",
+    "shoes": "#45283c"
+  },
+  "skin": ["#e2b28a", "#c4926c", "#f0c6a0"],
+  "hair_style": "keep",
+  "hair": ["#4a3d30", "#6b5a4a"],
+  "beard": false,
+  "beard_color": ["#4a3d30", "#6b5a4a"],
+  "glasses": false,
+  "eye_white": "#fafafa",
+  "pupil": "#1e1818",
+  "shirt": ["#80857a", "#6b6f63", "#43463e"],
+  "inner": "#6b6f63",
+  "button": "#43463e",
+  "pants": ["#4c4c56", "#3a3a42"],
+  "shoes": "#1c1c22",
+  "hat": "none",
+  "hat_color": ["#ffffff", "#cccccc"],
+  "body_width": 1.0
+}

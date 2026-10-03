@@ -1,0 +1,46 @@
+.quiz-marker {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  margin-left: -48px;
+  margin-top: -48px;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.quiz-marker-sprite {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  animation: quiz-marker-float 2.4s ease-in-out infinite;
+}
+
+.quiz-marker::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* Set as a CSS var from an inline style in QuizMarker.tsx, not a url()
+     here - css-loader resolves url() in a .css file as a module request
+     relative to this file, which breaks for public-folder absolute paths
+     (every other public sprite in this codebase goes through JS inline
+     style/vars for the same reason - see Player.tsx). */
+  background-image: var(--sparkle-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+@keyframes quiz-marker-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}

@@ -99,11 +99,13 @@
   top: 20px;
 }
 
+/* Phones: the social icons move to the top right so the audio bar can take
+   the bottom right corner without covering them. */
 @media (max-width: 575px ){
   .social-container {
-    top: unset;
-    bottom: 20px;
-    right: 65px;
+    top: 20px;
+    bottom: unset;
+    right: 20px;
   }
 }
 
@@ -120,7 +122,7 @@
 
 @media (max-width: 480px) {
   .social-container {
-    right: 135px;
+    right: 20px;
   }
 
   .social-image{

@@ -1,0 +1,19 @@
+.meep-container {
+  position: absolute;
+  pointer-events: none;
+  z-index: 90;
+  transition: left 0.15s linear, top 0.15s linear;
+}
+
+.meep-sprite {
+  width: 56px;
+  height: 56px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}

@@ -17,7 +17,10 @@ import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
-import { Joystick } from 'react-joystick-component';
+import MobileJoystick from '../../Components/Common/MobileJoystick';
+import HomeButton from '../../Components/Common/HomeButton';
+import { useLogicalViewport } from '../../Components/Common/screenOrientation';
+import { useIsMobile } from '../../Components/Common/useIsMobile';
 import { useTracking } from "../../hooks/tracking";
 import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent';
 import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
@@ -37,7 +40,8 @@ const SandboxPage: React.FC = () => {
     const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
-    const [isMobile, setIsMobile] = useState(false);
+    const isMobile = useIsMobile();
+    const viewport = useLogicalViewport();
     const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
     const canPlayerMove = tipsAcceptedDesktop || tipsAcceptedMobile;
     useIubenda();
@@ -46,22 +50,6 @@ const SandboxPage: React.FC = () => {
         page: 'sandbox',
         enabled: true
       });
-
-    useEffect(() => {
-        const checkMobile = () => {
-            const userAgent = navigator.userAgent.toLowerCase();
-            const mobileKeywords = ['mobile', 'android', 'iphone', 'ipad', 'ipod', 'blackberry', 'windows phone'];
-            const isMobileUA = mobileKeywords.some(keyword => userAgent.includes(keyword));
-            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-            const isSmallScreen = window.innerWidth <= 768;
-            
-            setIsMobile(isMobileUA || (isTouchDevice && isSmallScreen));
-        };
-
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
 
     // Preload images and audio resources
     const requiredResources = useMemo(() => {
@@ -188,11 +176,6 @@ const SandboxPage: React.FC = () => {
         }
     }, [nearbyStructure]);
 
-    // Handle back to home
-    const handleBackToHome = () => {
-        navigate('/');
-    };
-
     const handleDialogClose = () => {
         setShowDialog(false);
         setSelectedStructure(null);
@@ -246,7 +229,7 @@ const SandboxPage: React.FC = () => {
                         style={{
                             width: worldConfig.width,
                             height: worldConfig.height,
-                            transform: `translate(${-playerPosition.x + window.innerWidth / 2}px, ${-playerPosition.y + window.innerHeight / 2}px)`
+                            transform: `translate(${-playerPosition.x + viewport.width / 2}px, ${-playerPosition.y + viewport.height / 2}px)`
                         }}
                     >
                         {/* Terrain Background (Grass) */}
@@ -394,29 +377,13 @@ const SandboxPage: React.FC = () => {
                     <WelcomeDialog isMobile={isMobile}/>
                     {/* Back to Home Button */}
                     <div className="back-button ms-3">
-                        <button
-                            className="rpgui-button golden"
-                            onClick={handleBackToHome}
-                        >
-                            <p className="revert-top">🏠 Home</p>
-                        </button>
+                        <HomeButton />
                     </div>
                     {/* Mini Map */}
                     <div className="minimap">
                         {/* Mobile Joystick */}
                         {isMobile && (
-                            <div className="mobile-joystick">
-                                <Joystick
-                                    size={100}
-                                    sticky={false}
-                                    baseColor="#4950579e"
-                                    stickColor="rgb(210 125 44)"
-                                    move={handleJoystickMove}
-                                    stop={handleJoystickStop}
-                                    throttle={16}
-                                    minDistance={15}
-                                />
-                            </div>
+                            <MobileJoystick onMove={handleJoystickMove} onStop={handleJoystickStop} />
                         )}
 
                         <div className="rpgui-container framed-grey">

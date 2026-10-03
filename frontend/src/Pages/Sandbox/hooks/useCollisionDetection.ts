@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CollisionDetectionConfig, StructureData, Position } from '../../../types/sandbox';
+import { CollisionDetectionConfig, CollidableEntity, StructureData, Position } from '../../../types/sandbox';
 
 const calculateDistance = (pos1: Position, pos2: Position): number => {
   const dx = pos1.x - pos2.x;
@@ -7,9 +7,9 @@ const calculateDistance = (pos1: Position, pos2: Position): number => {
   return Math.sqrt(dx * dx + dy * dy);
 };
 
-const checkCollisionWithStructure = (
+const checkCollisionWithStructure = <T extends CollidableEntity>(
   playerPos: Position,
-  structure: StructureData,
+  structure: T,
   interactionRadius: number
 ): boolean => {
   const distance = calculateDistance(playerPos, structure.position);
@@ -17,11 +17,11 @@ const checkCollisionWithStructure = (
   return distance <= effectiveRadius;
 };
 
-export const useCollisionDetection = (config: CollisionDetectionConfig) => {
-  const [nearbyStructure, setNearbyStructure] = useState<StructureData | null>(null);
+export const useCollisionDetection = <T extends CollidableEntity = StructureData>(config: CollisionDetectionConfig<T>) => {
+  const [nearbyStructure, setNearbyStructure] = useState<T | null>(null);
 
   useEffect(() => {
-    let closestStructure: StructureData | null = null;
+    let closestStructure: T | null = null;
     let closestDistance = Infinity;
 
     config.structures.forEach(structure => {
@@ -31,7 +31,7 @@ export const useCollisionDetection = (config: CollisionDetectionConfig) => {
         // If using radius, calculate actual distance
         let distance = 0;
 
-        if (!structure.data.collisionHitbox) {
+        if (!structure.data?.collisionHitbox) {
           distance = calculateDistance(config.playerPosition, structure.position);
         }
 
@@ -46,7 +46,7 @@ export const useCollisionDetection = (config: CollisionDetectionConfig) => {
   }, [config.playerPosition, config.structures, config.interactionRadius]);
 
   // Get all structures within interaction range
-  const getNearbyStructures = (): StructureData[] => {
+  const getNearbyStructures = (): T[] => {
     return config.structures.filter(structure =>
       checkCollisionWithStructure(config.playerPosition, structure, config.interactionRadius)
     );

@@ -1,0 +1,88 @@
+/* Full-screen choice on phones. The buttons use the custom pixel-bevel orange
+   style of the dialogue choices (not RPGUI's frame), with a large icon above
+   the label. */
+.orientation-choice-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #1a120b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.orientation-choice-box {
+  width: 100%;
+  max-width: 560px;
+  padding: 28px 20px;
+  background: rgba(20, 14, 10, 0.95);
+  border: 3px solid #5a3018;
+  box-sizing: border-box;
+}
+
+.orientation-choice-title {
+  margin: 0;
+  color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.orientation-choice-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.orientation-choice-button {
+  flex: 1 1 0;
+  max-width: 220px;
+  height: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 0 #ffd98a,
+    inset -3px -3px 0 0 #8a4f16,
+    0 3px 0 0 #3a2410;
+  cursor: pointer;
+  transition: transform 0.06s ease;
+}
+
+.orientation-choice-button:hover {
+  background: #f2b150;
+}
+
+.orientation-choice-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset -3px -3px 0 0 #ffd98a,
+    inset 3px 3px 0 0 #8a4f16,
+    0 0 0 0 #3a2410;
+}
+
+.orientation-choice-button svg {
+  color: #2d1e0f;
+}
+
+/* The label uses the game's pixel font, like the other titles and buttons. */
+.orientation-choice-button span {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: #2d1e0f;
+}

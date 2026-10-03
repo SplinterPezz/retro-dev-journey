@@ -17,6 +17,19 @@ export interface Hitbox {
   height: number;
 }
 
+// Minimal shape the movement/collision hooks actually touch (id, position,
+// optional interaction radius, optional collision hitbox nested under
+// `data`). StructureData satisfies this structurally, so the hooks stay
+// generic over it <T extends CollidableEntity> without changing any existing
+// Sandbox call site - Story Mode can pass its own NPC/prop shapes instead of
+// extending CompanyData/TechnologyData.
+export interface CollidableEntity {
+  id: string;
+  position: Position;
+  interactionRadius?: number;
+  data?: { collisionHitbox?: Hitbox };
+}
+
 export interface StructureData {
   id: string;
   name: string;
@@ -110,9 +123,9 @@ export interface PlayerMovementConfig {
   worldBounds: WorldBounds;
 }
 
-export interface CollisionDetectionConfig {
+export interface CollisionDetectionConfig<T extends CollidableEntity = StructureData> {
   playerPosition: Position;
-  structures: StructureData[];
+  structures: T[];
   interactionRadius: number;
 }
 

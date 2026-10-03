@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { VolumeX, Volume2, ChevronUp, ChevronDown, Headphones } from 'lucide-react';
+import FullscreenButton from '../Common/FullscreenButton';
+import OrientationToggleButton from '../Common/OrientationToggleButton';
 import './AudioControls.css'
 
 interface AudioControlsProps {
@@ -121,6 +123,10 @@ const AudioControls: React.FC<AudioControlsProps> = ({
 
       <div className={`volume-position ${className}`}>
         <div className='audio-container'>
+          {/* Mobile only: sit to the left of the volume controls */}
+          <OrientationToggleButton golden={buttonStyle === 'golden'} />
+          <FullscreenButton golden={buttonStyle === 'golden'} />
+
           {/* Volume Controls Button */}
           <button
             className={`volume-controls d-none d-sm-block rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}

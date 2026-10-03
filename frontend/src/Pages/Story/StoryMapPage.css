@@ -1,0 +1,75 @@
+.story-map-container {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #87ceeb;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.story-map-container.exiting {
+  opacity: 0;
+}
+
+.story-map-viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.story-map-world {
+  position: relative;
+  transition: transform 0.1s ease-out;
+
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.story-map-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 16px;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.story-map-ui .back-button {
+  pointer-events: auto;
+  display: inline-block;
+}
+
+.story-map-hint {
+  position: fixed;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px !important;
+}
+
+.story-map-hint p {
+  color: #fff;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.story-map-stub {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.story-map-stub .rpgui-container {
+  /* RPGUI's base .rpgui-container rule is position:fixed with no insets,
+     which takes it out of flow and defeats this wrapper's flex centering -
+     same fix as the dialogue/quiz boxes. */
+  position: relative !important;
+  padding: 30px;
+  min-width: 320px;
+}

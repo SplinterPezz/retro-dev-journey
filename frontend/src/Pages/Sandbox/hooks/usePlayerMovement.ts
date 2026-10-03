@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Position, Direction, PlayerMovementConfig, StructureData, EnvironmentData, Hitbox } from '../../../types/sandbox';
+import { Position, Direction, PlayerMovementConfig, StructureData, CollidableEntity, EnvironmentData, Hitbox } from '../../../types/sandbox';
 import { playerHitbox } from '../../../config/sandbox';
 
-interface PlayerMovementConfigExtended extends PlayerMovementConfig {
-  structures?: StructureData[];
+interface PlayerMovementConfigExtended<T extends CollidableEntity = StructureData> extends PlayerMovementConfig {
+  structures?: T[];
   environments?: EnvironmentData[];
   playerHitbox?: Hitbox;
   canMove?: boolean;
@@ -66,14 +66,14 @@ const checkHitboxCollision = (
          b1.y + b1.height > b2.y;
 };
 
-const checkStructureCollision = (
+const checkStructureCollision = <T extends CollidableEntity>(
   newPos: Position,
   hitbox: Hitbox,
-  structures?: StructureData[],
+  structures?: T[],
   environments?: EnvironmentData[]
 ): boolean => {
   const hitsStructure = !!structures?.some(s => {
-    if (!s.data.collisionHitbox) return false;
+    if (!s.data?.collisionHitbox) return false;
     return checkHitboxCollision(newPos, hitbox, s.position, s.data.collisionHitbox);
   });
   if (hitsStructure) return true;
@@ -84,7 +84,7 @@ const checkStructureCollision = (
   });
 };
 
-const calculateNewPosition = (
+const calculateNewPosition = <T extends CollidableEntity>(
   currentPos: Position,
   dir: Direction,
   speed: number,
@@ -92,7 +92,7 @@ const calculateNewPosition = (
   deltaTime: number,
   worldBounds: any,
   hitbox: Hitbox,
-  structures?: StructureData[],
+  structures?: T[],
   environments?: EnvironmentData[]
 ): Position => {
   let nx = currentPos.x, ny = currentPos.y;
@@ -125,7 +125,7 @@ const calculateNewPosition = (
   return (nx === currentPos.x && ny === currentPos.y) ? currentPos : newPos;
 };
 
-export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
+export const usePlayerMovement = <T extends CollidableEntity = StructureData>(config: PlayerMovementConfigExtended<T>) => {
   const [position, setPosition] = useState(config.initialPosition);
   const [direction, setDirection] = useState<Direction>('idle');
   const [isMoving, setIsMoving] = useState(false);
@@ -234,6 +234,22 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
         return;
       }
 
+      // canMove only gates new keydowns in handleKeyDown - a key already
+      // held when canMove flips to false (e.g. a quiz popup opening mid-step)
+      // would otherwise keep driving movement here until released. Stop
+      // immediately and drop the stale keys/joystick state instead.
+      if (config.canMove === false) {
+        if (pressedKeys.size > 0) clearAllKeys();
+        if (joystickRef.current.isActive) {
+          joystickRef.current = { isActive: false, direction: 'idle', intensity: 0 };
+          setJoystickState(joystickRef.current);
+        }
+        setIsMoving(false);
+        lastTimeRef.current = currentTime;
+        rafRef.current = requestAnimationFrame(loop);
+        return;
+      }
+
       const deltaTime = lastTimeRef.current === 0 
         ? 1/60 // First frame assumes 60fps 
         : Math.min((currentTime - lastTimeRef.current) / 1000, 1/30); // Cap at 30fps minimum
@@ -253,7 +269,12 @@ export const usePlayerMovement = (config: PlayerMovementConfigExtended) => {
       }
 
       const moving = dir !== 'idle';
-      setDirection(dir);
+      // Keep facing the last real direction at rest instead of snapping
+      // back to a frontal pose - only update `direction` while actually
+      // moving, so the idle sprite reflects wherever the player was headed.
+      if (moving) {
+        setDirection(dir);
+      }
       setIsMoving(moving);
 
       if (moving) {

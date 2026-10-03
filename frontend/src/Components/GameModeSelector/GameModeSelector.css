@@ -95,7 +95,8 @@
 @media (max-width: 480px) {
     .game-mode-selector {
         min-width: 300px;
-        top: 6%;
+        /* below the admin / LinkedIn / GitHub icons (they end at y=76) */
+        top: 90px;
         margin-left: -5px;
     }
 
@@ -105,5 +106,74 @@
 
     .game-mode-selector .rpgui-container {
         padding: 15px;
+    }
+}
+/* Landscape phone: stacked, the card is taller than the screen. It becomes two
+   columns - title across the top, description and footer on the left, the mode
+   buttons on the right - and sits below the top icons instead of centred. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-mode-selector {
+        top: 84px;
+        left: 24px;
+        transform: none;
+        min-width: 0;
+        width: min(700px, calc(100vw - 184px));
+    }
+
+    .game-mode-selector .rpgui-container {
+        position: relative !important; /* RPGUI makes it fixed, which ignores the wrapper width */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 24px;
+        align-items: start;
+        padding: 10px 16px;
+    }
+
+    .game-mode-selector .title-gamemode-box {
+        grid-column: 1 / -1;
+        font-size: 1.2em !important;
+        margin-bottom: 6px !important;
+    }
+
+    .game-mode-description {
+        grid-column: 1;
+        grid-row: 2;
+        margin-bottom: 0;
+    }
+
+    .game-mode-description p {
+        font-size: 0.7rem;
+    }
+
+    .game-mode-buttons-container {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .game-mode-footer {
+        grid-column: 1;
+        grid-row: 3;
+        margin-top: 4px;
+    }
+
+    .game-mode-footer hr {
+        margin: 4px 0;
+    }
+
+    .game-mode-footer .game-mode-hint {
+        margin-top: 4px;
+    }
+
+    .game-mode-footer .rpgui-button {
+        margin-top: 6px !important;
+    }
+}
+
+/* Short landscape screens (under 500px high): the compact card is scaled
+   down from its top-left corner so it still fits below the top icons. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-mode-selector {
+        transform: scale(0.8);
+        transform-origin: top left;
     }
 }

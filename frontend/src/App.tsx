@@ -10,12 +10,20 @@ import SignIn from './Pages/Login/Signin';
 import AdminPage from './Pages/Admin/AdminPage';
 import HomePage from './Pages/Home/HomePage';
 import SandboxPage from './Pages/Sandbox/SandBoxPage';
+import StoryMapPage from './Pages/Story/StoryMapPage';
+import StoryDifficultyPage from './Pages/Story/StoryDifficultyPage';
+import ChapterScenePage from './Pages/Story/ChapterScenePage';
+import { prologueChapter } from './config/story/prologue';
+import { eikonyChapter } from './config/story/eikony';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import PrivacyRedirect from './Components/PrivacyRedirect/PrivacyRedirect';
+import { useScreenRotation } from './Components/Common/screenOrientation';
 
 const AppInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useScreenRotation();
+
   useEffect(() => {
     store.dispatch(cleanOldInteractions());
   }, []);
@@ -31,7 +39,10 @@ function App() {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/story" element={<HomePage />} />
+              <Route path="/story" element={<StoryMapPage />} />
+              <Route path="/story/difficulty" element={<StoryDifficultyPage />} />
+              <Route path="/story/prologue" element={<ChapterScenePage chapter={prologueChapter} />} />
+              <Route path="/story/eikony" element={<ChapterScenePage chapter={eikonyChapter} />} />
               <Route path="/sandbox" element={<SandboxPage />} />
               <Route path="/login" element={<SignIn />} />
 

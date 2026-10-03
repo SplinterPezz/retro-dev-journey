@@ -1,0 +1,28 @@
+/* Fallback for browsers that cannot lock the screen orientation (iOS Safari,
+   or Android when fullscreen was refused): the whole app is drawn sideways.
+   #root is laid out as the device's height by its width, then turned 90deg so
+   it fills the upright screen. primary turns clockwise, secondary the other way. */
+html.rotate-landscape-primary,
+html.rotate-landscape-secondary {
+  background: #000;
+  overflow: hidden;
+}
+
+html.rotate-landscape-primary #root,
+html.rotate-landscape-secondary #root {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vh;
+  height: 100vw;
+  overflow: hidden;
+  transform-origin: 0 0;
+}
+
+html.rotate-landscape-primary #root {
+  transform: translateX(100vw) rotate(90deg);
+}
+
+html.rotate-landscape-secondary #root {
+  transform: translateY(100vh) rotate(-90deg);
+}

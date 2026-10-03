@@ -1,0 +1,144 @@
+.story-intro-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* No backdrop-filter: blurring the whole viewport every frame while the
+     box in front of it is also running its 0.4s scale/opacity entrance
+     animation is expensive to composite and was the actual source of the
+     jank on open (every intro uses this backdrop - chapter intro and quiz
+     intro alike). A darker flat overlay reads just as "dim the world behind
+     me" without the per-frame blur cost. */
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 250;
+}
+
+.story-intro-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 300;
+  max-width: 90vw;
+  width: 520px;
+  animation: storyIntroSlideIn 0.4s ease-out;
+}
+
+@keyframes storyIntroSlideIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.story-intro-box {
+  /* see PortraitDialogueBox.css for why: RPGUI's base .rpgui-container rule
+     is position:fixed with no insets, which escapes this wrapper entirely. */
+  position: relative !important;
+  padding: 24px !important;
+  padding-bottom: 36px !important;
+}
+
+.story-intro-exit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 2px 2px 0 0 #ffd98a,
+    inset -2px -2px 0 0 #8a4f16,
+    0 2px 0 0 #3a2410;
+  cursor: pointer;
+}
+
+.story-intro-exit:hover {
+  background: #f2b150;
+}
+
+.story-intro-exit:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset -2px -2px 0 0 #ffd98a,
+    inset 2px 2px 0 0 #8a4f16,
+    0 0 0 0 #3a2410;
+}
+
+.story-intro-title {
+  font-size: 1.8em !important;
+  text-decoration: none !important;
+  color: #ffd700 !important;
+  text-align: center;
+  margin: 0 0 10px 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.story-intro-text {
+  margin: 14px 0 0 0;
+  color: #fff;
+  line-height: 1.6;
+  font-size: 1.05rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.story-intro-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.story-intro-progress {
+  position: absolute;
+  bottom: 8px;
+  right: 14px;
+  color: #c8c8c8;
+  font-size: 0.75rem;
+}
+
+/* RPGUI's golden button pads 35px per side, which pushed "Continue" (~102px)
+   past the 160px mobile width. A tighter side padding keeps the label inside. */
+.story-intro-button {
+  width: 180px !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}
+
+@media (max-width: 480px) {
+  .story-intro-dialog {
+    width: 95vw;
+  }
+
+  .story-intro-title {
+    font-size: 1.4em !important;
+  }
+
+  .story-intro-text {
+    font-size: 0.9rem;
+  }
+
+  .story-intro-footer {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .story-intro-button {
+    width: 160px !important;
+  }
+}

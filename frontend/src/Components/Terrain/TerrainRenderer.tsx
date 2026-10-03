@@ -6,6 +6,7 @@ import './TerrainRenderer.css';
 interface TerrainRendererProps {
   worldConfig: WorldConfig;
   autoRotate?: boolean;
+  terrainImage?: string;
 }
 
 interface TerrainTile {
@@ -15,7 +16,7 @@ interface TerrainTile {
   rotation: number;
 }
 
-const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRotate = true }) => {
+const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRotate = true, terrainImage = mainTerrainImage }) => {
   // Generate terrain tiles based on world size and tile size
   const terrainTiles: TerrainTile[] = useMemo(() => {
     const tiles: TerrainTile[] = [];
@@ -53,7 +54,7 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRota
             top: tile.y,
             width: worldConfig.tileSize +1,
             height: worldConfig.tileSize +1,
-            backgroundImage: `url(${mainTerrainImage})`,
+            backgroundImage: `url(${terrainImage})`,
             backgroundSize: `${worldConfig.tileSize + 1}px ${worldConfig.tileSize + 1}px`,
             transform: `rotate(${tile.rotation}deg)`,
           }}

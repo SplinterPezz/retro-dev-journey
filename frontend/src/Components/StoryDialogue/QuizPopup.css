@@ -1,0 +1,152 @@
+.quiz-popup-exit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  box-sizing: border-box;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  line-height: 1;
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 2px 2px 0 0 #ffd98a,
+    inset -2px -2px 0 0 #8a4f16,
+    0 2px 0 0 #3a2410;
+  cursor: pointer;
+}
+
+.quiz-popup-exit:hover {
+  background: #f2b150;
+}
+
+.quiz-popup-exit:active {
+  transform: translateY(2px);
+  box-shadow:
+    inset -2px -2px 0 0 #ffd98a,
+    inset 2px 2px 0 0 #8a4f16,
+    0 0 0 0 #3a2410;
+}
+
+.quiz-popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quiz-popup-container {
+  max-width: 90vw;
+  width: 480px;
+}
+
+.quiz-popup-box {
+  /* RPGUI's .rpgui-container base rule is `position: fixed` with no insets,
+     which takes it out of flow entirely - the backdrop's flex centering
+     then has nothing to center, since a fixed child is ignored by flex
+     alignment. Override back to relative (same fix as the portrait dialogue
+     box) so it actually sits inside .quiz-popup-container and gets centred. */
+  position: relative !important;
+  background: rgba(20, 14, 10, 0.95);
+  padding-bottom: 32px !important;
+}
+
+.quiz-popup-title {
+  margin: 0;
+  color: #ffd700;
+  text-decoration: none !important;
+}
+
+.quiz-popup-progress {
+  position: absolute;
+  bottom: 8px;
+  right: 14px;
+  color: #c8c8c8;
+  font-size: 0.75rem;
+  margin: 0;
+}
+
+.quiz-popup-question {
+  color: #ffffff;
+  font-size: 1rem;
+  margin: 10px 0 0 0;
+  line-height: 1.4;
+}
+
+.quiz-popup-progress-inline {
+  color: #c8c8c8;
+  font-size: 0.75rem;
+  margin: 8px 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.quiz-popup-back {
+  display: block;
+  margin: 14px auto 0 auto;
+  background: none;
+  border: none;
+  color: #c8c8c8;
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.quiz-popup-back:hover {
+  color: #ffd700;
+}
+
+.quiz-popup-feedback {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.quiz-popup-feedback.correct {
+  color: #6fd36f;
+}
+
+.quiz-popup-feedback.wrong {
+  color: #ff8a65;
+}
+
+@media (max-width: 480px) {
+  .quiz-popup-question {
+    font-size: 0.9rem;
+  }
+}
+
+.quiz-popup-attempts {
+  display: block;
+  margin-top: 4px;
+}
+
+.quiz-popup-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+}
+
+.quiz-popup-footer .quiz-popup-back {
+  margin: 0;
+}
+
+.quiz-popup-footer .quiz-popup-progress {
+  position: static;
+  color: #c8c8c8;
+  font-size: 0.75rem;
+}

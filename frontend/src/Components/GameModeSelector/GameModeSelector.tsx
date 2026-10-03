@@ -27,7 +27,7 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
   const [backgroundVisible, setBackgroundVisible] = useState(true);
 
   const handleStoryMode = () => {
-    navigate('/story');
+    navigate('/story/difficulty');
   };
 
   const handleSandboxMode = () => {

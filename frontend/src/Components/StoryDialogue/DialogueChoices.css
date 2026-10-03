@@ -1,0 +1,174 @@
+.dialogue-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* Custom pixel-styled button (not RPGUI's border-image button) - sized by
+   its own content so it can wrap long answer text onto multiple lines
+   instead of being squeezed into a fixed-width frame. The "pixely" look
+   comes from hard-edged inset box-shadows acting as a beveled border
+   (NES/SNES button style) instead of border-radius + blurred shadows, which
+   read as smooth/modern rather than retro. */
+.story-choice-button {
+  width: 100%;
+  box-sizing: border-box;
+  display: block;
+  text-align: left;
+  padding: 9px 13px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 0 #ffd98a,
+    inset -3px -3px 0 0 #8a4f16,
+    0 3px 0 0 #3a2410;
+  cursor: pointer;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: break-word;
+  image-rendering: pixelated;
+  transition: transform 0.06s ease;
+}
+
+.story-choice-button:hover:not(:disabled) {
+  background: #f2b150;
+}
+
+.story-choice-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    inset -3px -3px 0 0 #ffd98a,
+    inset 3px 3px 0 0 #8a4f16,
+    0 0 0 0 #3a2410;
+}
+
+.story-choice-button:disabled {
+  background: #6b6b6b;
+  color: #a8a8a8;
+  box-shadow:
+    inset 3px 3px 0 0 #8a8a8a,
+    inset -3px -3px 0 0 #3e3e3e,
+    0 3px 0 0 #1f1f1f;
+  cursor: not-allowed;
+}
+
+/* Choices that answer a question the NPC just asked - a different accent
+   (teal instead of amber) plus a leading ">" mark so they read as "this is
+   MY answer" rather than a generic branch/topic pick. */
+.story-choice-button--answer {
+  background: #2f8f8a;
+  color: #e8fbf9;
+  box-shadow:
+    inset 3px 3px 0 0 #7fe0d8,
+    inset -3px -3px 0 0 #164c48,
+    0 3px 0 0 #0c2e2b;
+}
+
+.story-choice-button--answer:hover:not(:disabled) {
+  background: #38a39d;
+}
+
+.story-choice-button--answer:active:not(:disabled) {
+  box-shadow:
+    inset -3px -3px 0 0 #7fe0d8,
+    inset 3px 3px 0 0 #164c48,
+    0 0 0 0 #0c2e2b;
+}
+
+.story-choice-answer-mark {
+  display: inline-block;
+  margin-right: 6px;
+  color: #bdf5f0 !important;
+  text-shadow: none !important;
+}
+
+/* Label on the left, progress dots pinned to the right, inside the button. */
+.story-choice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+/* RPGUI's base stylesheet has `.rpgui-content span { color:#fff; text-shadow:
+   -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000; font-size:1em }`, which
+   out-specifies a plain class selector. The old markup never hit it (the
+   label was a bare text node, not a span) - now that it's wrapped for the
+   flex layout, reset both back to the button's own color/weight instead of
+   inheriting RPGUI's white-with-heavy-outline look. */
+.story-choice-row,
+.story-choice-text {
+  color: inherit !important;
+  text-shadow: none !important;
+}
+
+.story-choice-text {
+  flex: 1;
+}
+
+.story-choice-dots {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.story-choice-dot {
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  background: transparent;
+}
+
+.story-choice-dot.filled {
+  background: currentColor;
+}
+
+/* Re-asserted after .story-choice-button--answer (same specificity, later
+   in source order) so an already-answered question still greys out instead
+   of keeping its teal accent. */
+.story-choice-button--answer:disabled {
+  background: #6b6b6b;
+  color: #a8a8a8;
+  box-shadow:
+    inset 3px 3px 0 0 #8a8a8a,
+    inset -3px -3px 0 0 #3e3e3e,
+    0 3px 0 0 #1f1f1f;
+}
+
+.story-choice-button--answer:disabled .story-choice-answer-mark {
+  color: #a8a8a8 !important;
+}
+
+@media (max-width: 480px) {
+  .story-choice-button {
+    font-size: 0.68rem;
+    padding: 8px 11px;
+  }
+}
+
+/* Choices ease in one after another when a line finishes typing, instead of
+   popping onto the screen all at once. */
+.story-choice-button {
+  animation: story-choice-in 0.25s ease-out backwards;
+}
+
+@keyframes story-choice-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -25,6 +25,37 @@
   background-image: var(--player-sprite-idle);
 }
 
+.player-sprite.idle-up {
+  background-image: var(--player-sprite-idle-n);
+}
+
+.player-sprite.idle-left {
+  background-image: var(--player-sprite-idle-e);
+  transform: scaleX(-1);
+}
+
+.player-sprite.idle-right {
+  background-image: var(--player-sprite-idle-e);
+}
+
+.player-sprite.idle-up-left {
+  background-image: var(--player-sprite-idle-ne);
+  transform: scaleX(-1);
+}
+
+.player-sprite.idle-up-right {
+  background-image: var(--player-sprite-idle-ne);
+}
+
+.player-sprite.idle-down-left {
+  background-image: var(--player-sprite-idle-se);
+  transform: scaleX(-1);
+}
+
+.player-sprite.idle-down-right {
+  background-image: var(--player-sprite-idle-se);
+}
+
 /* Walking down */
 .player-sprite.walking-down {
   background-image: var(--player-sprite-walk-s);
@@ -81,9 +112,11 @@
 .player-nametag span {
   background: rgba(0, 0, 0, 0.8);
   color: #ffd700;
-  padding: 2px 6px;
+  padding: 4px 9px;
   border-radius: 3px;
-  font-size: 10px;
+  /* bigger than the NPC name tags (InteriorNpc.css) - the player's own tag
+     should read as the biggest one of the two. */
+  font-size: 14px;
   font-weight: bold;
   font-family: 'Courier New', monospace;
   white-space: nowrap;

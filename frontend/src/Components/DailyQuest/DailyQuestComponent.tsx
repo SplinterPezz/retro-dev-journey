@@ -40,7 +40,7 @@ const slideUp = keyframes`
   }
 `;
 
-const AnimatedQuestContent = styled.div<{ isVisible: boolean }>`
+export const AnimatedQuestContent = styled.div<{ isVisible: boolean }>`
   overflow: hidden;
   transition: all 0.3s ease-in-out;
   animation: ${props => props.isVisible ? slideDown : slideUp} 0.3s ease-in-out forwards;
@@ -120,7 +120,7 @@ const QuestItem = styled.div<{ isCompleted: boolean; index: number; isVisible: b
   }
 `;
 
-const ToggleButton = styled.button<{ isCollapsed: boolean }>`
+export const ToggleButton = styled.button<{ isCollapsed: boolean }>`
   background: rgba(255, 215, 0, 0.2);
   border: 1px solid rgba(255, 215, 0, 0.5);
   border-radius: 3px;

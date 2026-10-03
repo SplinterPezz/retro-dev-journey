@@ -1,0 +1,63 @@
+.interior-npc-container {
+  position: absolute;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+  z-index: 50;
+}
+
+.interior-npc-container.nearby {
+  transform: scale(1.05);
+  z-index: 60;
+}
+
+.interior-npc-sprite {
+  width: 128px;
+  height: 128px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.interior-npc-label {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  /* always visible, not just on proximity - smaller than the player's own
+     tag (Player.css .player-nametag) so the player's is clearly the bigger
+     one of the two. */
+  opacity: 1;
+  pointer-events: none;
+  text-align: center;
+  min-width: 100px;
+}
+
+.interior-npc-label span {
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffd700;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  border: 1px solid #8b4513;
+}
+
+.interior-npc-shadow {
+  position: absolute;
+  bottom: 16px;
+  left: 51%;
+  transform: translateX(-50%);
+  width: 35px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  z-index: -1;
+}

@@ -1,0 +1,39 @@
+.code-fix-editor {
+  margin-top: 12px;
+  border: 2px solid #5a3018;
+}
+
+/* RPGUI's `.rpgui-content span` rule would paint every CodeMirror token
+   white with a heavy outline; keep the code plain and readable. */
+.code-fix-editor .cm-content span {
+  color: #e8e0c8 !important;
+  text-shadow: none !important;
+}
+
+.code-fix-submit {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px 12px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  font-weight: normal;
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 0 #ffd98a,
+    inset -3px -3px 0 0 #8a4f16,
+    0 3px 0 0 #3a2410;
+  cursor: pointer;
+}
+
+.code-fix-submit:hover:not(:disabled) {
+  background: #f2b150;
+}
+
+.code-fix-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

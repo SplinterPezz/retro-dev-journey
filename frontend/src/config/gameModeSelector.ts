@@ -12,7 +12,7 @@ export const gameModeHint: string = 'Choose wisely, adventurer!';
 export const downloadCVButtonText: string = 'Download CV';
 
 // Feature flags
-export const storyModeEnabled: boolean = false; // set to true once Story Mode is playable
+export const storyModeEnabled: boolean = true; // set to true once Story Mode is playable
 export const storyModeVisible: boolean = true; // set to false to hide the Story Mode button entirely
 export const sandboxModeVisible: boolean = true; // set to false to hide the Sandbox button entirely
 export const easterEggEnabled: boolean = true; // set to false to disable the title easter egg toggle

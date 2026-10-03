@@ -207,3 +207,19 @@
     font-size: 0.9rem;
   }
 }
+/* Landscape phone: the height is small, so the portrait sizing (35vh max
+   width and a 100px top margin) made the panel narrow and pushed it down over
+   the scene. It sits under the Home button instead, at a readable width. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .daily-quest-container {
+    top: 88px;
+    left: 12px;
+    width: 240px;
+  }
+
+  .daily-quest-container .rpgui-container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+}

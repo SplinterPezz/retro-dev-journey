@@ -56,17 +56,40 @@
     right: 20px;
 }
 
+/* Home: the audio bar sits at the bottom right, clear of the admin / LinkedIn /
+   GitHub icons, which stay at the top right (see HomePage.css). The right
+   offset leaves room for the iubenda cookie button in the bottom-right corner. */
+.volume-position.home-page{
+    top: unset;
+    bottom: 20px;
+    right: 70px;
+}
+
+/* Landscape phone home: the four buttons stack in a column on the right edge,
+   below the top icons, so they no longer cover the centred game-mode card. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .volume-position.home-page{
+        top: 100px;
+        bottom: auto;
+        right: 8px;
+    }
+
+    .volume-position.home-page .audio-container{
+        flex-direction: column;
+    }
+
+    .volume-position.home-page .audio-container .rpgui-button{
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+    }
+}
+
 @media (max-width: 480px) {
     .volume-controls{
         padding: 8px;
         min-width: 50px;
         min-height: 50px;
-    }
-    
-    .volume-position.home-page{
-        top: unset;
-        bottom: 20px;
-        right: 70px;
     }
     
     .unmute-controls{

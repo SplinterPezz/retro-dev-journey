@@ -1,0 +1,47 @@
+.meep-bubble-container {
+  position: absolute;
+  pointer-events: none;
+  z-index: 95;
+  width: 180px;
+  transform: translateX(-50%);
+  text-align: center;
+  /* same easing as .meep-container (Meep.css) - both read the same lagged
+     position each tick, but without this the bubble would snap to each new
+     coordinate instantly while Meep's sprite glides into it, making the
+     bubble visibly outrun Meep instead of sitting locked above it. */
+  transition: left 0.15s linear, top 0.15s linear;
+}
+
+.meep-bubble-box {
+  padding: 8px 10px !important;
+  background: rgba(20, 14, 10, 0.9) !important;
+}
+
+.meep-bubble-text {
+  margin: 0;
+  color: #ffffff;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  font-family: 'Courier New', monospace;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.meep-bubble-text .cursor {
+  color: #ffd700;
+  font-weight: bold;
+  animation: meep-bubble-blink 1s infinite;
+}
+
+.meep-bubble-tail {
+  width: 0;
+  height: 0;
+  margin: 0 auto;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid rgba(20, 14, 10, 0.9);
+}
+
+@keyframes meep-bubble-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

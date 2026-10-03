@@ -1,0 +1,36 @@
+/* Only the label is styled. The button itself keeps RPGUI's golden frame
+   untouched: its sizing (35px side padding, 60px height) and the ornaments
+   drawn by .rpgui-button.golden:before/:after depend on those defaults, so
+   overriding padding or display on the button is what broke the border. The
+   default font only applies inside .rpgui-content, hence the explicit font. */
+/* RPGUI draws the label near the top of the frame. Moving only the label down
+   centres it; the button's padding is left alone because the frame and the
+   :before/:after ornaments are positioned from it, and a larger padding-top
+   pushed the ornaments out of line with the frame. */
+.home-button p {
+  position: relative;
+  top: 11px;
+  margin: 0 !important;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1;
+  color: #fff !important;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* Top-left placement used by the story screens, matching the Sandbox back
+   button (.back-button + ms-3): 18px from the top, 36px from the left
+   (20px plus the 16px margin), 26px on phones and tablets. */
+.home-fixed-top-left {
+  position: fixed;
+  top: 18px;
+  left: 36px;
+  z-index: 200;
+}
+
+@media (max-width: 768px) {
+  .home-fixed-top-left {
+    left: 26px;
+  }
+}

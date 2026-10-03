@@ -1,0 +1,89 @@
+/* Fixed to the viewport so the screen never scrolls (phones included); the
+   box is centred both ways inside it. */
+.story-difficulty-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #1a120b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .story-difficulty-box {
+    padding: 28px 20px;
+  }
+
+  .story-difficulty-title {
+    font-size: 1.1rem;
+  }
+
+  .story-difficulty-hint {
+    margin-top: 14px;
+    font-size: 0.6rem;
+  }
+
+  .story-difficulty-buttons {
+    margin-top: 24px;
+  }
+}
+
+.story-difficulty-box {
+  position: relative !important;
+  width: 100%;
+  max-width: 640px;
+  padding: 40px 36px;
+  background: rgba(20, 14, 10, 0.95);
+}
+
+.story-difficulty-title {
+  margin: 0;
+  color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 1.6rem;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none !important;
+}
+
+.story-difficulty-hint {
+  margin: 20px 0 0 0;
+  color: #c8c8c8;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.story-difficulty-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* Every difficulty button shares one size; the label is centred both ways. */
+.story-difficulty-button {
+  width: 160px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  color: #fff !important;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.story-difficulty-button p {
+  margin: 0 !important;
+  width: 100%;
+  color: #fff !important;
+  line-height: 1;
+  text-align: center;
+  text-shadow: 2px 2px 0 #000;
+}
