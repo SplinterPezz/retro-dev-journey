@@ -8,6 +8,14 @@ import ZoomSlider from '../components/Common/ZoomSlider';
 import MobileJoystick, { JoystickMoveEvent } from '../components/Common/MobileJoystick';
 import AudioControls from '../components/AudioControls/AudioControls';
 import '../components/Common/scene-layout.css';
+// Stylesheets of the pieces every scene draws, in one fixed order: the scenes
+// are separate chunks that share them, and importing them here first keeps
+// their order the same in each (CSS order decides ties between equal rules).
+import '../components/Terrain/TerrainRenderer.css';
+import '../components/Structures/Structure.css';
+import '../components/Player/Player.css';
+import './DebugOverlay.css';
+import '../components/Common/HomeButton.css';
 
 interface GameSceneProps {
   // Prefix of the scene's CSS classes: `${name}-viewport`, `${name}-world`.
