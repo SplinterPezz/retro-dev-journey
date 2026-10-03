@@ -30,7 +30,7 @@
 .story-debug-reset {
   position: fixed;
   bottom: 40px;
-  left: 8px;
+  left: 84px;
   z-index: 999;
   background: #b71c1c;
   color: #fff;
@@ -75,7 +75,7 @@
 
 .story-debug-reset-chapter {
   bottom: 8px;
-  left: 8px;
+  left: 84px;
   background: #e8801a;
   border-color: #ffb347;
 }

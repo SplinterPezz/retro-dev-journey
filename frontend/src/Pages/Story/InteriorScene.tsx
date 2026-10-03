@@ -17,6 +17,8 @@ import QuizMarker from '../../Components/StoryDialogue/QuizMarker';
 import AudioControls from '../../Components/AudioControls/AudioControls';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
+import { useZoomScale } from '../../Components/Common/zoomStore';
+import ZoomSlider from '../../Components/Common/ZoomSlider';
 import HomeButton from '../../Components/Common/HomeButton';
 import { useIsMobile } from '../../Components/Common/useIsMobile';
 import Meep from '../../Components/Companion/Meep';
@@ -110,6 +112,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const meepPosition = useLaggedPosition(playerPosition, 450);
   const isMobile = useIsMobile();
   const viewport = useLogicalViewport();
+  const zoomScale = useZoomScale();
 
   const { nearbyStructure: nearbyNpcEntity } = useCollisionDetection({
     playerPosition,
@@ -326,7 +329,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             style={{
               width: chapter.worldConfig.width,
               height: chapter.worldConfig.height,
-              transform: `translate(${-playerPosition.x + viewport.width / 2}px, ${-playerPosition.y + viewport.height / 2}px)`,
+              transformOrigin: '0 0',
+              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`,
             }}
           >
             <TerrainRenderer worldConfig={chapter.worldConfig} autoRotate={false} terrainImage={chapter.floorImage} />
@@ -459,6 +463,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             x: {Math.round(playerPosition.x)} y: {Math.round(playerPosition.y)}
           </div>
         )}
+        <ZoomSlider />
         {isMobile && !introPending && (
           <MobileJoystick onMove={handleJoystickMove} onStop={handleJoystickStop} />
         )}

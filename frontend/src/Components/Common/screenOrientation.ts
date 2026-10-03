@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import { setOrientation } from '../../store/storySlice';
 import { StoryOrientation } from '../../types/story';
 import { isMobileDevice } from './useIsMobile';
 import './ScreenRotation.css';
@@ -8,7 +9,7 @@ import './ScreenRotation.css';
 export const isLandscape = (orientation: StoryOrientation | null): boolean =>
   orientation === 'landscape-primary' || orientation === 'landscape-secondary';
 
-const isPortraitViewport = (): boolean => window.matchMedia('(orientation: portrait)').matches;
+export const isPortraitViewport = (): boolean => window.matchMedia('(orientation: portrait)').matches;
 
 // Asks the browser to lock the screen. Only works in fullscreen on Android
 // Chrome, and not at all on iOS Safari - callers fall back to CSS rotation.
@@ -31,7 +32,12 @@ export const unlockOrientation = (): void => {
 };
 
 // Called from a tap: goes fullscreen first (needed for the lock), then locks.
+// True while a landscape request is in progress, so the fallback below does not
+// undo it while the phone is still upright.
+let landscapeRequestPending = false;
+
 export const enterLandscape = async (orientation: StoryOrientation): Promise<void> => {
+  landscapeRequestPending = true;
   try {
     if (document.fullscreenEnabled && !document.fullscreenElement) {
       await document.documentElement.requestFullscreen();
@@ -40,6 +46,7 @@ export const enterLandscape = async (orientation: StoryOrientation): Promise<voi
     // refused - the lock below may still work, or the CSS fallback applies
   }
   await lockOrientation(orientation);
+  landscapeRequestPending = false;
 };
 
 // True when the picture has to be turned with CSS: a phone that chose a
@@ -77,6 +84,19 @@ export const useScreenRotation = (): void => {
       root.classList.add(`rotate-${orientation}`);
     }
   }, [rotated, orientation]);
+
+  // The turned layout is sized from the real visible size, measured here,
+  // not from vh/vw - those go stale when the page is reopened.
+  useEffect(() => {
+    const root = document.documentElement;
+    const measure = () => {
+      root.style.setProperty('--rot-w', `${window.innerWidth}px`);
+      root.style.setProperty('--rot-h', `${window.innerHeight}px`);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
 };
 
 // The size the scene should centre on. When the picture is turned with CSS the
@@ -93,4 +113,34 @@ export const useLogicalViewport = (): { width: number; height: number } => {
   }, []);
 
   return rotated ? { width: size.height, height: size.width } : size;
+};
+
+// Without fullscreen the screen lock is gone after the browser is reopened or
+// fullscreen is left. A phone that is upright while the layout says landscape
+// is then shown as portrait. A tap on the rotate button brings landscape back,
+// since it is a user gesture that can go fullscreen again.
+export const useFallbackToPortrait = (): void => {
+  const dispatch = useDispatch<AppDispatch>();
+  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const orientationRef = useRef(orientation);
+  orientationRef.current = orientation;
+
+  useEffect(() => {
+    const check = () => {
+      if (landscapeRequestPending) return;
+      if (isLandscape(orientationRef.current) && !document.fullscreenElement && isMobileDevice() && isPortraitViewport()) {
+        dispatch(setOrientation('portrait'));
+      }
+    };
+    // The phone turns upright on its own when fullscreen ends (Android back),
+    // so the orientation change is checked as well as fullscreen itself.
+    const query = window.matchMedia('(orientation: portrait)');
+    check();
+    document.addEventListener('fullscreenchange', check);
+    query.addEventListener('change', check);
+    return () => {
+      document.removeEventListener('fullscreenchange', check);
+      query.removeEventListener('change', check);
+    };
+  }, [dispatch]);
 };

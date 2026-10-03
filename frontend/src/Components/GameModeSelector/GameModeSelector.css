@@ -173,3 +173,34 @@
         margin-top: 6px !important;
     }
 }
+
+/* Landscape phone: Story Mode on the left, Sandbox on the right, and the CV
+   download centred underneath both. */
+@media (orientation: landscape) and (max-height: 500px) {
+    .game-mode-selector .rpgui-container {
+        grid-template-columns: 1fr;
+    }
+
+    .game-mode-description {
+        grid-column: 1;
+        grid-row: 2;
+        text-align: center;
+    }
+
+    .game-mode-buttons-container {
+        grid-column: 1;
+        grid-row: 3;
+    }
+
+    .game-mode-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .game-mode-footer {
+        grid-column: 1;
+        grid-row: 4;
+        text-align: center;
+    }
+}
