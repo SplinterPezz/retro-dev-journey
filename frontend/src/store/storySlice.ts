@@ -49,8 +49,8 @@ const storySlice = createSlice({
       delete state.chapters[action.payload.chapterId];
     },
     resetStory(state) {
-      // keep the chosen difficulty and screen orientation - reset only clears progress
-      return { ...initialState, difficulty: state.difficulty, orientation: state.orientation };
+      // a new story asks for the difficulty again; the screen orientation is kept
+      return { ...initialState, orientation: state.orientation };
     },
   },
 });

@@ -10,6 +10,11 @@ export default defineConfig({
     port: 3000,
     strictPort: true,
   },
+  optimizeDeps: {
+    // Only imported lazily (code questions, mini games): pre-bundle them at startup,
+    // or Vite finds them on first use, re-optimizes and the open page gets a 504.
+    include: ['@uiw/react-codemirror', '@codemirror/lang-java'],
+  },
   preview: {
     port: 3000,
   },

@@ -22,8 +22,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: chapter-splash-fade 3.5s linear forwards;
   pointer-events: none;
+}
+
+/* the fade length matches SPLASH_FADE_MS in InteriorScene */
+.chapter-splash--leaving {
+  animation: chapter-splash-fade 0.9s linear forwards;
 }
 
 .chapter-splash-title {
@@ -37,8 +41,38 @@
 }
 
 @keyframes chapter-splash-fade {
-  0%, 75% { opacity: 1; }
-  100% { opacity: 0; }
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.chapter-splash-loading {
+  position: absolute;
+  right: 72px; /* clear of the iubenda privacy button in the corner */
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+}
+
+/* spins in place like a wheel */
+.chapter-splash-loading-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  animation: chapter-splash-spin 1.2s linear infinite;
+}
+
+@keyframes chapter-splash-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-splash-loading-icon {
+    animation-duration: 4s;
+  }
 }
 
 /* Objectives sit above the world tiles/props and below the dialogue boxes. */

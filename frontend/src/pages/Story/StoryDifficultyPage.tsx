@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Navigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { setDifficulty, setOrientation } from '../../store/storySlice';
@@ -15,16 +15,16 @@ import './StoryDifficultyPage.css';
 const difficulties: StoryDifficulty[] = ['junior', 'middle', 'senior'];
 
 const StoryDifficultyPage: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const orientation = useSelector((state: RootState) => state.story.orientation);
+  const difficulty = useSelector((state: RootState) => state.story.difficulty);
   // Decided once, when the page opens: a desktop that later turns into a phone
   // is not asked. Phones are asked until they have picked an orientation.
   const [isPhoneOnOpen] = useState(() => isMobileDevice());
 
   const handleSelect = (level: StoryDifficulty) => {
+    // the redirect below then replaces this page with the story
     dispatch(setDifficulty(level));
-    void navigate('/story');
   };
 
   const handleOrientation = (choice: StoryOrientation) => {
@@ -33,6 +33,11 @@ const StoryDifficultyPage: React.FC = () => {
       void enterLandscape(choice);
     }
   };
+
+  // Asked once per story: only a new story (or Reset story) clears it.
+  if (difficulty) {
+    return <Navigate to="/story" replace />;
+  }
 
   // `!orientation` also catches saves made before the field existed (undefined).
   if (isPhoneOnOpen && !orientation) {

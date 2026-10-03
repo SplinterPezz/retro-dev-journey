@@ -1,4 +1,4 @@
-/* Floats up and down, with a small glint that flickers in steps. */
+/* Floats up and down, with the quiz marker's sparkle on top. */
 .bobbing-prop {
   position: absolute;
   z-index: 100; /* above the structure layers (up to 60), e.g. the instructor's desk */
@@ -14,23 +14,20 @@
   user-select: none;
 }
 
-.bobbing-prop-glint {
+.bobbing-prop::before {
+  content: '';
   position: absolute;
-  top: 2px;
-  right: 4px;
-  width: 6px;
-  height: 6px;
-  background: #fffbe0;
-  box-shadow: 0 0 6px 2px rgba(255, 230, 120, 0.8);
-  animation: bobbing-prop-glint 1.2s steps(1) infinite;
+  inset: 0;
+  /* set from BobbingProp.tsx, like QuizMarker: a public path can't be a url() in a .css file */
+  background-image: var(--sparkle-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  image-rendering: pixelated;
 }
 
 @keyframes bobbing-prop-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-8px); }
-}
-
-@keyframes bobbing-prop-glint {
-  0%, 60% { opacity: 1; }
-  61%, 100% { opacity: 0.2; }
 }

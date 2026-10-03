@@ -1,5 +1,6 @@
 import React from 'react';
 import { Position } from '../../../types/sandbox';
+import { quizMarkerImage, quizSparkleImage } from '../../../config/story/assets';
 import './QuizMarker.css';
 
 interface QuizMarkerProps {
@@ -13,14 +14,14 @@ interface QuizMarkerProps {
 // overlay, here with a gentle bob animation since it's meant to catch the eye.
 const QuizMarker: React.FC<QuizMarkerProps> = ({
   position,
-  image = '/sprites/story/props/quiz_question_mark_v5.png',
+  image = quizMarkerImage,
 }) => (
   <div
     className="quiz-marker"
     style={{
       left: position.x,
       top: position.y,
-      ['--sparkle-image' as string]: "url('/sprites/others/sparkling.gif')",
+      ['--sparkle-image' as string]: `url('${quizSparkleImage}')`,
     }}
   >
     <img src={image} alt="" className="quiz-marker-sprite" />

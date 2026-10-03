@@ -11,6 +11,8 @@ interface ResourceLoaderConfig {
 interface LoaderState {
   isLoading: boolean;
   progress: number;
+  loaded: number;
+  total: number;
   error: string | null;
 }
 
@@ -18,6 +20,8 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
   const [state, setState] = useState<LoaderState>({
     isLoading: true,
     progress: 0,
+    loaded: 0,
+    total: config.images.length + (config.audio?.length ?? 0) + (config.fonts?.length ?? 0),
     error: null
   });
 
@@ -36,7 +40,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
         if (minDuration > 0) {
           await simulateLoadingAnimation(minDuration);
         }
-        setState({ isLoading: false, progress: 100, error: null });
+        setState({ isLoading: false, progress: 100, loaded: 0, total: 0, error: null });
         return;
       }
 
@@ -45,7 +49,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
 
       const updateProgress = (forceProgress?: number) => {
         const resourceProgress = forceProgress !== undefined ? forceProgress : Math.round((loadedCount / totalCount) * 100);
-        setState(prev => ({ ...prev, progress: resourceProgress }));
+        setState(prev => ({ ...prev, progress: resourceProgress, loaded: loadedCount, total: totalCount }));
         config.onProgress?.(loadedCount, totalCount);
       };
 

@@ -6,6 +6,7 @@ import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useNpcPatrol, NpcPatrolState } from '../../game/hooks/useNpcPatrol';
 import { useDebugReset } from '../../game/useDebugReset';
+import { useResourceLoader } from '../../hooks/useResourceLoader';
 import GameScene from '../../game/GameScene';
 import DebugOverlay from '../../game/DebugOverlay';
 import { CollidableEntity, Hitbox, Position } from '../../types/game';
@@ -30,6 +31,7 @@ import { useChapterProgress } from './hooks/useChapterProgress';
 import { useMeepBeats } from './hooks/useMeepBeats';
 import { entryNodeId } from './dialogue';
 import { playerSpawnPosition as defaultSpawn } from '../../config/world';
+import { chapterAssets, doorImage } from '../../config/story/assets';
 import { isDev } from '../../config/env';
 import './InteriorScene.css';
 
@@ -42,7 +44,12 @@ interface InteriorSceneProps {
 type Flags = Record<string, boolean>;
 
 const EMPTY_FLAGS: Flags = {};
-const DOOR_IMAGE = '/sprites/story/props/door.png';
+
+// The splash stays up at least this long, then until the sprites are loaded
+// (or the cap runs out, so a broken network never hides the scene for good).
+const SPLASH_MIN_MS = 2600;
+const SPLASH_MAX_MS = 15000;
+const SPLASH_FADE_MS = 900;
 
 const toCollidable = (id: string, position: Position, interactionRadius?: number, collisionHitbox?: Hitbox): CollidableEntity => ({
   id,
@@ -65,7 +72,7 @@ interface RoomProps {
 // Floor, door, furniture and quiz markers: re-rendered only when the flags
 // change (props and markers appear with them), never on a player step.
 const Room: React.FC<RoomProps> = React.memo(({ chapter, flags }) => {
-  const door = useMemo(() => ({ image: DOOR_IMAGE, position: chapter.doorPosition }), [chapter.doorPosition]);
+  const door = useMemo(() => ({ image: doorImage, position: chapter.doorPosition }), [chapter.doorPosition]);
   return (
     <>
       <TerrainRenderer worldConfig={chapter.worldConfig} autoRotate={false} terrainImage={chapter.floorImage} />
@@ -143,11 +150,27 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const [activeMiniGame, setActiveMiniGame] = useState<MiniGameMarker | null>(null);
   const meep = useMeepBeats(chapter.meepBeats, flags, completed);
 
+  const assets = useMemo(() => chapterAssets(chapter), [chapter]);
+  const { isLoading: assetsLoading, loaded: assetsLoaded, total: assetsTotal } = useResourceLoader({ images: assets });
+  const [splashMinElapsed, setSplashMinElapsed] = useState(false);
+  const [splashTimedOut, setSplashTimedOut] = useState(false);
   const [splashVisible, setSplashVisible] = useState(true);
+  const splashLeaving = splashMinElapsed && (!assetsLoading || splashTimedOut);
+
   useEffect(() => {
-    const timer = setTimeout(() => setSplashVisible(false), 3500);
-    return () => clearTimeout(timer);
+    const minTimer = setTimeout(() => setSplashMinElapsed(true), SPLASH_MIN_MS);
+    const maxTimer = setTimeout(() => setSplashTimedOut(true), SPLASH_MAX_MS);
+    return () => {
+      clearTimeout(minTimer);
+      clearTimeout(maxTimer);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!splashLeaving) return;
+    const timer = setTimeout(() => setSplashVisible(false), SPLASH_FADE_MS);
+    return () => clearTimeout(timer);
+  }, [splashLeaving]);
 
   // ---- collidable adapters: NPCs and props block, everything triggers by proximity ----
   const npcStates = useNpcPatrol(chapter.npcs, chapter.props, dialogue.active?.npc.id ?? null);
@@ -274,8 +297,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   return (
     <div className="rpgui-content">
       {splashVisible && (
-        <div className="chapter-splash">
+        <div className={`chapter-splash${splashLeaving ? ' chapter-splash--leaving' : ''}`}>
           <h1 className="chapter-splash-title">{chapter.splashTitle ?? chapter.title}</h1>
+          <div className="chapter-splash-loading" role="status">
+            <span>{assetsLoaded}/{assetsTotal} Loading</span>
+            <img src="/favicon.ico" alt="" className="chapter-splash-loading-icon" />
+          </div>
         </div>
       )}
       <div className="interior-scene-container">

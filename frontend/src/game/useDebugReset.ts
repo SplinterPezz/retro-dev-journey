@@ -9,7 +9,7 @@ export const useDebugReset = (chapterId?: string) => {
 
   const resetAll = useCallback(() => {
     dispatch(resetStory());
-    window.location.href = '/story';
+    window.location.href = '/story/difficulty';
   }, [dispatch]);
 
   const resetCurrentChapter = useCallback(() => {

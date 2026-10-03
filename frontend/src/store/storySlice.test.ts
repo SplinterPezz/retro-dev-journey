@@ -23,13 +23,13 @@ describe('storySlice', () => {
     expect(state.chapters.p.scores?.pc.earned).toBe(500);
   });
 
-  it('resets one chapter or the whole story, keeping the difficulty', () => {
+  it('resets one chapter or the whole story, clearing the difficulty', () => {
     let state = reducer(initial, setDifficulty('senior'));
     state = reducer(state, setFlag({ chapterId: 'a', flag: 'x' }));
     state = reducer(state, setFlag({ chapterId: 'b', flag: 'y' }));
     expect(Object.keys(reducer(state, resetChapter({ chapterId: 'a' })).chapters)).toEqual(['b']);
     const reset = reducer(state, resetStory());
     expect(reset.chapters).toEqual({});
-    expect(reset.difficulty).toBe('senior');
+    expect(reset.difficulty).toBeNull();
   });
 });
