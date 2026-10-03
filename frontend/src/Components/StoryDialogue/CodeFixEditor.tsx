@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { java } from '@codemirror/lang-java';
 import './CodeFixEditor.css';
+import '../Common/pixel-button.css';
 
 interface CodeFixEditorProps {
   initialCode: string;
@@ -27,7 +28,7 @@ const CodeFixEditor: React.FC<CodeFixEditorProps> = ({ initialCode, onSubmit, di
       />
       <button
         type="button"
-        className="code-fix-submit"
+        className="code-fix-submit pixel-button"
         disabled={disabled}
         onClick={() => onSubmit(code)}
       >

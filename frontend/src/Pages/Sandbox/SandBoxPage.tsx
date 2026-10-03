@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useResourceLoader } from '../../Utils/useResourceLoader';
 import AudioControls from '../../Components/AudioControls/AudioControls';
 import './SandBoxPage.css';
@@ -17,6 +16,8 @@ import { StructureData, PathSegment } from '../../types/sandbox';
 import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
+import '../../Components/Common/scene-layout.css';
+import { cameraStyle } from '../../Components/Common/cameraStyle';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
 import HomeButton from '../../Components/Common/HomeButton';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
@@ -39,7 +40,6 @@ const sandboxContainerStyle: SandboxContainerCSSProperties = {
 };
 
 const SandboxPage: React.FC = () => {
-    const navigate = useNavigate();
     const [showDialog, setShowDialog] = useState(false);
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const isMobile = useIsMobile();
@@ -177,12 +177,9 @@ const SandboxPage: React.FC = () => {
         if (nearbyStructure) {
             trackInteraction(nearbyStructure.data.id + questPrefix);
         }
+        // Runs on a new nearby structure only; trackInteraction is not memoised.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [nearbyStructure]);
-
-    const handleDialogClose = () => {
-        setShowDialog(false);
-        setSelectedStructure(null);
-    };
 
     // Show loading screen while resources are loading
     if (isLoading) {
@@ -232,8 +229,7 @@ const SandboxPage: React.FC = () => {
                         style={{
                             width: worldConfig.width,
                             height: worldConfig.height,
-                            transformOrigin: '0 0',
-              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`
+                            ...cameraStyle(playerPosition, viewport, zoomScale),
                         }}
                     >
                         {/* Terrain Background (Grass) */}

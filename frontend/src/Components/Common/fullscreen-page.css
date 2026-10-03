@@ -1,0 +1,13 @@
+/* A page that fills the phone screen and centres one box in it, without
+   scrolling. Used by the orientation choice and the difficulty screen. */
+.fullscreen-page {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #1a120b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}

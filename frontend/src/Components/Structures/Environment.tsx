@@ -26,6 +26,7 @@ const Environment: React.FC<EnvironmentDataProps> = ({ size, environment }) => {
 
                 <div className="structure-sprite">
                     <img
+                        alt=""
                         src={environment.image}
                         style={{
                             width,

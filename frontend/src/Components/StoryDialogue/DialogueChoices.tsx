@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import '../Common/pixel-button.css';
 import './DialogueChoices.css';
 
 export interface ChoiceButtonItem {
@@ -27,10 +28,21 @@ interface DialogueChoicesProps {
 const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, disabled = false }) => {
   const [openHintId, setOpenHintId] = useState<string | null>(null);
 
+  // A tap anywhere outside the open hint's row closes its balloon.
+  useEffect(() => {
+    if (!openHintId) return;
+    const closeIfOutside = (event: PointerEvent) => {
+      const row = document.querySelector(`[data-hint-id="${openHintId}"]`);
+      if (!row?.contains(event.target as Node)) setOpenHintId(null);
+    };
+    document.addEventListener('pointerdown', closeIfOutside);
+    return () => document.removeEventListener('pointerdown', closeIfOutside);
+  }, [openHintId]);
+
   const renderButton = (choice: ChoiceButtonItem, index: number) => (
     <button
       type="button"
-      className={`story-choice-button${choice.isAnswer ? ' story-choice-button--answer' : ''}`}
+      className={`story-choice-button pixel-button${choice.isAnswer ? ' story-choice-button--answer' : ''}`}
       style={{ animationDelay: `${index * 90}ms` }}
       disabled={disabled || choice.disabled}
       onClick={() => {
@@ -65,7 +77,7 @@ const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, di
         }
         const isOpen = openHintId === choice.id;
         return (
-          <div key={choice.id} className="story-choice-wrap">
+          <div key={choice.id} className="story-choice-wrap" data-hint-id={choice.id}>
             {renderButton(choice, index)}
             <button
               type="button"

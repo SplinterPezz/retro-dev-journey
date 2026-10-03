@@ -9,6 +9,7 @@ import HomeButton from '../../Components/Common/HomeButton';
 import { isMobileDevice } from '../../Components/Common/useIsMobile';
 import { enterLandscape, isLandscape } from '../../Components/Common/screenOrientation';
 import OrientationChoice from './OrientationChoice';
+import '../../Components/Common/fullscreen-page.css';
 import './StoryDifficultyPage.css';
 
 const difficulties: StoryDifficulty[] = ['junior', 'middle', 'senior'];
@@ -46,7 +47,7 @@ const StoryDifficultyPage: React.FC = () => {
   }
 
   return (
-    <div className="story-difficulty-page">
+    <div className="story-difficulty-page fullscreen-page">
       <div className="home-fixed-top-left">
         <HomeButton />
       </div>

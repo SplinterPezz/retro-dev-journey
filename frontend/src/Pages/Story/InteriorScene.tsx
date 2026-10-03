@@ -16,6 +16,8 @@ import QuizPopup from '../../Components/StoryDialogue/QuizPopup';
 import QuizMarker from '../../Components/StoryDialogue/QuizMarker';
 import AudioControls from '../../Components/AudioControls/AudioControls';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
+import '../../Components/Common/scene-layout.css';
+import { cameraStyle } from '../../Components/Common/cameraStyle';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
 import { useZoomScale } from '../../Components/Common/zoomStore';
 import ZoomSlider from '../../Components/Common/ZoomSlider';
@@ -41,6 +43,16 @@ const toCollidable = (id: string, position: { x: number; y: number }, interactio
   interactionRadius,
   data: { collisionHitbox },
 });
+
+const seenFlag = (npcId: string, nodeId: string) => `__seen_${npcId}_${nodeId}`;
+
+// Has this dialogue node already been shown to the player?
+const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: Record<string, boolean>): boolean =>
+  !!flags[seenFlag(npc.id, nodeId)];
+
+// The door exit is temporarily disabled: walking into the door left the screen
+// white. Set to true to bring the exit back.
+const DOOR_EXIT_ENABLED = false;
 
 const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex, onExit, introPending = false }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -135,14 +147,11 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   // Implicit per-node "seen" flag, set automatically whenever a node is
   // shown (see the effect below) - every node gets one for free, no content
   // authoring required.
-  const seenFlag = (npcId: string, nodeId: string) => `__seen_${npcId}_${nodeId}`;
 
   // Generic rule: any isAnswer choice auto-locks once every node its `next`
   // can lead to has already been shown - used to stop re-offering a
   // reversed question (e.g. Manuel's "Got a random question for you") the
   // player has already answered.
-  const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: Record<string, boolean>): boolean =>
-    !!flags[seenFlag(npc.id, nodeId)];
 
 
   // open dialogue on entering an NPC's radius - not on every render while
@@ -198,9 +207,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDialogue?.npc.id, activeDialogue?.nodeId]);
 
-  // door -> fade out -> exit. Temporarily disabled: walking into the door left
-  // the screen white. Set to true to bring the exit back.
-  const DOOR_EXIT_ENABLED = false;
+  // door -> fade out -> exit (see DOOR_EXIT_ENABLED above)
   useEffect(() => {
     if (!DOOR_EXIT_ENABLED) return;
     if (nearbyDoor && !exiting) {
@@ -332,8 +339,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             style={{
               width: chapter.worldConfig.width,
               height: chapter.worldConfig.height,
-              transformOrigin: '0 0',
-              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`,
+              ...cameraStyle(playerPosition, viewport, zoomScale),
             }}
           >
             <TerrainRenderer worldConfig={chapter.worldConfig} autoRotate={false} terrainImage={chapter.floorImage} />

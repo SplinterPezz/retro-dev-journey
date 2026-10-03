@@ -22,15 +22,6 @@
   font-family: 'Courier New', monospace;
   font-size: 0.78rem;
   font-weight: 500;
-  color: #2d1e0f;
-  background: #e8a13f;
-  border: none;
-  border-radius: 0;
-  box-shadow:
-    inset 3px 3px 0 0 #ffd98a,
-    inset -3px -3px 0 0 #8a4f16,
-    0 3px 0 0 #3a2410;
-  cursor: pointer;
   line-height: 1.3;
   white-space: normal;
   word-wrap: break-word;
@@ -38,32 +29,10 @@
   transition: transform 0.06s ease;
 }
 
-.story-choice-button:hover:not(:disabled) {
-  background: #f2b150;
-}
-
-.story-choice-button:active:not(:disabled) {
-  transform: translateY(3px);
-  box-shadow:
-    inset -3px -3px 0 0 #ffd98a,
-    inset 3px 3px 0 0 #8a4f16,
-    0 0 0 0 #3a2410;
-}
-
-.story-choice-button:disabled {
-  background: #6b6b6b;
-  color: #a8a8a8;
-  box-shadow:
-    inset 3px 3px 0 0 #8a8a8a,
-    inset -3px -3px 0 0 #3e3e3e,
-    0 3px 0 0 #1f1f1f;
-  cursor: not-allowed;
-}
-
 /* Choices that answer a question the NPC just asked - a different accent
    (teal instead of amber) plus a leading ">" mark so they read as "this is
    MY answer" rather than a generic branch/topic pick. */
-.story-choice-button--answer {
+.story-choice-button.story-choice-button--answer {
   background: #2f8f8a;
   color: #e8fbf9;
   box-shadow:
@@ -72,11 +41,11 @@
     0 3px 0 0 #0c2e2b;
 }
 
-.story-choice-button--answer:hover:not(:disabled) {
+.story-choice-button.story-choice-button--answer:hover:not(:disabled) {
   background: #38a39d;
 }
 
-.story-choice-button--answer:active:not(:disabled) {
+.story-choice-button.story-choice-button--answer:active:not(:disabled) {
   box-shadow:
     inset -3px -3px 0 0 #7fe0d8,
     inset 3px 3px 0 0 #164c48,

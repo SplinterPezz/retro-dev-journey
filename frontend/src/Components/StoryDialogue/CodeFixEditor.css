@@ -18,22 +18,5 @@
   font-family: 'Press Start 2P', cursive;
   font-size: 0.6rem;
   font-weight: normal;
-  color: #2d1e0f;
-  background: #e8a13f;
-  border: none;
-  border-radius: 0;
-  box-shadow:
-    inset 3px 3px 0 0 #ffd98a,
-    inset -3px -3px 0 0 #8a4f16,
-    0 3px 0 0 #3a2410;
-  cursor: pointer;
 }
 
-.code-fix-submit:hover:not(:disabled) {
-  background: #f2b150;
-}
-
-.code-fix-submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}

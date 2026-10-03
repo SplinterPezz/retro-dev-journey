@@ -4,6 +4,7 @@ import { maxMistakesByDifficulty } from '../../config/story/difficulty';
 import DialogueChoices from './DialogueChoices';
 import CodeFixEditor from './CodeFixEditor';
 import StoryIntroDialog from './StoryIntroDialog';
+import '../Common/pixel-button.css';
 import './QuizPopup.css';
 
 interface QuizPopupProps {
@@ -198,7 +199,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
     <div className="quiz-popup-backdrop">
       <div className="quiz-popup-container">
         <div className="rpgui-container framed-golden quiz-popup-box">
-          <button type="button" className="quiz-popup-exit" onClick={onClose} aria-label="Exit quiz">
+          <button type="button" className="quiz-popup-exit pixel-button" onClick={onClose} aria-label="Exit quiz">
             ×
           </button>
           <h3 className="quiz-popup-title">{quiz.title}</h3>

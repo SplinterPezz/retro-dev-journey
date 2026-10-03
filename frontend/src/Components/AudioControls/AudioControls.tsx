@@ -47,6 +47,8 @@ const AudioControls: React.FC<AudioControlsProps> = ({
     }
 
     setIsLoaded(true);
+    // Reads the initial settings once, when the audio element is created.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

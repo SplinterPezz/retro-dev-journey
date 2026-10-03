@@ -1,18 +1,6 @@
 /* Full-screen choice on phones. The buttons use the custom pixel-bevel orange
    style of the dialogue choices (not RPGUI's frame), with a large icon above
    the label. */
-.orientation-choice-page {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  background: #1a120b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-  box-sizing: border-box;
-}
-
 .orientation-choice-box {
   width: 100%;
   max-width: 560px;
@@ -51,28 +39,6 @@
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
   font-weight: 500;
-  color: #2d1e0f;
-  background: #e8a13f;
-  border: none;
-  border-radius: 0;
-  box-shadow:
-    inset 3px 3px 0 0 #ffd98a,
-    inset -3px -3px 0 0 #8a4f16,
-    0 3px 0 0 #3a2410;
-  cursor: pointer;
-  transition: transform 0.06s ease;
-}
-
-.orientation-choice-button:hover {
-  background: #f2b150;
-}
-
-.orientation-choice-button:active {
-  transform: translateY(3px);
-  box-shadow:
-    inset -3px -3px 0 0 #ffd98a,
-    inset 3px 3px 0 0 #8a4f16,
-    0 0 0 0 #3a2410;
 }
 
 .orientation-choice-button svg {

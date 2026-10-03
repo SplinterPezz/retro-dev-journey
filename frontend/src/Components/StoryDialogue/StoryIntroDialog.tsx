@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IntroPage } from '../../types/story';
 import './StoryIntroDialog.css';
+import '../Common/pixel-button.css';
 
 interface StoryIntroDialogProps {
   title: string;
@@ -32,7 +33,7 @@ const StoryIntroDialog: React.FC<StoryIntroDialogProps> = ({ title, pages, onCom
       <div className="story-intro-dialog">
         <div className="rpgui-container framed-golden story-intro-box">
           {onClose && (
-            <button type="button" className="story-intro-exit" onClick={onClose} aria-label="Close">
+            <button type="button" className="story-intro-exit pixel-button" onClick={onClose} aria-label="Close">
               ×
             </button>
           )}

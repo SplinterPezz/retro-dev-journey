@@ -16,7 +16,6 @@ import {
   getBrowserStats
 } from '../../Services/analyticsService';
 import { downloadCV, uploadCV } from '../../Services/fileService';
-import { DailyUsersResponse } from '../../types/analytics';
 import { analyticsBackgroundImage } from '../../config/admin';
 
 type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
@@ -311,6 +310,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     fetchData();
+    // Fetches when the date range changes; fetchData is recreated every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate]);
 
   const handleDateChange = (newStartDate: Dayjs | null, newEndDate: Dayjs | null) => {

@@ -1,4 +1,4 @@
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { styled, createTheme } from '@mui/material/styles';
 import { TextField } from '@mui/material';
 import { ApexOptions } from 'apexcharts';
 import { timeTrackingIntervals } from '../../types/tracking';

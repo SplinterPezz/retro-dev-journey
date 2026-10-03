@@ -10,6 +10,8 @@ import PathRenderer from '../../Components/Path/PathRender';
 import Structure from '../../Components/Structures/Structure';
 import Player from '../../Components/Player/Player';
 import HomeButton from '../../Components/Common/HomeButton';
+import '../../Components/Common/scene-layout.css';
+import { cameraStyle } from '../../Components/Common/cameraStyle';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
 import { useZoomScale } from '../../Components/Common/zoomStore';
 import ZoomSlider from '../../Components/Common/ZoomSlider';
@@ -124,8 +126,7 @@ const StoryMapPage: React.FC = () => {
             style={{
               width: worldConfig.width,
               height: worldConfig.height,
-              transformOrigin: '0 0',
-              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`,
+              ...cameraStyle(playerPosition, viewport, zoomScale),
             }}
           >
             <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
