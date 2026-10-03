@@ -148,3 +148,17 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+/* Landscape phone: the social icons sit centred above the centred game-mode
+   card instead of hanging off the right edge. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .social-container {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    gap: 20px;
+  }
+
+  .social-image {
+    margin-right: 0;
+  }
+}

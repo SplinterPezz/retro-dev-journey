@@ -108,51 +108,56 @@
         padding: 15px;
     }
 }
-/* Landscape phone: stacked, the card is taller than the screen. It becomes two
-   columns - title across the top, description and footer on the left, the mode
-   buttons on the right - and sits below the top icons instead of centred. */
+/* Landscape phone: stacked, the card is taller than the screen. It stays one
+   column but compacts: Story Mode and Sandbox side by side, Download CV centred
+   below them, and it sits below the top icons instead of vertically centred. */
 @media (orientation: landscape) and (max-height: 500px) {
     .game-mode-selector {
         top: 84px;
-        left: 24px;
-        transform: none;
+        left: 50%;
         min-width: 0;
-        width: min(700px, calc(100vw - 184px));
+        width: min(600px, calc((100vw - 184px) / 0.8));
+        /* centred, and scaled down from its top edge so it fits under the top icons */
+        transform: translateX(-50%) scale(0.8);
+        transform-origin: top center;
     }
 
     .game-mode-selector .rpgui-container {
         position: relative !important; /* RPGUI makes it fixed, which ignores the wrapper width */
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 24px;
-        align-items: start;
         padding: 10px 16px;
     }
 
     .game-mode-selector .title-gamemode-box {
-        grid-column: 1 / -1;
         font-size: 1.2em !important;
         margin-bottom: 6px !important;
     }
 
     .game-mode-description {
-        grid-column: 1;
-        grid-row: 2;
-        margin-bottom: 0;
+        margin-bottom: 6px;
     }
 
     .game-mode-description p {
         font-size: 0.7rem;
     }
 
-    .game-mode-buttons-container {
-        grid-column: 2;
-        grid-row: 2;
+    .game-mode-label {
+        margin-bottom: 4px;
+    }
+
+    .game-mode-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 40px; /* the end caps of .rpgui-button stick out of its box */
+        margin-top: 0 !important;
+    }
+
+    .game-mode-buttons .gamemode-button-size {
+        flex: 0 1 200px;
+        min-width: 0;
+        margin: 0;
     }
 
     .game-mode-footer {
-        grid-column: 1;
-        grid-row: 3;
         margin-top: 4px;
     }
 
@@ -166,14 +171,5 @@
 
     .game-mode-footer .rpgui-button {
         margin-top: 6px !important;
-    }
-}
-
-/* Short landscape screens (under 500px high): the compact card is scaled
-   down from its top-left corner so it still fits below the top icons. */
-@media (orientation: landscape) and (max-height: 500px) {
-    .game-mode-selector {
-        transform: scale(0.8);
-        transform-origin: top left;
     }
 }

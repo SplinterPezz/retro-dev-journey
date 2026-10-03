@@ -87,3 +87,31 @@
   text-align: center;
   text-shadow: 2px 2px 0 #000;
 }
+
+/* Landscape phone: a tighter box, scaled down (the RPGUI buttons have a fixed
+   height) and centred below the Home button in the top-left corner. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .story-difficulty-page {
+    padding: 72px 16px 8px;
+  }
+
+  .story-difficulty-box {
+    max-width: 440px;
+    padding: 18px 24px;
+    transform: scale(0.9);
+  }
+
+  .story-difficulty-title {
+    font-size: 1.1rem;
+  }
+
+  .story-difficulty-hint {
+    margin-top: 10px;
+    font-size: 0.55rem;
+  }
+
+  .story-difficulty-buttons {
+    margin-top: 16px;
+    gap: 8px;
+  }
+}
