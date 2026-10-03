@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import { AppDispatch, RootState } from '../../store/store';
 import { setOrientation } from '../../store/storySlice';
-import { useIsMobile } from './useIsMobile';
-import { enterLandscape, isLandscape, isPortraitViewport, unlockOrientation } from './screenOrientation';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { enterLandscape, isLandscape, isPortraitViewport, unlockOrientation } from '../../hooks/screenOrientation';
 
 interface OrientationToggleButtonProps {
   golden?: boolean;

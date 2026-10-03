@@ -3,18 +3,16 @@ import AudioControls from "../../Components/AudioControls/AudioControls";
 import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
 import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
-import { useTracking } from "../../hooks/tracking";
+import { useTracking } from "../../hooks/useTracking";
 import { downloadCV } from '../../Services/fileService';
 import { useNavigate } from 'react-router-dom';
-import { useIubenda } from "../../hooks/useIubenda";
-import { playerSpritePrefix } from "../../config/player";
+import { playerTurnSprite } from "../../config/assets";
+import { isDev, devLog, devError } from "../../config/env";
 import { homeAudioTrack, homeDefaultVolume, homeBackgroundImage } from "../../config/home";
 
 export default function HomePage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const navigate = useNavigate();
-  useIubenda();
-  
   const { trackInteraction } = useTracking({
     page: 'homepage',
     enabled: true
@@ -26,24 +24,26 @@ export default function HomePage() {
     const img = new Image();
     img.onload = () => setImageLoaded(true);
     img.src = homeBackgroundImage;
+
+    return () => {
+      img.onload = null;
+      document.body.classList.remove('homepage-active');
+    };
   }, []);
 
-  const handleDialogComplete = () => {
-    process.env.REACT_APP_ENV === 'development' && console.log("Dialog complete")
-  };
+  const handleDialogComplete = () => devLog('Dialog complete');
 
   const handleAdminPage = () => {
     navigate("/admin")
   }
 
-  const handleDownloadCV = (platform: string ) => {
-    try {
-      downloadCV();
-    }
-    catch(error){
-      process.env.REACT_APP_ENV === 'development' && console.error('Download failed:', error);
-    }
+  const handleDownloadCV = async (platform: string) => {
     trackInteraction(platform);
+    try {
+      await downloadCV();
+    } catch (error) {
+      devError('Download failed:', error);
+    }
   };
 
   const handleTrkSocial = (platform: string ) => {
@@ -67,27 +67,17 @@ export default function HomePage() {
             <IntroDialog
               onComplete={handleDialogComplete}
               initialDelay={3000}
-              debugMode={process.env.REACT_APP_ENV === 'development'}
+              debugMode={isDev}
             />
             <div>
               
 
-              <AudioControls
-                audioSrc={homeAudioTrack}
-                defaultVolume={homeDefaultVolume}
-                defaultMuted={true}
-                buttonStyle="normal"
-                containerStyle="framed-grey"
-                loop={true}
-                autoPlay={false}
-                showVolumePercentage={true}
-                className="home-page"
-              />
+              <AudioControls audioSrc={homeAudioTrack} defaultVolume={homeDefaultVolume} className="home-page" />
 
             </div>
             <div className="social-container">
                 <a href="/admin" onClick={(e) => { e.preventDefault(); handleAdminPage(); }}>
-                  <img className="social-image" alt="Admin" src={`/sprites/player/${playerSpritePrefix}_turn.gif`} />
+                  <img className="social-image" alt="Admin" src={playerTurnSprite} />
                 </a>
                 <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" rel="noreferrer" onClick={x => handleTrkSocial('linkedin')}>
                   <img className="social-image" alt="LinkedIn" src="/sprites/others/linkedin.png" />

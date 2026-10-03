@@ -6,7 +6,7 @@ import { setFlag } from '../../store/storySlice';
 import { StoryChapterConfig } from '../../types/story';
 import { getChapterIndex } from '../../config/story/chapters';
 import InteriorScene from './InteriorScene';
-import StoryIntroDialog from '../../Components/StoryDialogue/StoryIntroDialog';
+import StoryIntroDialog from '../../Components/Story/dialogue/StoryIntroDialog';
 
 interface ChapterScenePageProps {
   chapter: StoryChapterConfig;
@@ -47,7 +47,6 @@ const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
       <InteriorScene
         chapter={chapter}
         nextUnlockIndex={chapterIndex + 1}
-        onExit={() => navigate('/story')}
         introPending={showIntro}
       />
       {showIntro && chapter.intro && (

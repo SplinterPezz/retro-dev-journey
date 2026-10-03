@@ -33,8 +33,6 @@ export const prologueChapter: StoryChapterConfig = {
   floorImage: '/sprites/story/props/floor_classroom.png',
   playerSpawn: { x: 650, y: 780 },
   doorPosition: { x: 650, y: 895 },
-  doorInteractionPosition: { x: 714, y: 900 }, // centre of the door picture, reachable from the room
-  doorInteractionRadius: 70,
 
   props: [
     { id: 'cattedra', image: '/sprites/story/props/desk_cattedra.png', position: { x: 650, y: 150 }, imageSize: { width: 192, height: 144 }, collisionHitbox: { x: 10, y: 8, width: 172, height: 88 } },

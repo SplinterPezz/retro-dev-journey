@@ -2,7 +2,7 @@ import React from 'react';
 import { Joystick } from 'react-joystick-component';
 import './MobileJoystick.css';
 
-type JoystickMoveEvent = Parameters<NonNullable<React.ComponentProps<typeof Joystick>['move']>>[0];
+export type JoystickMoveEvent = Parameters<NonNullable<React.ComponentProps<typeof Joystick>['move']>>[0];
 
 interface MobileJoystickProps {
   onMove: (event: JoystickMoveEvent) => void;
@@ -12,7 +12,7 @@ interface MobileJoystickProps {
 // Touch joystick used by every scene that moves the player on phones. The
 // placement and skin live in MobileJoystick.css so the Sandbox and the Story
 // scenes look identical.
-const MobileJoystick: React.FC<MobileJoystickProps> = ({ onMove, onStop }) => (
+const MobileJoystick: React.FC<MobileJoystickProps> = React.memo(({ onMove, onStop }) => (
   <div className="mobile-joystick">
     <Joystick
       size={100}
@@ -25,6 +25,6 @@ const MobileJoystick: React.FC<MobileJoystickProps> = ({ onMove, onStop }) => (
       minDistance={15}
     />
   </div>
-);
+));
 
 export default MobileJoystick;

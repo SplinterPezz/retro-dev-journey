@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Position } from '../../types/sandbox';
+import { Position } from '../../types/game';
 
 interface PositionSample extends Position {
   t: number;
@@ -30,8 +30,10 @@ export const useLaggedPosition = (target: Position, delayMs = 450): Position => 
       }
 
       const sample = history[0];
+      // Same point as last time (standing still): keep the state as is, so
+      // nothing re-renders 20 times a second while idle.
       if (sample) {
-        setLaggedPosition({ x: sample.x, y: sample.y });
+        setLaggedPosition((prev) => (prev.x === sample.x && prev.y === sample.y ? prev : { x: sample.x, y: sample.y }));
       }
     }, 50);
 

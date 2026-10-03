@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { setZoom } from '../../store/zoomSlice';
-import { useZoomLevel, ZOOM_LEVEL_COUNT } from './zoomStore';
+import { useZoomLevel, ZOOM_LEVEL_COUNT } from '../../game/zoom';
 import './pixel-button.css';
 import './ZoomSlider.css';
 import './pixel-button.css';

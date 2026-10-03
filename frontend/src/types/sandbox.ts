@@ -1,34 +1,7 @@
-export interface Position {
-  x: number;
-  y: number;
-}
+import { Position, ShadowInfo, Hitbox, ImageSize } from './game';
 
-export interface WorldBounds {
-  minX: number;
-  minY: number;
-  maxX: number;
-  maxY: number;
-}
-
-export interface Hitbox {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
-// Minimal shape the movement/collision hooks actually touch (id, position,
-// optional interaction radius, optional collision hitbox nested under
-// `data`). StructureData satisfies this structurally, so the hooks stay
-// generic over it <T extends CollidableEntity> without changing any existing
-// Sandbox call site - Story Mode can pass its own NPC/prop shapes instead of
-// extending CompanyData/TechnologyData.
-export interface CollidableEntity {
-  id: string;
-  position: Position;
-  interactionRadius?: number;
-  data?: { collisionHitbox?: Hitbox };
-}
+// Shared engine types live in ./game; re-exported here for existing imports.
+export type { Position, WorldBounds, Hitbox, CollidableEntity, ShadowInfo, ImageSize, EnvironmentData, WorldConfig, Direction } from './game';
 
 export interface StructureData {
   id: string;
@@ -38,32 +11,6 @@ export interface StructureData {
   description: string;
   data: CompanyData | TechnologyData;
   interactionRadius: number;
-}
-
-export interface ShadowInfo{
-  width: number;
-  height: number;
-  position: Position;
-}
-
-export interface ImageSize {
-  width: number;
-  height: number;
-}
-
-export interface EnvironmentData {
-  image: string;
-  shadow?: ShadowInfo;
-  position: Position;
-  imageSize?: ImageSize;
-  collisionHitbox?: Hitbox;
-}
-
-export interface EnvironmentDataAnimated {
-  image: string;
-  imageAnimated: string;
-  shadow?: ShadowInfo;
-  position: Position;
 }
 
 export interface CompanyData {
@@ -109,39 +56,6 @@ export interface TechnologyData {
   collisionHitbox?: Hitbox;
   imageSize?: ImageSize;
   interactionRadius?: number;
-}
-
-export interface WorldConfig {
-  width: number;
-  height: number;
-  tileSize: number;
-}
-
-export interface PlayerMovementConfig {
-  initialPosition: Position;
-  speed: number;
-  worldBounds: WorldBounds;
-}
-
-export interface CollisionDetectionConfig<T extends CollidableEntity = StructureData> {
-  playerPosition: Position;
-  structures: T[];
-  interactionRadius: number;
-}
-
-export type Direction = 'up' | 'down' | 'left' | 'right' | 'up-left' | 'up-right' | 'down-left' | 'down-right' | 'idle';
-
-export interface PlayerState {
-  position: Position;
-  direction: Direction;
-  isMoving: boolean;
-}
-
-export interface GameState {
-  player: PlayerState;
-  structures: StructureData[];
-  selectedStructure: StructureData | null;
-  dialogOpen: boolean;
 }
 
 export interface PathSegment {

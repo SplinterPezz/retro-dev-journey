@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { companies, technologies, downloadButton, defaultBuilding, defaultStatue, hideDownloadButtonInSandbox } from '../../config/sandbox';
+import { downloadButton, hideDownloadButtonInSandbox } from '../../config/sandbox';
+import { companies, technologies } from '../../config/career';
+import { defaultBuilding, defaultStatue } from '../../config/world';
 import './DailyQuest.css';
 import { DailyQuest } from '../../types/sandbox';
 import styled from '@emotion/styled';

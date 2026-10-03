@@ -14,7 +14,6 @@ export const eikonyChapter: StoryChapterConfig = {
   floorImage: '/sprites/story/props/floor_office.png',
   playerSpawn: { x: 450, y: 540 },
   doorPosition: { x: 450, y: 670 },
-  doorInteractionRadius: 70,
 
   props: [
     { id: 'desk-giancarlo', image: '/sprites/story/props/desk_office.png', position: { x: 300, y: 300 }, imageSize: { width: 144, height: 144 } },

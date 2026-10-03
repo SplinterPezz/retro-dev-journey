@@ -5,11 +5,12 @@ import { store, persistor } from "./store/store";
 import { cleanOldInteractions } from './store/trackingSlice';
 import { BrowserRouter, Routes, Route } from "react-router";
 import { useEffect } from 'react';
-import PrivateRoute from './Utils/PrivateRoute';
+import { useIubenda } from './hooks/useIubenda';
+import PrivateRoute from './Components/Routing/PrivateRoute';
 import SignIn from './Pages/Login/Signin';
 import AdminPage from './Pages/Admin/AdminPage';
 import HomePage from './Pages/Home/HomePage';
-import SandboxPage from './Pages/Sandbox/SandBoxPage';
+import SandboxPage from './Pages/Sandbox/SandboxPage';
 import StoryMapPage from './Pages/Story/StoryMapPage';
 import StoryDifficultyPage from './Pages/Story/StoryDifficultyPage';
 import ChapterScenePage from './Pages/Story/ChapterScenePage';
@@ -19,9 +20,10 @@ import { eikonyChapter } from './config/story/eikony';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import PrivacyRedirect from './Components/PrivacyRedirect/PrivacyRedirect';
-import { useFallbackToPortrait, useScreenRotation } from './Components/Common/screenOrientation';
+import { useFallbackToPortrait, useScreenRotation } from './hooks/screenOrientation';
 
 const AppInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  useIubenda();
   useScreenRotation();
   useFallbackToPortrait();
 

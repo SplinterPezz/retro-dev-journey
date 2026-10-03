@@ -1,4 +1,4 @@
-import { fetchFromApi } from '../Utils/apiService';
+import { fetchFromApi } from './api';
 import { 
   DateRangeFilter, 
   DailyUsersResponse, 

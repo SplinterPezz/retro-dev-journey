@@ -52,3 +52,7 @@
     transform: translateZ(0.1px);
   }
 }
+.terrain-floor {
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}

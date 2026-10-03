@@ -1,0 +1,289 @@
+.sandbox-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+.sandbox-load{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+
+  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+}
+
+
+.sandbox-loading .rpgui-container {
+  place-self: anchor-center;
+  text-align: center;
+  min-width: 300px;
+  padding: 30px;
+  margin: 10px;
+}
+
+.sandbox-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: var(--sandbox-background-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.sandbox-container {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: transparent;
+}
+
+.sandbox-viewport {
+  background: transparent;
+}
+
+.sandbox-world {
+  position: relative;
+  transition: transform 0.1s ease-out;
+  
+  
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  
+  background-color: #90ee90;
+}
+
+.sandbox-ui {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.back-button {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  pointer-events: auto;
+}
+
+.minimap {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 200px;
+  height: 150px;
+  pointer-events: auto;
+}
+
+.minimap .rpgui-container {
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(3px);
+  width: 100%;
+  height: 100%;
+}
+
+.minimap-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #90ee90 0%, #98fb98 100%);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.minimap-main-path {
+  position: absolute;
+  background: #8b7355;
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+  position: absolute;
+  left: 50%;
+  top: 0%;
+  width: 4px;
+  height: 100%;
+  background: #8b7355;
+  transform: translateX(-50%)
+}
+
+.minimap-player {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: #ffd700;
+  border: 1px solid #000;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: pulse-player 2s infinite;
+}
+
+@keyframes pulse-player {
+  0%, 100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+}
+
+.minimap-structure {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 1px;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+}
+
+.minimap-structure.building {
+  background: #8b4513;
+  border: 1px solid #654321;
+}
+
+.minimap-structure.statue {
+  background: #708090;
+  border: 1px solid #556b2f;
+}
+
+.minimap-structure.future {
+  background: #ffd700;
+  border: 1px solid #ffb000;
+  animation: pulse-future 1.5s infinite;
+}
+
+.structure-container{
+  position:absolute;
+  z-index:50;
+}
+
+@keyframes pulse-future {
+  0%, 100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+}
+
+
+.world-boundaries {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px dashed rgba(255, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.sandbox-viewport.smooth-camera .sandbox-world {
+  transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.debug-grid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.debug-hitbox {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.7;
+  z-index: 9998;
+  transition: opacity 0.3s ease;
+}
+
+.debug-hitbox.player-hitbox {
+  border: 2px solid lime !important;
+  background-color: rgba(0, 255, 0, 0.1) !important;
+  z-index: 9999 !important;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+}
+
+.debug-hitbox.structure-hitbox {
+  border: 2px solid red !important;
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.3);
+}
+
+.debug-hitbox.collision {
+  animation: collision-pulse 0.5s ease-in-out;
+}
+
+body[data-debug="true"] .debug-hitbox {
+  display: block;
+}
+
+
+@keyframes collision-pulse {
+  0%, 100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    top: 18px;
+    left: 10px;
+  }
+  
+  
+  .minimap {
+    bottom: 10px;
+    width: 150px;
+    height: 100px;
+  }
+  
+  .sandbox-world {
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .minimap {
+    width: 120px;
+    height: 80px;
+  }
+
+  .sandbox-loading .rpgui-container {
+    padding: 20px 0px 20px;
+  }
+}

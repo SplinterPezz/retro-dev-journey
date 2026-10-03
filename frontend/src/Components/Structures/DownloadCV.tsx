@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Position, StructureData } from '../../types/sandbox';
+import { StructureData } from '../../types/sandbox';
 import { downloadCV } from '../../Services/fileService';
 import { downloadCVCooldown } from '../../config/sandbox';
 
 interface DownloadCVProps {
     isNearby: boolean;
     structure: StructureData;
-    playerPosition: Position;
 }
 
 const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
@@ -204,4 +203,4 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     );
 };
 
-export default DownloadCV;
+export default React.memo(DownloadCV);

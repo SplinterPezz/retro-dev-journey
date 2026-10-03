@@ -1,13 +1,12 @@
 import React from 'react';
-import { Position, StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
+import { StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
 import './Structure.css';
-import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/sandbox';
+import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
 
 interface StructureProps {
   data: StructureData;
   type: 'building' | 'technology';
   isNearby: boolean;
-  playerPosition: Position;
 }
 
 const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
@@ -128,4 +127,4 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
   );
 };
 
-export default Structure;
+export default React.memo(Structure);

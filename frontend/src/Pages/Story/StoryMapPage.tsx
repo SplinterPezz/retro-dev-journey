@@ -1,41 +1,65 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../store/store';
-import { resetStory } from '../../store/storySlice';
-import { usePlayerMovement } from '../Sandbox/hooks/usePlayerMovement';
-import { useCollisionDetection } from '../Sandbox/hooks/useCollisionDetection';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
+import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
+import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
+import { useDebugReset } from '../../game/useDebugReset';
+import { createPathGenerator } from '../../game/path/pathGeneration';
+import GameScene from '../../game/GameScene';
 import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import PathRenderer from '../../Components/Path/PathRender';
+import PathRenderer from '../../Components/Path/PathRenderer';
 import Structure from '../../Components/Structures/Structure';
 import Player from '../../Components/Player/Player';
 import HomeButton from '../../Components/Common/HomeButton';
-import '../../Components/Common/scene-layout.css';
-import { cameraStyle } from '../../Components/Common/cameraStyle';
-import { useLogicalViewport } from '../../Components/Common/screenOrientation';
-import { useZoomScale } from '../../Components/Common/zoomStore';
-import ZoomSlider from '../../Components/Common/ZoomSlider';
-import MobileJoystick from '../../Components/Common/MobileJoystick';
-import { useIsMobile } from '../../Components/Common/useIsMobile';
-import { createPathGenerator } from '../../Components/Path/pathGeneration';
-import { worldConfig, companies, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/sandbox';
-import { PathSegment } from '../../types/sandbox';
+import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
+import { companies } from '../../config/career';
 import { storyChapterOrder } from '../../config/story/chapters';
+import { isDev } from '../../config/env';
 import './StoryMapPage.css';
+
+const worldBounds = {
+  minX: 50,
+  minY: 50,
+  maxX: worldConfig.width - 50,
+  maxY: worldConfig.height - 50,
+};
+
+interface MapWorldProps {
+  nearbyId: string | null;
+}
+
+// Terrain, path and buildings: re-rendered only when the nearby door changes.
+const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId }) => {
+  const pathSegments = useMemo(
+    () =>
+      createPathGenerator({
+        startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
+        endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
+        structures: companies,
+        tileSize: worldConfig.tileSize,
+      }).generatePath(),
+    []
+  );
+
+  return (
+    <>
+      <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
+      <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
+      <div className="structure-container">
+        {companies.map((company) => (
+          <Structure key={company.id} data={company} type="building" isNearby={nearbyId === company.id} />
+        ))}
+      </div>
+    </>
+  );
+});
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
   const [exiting, setExiting] = useState(false);
-  const isMobile = useIsMobile();
-  const viewport = useLogicalViewport();
-  const zoomScale = useZoomScale();
-
-  const handleDebugReset = () => {
-    dispatch(resetStory());
-    window.location.href = '/story';
-  };
+  const { resetAll } = useDebugReset();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
 
@@ -51,34 +75,16 @@ const StoryMapPage: React.FC = () => {
     [activeChapter]
   );
 
-  const pathSegments: PathSegment[] = useMemo(() => {
-    const pathGenerator = createPathGenerator({
-      startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
-      endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
-      structures: companies,
-      tileSize: worldConfig.tileSize,
-    });
-    return pathGenerator.generatePath();
-  }, []);
-
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
     speed: 270,
-    worldBounds: {
-      minX: 50,
-      minY: 50,
-      maxX: worldConfig.width - 50,
-      maxY: worldConfig.height - 50,
-    },
+    worldBounds,
     structures: companies,
     playerHitbox,
     canMove: !exiting,
   });
 
-  const doorCollidable = useMemo(
-    () => (activeCompany ? [activeCompany] : []),
-    [activeCompany]
-  );
+  const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
 
   const { nearbyStructure: nearbyDoor } = useCollisionDetection({
     playerPosition,
@@ -94,6 +100,12 @@ const StoryMapPage: React.FC = () => {
     }
   }, [nearbyDoor, activeChapter, exiting, navigate]);
 
+  const debugResetButton = isDev && (
+    <button type="button" className="story-debug-reset" onClick={resetAll}>
+      Reset story
+    </button>
+  );
+
   if (unlockedChapterIndex === 0) {
     return null; // redirecting to /story/prologue
   }
@@ -108,11 +120,7 @@ const StoryMapPage: React.FC = () => {
             <HomeButton />
           </div>
         </div>
-        {process.env.REACT_APP_ENV === 'development' && (
-          <button type="button" className="story-debug-reset" onClick={handleDebugReset}>
-            Reset story
-          </button>
-        )}
+        {debugResetButton}
       </div>
     );
   }
@@ -120,51 +128,26 @@ const StoryMapPage: React.FC = () => {
   return (
     <div className="rpgui-content">
       <div className={`story-map-container${exiting ? ' exiting' : ''}`}>
-        <div className="story-map-viewport">
-          <div
-            className="story-map-world"
-            style={{
-              width: worldConfig.width,
-              height: worldConfig.height,
-              ...cameraStyle(playerPosition, viewport, zoomScale),
-            }}
-          >
-            <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
-            <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
-
-            <div className="structure-container">
-              {companies.map((company) => (
-                <Structure
-                  key={company.id}
-                  data={company}
-                  type="building"
-                  isNearby={nearbyDoor?.id === company.id}
-                  playerPosition={playerPosition}
-                />
-              ))}
+        <GameScene
+          name="story-map"
+          world={worldConfig}
+          playerPosition={playerPosition}
+          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop }}
+          overlay={
+            <div className="story-map-ui">
+              <div className="back-button ms-3">
+                <HomeButton />
+              </div>
+              <div className="story-map-hint rpgui-container framed-grey">
+                <p className="mb-0">Walk to {activeCompany?.name || 'the next building'} to continue the story</p>
+              </div>
             </div>
-
-            <Player position={playerPosition} isMoving={isMoving} direction={direction} />
-          </div>
-        </div>
-
-        <div className="story-map-ui">
-          <div className="back-button ms-3">
-            <HomeButton />
-          </div>
-          <div className="story-map-hint rpgui-container framed-grey">
-            <p className="mb-0">Walk to {activeCompany?.name || 'the next building'} to continue the story</p>
-          </div>
-        </div>
-
-        <ZoomSlider />
-        {isMobile && <MobileJoystick onMove={handleJoystickMove} onStop={handleJoystickStop} />}
-
-        {process.env.REACT_APP_ENV === 'development' && (
-          <button type="button" className="story-debug-reset" onClick={handleDebugReset}>
-            Reset story
-          </button>
-        )}
+          }
+        >
+          <MapWorld nearbyId={nearbyDoor?.id ?? null} />
+          <Player position={playerPosition} isMoving={isMoving} direction={direction} />
+        </GameScene>
+        {debugResetButton}
       </div>
     </div>
   );

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { useIsMobile } from './useIsMobile';
-import { isLandscape } from './screenOrientation';
+import { useIsMobile } from '../../hooks/useIsMobile';
+import { isLandscape } from '../../hooks/screenOrientation';
 
 interface FullscreenButtonProps {
   golden?: boolean;

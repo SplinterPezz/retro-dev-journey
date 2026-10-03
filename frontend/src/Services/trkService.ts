@@ -1,5 +1,5 @@
 import { TrkData } from '../types/tracking';
-import { fetchFromApi } from '../Utils/apiService';
+import { fetchFromApi } from './api';
 
 export const sendTrackingData = async (data: TrkData): Promise<void> => {
   try {
