@@ -142,3 +142,32 @@
     width: 160px !important;
   }
 }
+
+/* Landscape phone: a slightly smaller box - wider and with smaller text, so
+   it no longer fills the whole height of the short screen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .story-intro-dialog {
+    width: 540px;
+  }
+
+  .story-intro-box {
+    padding: 14px 20px !important;
+    padding-bottom: 26px !important;
+  }
+
+  .story-intro-dialog .story-intro-title {
+    font-size: 1.15em !important;
+    margin-bottom: 4px;
+  }
+
+  /* scoped to the dialog to beat RPGUI's .rpgui-content p */
+  .story-intro-dialog .story-intro-text {
+    margin-top: 6px;
+    font-size: 0.7rem;
+    line-height: 1.6;
+  }
+
+  .story-intro-footer {
+    margin-top: 12px;
+  }
+}

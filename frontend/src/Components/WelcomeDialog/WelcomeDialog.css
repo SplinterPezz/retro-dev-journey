@@ -177,3 +177,74 @@
     padding-top: 12px;
   }
 }
+/* Landscape phone: the stacked dialog is taller than the screen. It becomes
+   wider and shorter - the two sections side by side, the button below them. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .welcome-dialog {
+    width: 640px !important;
+    top: 12px !important;
+    height: auto;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+  }
+
+  /* RPGUI makes both of these fixed, which collapses the auto-height wrapper */
+  .welcome-dialog > .rpgui-content {
+    position: relative !important;
+  }
+
+  .welcome-dialog .rpgui-container.framed-golden {
+    position: relative !important;
+    padding: 12px 18px;
+  }
+
+  .welcome-title {
+    font-size: 1.2em !important;
+    margin-bottom: 6px;
+  }
+
+  .welcome-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 16px;
+    margin-bottom: 0;
+  }
+
+  .welcome-info-section {
+    margin-bottom: 10px;
+  }
+
+  .welcome-section-label {
+    font-size: 0.75rem;
+    margin-bottom: 6px;
+  }
+
+  .welcome-dialog .controls-info .rpgui-container {
+    padding: 8px;
+  }
+
+  .welcome-dialog .control-info-text,
+  .welcome-dialog .welcome-description {
+    font-size: 0.65rem;
+    line-height: 1.5;
+  }
+
+  .welcome-description {
+    padding: 8px;
+  }
+
+  .accept-button-container {
+    grid-column: 1 / -1;
+  }
+
+  /* wide enough, with RPGUI's side padding trimmed, for the label on one line */
+  .accept-button,
+  .accept-button.button-mobile {
+    width: 280px !important;
+    max-width: none !important;
+    height: 52px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    font-size: 0.7rem !important;
+  }
+}
