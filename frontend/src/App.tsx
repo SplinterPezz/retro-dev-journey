@@ -19,10 +19,11 @@ import { eikonyChapter } from './config/story/eikony';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import PrivacyRedirect from './Components/PrivacyRedirect/PrivacyRedirect';
-import { useScreenRotation } from './Components/Common/screenOrientation';
+import { useFallbackToPortrait, useScreenRotation } from './Components/Common/screenOrientation';
 
 const AppInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useScreenRotation();
+  useFallbackToPortrait();
 
   useEffect(() => {
     store.dispatch(cleanOldInteractions());

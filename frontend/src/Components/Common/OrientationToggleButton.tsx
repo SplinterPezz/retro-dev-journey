@@ -4,7 +4,7 @@ import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import { AppDispatch, RootState } from '../../store/store';
 import { setOrientation } from '../../store/storySlice';
 import { useIsMobile } from './useIsMobile';
-import { enterLandscape, isLandscape, unlockOrientation } from './screenOrientation';
+import { enterLandscape, isLandscape, isPortraitViewport, unlockOrientation } from './screenOrientation';
 
 interface OrientationToggleButtonProps {
   golden?: boolean;
@@ -23,6 +23,12 @@ const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golde
   const landscape = isLandscape(orientation);
 
   const toggle = () => {
+    // Landscape was chosen but the phone is upright (e.g. after the browser was
+    // reopened, which drops the screen lock): a tap asks for the lock again.
+    if (landscape && isPortraitViewport()) {
+      enterLandscape(orientation as 'landscape-primary' | 'landscape-secondary');
+      return;
+    }
     if (landscape) {
       dispatch(setOrientation('portrait'));
       unlockOrientation();

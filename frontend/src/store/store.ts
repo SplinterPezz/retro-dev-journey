@@ -15,12 +15,13 @@ import trackingSlice, { cleanOldInteractions } from './trackingSlice';
 import welcomeSlice from './welcomeSlice'
 import contentSlice from './consentSlice'
 import storySlice from './storySlice'
+import zoomSlice from './zoomSlice'
 
 const persistConfig = {
   key: 'root',
   version: 1,
   storage,
-  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story']
+  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom']
 };
 
 const rootReducer = combineReducers({
@@ -28,7 +29,8 @@ const rootReducer = combineReducers({
   tracking: trackingSlice,
   welcome: welcomeSlice,
   consent: contentSlice,
-  story: storySlice
+  story: storySlice,
+  zoom: zoomSlice
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

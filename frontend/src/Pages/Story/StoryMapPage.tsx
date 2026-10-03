@@ -11,6 +11,8 @@ import Structure from '../../Components/Structures/Structure';
 import Player from '../../Components/Player/Player';
 import HomeButton from '../../Components/Common/HomeButton';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
+import { useZoomScale } from '../../Components/Common/zoomStore';
+import ZoomSlider from '../../Components/Common/ZoomSlider';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
 import { useIsMobile } from '../../Components/Common/useIsMobile';
 import { createPathGenerator } from '../../Components/Path/pathGeneration';
@@ -26,6 +28,7 @@ const StoryMapPage: React.FC = () => {
   const [exiting, setExiting] = useState(false);
   const isMobile = useIsMobile();
   const viewport = useLogicalViewport();
+  const zoomScale = useZoomScale();
 
   const handleDebugReset = () => {
     dispatch(resetStory());
@@ -121,7 +124,8 @@ const StoryMapPage: React.FC = () => {
             style={{
               width: worldConfig.width,
               height: worldConfig.height,
-              transform: `translate(${-playerPosition.x + viewport.width / 2}px, ${-playerPosition.y + viewport.height / 2}px)`,
+              transformOrigin: '0 0',
+              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`,
             }}
           >
             <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
@@ -152,6 +156,7 @@ const StoryMapPage: React.FC = () => {
           </div>
         </div>
 
+        <ZoomSlider />
         {isMobile && <MobileJoystick onMove={handleJoystickMove} onStop={handleJoystickStop} />}
 
         {process.env.REACT_APP_ENV === 'development' && (

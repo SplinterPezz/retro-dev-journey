@@ -8,21 +8,23 @@ html.rotate-landscape-secondary {
   overflow: hidden;
 }
 
+/* --rot-w / --rot-h are the visible window size, set from JavaScript
+   (screenOrientation.ts). vh/vw are only the fallback before that runs. */
 html.rotate-landscape-primary #root,
 html.rotate-landscape-secondary #root {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vh;
-  height: 100vw;
+  width: var(--rot-h, 100vh);
+  height: var(--rot-w, 100vw);
   overflow: hidden;
   transform-origin: 0 0;
 }
 
 html.rotate-landscape-primary #root {
-  transform: translateX(100vw) rotate(90deg);
+  transform: translateX(var(--rot-w, 100vw)) rotate(90deg);
 }
 
 html.rotate-landscape-secondary #root {
-  transform: translateY(100vh) rotate(-90deg);
+  transform: translateY(var(--rot-h, 100vh)) rotate(-90deg);
 }

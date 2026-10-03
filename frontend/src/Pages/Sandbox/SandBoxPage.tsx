@@ -20,6 +20,8 @@ import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
 import HomeButton from '../../Components/Common/HomeButton';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
+import { useZoomScale } from '../../Components/Common/zoomStore';
+import ZoomSlider from '../../Components/Common/ZoomSlider';
 import { useIsMobile } from '../../Components/Common/useIsMobile';
 import { useTracking } from "../../hooks/tracking";
 import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent';
@@ -42,6 +44,7 @@ const SandboxPage: React.FC = () => {
     const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
     const isMobile = useIsMobile();
     const viewport = useLogicalViewport();
+  const zoomScale = useZoomScale();
     const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
     const canPlayerMove = tipsAcceptedDesktop || tipsAcceptedMobile;
     useIubenda();
@@ -229,7 +232,8 @@ const SandboxPage: React.FC = () => {
                         style={{
                             width: worldConfig.width,
                             height: worldConfig.height,
-                            transform: `translate(${-playerPosition.x + viewport.width / 2}px, ${-playerPosition.y + viewport.height / 2}px)`
+                            transformOrigin: '0 0',
+              transform: `translate(${viewport.width / 2}px, ${viewport.height / 2}px) scale(${zoomScale}) translate(${-playerPosition.x}px, ${-playerPosition.y}px)`
                         }}
                     >
                         {/* Terrain Background (Grass) */}
@@ -379,6 +383,7 @@ const SandboxPage: React.FC = () => {
                     <div className="back-button ms-3">
                         <HomeButton />
                     </div>
+                    <ZoomSlider />
                     {/* Mini Map */}
                     <div className="minimap">
                         {/* Mobile Joystick */}
