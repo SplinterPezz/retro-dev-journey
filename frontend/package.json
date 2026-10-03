@@ -1,6 +1,6 @@
 {
   "name": "retro-dev-journey",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@codemirror/lang-java": "^6.0.2",
