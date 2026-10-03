@@ -2,7 +2,6 @@ export interface ApiError {
   success: boolean;
   error?: string;
   fieldError?: string;
-  customMessage?: string;
 }
 
 export interface LoginModel {

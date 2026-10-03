@@ -29,12 +29,10 @@ export const prologueChapter: StoryChapterConfig = {
       },
     ],
   },
-  worldConfig: { width: 1300, height: 900, tileSize: 128 },
+  worldConfig: { width: 1300, height: 1150, tileSize: 128 },
   floorImage: '/sprites/story/props/floor_classroom.png',
   playerSpawn: { x: 650, y: 780 },
-  doorPosition: { x: 650, y: 895 },
-  doorInteractionPosition: { x: 714, y: 900 }, // centre of the door picture, reachable from the room
-  doorInteractionRadius: 70,
+  doorPosition: { x: 586, y: 1022 }, // centred on the bottom wall, inside the room
 
   props: [
     { id: 'cattedra', image: '/sprites/story/props/desk_cattedra.png', position: { x: 650, y: 150 }, imageSize: { width: 192, height: 144 }, collisionHitbox: { x: 10, y: 8, width: 172, height: 88 } },
@@ -76,7 +74,12 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'plant', image: '/sprites/story/props/plant.png', position: { x: 70, y: 110 }, imageSize: { width: 96, height: 96 } },
     { id: 'globe', image: '/sprites/story/props/globe_stand.png', position: { x: 1220, y: 200 }, imageSize: { width: 90, height: 90 } },
     { id: 'corkboard', image: '/sprites/story/props/corkboard_easel.png', position: { x: 1180, y: 460 }, imageSize: { width: 110, height: 110 } },
-    { id: 'anfe-sign', image: '/sprites/story/props/anfe_sign.png', position: { x: 800, y: 840 }, imageSize: { width: 96, height: 96 } },
+    // bottom of the room, around the door: break corner on the left, tech corner on the right
+    { id: 'water-dispenser', image: '/sprites/story/props/water_dispenser.png', position: { x: -36, y: 990 }, imageSize: { width: 150, height: 150 }, collisionHitbox: { x: 48, y: 0, width: 53, height: 104 } },
+    { id: 'coffee-table', image: '/sprites/story/props/coffee_table.png', position: { x: 220, y: 885 }, imageSize: { width: 140, height: 140 }, collisionHitbox: { x: 22, y: 14, width: 95, height: 89 } },
+    { id: 'projector-cart', image: '/sprites/story/props/projector_cart.png', position: { x: 975, y: 893 }, imageSize: { width: 130, height: 130 }, collisionHitbox: { x: 28, y: 29, width: 73, height: 73 } },
+    { id: 'server-rack', image: '/sprites/story/props/server_rack.png', position: { x: 1172, y: 984 }, imageSize: { width: 160, height: 160 }, collisionHitbox: { x: 45, y: 0, width: 69, height: 108 } },
+    { id: 'anfe-sign', image: '/sprites/story/props/anfe_sign.png', position: { x: 690, y: 1054 }, imageSize: { width: 96, height: 96 } },
     // small personal-item flavour, offset from their nearest desk/NPC
     { id: 'backpack', image: '/sprites/story/props/backpack.png', position: { x: 110, y: 230 }, imageSize: { width: 80, height: 80 } },
   ],

@@ -1,10 +1,16 @@
-import { Position, Hitbox, WorldConfig, ImageSize } from './sandbox';
+import { Position, Hitbox, WorldConfig, ImageSize } from './game';
 
 // ---- persisted progress ----
+
+export interface MiniGameScore {
+  earned: number;
+  max: number;
+}
 
 export interface ChapterProgress {
   completed: boolean;
   flags: Record<string, boolean>;
+  scores?: Record<string, MiniGameScore>; // best mini-game result per marker id
 }
 
 export type StoryDifficulty = 'junior' | 'middle' | 'senior';
@@ -157,9 +163,7 @@ export interface StoryChapterConfig {
   props: StoryPropData[];
   npcs: StoryNpcData[];
   quizzes: QuizData[];
-  doorPosition: Position; // where the door sprite is drawn (top-left)
-  doorInteractionPosition?: Position; // centre of the walk-up zone; defaults to doorPosition
-  doorInteractionRadius?: number;
+  doorPosition: Position; // where the door sprite is drawn (top-left); decorative, the room is left with the Home button
   meepBeats: MeepBeat[];
   completion: { requiredFlags: string[] };
   miniGames?: MiniGameMarker[];

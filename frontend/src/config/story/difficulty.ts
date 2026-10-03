@@ -12,3 +12,8 @@ export const maxMistakesByDifficulty: Record<StoryDifficulty, number | null> = {
   middle: 2,
   senior: 1,
 };
+
+// One rule for quizzes and mini games: `limit` mistakes are allowed, the next
+// one restarts. null = unlimited.
+export const exceedsMistakeLimit = (mistakes: number, limit: number | null): boolean =>
+  limit !== null && mistakes > limit;

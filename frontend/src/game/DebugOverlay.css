@@ -1,0 +1,73 @@
+/* Development-only overlay drawn inside a scene's world. */
+.debug-box {
+  position: absolute;
+  pointer-events: none;
+}
+
+.debug-box.hitbox {
+  border: 2px solid red;
+  background-color: rgba(255, 0, 0, 0.1);
+  z-index: 9998;
+}
+
+.debug-box.player {
+  border: 2px solid lime;
+  background-color: rgba(0, 255, 0, 0.1);
+  z-index: 9999;
+}
+
+.debug-box.zone {
+  border: 2px dashed #00e5ff;
+  border-radius: 50%;
+  background-color: rgba(0, 229, 255, 0.08);
+  z-index: 9997;
+}
+
+.debug-box.visual {
+  border: 2px dashed #ffd700;
+  z-index: 9997;
+}
+
+/* Development-only buttons and readouts of the Story scenes. */
+.story-debug-reset {
+  position: fixed;
+  bottom: 40px;
+  left: 84px;
+  z-index: 999;
+  background: #b71c1c;
+  color: #fff;
+  border: 1px solid #ff8a80;
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+}
+
+.story-debug-reset:hover {
+  background: #d32f2f;
+}
+
+.story-debug-reset-chapter {
+  bottom: 8px;
+  left: 84px;
+  background: #e8801a;
+  border-color: #ffb347;
+}
+
+.story-debug-reset-chapter:hover {
+  background: #f59520;
+}
+
+.debug-coords {
+  position: fixed;
+  bottom: 8px;
+  right: 68px;
+  z-index: 1000;
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #7CFC00;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  pointer-events: none;
+}

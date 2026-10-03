@@ -20,6 +20,8 @@ declare global {
     }
 }
 
+// Mirrors the iubenda cookie consent into the store. Mounted once, in
+// AppInitializer, so every page follows consent changes.
 export const useIubenda = () => {
     const dispatch = useDispatch();
 
@@ -60,18 +62,20 @@ export const useIubenda = () => {
         window.iubendaPreferenceExpressed = handler;
         window.iubendaConsentChanged = handler;
 
+        // The iubenda script loads async: if its API is not there yet, ask again shortly.
+        let retry: ReturnType<typeof setTimeout> | undefined;
         const initialConsent = checkConsent();
         if (initialConsent !== null) {
             updateConsent(initialConsent);
         } else {
-            // Optionally, fallback or timeout if consent not available immediately
-            setTimeout(() => {
+            retry = setTimeout(() => {
                 const delayedConsent = checkConsent();
                 if (delayedConsent !== null) updateConsent(delayedConsent);
             }, 2000);
         }
 
         return () => {
+            clearTimeout(retry);
             window.iubendaConsentCallback = undefined;
             window.iubendaConsentFirstGiven = undefined;
             window.iubendaPreferenceExpressed = undefined;

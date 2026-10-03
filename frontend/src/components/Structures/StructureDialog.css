@@ -1,0 +1,207 @@
+.structure-title{
+  font-size:2em !important;
+  text-decoration: none !important;
+}
+
+.structure-dialog {
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  max-width: 90vw;
+  width: 400px;
+  box-sizing: border-box;
+  min-width: 200px;
+  animation: slideIn 0.3s ease-out;
+  height: -webkit-fill-available;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.dialog-content-structure {
+  margin-bottom: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.info-section {
+  margin-bottom: 15px;
+}
+
+.info-section label {
+  display: block;
+  color: #ffd700;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.info-section p {
+  margin: 0;
+  color: #fff;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+.info-section ul {
+  margin: 0;
+  color: #fff;
+}
+
+.info-section li {
+  margin-bottom: 5px;
+}
+
+.tech-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.tech-tag {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  white-space: nowrap;
+}
+
+.level-badge {
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.level-badge.beginner {
+  background: #28a745;
+  color: white;
+}
+
+.level-badge.intermediate {
+  background: #ffc107;
+  color: white;
+}
+
+.level-badge.advanced {
+  background: #fd7e14;
+  color: white;
+}
+
+.level-badge.expert {
+  background: #dc3545;
+  color: white;
+}
+
+.company-link {
+  color: #61dafb;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.2s ease;
+}
+
+.company-link:hover {
+  color: #ffd700;
+  text-decoration: underline;
+}
+
+.project-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.project-list li {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 4px;
+  border-left: 3px solid #ffd700;
+}
+
+.company-info .info-section {
+  border-left: 3px solid #4f2605;
+  padding-left: 10px;
+}
+
+.technology-info .info-section {
+  border-left: 3px solid #949393;
+  padding-left: 10px;
+}
+
+@media (max-width: 768px) {
+  .structure-dialog {
+    width: 100vw !important;
+    top: 10% !important;
+  }
+  
+  .dialog-content-structure {
+    max-height: 38vh;
+  }
+  
+  .tech-tags {
+    gap: 3px;
+  }
+  
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .structure-dialog {
+    width: 85vw !important;
+    top: 90px !important;
+  }
+  
+  .dialog-header {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .info-section {
+    margin-bottom: 12px;
+  }
+  
+  .info-section label {
+    font-size: 0.8rem;
+  }
+  
+  .info-section p {
+    font-size: 0.9rem;
+  }
+}

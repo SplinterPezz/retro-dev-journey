@@ -1,0 +1,427 @@
+.daily-quest-container {
+  position: fixed;
+  top: 20px;
+  left: 5px;
+  width: 280px;
+  pointer-events: auto;
+}
+
+.daily-quest-container .rpgui-container {
+  padding: 12px;
+  background: #854c2f;
+  backdrop-filter: blur(5px);
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  width: 55vw;
+  max-width: 35vh;
+  min-width: 120px;
+  margin-top: 100px;
+  margin-left: 20px;
+}
+
+.quest-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 5px;
+}
+
+.quest-title {
+  color: #ffd700 !important;
+  font-size: 0.80rem !important;
+  margin: 5px 0px 0px 2px !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8) !important;
+  text-align: center !important;
+  margin-right: 10px !important;
+  text-decoration: none !important;
+}
+
+.quest-progress-container {
+  display: flex;
+  align-items: center;
+}
+
+.quest-progress-bar {
+  flex: 1;
+  margin-right: 5px;
+  height: 10px;
+  background: #2c1810;
+  border: 1px solid #1a0f08;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.quest-progress-fill {
+  height: 100%;
+  background: linear-gradient(to bottom, #ffd703, #ebc500);
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.quest-progress-text {
+  color: #ffd700;
+  font-size: 0.75rem;
+  font-weight: bold;
+  min-width: 30px;
+  text-align: right;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.quest-icon-container {
+  position: relative;
+  flex-shrink: 0;
+  margin-bottom: 5px;
+}
+
+.quest-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  border-radius: 3px;
+  
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.quest-type-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 8px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid #ffd700;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.quest-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding-inline-start: 4px;
+}
+
+.quest-name {
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-left: 2px;
+}
+
+.quest-status {
+  flex-shrink: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.quest-status.done {
+  color: #4caf50;
+}
+
+.quest-status.todo {
+  color: #888;
+}
+
+
+@media (max-width: 768px) {
+  .daily-quest-container {
+    width: 250px;
+    top: 15px;
+    left: 0px;
+  }
+  
+  .daily-quest-container .rpgui-container {
+    padding: 10px;
+    width: 50vw;
+  }
+  
+  .quest-title {
+    font-size: 0.7rem !important;
+  }
+  
+  .quest-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .quest-name {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-title {
+    font-size: 0.66rem !important;
+    margin: 2px 0px 0px 2px !important;
+  }
+
+  .quest-collapsed-mobile {
+    margin-left: 0px !important;
+  }
+
+  .daily-quest-container {
+    width: 220px;
+    top: 10px;
+    left: 0px;
+  }
+
+  .quest-progress-container {
+    gap: 6px;
+  }
+  
+  .quest-progress-text {
+    font-size: 0.7rem;
+    min-width: 25px;
+  }
+  
+  .quest-icon {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .quest-type-badge {
+    font-size: 7px;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .quest-name {
+    font-size: 0.65rem;
+    text-overflow: unset;
+  }
+  
+  .quest-status {
+    font-size: 0.9rem;
+  }
+}
+/* Landscape phone: the height is small, so the portrait sizing (35vh max
+   width and a 100px top margin) made the panel narrow and pushed it down over
+   the scene. It sits under the Home button instead, at a readable width. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .daily-quest-container {
+    top: 88px;
+    left: 12px;
+    width: 240px;
+  }
+
+  .daily-quest-container .rpgui-container {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+/* ---- collapsible body (a transition, not a keyframe animation: a keyframe
+   left at its end state after another popup could keep the list hidden) ---- */
+.quest-panel-body {
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* ---- toggle ---- */
+.quest-toggle {
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 3px;
+  color: #ffd700;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  --quest-toggle-rotation: 0deg;
+  transform: rotate(var(--quest-toggle-rotation));
+}
+
+.quest-toggle.open {
+  --quest-toggle-rotation: 180deg;
+}
+
+.quest-toggle:hover {
+  background: rgba(255, 215, 0, 0.4);
+  border-color: rgba(255, 215, 0, 0.8);
+  transform: translateY(-1px) rotate(var(--quest-toggle-rotation));
+}
+
+.quest-toggle:active {
+  transform: translateY(0) rotate(var(--quest-toggle-rotation));
+  background: rgba(255, 215, 0, 0.6);
+}
+
+@media (max-width: 768px) {
+  .quest-toggle {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    min-width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-toggle {
+    font-size: 0.65rem;
+    padding: 2px 5px;
+    min-width: 18px;
+    height: 18px;
+  }
+}
+
+/* ---- daily quest list (Sandbox) ---- */
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 40vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  transform: translateY(-10px);
+  transition: transform 0.3s ease-in-out;
+}
+
+.quest-panel-body.open .quest-list {
+  transform: translateY(0);
+}
+
+.quest-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.quest-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.quest-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 215, 0, 0.3);
+  border-radius: 3px;
+}
+
+.quest-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .quest-list {
+    max-height: 350px;
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-list {
+    max-height: 275px;
+  }
+}
+
+.quest-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  background: rgb(22 13 13 / 45%);
+  transform: translateX(-20px);
+  opacity: 0;
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+}
+
+.quest-item.done {
+  background: rgb(39 132 43 / 62%);
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.quest-panel-body.open .quest-item {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.quest-panel-body.open .quest-item:hover {
+  background: #ffd703;
+  transform: translateY(-1px) translateX(0);
+}
+
+@media (max-width: 480px) {
+  .quest-item {
+    padding: 5px;
+    gap: 6px;
+  }
+}
+
+.quest-complete {
+  margin-top: 10px;
+  padding: 8px;
+  background: rgba(255, 215, 0, 0.4);
+  border-radius: 3px;
+  color: #c8e6c9;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  animation: quest-celebration-pulse 2s infinite;
+}
+
+@keyframes quest-celebration-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+.quest-consent {
+  margin-top: 10px;
+  padding: 8px;
+  background: rgba(255, 165, 0, 0.3);
+  border: 1px solid rgba(255, 165, 0, 0.5);
+  border-radius: 3px;
+  color: #ffffff;
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  animation: quest-consent-pulse 3s infinite;
+}
+
+@keyframes quest-consent-pulse {
+  0%, 100% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.01);
+  }
+}
+
+@media (max-width: 480px) {
+  .quest-consent {
+    font-size: 0.65rem;
+    padding: 6px;
+  }
+}

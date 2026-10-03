@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { StoryDifficulty, StoryOrientation, StoryState } from '../types/story';
+import { MiniGameScore, StoryDifficulty, StoryOrientation, StoryState } from '../types/story';
 
 const initialState: StoryState = {
   unlockedChapterIndex: 0,
@@ -23,6 +23,15 @@ const storySlice = createSlice({
       const chapter = ensureChapter(state, action.payload.chapterId);
       chapter.flags[action.payload.flag] = true;
     },
+    // Keeps the best result per mini game.
+    recordScore(state, action: PayloadAction<{ chapterId: string; gameId: string; score: MiniGameScore }>) {
+      const chapter = ensureChapter(state, action.payload.chapterId);
+      const { gameId, score } = action.payload;
+      const best = chapter.scores?.[gameId];
+      if (!best || score.earned > best.earned) {
+        chapter.scores = { ...chapter.scores, [gameId]: score };
+      }
+    },
     completeChapter(state, action: PayloadAction<{ chapterId: string; unlockIndex: number }>) {
       const chapter = ensureChapter(state, action.payload.chapterId);
       chapter.completed = true;
@@ -40,11 +49,11 @@ const storySlice = createSlice({
       delete state.chapters[action.payload.chapterId];
     },
     resetStory(state) {
-      // keep the chosen difficulty and screen orientation - reset only clears progress
-      return { ...initialState, difficulty: state.difficulty, orientation: state.orientation };
+      // a new story asks for the difficulty again; the screen orientation is kept
+      return { ...initialState, orientation: state.orientation };
     },
   },
 });
 
-export const { setFlag, completeChapter, setDifficulty, setOrientation, resetChapter, resetStory } = storySlice.actions;
+export const { setFlag, recordScore, completeChapter, setDifficulty, setOrientation, resetChapter, resetStory } = storySlice.actions;
 export default storySlice.reducer;

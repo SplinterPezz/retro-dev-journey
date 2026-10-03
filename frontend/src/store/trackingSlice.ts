@@ -29,7 +29,7 @@ const isInteractionOlderThanToday = (key: string): boolean => {
   return interactionDate < today;
 };
 
-const cleanOldInteractionsFunction = (interactions: string[]): string[] => {
+export const cleanOldInteractionsFunction = (interactions: string[]): string[] => {
   return interactions.filter(key => !isInteractionOlderThanToday(key));
 };
 
@@ -45,9 +45,6 @@ const trackingSlice = createSlice({
         state.interactions.push(action.payload);
       }
     },
-    resetInteractions(state) {
-      state.interactions = [];
-    },
     cleanOldInteractions(state) {
       state.interactions = cleanOldInteractionsFunction(state.interactions);
     },
@@ -55,22 +52,9 @@ const trackingSlice = createSlice({
       state.uuid = '';
       state.interactions = [];
     },
-    initializeTracking(state, action: PayloadAction<{ uuid?: string }>) {
-      state.interactions = cleanOldInteractionsFunction(state.interactions);
-      if (action.payload.uuid) {
-        state.uuid = action.payload.uuid;
-      }
-    }
   },
 });
 
-export const { 
-  setUUID,
-  addInteraction, 
-  resetInteractions, 
-  cleanOldInteractions,
-  clearAllTrackingData,
-  initializeTracking 
-} = trackingSlice.actions;
+export const { setUUID, addInteraction, cleanOldInteractions, clearAllTrackingData } = trackingSlice.actions;
 
 export default trackingSlice.reducer;

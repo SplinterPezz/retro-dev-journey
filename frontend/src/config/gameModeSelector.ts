@@ -17,3 +17,11 @@ export const storyModeVisible: boolean = true; // set to false to hide the Story
 export const sandboxModeVisible: boolean = true; // set to false to hide the Sandbox button entirely
 export const easterEggEnabled: boolean = true; // set to false to disable the title easter egg toggle
 export const easterEggBlurAmount: number = 2; // blur amount in px applied to the background when the easter egg is inactive
+
+// Shown instead of the modes when Story Mode is opened with a story already in progress
+export const storyInProgressTitle: string = 'Welcome back!';
+export const storyInProgressDescription: string = 'It seems you already have a story in progress. Would you like to continue it or start a new one?';
+export const storyInProgressWarning: string = 'Starting a new story will erase your current progress.';
+export const continueStoryButtonText: string = 'Continue';
+export const newStoryButtonText: string = 'New Story';
+export const storyInProgressBackText: string = 'Back';

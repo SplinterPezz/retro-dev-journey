@@ -1,0 +1,81 @@
+.interior-scene-container {
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: #1a120b;
+}
+
+.interior-scene-world {
+  position: relative;
+
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-crisp-edges;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.chapter-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* the fade length matches SPLASH_FADE_MS in InteriorScene */
+.chapter-splash--leaving {
+  animation: chapter-splash-fade 0.9s linear forwards;
+}
+
+.chapter-splash-title {
+  margin: 0;
+  color: #ffffff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(2rem, 7vw, 4rem);
+  line-height: 1.5;
+  text-align: center;
+  text-shadow: 4px 4px 0 #000;
+}
+
+@keyframes chapter-splash-fade {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.chapter-splash-loading {
+  position: absolute;
+  right: 72px; /* clear of the iubenda privacy button in the corner */
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+}
+
+/* spins in place like a wheel */
+.chapter-splash-loading-icon {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  animation: chapter-splash-spin 1.2s linear infinite;
+}
+
+@keyframes chapter-splash-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chapter-splash-loading-icon {
+    animation-duration: 4s;
+  }
+}
+
+/* Objectives sit above the world tiles/props and below the dialogue boxes. */
+.interior-scene-container .daily-quest-container {
+  z-index: 150;
+}

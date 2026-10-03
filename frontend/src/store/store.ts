@@ -1,7 +1,8 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { 
-  persistStore, 
+import {
+  persistStore,
   persistReducer,
+  createMigrate,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -9,19 +10,23 @@ import {
   PURGE,
   REGISTER
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+// the ES build: the CommonJS one (lib/) comes through Vite as a module object
+import storage from 'redux-persist/es/storage';
 import authSlice from './authSlice';
 import trackingSlice, { cleanOldInteractions } from './trackingSlice';
 import welcomeSlice from './welcomeSlice'
 import contentSlice from './consentSlice'
 import storySlice from './storySlice'
 import zoomSlice from './zoomSlice'
+import { migrations, PERSIST_VERSION } from './migrations';
+import { devLog } from '../config/env';
 
 const persistConfig = {
   key: 'root',
-  version: 1,
+  version: PERSIST_VERSION,
   storage,
-  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom']
+  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom'],
+  migrate: createMigrate(migrations, { debug: false }),
 };
 
 const rootReducer = combineReducers({
@@ -43,19 +48,12 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
       }
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: !import.meta.env.PROD,
 });
 
 export const persistor = persistStore(store, {}, () => {
   store.dispatch(cleanOldInteractions());
-  
-  if (process.env.REACT_APP_ENV === 'development') {
-    const state = store.getState();
-    console.log('Store initialized and old interactions cleaned:', {
-      remainingInteractions: state.tracking.interactions.length,
-      interactions: state.tracking.interactions
-    });
-  }
+  devLog('Store initialized and old interactions cleaned:', store.getState().tracking.interactions);
 });
 
 export type RootState = ReturnType<typeof store.getState>;
