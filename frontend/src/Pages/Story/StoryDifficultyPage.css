@@ -73,19 +73,15 @@
   display: flex !important;
   align-items: center;
   justify-content: center;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   color: #fff !important;
-  text-shadow: 2px 2px 0 #000;
 }
 
 .story-difficulty-button p {
   margin: 0 !important;
   width: 100%;
   color: #fff !important;
-  line-height: 1;
   text-align: center;
-  text-shadow: 2px 2px 0 #000;
 }
 
 /* Landscape phone: a tighter box, scaled down (the RPGUI buttons have a fixed

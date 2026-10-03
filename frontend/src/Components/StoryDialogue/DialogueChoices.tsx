@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './DialogueChoices.css';
 
 export interface ChoiceButtonItem {
@@ -7,6 +7,7 @@ export interface ChoiceButtonItem {
   isAnswer?: boolean; // styled distinctly - picking this choice leads into a question the NPC turns back on the player
   disabled?: boolean; // this specific choice is disabled (e.g. an already-completed quiz category)
   progress?: { done: number; total: number }; // renders filled/empty dots on the right of the button - signals there's more than one variant behind an isAnswer choice (e.g. "Got a random question for you" hides 2 different questions), so answering one doesn't look like a dead end
+  hint?: string; // easter egg: a "?" next to the button opens a speech balloon with this text
 }
 
 interface DialogueChoicesProps {
@@ -24,35 +25,65 @@ interface DialogueChoicesProps {
 // longer answer text that needs to wrap. This is a plain CSS button instead,
 // free to size to its content.
 const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, disabled = false }) => {
+  const [openHintId, setOpenHintId] = useState<string | null>(null);
+
+  const renderButton = (choice: ChoiceButtonItem, index: number) => (
+    <button
+      type="button"
+      className={`story-choice-button${choice.isAnswer ? ' story-choice-button--answer' : ''}`}
+      style={{ animationDelay: `${index * 90}ms` }}
+      disabled={disabled || choice.disabled}
+      onClick={() => {
+        setOpenHintId(null);
+        onSelect(choice.id);
+      }}
+    >
+      <span className="story-choice-row">
+        <span className="story-choice-text">
+          {choice.isAnswer && <span className="story-choice-answer-mark">&gt;</span>}
+          {choice.label}
+        </span>
+        {choice.progress && (
+          <span className="story-choice-dots" aria-hidden="true">
+            {Array.from({ length: choice.progress.total }).map((_, i) => (
+              <span
+                key={i}
+                className={`story-choice-dot${i < choice.progress!.done ? ' filled' : ''}`}
+              />
+            ))}
+          </span>
+        )}
+      </span>
+    </button>
+  );
+
   return (
     <div className="dialogue-choices">
-      {choices.map((choice, index) => (
-        <button
-          key={choice.id}
-          type="button"
-          className={`story-choice-button${choice.isAnswer ? ' story-choice-button--answer' : ''}`}
-          style={{ animationDelay: `${index * 90}ms` }}
-          disabled={disabled || choice.disabled}
-          onClick={() => onSelect(choice.id)}
-        >
-          <span className="story-choice-row">
-            <span className="story-choice-text">
-              {choice.isAnswer && <span className="story-choice-answer-mark">&gt;</span>}
-              {choice.label}
-            </span>
-            {choice.progress && (
-              <span className="story-choice-dots" aria-hidden="true">
-                {Array.from({ length: choice.progress.total }).map((_, i) => (
-                  <span
-                    key={i}
-                    className={`story-choice-dot${i < choice.progress!.done ? ' filled' : ''}`}
-                  />
-                ))}
-              </span>
+      {choices.map((choice, index) => {
+        if (!choice.hint) {
+          return <React.Fragment key={choice.id}>{renderButton(choice, index)}</React.Fragment>;
+        }
+        const isOpen = openHintId === choice.id;
+        return (
+          <div key={choice.id} className="story-choice-wrap">
+            {renderButton(choice, index)}
+            <button
+              type="button"
+              className="story-choice-hint-button"
+              aria-label="Hint"
+              aria-expanded={isOpen}
+              onClick={() => setOpenHintId(isOpen ? null : choice.id)}
+            >
+              ?
+            </button>
+            {isOpen && (
+              <div className="story-choice-balloon" role="note">
+                {choice.hint}
+              </div>
             )}
-          </span>
-        </button>
-      ))}
+          </div>
+        );
+      })}
     </div>
   );
 };

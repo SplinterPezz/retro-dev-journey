@@ -198,8 +198,11 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeDialogue?.npc.id, activeDialogue?.nodeId]);
 
-  // door -> fade out -> exit
+  // door -> fade out -> exit. Temporarily disabled: walking into the door left
+  // the screen white. Set to true to bring the exit back.
+  const DOOR_EXIT_ENABLED = false;
   useEffect(() => {
+    if (!DOOR_EXIT_ENABLED) return;
     if (nearbyDoor && !exiting) {
       setExiting(true);
       setActiveDialogue(null);

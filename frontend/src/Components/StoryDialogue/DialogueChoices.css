@@ -172,3 +172,82 @@
     transform: translateY(0);
   }
 }
+
+/* A choice with a hint: the button and its "?" share one row. */
+.story-choice-wrap {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.story-choice-wrap > .story-choice-button {
+  flex: 1;
+  width: auto;
+}
+
+/* Pixel "?" in the teal answer style, so it stands apart from the orange topics. */
+.story-choice-hint-button {
+  flex: 0 0 34px;
+  padding: 0;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+  color: #e8fbf9;
+  background: #2f8f8a;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 0 #7fe0d8,
+    inset -3px -3px 0 0 #164c48,
+    0 3px 0 0 #0c2e2b;
+  cursor: pointer;
+}
+
+.story-choice-hint-button:hover {
+  background: #38a39d;
+}
+
+.story-choice-hint-button[aria-expanded='true'] {
+  transform: translateY(3px);
+  box-shadow:
+    inset -3px -3px 0 0 #7fe0d8,
+    inset 3px 3px 0 0 #164c48,
+    0 0 0 0 #0c2e2b;
+}
+
+/* Speech balloon under the row, with a pixel tail pointing up at the "?". */
+.story-choice-balloon {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  padding: 10px 12px;
+  background: #1f1510;
+  color: #f3e7cf;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  text-align: left;
+  border: 3px solid #e8a13f;
+  box-shadow: 0 4px 0 0 #3a2410;
+  animation: story-balloon-in 0.15s steps(3);
+}
+
+.story-choice-balloon::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  right: 40px;
+  width: 10px;
+  height: 10px;
+  background: #1f1510;
+  border-top: 3px solid #e8a13f;
+  border-left: 3px solid #e8a13f;
+  transform: rotate(45deg);
+}
+
+@keyframes story-balloon-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

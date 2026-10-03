@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { setZoom } from '../../store/zoomSlice';
-import { useIsMobile } from './useIsMobile';
 import { useZoomLevel, ZOOM_LEVEL_COUNT } from './zoomStore';
 import './ZoomSlider.css';
 
@@ -12,16 +11,13 @@ const TICK_TOP = 8;
 const TICK_GAP = 32;
 const TRACK_HEIGHT = TICK_TOP * 2 + TICK_GAP * (ZOOM_LEVEL_COUNT - 1);
 
-// Pixel-art vertical zoom slider, shown on phones only (bottom left).
+// Pixel-art vertical zoom slider, shown on every device (bottom left).
 // Level 5 is at the top, level 1 at the bottom, like the zoom slider in maps.
 const ZoomSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const isMobile = useIsMobile();
   const level = useZoomLevel();
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
-
-  if (!isMobile) return null;
 
   const levelFromY = (clientY: number): number => {
     const rect = trackRef.current!.getBoundingClientRect();

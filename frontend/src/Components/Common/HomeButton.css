@@ -11,12 +11,9 @@
   position: relative;
   top: 11px;
   margin: 0 !important;
-  font-family: 'Press Start 2P', cursive;
-  font-size: 0.6rem;
-  line-height: 1;
+  font-size: 0.8rem;
   color: #fff !important;
   text-align: center;
-  text-shadow: 2px 2px 0 #000;
 }
 
 /* Top-left placement used by the story screens, matching the Sandbox back
