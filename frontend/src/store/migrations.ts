@@ -8,7 +8,7 @@ import { MigrationManifest, PersistedState } from 'redux-persist';
 // visitor keeps their story progress instead of loading a broken shape.
 export const PERSIST_VERSION = 2;
 
-type AnyState = PersistedState & Record<string, any>;
+type AnyState = PersistedState & Record<string, unknown> & { tracking?: Record<string, unknown> };
 
 export const migrations: MigrationManifest = {
   // 1 -> 2 (release 1.0): the tracking id used to be a hash of the browser's

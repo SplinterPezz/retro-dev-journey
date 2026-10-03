@@ -67,7 +67,7 @@ const StoryMapPage: React.FC = () => {
   // Chapter 0 (Prologue) has no building on the overworld - go straight there.
   useEffect(() => {
     if (unlockedChapterIndex === 0) {
-      navigate('/story/prologue', { replace: true });
+      void navigate('/story/prologue', { replace: true });
     }
   }, [unlockedChapterIndex, navigate]);
 

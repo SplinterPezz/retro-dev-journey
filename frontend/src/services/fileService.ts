@@ -35,7 +35,7 @@ export const downloadCV = async (): Promise<void> => {
     
   } catch (error) {
     console.error('Download failed:', error);
-    throw new Error('Failed to download CV');
+    throw new Error('Failed to download CV', { cause: error });
   }
 };
 

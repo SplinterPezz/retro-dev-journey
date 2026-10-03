@@ -28,7 +28,7 @@ const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
 
   useEffect(() => {
     if (isLocked) {
-      navigate('/story', { replace: true });
+      void navigate('/story', { replace: true });
     }
   }, [isLocked, navigate]);
 

@@ -27,7 +27,7 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
 
     useEffect(() => {
         if (isNearby && !cooldownActive && !downloadTriggeredRef.current && !isDownloading) {
-            handleDownload();
+            void handleDownload();
             downloadTriggeredRef.current = true;
         }
         // Triggered by proximity only; the guard ref stops repeats.

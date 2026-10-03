@@ -73,7 +73,7 @@ export class PathGenerator {
   private generateStructureBranches(): void {
     const { structures } = this.config;
 
-    structures.forEach((structure, index) => {
+    structures.forEach((structure) => {
       const structurePos = structure.position;
       const branchY = this.findNearestMainPathY(structurePos.y);
 

@@ -2,6 +2,10 @@
   "name": "retro-dev-journey",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "dependencies": {
     "@codemirror/lang-java": "^6.0.2",
     "@emotion/react": "^11.14.0",
@@ -20,50 +24,41 @@
     "react-joystick-component": "^6.2.1",
     "react-redux": "^9.3.0",
     "react-router": "^7.18.4",
-    "react-scripts": "5.0.1",
     "redux-persist": "^6.0.0"
   },
   "scripts": {
-    "start:loc": "env-cmd -f .env.local react-scripts start",
-    "start:dev": "env-cmd -f .env.dev react-scripts start",
-    "start:stage": "env-cmd -f .env.stage react-scripts start",
-    "start:prod": "env-cmd -f .env.prod react-scripts start",
-    "build": "react-scripts build",
-    "build:local": "env-cmd -f .env.local react-scripts build",
-    "build:dev": "env-cmd -f .env.dev react-scripts build",
-    "build:stage": "env-cmd -f .env.stage react-scripts build",
-    "build:prod": "env-cmd -f .env.prod react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "start:loc": "env-cmd -f .env.local vite",
+    "start:dev": "env-cmd -f .env.dev vite",
+    "start:stage": "env-cmd -f .env.stage vite",
+    "start:prod": "env-cmd -f .env.prod vite",
+    "build": "npm run typecheck && vite build",
+    "build:local": "env-cmd -f .env.local npm run build",
+    "build:dev": "env-cmd -f .env.dev npm run build",
+    "build:stage": "env-cmd -f .env.stage npm run build",
+    "build:prod": "env-cmd -f .env.prod npm run build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "lint": "eslint . --max-warnings=0",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.3",
-    "@testing-library/user-event": "^13.5.0",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
+    "@types/node": "^24.19.1",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
     "env-cmd": "^10.1.0",
-    "typescript": "^4.9.5"
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.13.0",
+    "jsdom": "^29.1.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.71.0",
+    "vite": "^8.3.2",
+    "vitest": "^5.0.3"
   }
 }

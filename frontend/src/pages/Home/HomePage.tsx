@@ -34,7 +34,7 @@ export default function HomePage() {
   const handleDialogComplete = () => devLog('Dialog complete');
 
   const handleAdminPage = () => {
-    navigate("/admin")
+    void navigate("/admin")
   }
 
   const handleDownloadCV = async (platform: string) => {
@@ -79,10 +79,10 @@ export default function HomePage() {
                 <a href="/admin" onClick={(e) => { e.preventDefault(); handleAdminPage(); }}>
                   <img className="social-image" alt="Admin" src={playerTurnSprite} />
                 </a>
-                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" rel="noreferrer" onClick={x => handleTrkSocial('linkedin')}>
+                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" rel="noreferrer" onClick={() => handleTrkSocial('linkedin')}>
                   <img className="social-image" alt="LinkedIn" src="/sprites/others/linkedin.png" />
                 </a>
-                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" rel="noreferrer" onClick={x => handleTrkSocial('github')}>
+                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" rel="noreferrer" onClick={() => handleTrkSocial('github')}>
                   <img className="social-image" alt="GitHub" src="/sprites/others/github.png" />
                 </a>
               </div>

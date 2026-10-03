@@ -10,7 +10,8 @@ import {
   PURGE,
   REGISTER
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+// the ES build: the CommonJS one (lib/) comes through Vite as a module object
+import storage from 'redux-persist/es/storage';
 import authSlice from './authSlice';
 import trackingSlice, { cleanOldInteractions } from './trackingSlice';
 import welcomeSlice from './welcomeSlice'
@@ -47,7 +48,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
       }
     }),
-  devTools: process.env.NODE_ENV !== 'production',
+  devTools: !import.meta.env.PROD,
 });
 
 export const persistor = persistStore(store, {}, () => {

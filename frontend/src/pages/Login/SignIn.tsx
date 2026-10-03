@@ -90,7 +90,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/admin');
+      void navigate('/admin');
     }
   }, [isAuthenticated, navigate]);
 

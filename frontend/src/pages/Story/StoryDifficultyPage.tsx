@@ -24,13 +24,13 @@ const StoryDifficultyPage: React.FC = () => {
 
   const handleSelect = (level: StoryDifficulty) => {
     dispatch(setDifficulty(level));
-    navigate('/story');
+    void navigate('/story');
   };
 
   const handleOrientation = (choice: StoryOrientation) => {
     dispatch(setOrientation(choice));
     if (isLandscape(choice)) {
-      enterLandscape(choice);
+      void enterLandscape(choice);
     }
   };
 

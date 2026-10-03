@@ -83,7 +83,7 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
         page,
         ...deviceInfoRef.current,
       };
-      sendTrackingData(trackingData);
+      void sendTrackingData(trackingData);
       return interactionsRef.current;
     },
     [uuid, page, isTrackingAllowed, markSent]
@@ -109,7 +109,7 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
           page,
           ...deviceInfoRef.current,
         };
-        sendTrackingData(trackingData);
+        void sendTrackingData(trackingData);
         devLog('View data sent:', trackingData);
       }, seconds * 1000)
     );

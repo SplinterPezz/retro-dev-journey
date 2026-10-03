@@ -85,7 +85,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
 
         setState(prev => ({ ...prev, isLoading: false }));
         
-      } catch (error) {
+      } catch {
         setState(prev => ({
           ...prev,
           error: 'Some resources failed to load',
@@ -120,7 +120,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
       });
     };
 
-    loadResources();
+    void loadResources();
     // Runs per resource list; config comes from the caller on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.images, config.audio, config.fonts, config.minDuration]);
@@ -154,7 +154,7 @@ const loadFont = (fontFamily: string): Promise<void> => {
       return;
     }
 
-    document.fonts.ready.then(() => {
+    void document.fonts.ready.then(() => {
       const fontFace = Array.from(document.fonts).find(
         font => font.family === fontFamily
       );

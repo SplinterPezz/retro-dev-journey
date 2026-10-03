@@ -26,7 +26,7 @@ const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golde
     // Landscape was chosen but the phone is upright (e.g. after the browser was
     // reopened, which drops the screen lock): a tap asks for the lock again.
     if (landscape && isPortraitViewport()) {
-      enterLandscape(orientation as 'landscape-primary' | 'landscape-secondary');
+      void enterLandscape(orientation as 'landscape-primary' | 'landscape-secondary');
       return;
     }
     if (landscape) {
@@ -34,7 +34,7 @@ const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golde
       unlockOrientation();
     } else {
       dispatch(setOrientation('landscape-primary'));
-      enterLandscape('landscape-primary');
+      void enterLandscape('landscape-primary');
     }
   };
 

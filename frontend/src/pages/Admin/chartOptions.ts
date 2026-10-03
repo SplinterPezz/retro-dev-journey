@@ -90,7 +90,7 @@ export const apexUniqueUsers = {
 
 
 export const apexPageTime = {
-    series: [] as any[],
+    series: [] as { name: string; data: number[] }[],
     options: {
       chart: {
         height: 350,
@@ -276,7 +276,7 @@ export const apexInteractionsDaily = {
 }
 
 export const apexDailyDownloads = {
-  series: [] as any[],
+  series: [] as { name: string; data: number[] }[],
   options: {
     chart: {
       height: 350,
@@ -397,7 +397,7 @@ export const apexDevicesDonut = {
               show: true,
               label: 'Total Users',
               color: '#ffd700',
-              formatter: function (w: any) {
+              formatter: function (w: { globals: { seriesTotals: number[] } }) {
                 const total = w.globals.seriesTotals.reduce((a: number, b: number) => a + b, 0);
                 return total.toString();
               }

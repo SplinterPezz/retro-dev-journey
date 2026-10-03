@@ -1,9 +1,9 @@
 # 🎮 Retro Dev Journey
 
-[![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=flat&logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-19.3.0-61DAFB?style=flat&logo=react)](https://reactjs.org/)
 [![Go](https://img.shields.io/badge/Go-1.24.3-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.10.0-47A248?style=flat&logo=mongodb)](https://www.mongodb.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-4.9.5-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Interactive Portfolio & CV built with React featuring a unique pixel-art timeline design. Tracks user interactions with a simple Go backend and MongoDB storage. Includes a basic admin dashboard to monitor site usage and engagement metrics.**
@@ -87,7 +87,7 @@ The environment files could be optimized by using a single env file for both the
 
 | Technology | Version | Notes |
 |------------|---------|-------|
-| **Node.js** | 22.16.0 | LTS version recommended |
+| **Node.js** | 24 LTS (22.13+ works) | Vite 8 and ESLint 10 need 22.13 or newer |
 | **NPM** | 10.9.2 | Package manager |
 | **Go** | 1.24.3 | Backend language |
 | **MongoDB** | 8.10.0 | Database system |
@@ -169,20 +169,20 @@ go.mongodb.org/mongo-driver v1.17.2      // MongoDB driver
 golang.org/x/crypto v0.36.0              // Cryptographic functions
 ```
 
-### Frontend (React + TypeScript)
+### Frontend (React + TypeScript, built with Vite)
 ```json
 {
-  "react": "^19.1.0",
-  "react-dom": "^19.1.0",
-  "typescript": "^4.9.5",
-  "@reduxjs/toolkit": "^2.8.2",
-  "react-redux": "^9.2.0",
+  "react": "^19.3.0",
+  "react-dom": "^19.3.0",
+  "@reduxjs/toolkit": "^2.13.0",
+  "react-redux": "^9.3.0",
   "redux-persist": "^6.0.0",
-  "react-router-dom": "^7.6.1",
-  "framer-motion": "^12.15.0", // Can be easly removed, used for some basic animations
-  "@mui/material": "^7.1.1", // Can be easly removed, used for login card and admin area.
-  "react-apexcharts": "^1.7.0",
-  "react-joystick-component": "^6.2.1" // Can be easly removed by creating a custom one
+  "react-router": "^7.18.4",
+  "@mui/material": "^7.3.11", // Login card and admin area only
+  "react-apexcharts": "^1.9.0", // Admin charts
+  "@uiw/react-codemirror": "^4.25.12", // Code questions in Story Mode
+  "react-joystick-component": "^6.2.1", // Can be easly removed by creating a custom one
+  // dev: vite 8, vitest 5, typescript 6.0, eslint 10
 }
 ```
 
@@ -298,18 +298,20 @@ retro-dev-journey/
 │   │   ├── backgrounds/   # Background images
 │   │   ├── audio/         # Music files
 │   │   ├── rpgui/         # RPGUI framework files
-│   │   ├── favicon.ico    # Favicon default folder
-│   │   └── index.html     # index.html for CEO
+│   │   └── favicon.ico    # Favicon default folder
 │   │ 
+│   ├── index.html         # Page shell and SEO tags (Vite entry)
+│   ├── vite.config.ts     # Vite, dev server and Vitest configuration
 │   │ 
 │   ├── src/               # Source code
-│   │   ├── Components/    # React components
-│   │   ├── Pages/         # Page components
-│   │   ├── Services/      # API services
-│   │   ├── store/         # Redux store
+│   │   ├── components/    # React components
+│   │   ├── pages/         # Page components
+│   │   ├── game/          # Engine shared by Sandbox and Story (movement, collisions, scene)
+│   │   ├── services/      # API services
+│   │   ├── store/         # Redux store and persisted-state migrations
+│   │   ├── config/        # World, career, story and environment settings
 │   │   ├── hooks/         # Hooks TS folder
-│   │   ├── types/         # TypeScript definitions
-│   │   └── Utils/         # Utility functions
+│   │   └── types/         # TypeScript definitions
 │   │ 
 │   ├── Dockerfile         # Backend Docker container config
 │   ├── package.json       # Frontend dependencies
@@ -513,8 +515,12 @@ npm run build:dev    # Build for development
 npm run build:stage  # Build for staging
 npm run build:prod   # Build for production
 
-# Testing
-npm test            # Run test suite
+# Checks
+npm test            # Run the tests once (Vitest)
+npm run test:watch  # Re-run tests on change
+npm run typecheck   # TypeScript
+npm run lint        # ESLint
+npm run preview     # Serve the production build locally
 ```
 
 ### Backend Development

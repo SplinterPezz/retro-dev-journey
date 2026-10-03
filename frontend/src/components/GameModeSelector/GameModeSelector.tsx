@@ -27,11 +27,11 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
   const [backgroundVisible, setBackgroundVisible] = useState(true);
 
   const handleStoryMode = () => {
-    navigate('/story/difficulty');
+    void navigate('/story/difficulty');
   };
 
   const handleSandboxMode = () => {
-    navigate('/sandbox');
+    void navigate('/sandbox');
   };
 
   const toggleBackground = () => {
@@ -105,7 +105,7 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
             className="rpgui-button mt-3"
             type="button"
             style={{width:"250px"}}
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) => {handleDownloadClick('download')}}
+            onClick={() => handleDownloadClick('download')}
           >
             <p className='revert-top'>{downloadCVButtonText}</p>
           </button>
