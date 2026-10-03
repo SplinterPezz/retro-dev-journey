@@ -15,6 +15,9 @@ export interface ChapterProgress {
 
 export type StoryDifficulty = 'junior' | 'middle' | 'senior';
 
+// Score band of the end-of-day mini games, from the share of points earned.
+export type ScoreTierId = 'perfect' | 'great' | 'good' | 'low' | 'zero';
+
 // How the phone should be held for the story. 'portrait' is the normal layout;
 // the two landscape values are the two ways the phone can be turned, so the
 // player can flip the picture if it came out upside down.
@@ -42,6 +45,7 @@ export interface DialogueNode {
   text: string;
   choices?: DialogueChoiceOption[]; // when present, waits for a pick instead of auto-advancing
   next?: string; // used when there are no choices (linear line)
+  nextNpcId?: string; // `next` is a node of this NPC's script: another character speaks next (a scene where several people talk in turn)
   setFlag?: string; // set as soon as this line is shown
 }
 
@@ -145,6 +149,8 @@ export interface MiniGameMarker {
   interactionRadius?: number;
   completionFlag: string;
   requiredFlag?: string; // only available once this flag is set
+  // When the games are closed this NPC comments on the result, opening the node for the score band.
+  resultsDialogue?: { npcId: string; nodes: Record<ScoreTierId, string> };
 }
 
 export interface IntroPage {

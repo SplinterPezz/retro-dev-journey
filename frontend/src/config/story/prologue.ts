@@ -85,7 +85,18 @@ export const prologueChapter: StoryChapterConfig = {
   ],
 
   miniGames: [
-    { id: 'laptop-games', position: { x: 714, y: 380 }, interactionRadius: 80, completionFlag: 'miniGamesDone', requiredFlag: 'objectivesDone' },
+    {
+      id: 'laptop-games',
+      position: { x: 714, y: 380 },
+      interactionRadius: 80,
+      completionFlag: 'miniGamesDone',
+      requiredFlag: 'objectivesDone',
+      // the instructor sums up the class, then Manuel and Francesco tease the player
+      resultsDialogue: {
+        npcId: 'teacher',
+        nodes: { perfect: 'resultsPerfect', great: 'resultsGreat', good: 'resultsGood', low: 'resultsLow', zero: 'resultsZero' },
+      },
+    },
   ],
 
   npcs: [
@@ -104,6 +115,42 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // after the mini games: one line per score band
+          resultsPerfect: {
+            id: 'resultsPerfect',
+            speaker: 'Instructor',
+            text: "Good work, everyone - practically all of you passed the final exercise. And you, in the back: every single point. Don't let it go to your head.",
+            next: 'resultsPerfect',
+            nextNpcId: 'manuel',
+          },
+          resultsGreat: {
+            id: 'resultsGreat',
+            speaker: 'Instructor',
+            text: "Well done, guys - practically all of you passed the final exercise. You did really well too: a couple of slips, nothing a second coffee won't fix.",
+            next: 'resultsGreat',
+            nextNpcId: 'manuel',
+          },
+          resultsGood: {
+            id: 'resultsGood',
+            speaker: 'Instructor',
+            text: "Good job, everyone - practically all of you passed the final exercise. You made it too, though it was closer than it should be. Go over today's notes tonight.",
+            next: 'resultsGood',
+            nextNpcId: 'manuel',
+          },
+          resultsLow: {
+            id: 'resultsLow',
+            speaker: 'Instructor',
+            text: "Well, practically everyone passed today's exercise. Practically. You and I need a little chat - read chapter four again tonight, please.",
+            next: 'resultsLow',
+            nextNpcId: 'manuel',
+          },
+          resultsZero: {
+            id: 'resultsZero',
+            speaker: 'Instructor',
+            text: "Good job, everyone - almost all of you passed. Almost. Zero points... I didn't even know that was possible. Did you hold the laptop upside down?",
+            next: 'resultsZero',
+            nextNpcId: 'manuel',
+          },
           alreadyAnswered: {
             id: 'alreadyAnswered',
             speaker: 'Instructor',
@@ -163,6 +210,42 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // after the mini games: one line per score band
+          resultsPerfect: {
+            id: 'resultsPerfect',
+            speaker: 'Manuel',
+            text: "Every single point? Ok, from tomorrow you sit next to me. For purely educational reasons.",
+            next: 'resultsPerfect',
+            nextNpcId: 'francesco',
+          },
+          resultsGreat: {
+            id: 'resultsGreat',
+            speaker: 'Manuel',
+            text: "Look at you! I'll be asking you for help with the next build, just so you know.",
+            next: 'resultsGreat',
+            nextNpcId: 'francesco',
+          },
+          resultsGood: {
+            id: 'resultsGood',
+            speaker: 'Manuel',
+            text: "Passed is passed. My first build didn't even compile, so you're already ahead of me.",
+            next: 'resultsGood',
+            nextNpcId: 'francesco',
+          },
+          resultsLow: {
+            id: 'resultsLow',
+            speaker: 'Manuel',
+            text: "Hey, don't sweat it. The compiler hates everyone at the start. Tomorrow we study together - you bring the coffee.",
+            next: 'resultsLow',
+            nextNpcId: 'francesco',
+          },
+          resultsZero: {
+            id: 'resultsZero',
+            speaker: 'Manuel',
+            text: "Zero?! That takes talent, man. Even my drummer would have scored something, and he can't count to four.",
+            next: 'resultsZero',
+            nextNpcId: 'francesco',
+          },
           start: {
             id: 'start',
             speaker: 'Manuel',
@@ -310,6 +393,32 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // after the mini games: one line per score band
+          resultsPerfect: {
+            id: 'resultsPerfect',
+            speaker: 'Francesco',
+            text: "Fine, you win this round. But tomorrow I'm checking your screen - nobody gets everything right on day one.",
+          },
+          resultsGreat: {
+            id: 'resultsGreat',
+            speaker: 'Francesco',
+            text: "Not bad at all. Almost as good as me. Almost.",
+          },
+          resultsGood: {
+            id: 'resultsGood',
+            speaker: 'Francesco',
+            text: "Half of it right. The other half... let's call it research.",
+          },
+          resultsLow: {
+            id: 'resultsLow',
+            speaker: 'Francesco',
+            text: "I heard the laptop sigh from my desk. Want my notes? They're mostly doodles, but still.",
+          },
+          resultsZero: {
+            id: 'resultsZero',
+            speaker: 'Francesco',
+            text: "Zero points. Bold strategy: get nothing right and nobody expects anything from you. Honestly? I respect it.",
+          },
           start: {
             id: 'start',
             speaker: 'Francesco',

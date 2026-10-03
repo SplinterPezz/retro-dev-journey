@@ -69,6 +69,7 @@
 }
 
 .minigame-hint-text,
+.minigame-right,
 .minigame-wrong {
   margin: 10px 0 0 0;
   font-size: 0.85rem;
@@ -76,6 +77,14 @@
 
 .minigame-wrong {
   color: #ff8a80;
+}
+
+.minigame-right {
+  color: #7fdc8a;
+}
+
+.minigame-feedback {
+  margin: 0 0 10px 0;
 }
 
 .minigame-options {
@@ -146,16 +155,11 @@
   color: #bdf5f0;
 }
 
-.minigame-jokes {
-  padding: 8px 10px;
-  background: #0a2216;
-  border-left: 4px solid #7fdc8a;
+.minigame-final-note {
+  margin: 0;
+  text-align: center;
   font-size: 0.85rem;
   line-height: 1.5;
-}
-
-.minigame-jokes p {
-  margin: 0 0 8px 0;
 }
 
 .minigame-close {
