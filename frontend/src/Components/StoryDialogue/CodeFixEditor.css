@@ -20,3 +20,42 @@
   font-weight: normal;
 }
 
+
+/* Code is shown in a monospace font: the pixel label font makes ( and { look
+   alike. RPGUI sets its font on every element inside .rpgui-content (rule
+   `.rpgui-content *`), so the token spans need the font set directly. */
+.code-fix-editor .cm-editor,
+.code-fix-editor .cm-editor * {
+  font-family: 'Courier New', monospace !important;
+}
+
+.code-fix-editor .cm-content,
+.code-fix-editor .cm-gutters {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Multi-line editor: a minimum height so a short snippet still has room, and
+   a scroll once it grows. Format and Check sit side by side. */
+.code-fix-editor .cm-editor {
+  min-height: 180px;
+  max-height: 260px;
+}
+
+.code-fix-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.code-fix-actions .code-fix-submit {
+  flex: 1;
+  margin-top: 0;
+}
+
+.code-fix-format {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+}

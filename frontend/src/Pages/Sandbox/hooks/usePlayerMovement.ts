@@ -165,6 +165,9 @@ export const usePlayerMovement = <T extends CollidableEntity = StructureData>(co
   }, []);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Typing into a field or the code editor is not movement: let the key through.
+    const target = e.target as HTMLElement | null;
+    if (target && (target.isContentEditable || target.closest('input, textarea, .cm-editor'))) return;
     const k = e.key.toLowerCase();
     if (!validKeys.includes(k)) return;
     e.preventDefault();

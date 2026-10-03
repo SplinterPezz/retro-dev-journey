@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Exo+2&display=swap');
+
 .portrait-dialogue-container {
   position: fixed;
   bottom: 8%;
@@ -60,11 +62,13 @@
 
 .portrait-dialogue-text {
   margin: 8px 0 0 0;
-  font-size: 1rem !important;
-  line-height: 1.4;
+  font-size: 1.05rem !important;
+  line-height: 1.6;
+  letter-spacing: 0.08em;
+  word-spacing: 0.15em;
   color: #ffffff;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  font-family: 'Courier New', monospace;
+  font-family: 'Exo 2', sans-serif;
   word-wrap: break-word;
   min-height: 2.8em;
 }
@@ -89,8 +93,11 @@
 }
 
 @media (max-width: 768px) {
+  /* phones: the dialogue sits in the middle of the screen, both ways */
   .portrait-dialogue-container {
-    bottom: 12%;
+    top: 50%;
+    bottom: auto;
+    transform: translate(-50%, -50%);
     width: 95vw;
   }
 
@@ -102,7 +109,7 @@
   }
 
   .portrait-dialogue-text {
-    font-size: 0.9rem !important;
+    font-size: 0.95rem !important;
   }
 }
 
@@ -124,6 +131,6 @@
   }
 
   .portrait-dialogue-text {
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
   }
 }

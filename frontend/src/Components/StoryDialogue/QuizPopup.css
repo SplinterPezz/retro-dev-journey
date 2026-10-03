@@ -129,3 +129,21 @@
   color: #c8c8c8;
   font-size: 0.75rem;
 }
+
+/* Debug-only shortcut (REACT_APP_ENV=development), same red as the other debug buttons. */
+.quiz-debug-complete {
+  display: block;
+  margin: 12px auto 0;
+  padding: 6px 10px;
+  background: #b71c1c;
+  color: #fff;
+  border: 1px solid #ff8a80;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.quiz-debug-complete:hover {
+  background: #d32f2f;
+}

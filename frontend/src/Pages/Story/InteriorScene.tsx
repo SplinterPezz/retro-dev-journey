@@ -13,9 +13,13 @@ import InteriorNpc from '../../Components/StoryDialogue/InteriorNpc';
 import { useNpcPatrol } from './hooks/useNpcPatrol';
 import PortraitDialogueBox from '../../Components/StoryDialogue/PortraitDialogueBox';
 import QuizPopup from '../../Components/StoryDialogue/QuizPopup';
+import MiniGamesPopup from '../../Components/StoryDialogue/MiniGamesPopup';
+import type { MiniGameMarker } from '../../types/story';
+import type { Position } from '../../types/sandbox';
 import QuizMarker from '../../Components/StoryDialogue/QuizMarker';
 import AudioControls from '../../Components/AudioControls/AudioControls';
 import MobileJoystick from '../../Components/Common/MobileJoystick';
+import BobbingProp from '../../Components/StoryDialogue/BobbingProp';
 import '../../Components/Common/scene-layout.css';
 import { cameraStyle } from '../../Components/Common/cameraStyle';
 import { useLogicalViewport } from '../../Components/Common/screenOrientation';
@@ -44,6 +48,13 @@ const toCollidable = (id: string, position: { x: number; y: number }, interactio
   data: { collisionHitbox },
 });
 
+// Where an NPC stands right now: at its seat once seated, otherwise on its patrol.
+const isSeatedNpc = (npc: StoryNpcData, flags: Record<string, boolean>): boolean =>
+  !!npc.seatedFlag && !!flags[npc.seatedFlag];
+
+const npcStandingPosition = (npc: StoryNpcData, flags: Record<string, boolean>, live?: Position): Position =>
+  isSeatedNpc(npc, flags) && npc.seatedPosition ? npc.seatedPosition : (live ?? npc.position);
+
 const seenFlag = (npcId: string, nodeId: string) => `__seen_${npcId}_${nodeId}`;
 
 // Has this dialogue node already been shown to the player?
@@ -57,11 +68,13 @@ const DOOR_EXIT_ENABLED = false;
 const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex, onExit, introPending = false }) => {
   const dispatch = useDispatch<AppDispatch>();
   const chapterProgress = useSelector((state: RootState) => state.story.chapters[chapter.id]);
-  const difficulty = useSelector((state: RootState) => state.story.difficulty) ?? 'junior';
   const flags = useMemo(() => chapterProgress?.flags || {}, [chapterProgress]);
 
   const [activeDialogue, setActiveDialogue] = useState<{ npc: StoryNpcData; nodeId: string } | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<QuizData | null>(null);
+  const [activeMiniGame, setActiveMiniGame] = useState<MiniGameMarker | null>(null);
+  const miniGameDismissedRef = React.useRef(false);
+  const difficulty = useSelector((state: RootState) => state.story.difficulty) ?? 'junior';
   const [meepBubble, setMeepBubble] = useState<string | null>(null);
   // Stable reference - MeepBubble's auto-dismiss timer lives in a useEffect
   // keyed on this prop, so an inline arrow here (a new function every
@@ -87,17 +100,17 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const npcCollidables = useMemo(
     () =>
       chapter.npcs.map((npc) =>
-        toCollidable(npc.id, npcStates[npc.id]?.position ?? npc.position, npc.interactionRadius ?? 70, npc.collisionHitbox)
+        toCollidable(npc.id, npcStandingPosition(npc, flags, npcStates[npc.id]?.position), npc.interactionRadius ?? 50, npc.collisionHitbox)
       ),
-    [chapter.npcs, npcStates]
+    [chapter.npcs, npcStates, flags]
   );
   const quizCollidables = useMemo(
     () => chapter.quizzes.map((q) => toCollidable(q.id, q.position, q.interactionRadius ?? 70)),
     [chapter.quizzes]
   );
   const doorCollidable = useMemo(
-    () => [toCollidable('door', chapter.doorPosition, chapter.doorInteractionRadius ?? 60)],
-    [chapter.doorPosition, chapter.doorInteractionRadius]
+    () => [toCollidable('door', chapter.doorInteractionPosition ?? chapter.doorPosition, chapter.doorInteractionRadius ?? 60)],
+    [chapter.doorInteractionPosition, chapter.doorPosition, chapter.doorInteractionRadius]
   );
   const blockingProps = useMemo(
     () => chapter.props.map((p) => toCollidable(p.id, p.position, 0, p.collisionHitbox)),
@@ -118,8 +131,53 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
       maxY: chapter.worldConfig.height - 40,
     },
     structures: allBlocking,
-    canMove: !introPending && !activeQuiz,
+    canMove: !introPending && !activeQuiz && !activeMiniGame,
   });
+
+  // end-of-day mini games at the laptop: opens on entering the radius, once
+  const miniGameCollidables = useMemo(
+    () => (chapter.miniGames ?? []).map((m) => toCollidable(m.id, m.position, m.interactionRadius ?? 70)),
+    [chapter.miniGames]
+  );
+  const { nearbyStructure: nearbyMiniGameEntity } = useCollisionDetection({
+    playerPosition,
+    structures: miniGameCollidables,
+    interactionRadius: 70,
+  });
+
+  useEffect(() => {
+    if (exiting || introPending) return;
+    if (!nearbyMiniGameEntity) {
+      miniGameDismissedRef.current = false;
+      return;
+    }
+    const marker = chapter.miniGames?.find((m) => m.id === nearbyMiniGameEntity.id);
+    if (
+      marker &&
+      !flags[marker.completionFlag] &&
+      (!marker.requiredFlag || flags[marker.requiredFlag]) &&
+      !activeMiniGame &&
+      !activeQuiz &&
+      !activeDialogue &&
+      !miniGameDismissedRef.current
+    ) {
+      setActiveMiniGame(marker);
+    }
+  }, [nearbyMiniGameEntity, activeMiniGame, activeQuiz, activeDialogue, chapter.miniGames, flags, exiting, introPending]);
+
+  // power button: leave the games without marking them done; walking up again reopens them
+  const powerOffMiniGames = useCallback(() => {
+    miniGameDismissedRef.current = true;
+    setActiveMiniGame(null);
+  }, []);
+
+  const finishMiniGames = useCallback(() => {
+    if (activeMiniGame) {
+      dispatch(setFlag({ chapterId: chapter.id, flag: activeMiniGame.completionFlag }));
+    }
+    miniGameDismissedRef.current = true;
+    setActiveMiniGame(null);
+  }, [activeMiniGame, chapter.id, dispatch]);
 
   const meepPosition = useLaggedPosition(playerPosition, 450);
   const isMobile = useIsMobile();
@@ -129,7 +187,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const { nearbyStructure: nearbyNpcEntity } = useCollisionDetection({
     playerPosition,
     structures: npcCollidables,
-    interactionRadius: 70,
+    interactionRadius: 50,
   });
   const { nearbyStructure: nearbyQuizEntity } = useCollisionDetection({
     playerPosition,
@@ -139,7 +197,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const { nearbyStructure: nearbyDoor } = useCollisionDetection({
     playerPosition,
     structures: doorCollidable,
-    interactionRadius: 60,
+    interactionRadius: chapter.doorInteractionRadius ?? 60,
   });
 
   const getNode = (npc: StoryNpcData, nodeId: string): DialogueNode => npc.dialogue.nodes[nodeId];
@@ -164,12 +222,17 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
         const npc = chapter.npcs.find((n) => n.id === nearbyNpcEntity.id);
         if (npc && (!npc.requiredFlag || flags[npc.requiredFlag])) {
           openedForNpcRef.current = npc.id;
-          setActiveDialogue({ npc, nodeId: npc.dialogue.startNodeId });
+          const alreadyAnswered = !!npc.answeredFlag && !!flags[npc.answeredFlag] && !!npc.afterAnswerNodeId;
+          setActiveDialogue({ npc, nodeId: alreadyAnswered ? npc.afterAnswerNodeId! : npc.dialogue.startNodeId });
         }
       }
     } else {
       openedForNpcRef.current = null;
-      if (activeDialogue) {
+      // A cued dialogue (autoStartNodeId, e.g. the instructor after the
+      // objectives) runs to its end even if the player is far from the NPC:
+      // only dialogues opened by walking up to someone close.
+      const isCued = activeDialogue?.npc.autoStartNodeId === activeDialogue?.nodeId;
+      if (activeDialogue && !isCued) {
         const timer = setTimeout(() => setActiveDialogue(null), 50);
         return () => clearTimeout(timer);
       }
@@ -218,6 +281,26 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
       return () => clearTimeout(timer);
     }
   }, [nearbyDoor, exiting, onExit]);
+
+  // all objectives done: sets objectivesDone, which shows the arrow at the laptop
+  useEffect(() => {
+    const objectives = chapter.objectives ?? [];
+    if (objectives.length === 0 || flags.objectivesDone) return;
+    if (objectives.every((o) => flags[o.flag])) {
+      dispatch(setFlag({ chapterId: chapter.id, flag: 'objectivesDone' }));
+    }
+  }, [flags, chapter.objectives, chapter.id, dispatch]);
+
+  // an NPC whose autoStartFlag is set opens its dialogue by itself, once
+  useEffect(() => {
+    if (exiting || introPending || activeDialogue || activeQuiz || activeMiniGame) return;
+    const cue = chapter.npcs.find(
+      (n) => n.autoStartFlag && n.autoStartNodeId && flags[n.autoStartFlag] && !flags[`${n.id}_cued`]
+    );
+    if (!cue || !cue.autoStartNodeId) return;
+    dispatch(setFlag({ chapterId: chapter.id, flag: `${cue.id}_cued` }));
+    setActiveDialogue({ npc: cue, nodeId: cue.autoStartNodeId });
+  }, [flags, activeDialogue, activeQuiz, activeMiniGame, chapter.npcs, chapter.id, dispatch, exiting, introPending]);
 
   // chapter completion
   useEffect(() => {
@@ -349,8 +432,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             </div>
 
             <div className="structure-container">
-              {chapter.props.map((prop) => (
-                <Environment key={prop.id} environment={prop} size={128} />
+              {chapter.props.filter((prop) => !prop.visibleWhenFlag || flags[prop.visibleWhenFlag]).map((prop) => (
+                prop.visibleWhenFlag ? (
+                  <BobbingProp key={prop.id} prop={prop} />
+                ) : (
+                  <Environment key={prop.id} environment={prop} size={128} />
+                )
               ))}
             </div>
 
@@ -358,14 +445,14 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
               <InteriorNpc
                 key={npc.id}
                 npc={npc}
-                position={npcStates[npc.id]?.position ?? npc.position}
-                moving={npcStates[npc.id]?.moving ?? false}
+                position={npcStandingPosition(npc, flags, npcStates[npc.id]?.position)}
+                moving={isSeatedNpc(npc, flags) ? false : (npcStates[npc.id]?.moving ?? false)}
                 direction={npcStates[npc.id]?.direction ?? 'S'}
                 isNearby={nearbyNpcEntity?.id === npc.id}
               />
             ))}
 
-            {chapter.quizzes.map((quiz) => (
+            {chapter.quizzes.filter((quiz) => !quiz.requiredFlag || flags[quiz.requiredFlag]).map((quiz) => (
               <QuizMarker key={quiz.id} position={quiz.position} />
             ))}
 
@@ -376,6 +463,53 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
             <Player position={playerPosition} isMoving={isMoving} direction={direction} />
 
+            {process.env.REACT_APP_ENV === 'development' && (
+              <>
+                {/* interaction zones: dashed circles, the walk-up radius of each quiz, mini game, NPC and the door */}
+                {[
+                  ...chapter.quizzes.map((q) => ({ id: q.id, pos: q.position, r: q.interactionRadius ?? 70 })),
+                  ...(chapter.miniGames ?? []).map((m) => ({ id: m.id, pos: m.position, r: m.interactionRadius ?? 70 })),
+                  ...chapter.npcs.map((n) => ({ id: n.id, pos: npcStandingPosition(n, flags, npcStates[n.id]?.position), r: n.interactionRadius ?? 50 })),
+                  { id: 'door', pos: chapter.doorInteractionPosition ?? chapter.doorPosition, r: chapter.doorInteractionRadius ?? 60 },
+                ].map((z) => (
+                  <div
+                    key={`zone-${z.id}`}
+                    className="debug-zone"
+                    style={{
+                      position: 'absolute',
+                      left: z.pos.x - z.r,
+                      top: z.pos.y - z.r,
+                      width: z.r * 2,
+                      height: z.r * 2,
+                      border: '2px dashed #00e5ff',
+                      borderRadius: '50%',
+                      backgroundColor: 'rgba(0, 229, 255, 0.08)',
+                      pointerEvents: 'none',
+                      zIndex: 9997,
+                    }}
+                  />
+                ))}
+                {/* visual-only props that are hidden until a flag (the arrow): their picture box */}
+                {chapter.props
+                  .filter((p) => p.visibleWhenFlag && p.imageSize)
+                  .map((p) => (
+                    <div
+                      key={`visual-${p.id}`}
+                      className="debug-zone"
+                      style={{
+                        position: 'absolute',
+                        left: p.position.x,
+                        top: p.position.y,
+                        width: p.imageSize!.width,
+                        height: p.imageSize!.height,
+                        border: '2px dashed #ffd700',
+                        pointerEvents: 'none',
+                        zIndex: 9997,
+                      }}
+                    />
+                  ))}
+              </>
+            )}
             {process.env.REACT_APP_ENV === 'development' && (
               <>
                 <div
@@ -443,6 +577,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           />
         )}
 
+        {activeMiniGame && (
+          <MiniGamesPopup difficulty={difficulty} onFinish={finishMiniGames} onPowerOff={powerOffMiniGames} />
+        )}
         {activeQuiz && (
           <QuizPopup
             quiz={activeQuiz}

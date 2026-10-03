@@ -191,6 +191,15 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
   }
 
   const doneCount = quiz.categories.filter((c) => flags[c.completionFlag]).length;
+
+  // Debug only: marks every topic done and finishes the quiz, to test what
+  // comes after it without answering every question.
+  const handleDebugCompleteAll = () => {
+    quiz.categories.forEach((c) => {
+      if (!flags[c.completionFlag]) onSetFlag(c.completionFlag);
+    });
+    onAllComplete();
+  };
   const currentQuestion = shuffledQuestions[questionIndex];
   const isCodeQuestion = currentQuestion?.codeSnippet !== undefined;
   const attemptsLeft = mistakeLimit === null ? null : Math.max(0, mistakeLimit - mistakes);
@@ -222,6 +231,11 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
               <span className="quiz-popup-progress">
                 {doneCount} / {quiz.categories.length} topics
               </span>
+              {process.env.REACT_APP_ENV === 'development' && (
+                <button type="button" className="quiz-debug-complete" onClick={handleDebugCompleteAll}>
+                  Debug: complete all
+                </button>
+              )}
             </>
           )}
 

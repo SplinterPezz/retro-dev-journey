@@ -1,0 +1,239 @@
+.minigame-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.75);
+  box-sizing: border-box;
+}
+
+/* Lives on the monitor screen: no box of its own, green terminal text. */
+.minigame-popup {
+  width: 100%;
+  color: #9dffb0;
+  font-family: 'Courier New', monospace;
+  box-sizing: border-box;
+}
+
+.minigame-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #2f7a4a;
+}
+
+.minigame-title,
+.minigame-game-title {
+  margin: 0;
+  color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1.6;
+}
+
+.minigame-running {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.minigame-running strong {
+  color: #ffd700;
+  font-size: 1rem;
+}
+
+.minigame-prompt {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+}
+
+.minigame-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  opacity: 0.85;
+}
+
+.minigame-hint {
+  padding: 6px 10px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+}
+
+.minigame-hint-text,
+.minigame-wrong {
+  margin: 10px 0 0 0;
+  font-size: 0.85rem;
+}
+
+.minigame-wrong {
+  color: #ff8a80;
+}
+
+.minigame-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.minigame-option {
+  padding: 10px 12px;
+  text-align: left;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.minigame-hash {
+  color: #5a3018;
+  font-weight: bold;
+}
+
+.minigame-log {
+  max-height: 46vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px;
+  background: #06120b;
+  border: 1px solid #2f7a4a;
+}
+
+.minigame-log-line {
+  padding: 4px 6px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: #c8f0c0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.minigame-log-line:hover {
+  background: #163a26;
+}
+
+.minigame-final-score {
+  margin: 14px 0 6px 0;
+  text-align: center;
+}
+
+.minigame-score-number {
+  color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 2.2rem;
+}
+
+.minigame-score-max {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.8rem;
+}
+
+.minigame-tier {
+  margin: 0 0 12px 0;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #bdf5f0;
+}
+
+.minigame-jokes {
+  padding: 8px 10px;
+  background: #0a2216;
+  border-left: 4px solid #7fdc8a;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.minigame-jokes p {
+  margin: 0 0 8px 0;
+}
+
+.minigame-close {
+  display: block;
+  margin: 16px auto 0;
+  padding: 10px 26px;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.7rem;
+}
+
+/* Screen layout: the header wraps on small screens, the running score is a
+   badge, and each game has room to breathe. */
+.minigame-header {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+.minigame-game-title {
+  font-size: 0.55rem;
+}
+
+.minigame-running {
+  padding: 4px 10px;
+  background: #0a2216;
+  border: 2px solid #7fdc8a;
+  box-shadow: 0 0 8px rgba(127, 220, 138, 0.35);
+  font-size: 0.8rem;
+  color: #c8f0c0;
+}
+
+.minigame-running strong {
+  color: #ffd700;
+  font-size: 1.05rem;
+}
+
+.minigame {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.minigame-prompt {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #e6fff0;
+  line-height: 1.5;
+}
+
+.minigame-meta {
+  padding-top: 8px;
+  border-top: 1px dashed #2f7a4a;
+  color: #9dffb0;
+}
+
+.minigame-option {
+  padding: 10px 14px;
+  line-height: 1.4;
+}
+
+.minigame-hint-text {
+  padding: 8px 10px;
+  background: #0a2216;
+  border-left: 3px solid #ffd700;
+  color: #fff3c4;
+}
+
+/* Debug-only shortcut (REACT_APP_ENV=development), same red as the other debug buttons. */
+.minigame-debug-complete {
+  padding: 4px 8px;
+  background: #b71c1c;
+  color: #fff;
+  border: 1px solid #ff8a80;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.minigame-debug-complete:hover {
+  background: #d32f2f;
+}
