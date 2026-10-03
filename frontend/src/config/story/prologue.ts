@@ -773,6 +773,7 @@ export const prologueChapter: StoryChapterConfig = {
         {
           id: 'objc',
           label: 'Objective-C',
+          hint: "It's early 2014. Swift doesn't exist yet. Objective-C is the only language Apple gives you, so if it looks like it was carved in stone, that's because it was.",
           completionFlag: 'quizObjCDone',
           questions: [
             {

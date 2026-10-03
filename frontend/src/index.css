@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* One font for every RPGUI button. RPGUI only sets it inside .rpgui-content, so
+   buttons rendered outside that wrapper (e.g. Download CV on the home page)
+   fell back to the system font. */
+.rpgui-button,
+.rpgui-button p {
+  font-family: 'Press Start 2P', cursive;
+}
+
+/* Label look of the RPGUI buttons: a black outline on all four sides and the
+   22px line box RPGUI gives them. Story Mode / Sandbox / Download CV use this. */
+.rpgui-button p {
+  line-height: 22px;
+  text-shadow: -2px 0 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000;
+}

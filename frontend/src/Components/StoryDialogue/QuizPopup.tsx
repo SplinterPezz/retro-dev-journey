@@ -214,6 +214,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
                   id: c.id,
                   label: flags[c.completionFlag] ? `✓ ${c.label}` : c.label,
                   disabled: flags[c.completionFlag],
+                  hint: c.hint,
                 }))}
                 onSelect={handlePickCategory}
               />

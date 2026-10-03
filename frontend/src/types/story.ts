@@ -82,6 +82,7 @@ export interface QuizQuestion {
 export interface QuizCategory {
   id: string;
   label: string; // e.g. "Java", "Android", "Objective-C", "OOP Basics"
+  hint?: string; // easter egg: shown in a speech balloon from a "?" next to the topic
   questions: QuizQuestion[];
   completionFlag: string; // set once all of this category's questions are answered correctly
 }
