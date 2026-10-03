@@ -5,7 +5,7 @@ import './CodeFixEditor.css';
 import '../../Common/pixel-button.css';
 import { formatJava } from './formatJava';
 
-interface CodeFixEditorProps {
+export interface CodeFixEditorProps {
   initialCode: string;
   onSubmit: (code: string) => void;
   disabled?: boolean;

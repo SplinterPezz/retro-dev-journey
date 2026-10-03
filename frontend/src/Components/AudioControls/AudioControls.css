@@ -104,3 +104,7 @@
         min-height: 50px; 
     }
 }
+/* Icons dimmed until the audio has loaded. */
+.opacity-not-loaded {
+  opacity: 0.9;
+}

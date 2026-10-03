@@ -116,7 +116,8 @@ def to_gif(frames, path):
 
 
 if __name__ == "__main__":
-    out_dir = os.path.dirname(os.path.abspath(__file__))
+    # The game serves the sprites from frontend/public; this script lives in assets/tools/meep.
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../frontend/public/sprites/story/companion/meep")
     for d in ["S", "SE", "E", "NE", "N", "NW", "W", "SW"]:
         path = os.path.join(out_dir, f"meep_{d}.gif")
         to_gif(frames_for(d), path)

@@ -5,7 +5,7 @@ import "./HomePage.css";
 import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
 import { useTracking } from "../../hooks/useTracking";
 import { downloadCV } from '../../Services/fileService';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { playerTurnSprite } from "../../config/assets";
 import { isDev, devLog, devError } from "../../config/env";
 import { homeAudioTrack, homeDefaultVolume, homeBackgroundImage } from "../../config/home";

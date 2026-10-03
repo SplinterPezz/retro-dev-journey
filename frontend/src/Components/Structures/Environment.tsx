@@ -1,5 +1,6 @@
 import React from 'react';
 import { EnvironmentData } from '../../types/sandbox';
+import './Structure.css';
 
 
 interface EnvironmentDataProps {

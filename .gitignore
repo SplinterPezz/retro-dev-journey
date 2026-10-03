@@ -15,3 +15,7 @@ tmp/
 # Private reference photos for character design - keep out of git
 reference/
 backend/pre_cmd.txt
+
+# Python bytecode from the asset scripts
+__pycache__/
+*.pyc

@@ -23,10 +23,3 @@
 .story-progress-item .quest-name {
   white-space: normal;
 }
-
-/* Collapsible list of the story objectives: height and opacity ease with a
-   transition, so the state always follows the toggle. */
-.story-progress-collapsible {
-  overflow: hidden;
-  transition: max-height 0.3s ease, opacity 0.3s ease;
-}

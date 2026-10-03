@@ -17,7 +17,7 @@ import Environment from '../../Components/Structures/Environment';
 import DownloadCV from '../../Components/Structures/DownloadCV';
 import PixelProgressBar from '../../Components/Common/PixelProgressBar';
 import HomeButton from '../../Components/Common/HomeButton';
-import DailyQuestComponent from '../../Components/DailyQuest/DailyQuestComponent';
+import DailyQuest from '../../Components/DailyQuest/DailyQuest';
 import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import {
@@ -289,7 +289,7 @@ const SandboxPage: React.FC = () => {
         </GameScene>
 
         {selectedStructure && <StructureDialog structure={selectedStructure} />}
-        <DailyQuestComponent questPrefix={questPrefix} showProgress={true} />
+        <DailyQuest questPrefix={questPrefix} showProgress={true} />
       </div>
     </div>
   );

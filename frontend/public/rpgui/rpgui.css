@@ -1,10 +1,11 @@
+/* Source of rpgui.min.css (the one index.html loads): after editing, regenerate the min file with cssnano. */
 /*
 Import the font stylesheet.
 If not supported you can add backup via:
 <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
 inside your html file.
 */
-@import url("https://fonts.googleapis.com/css?family=Press+Start+2P");
+/* The Press Start 2P font is loaded by a <link> in index.html (an @import here would block rendering). */
 /**
 * Customized scrollbars
 */

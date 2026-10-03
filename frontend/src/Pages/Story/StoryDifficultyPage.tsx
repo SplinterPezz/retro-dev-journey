@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { setDifficulty, setOrientation } from '../../store/storySlice';
@@ -53,7 +53,7 @@ const StoryDifficultyPage: React.FC = () => {
       </div>
       <div className="rpgui-container framed-golden story-difficulty-box">
         <h2 className="story-difficulty-title">Are you a developer?</h2>
-        <p className="story-difficulty-hint">There are few tech question in this game</p>
+        <p className="story-difficulty-hint">There are a few tech questions in this game</p>
         <div className="story-difficulty-buttons">
           {difficulties.map((level) => (
             <button

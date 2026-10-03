@@ -1,7 +1,8 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { 
-  persistStore, 
+import {
+  persistStore,
   persistReducer,
+  createMigrate,
   FLUSH,
   REHYDRATE,
   PAUSE,
@@ -16,12 +17,15 @@ import welcomeSlice from './welcomeSlice'
 import contentSlice from './consentSlice'
 import storySlice from './storySlice'
 import zoomSlice from './zoomSlice'
+import { migrations, PERSIST_VERSION } from './migrations';
+import { devLog } from '../config/env';
 
 const persistConfig = {
   key: 'root',
-  version: 1,
+  version: PERSIST_VERSION,
   storage,
-  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom']
+  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom'],
+  migrate: createMigrate(migrations, { debug: false }),
 };
 
 const rootReducer = combineReducers({
@@ -48,14 +52,7 @@ export const store = configureStore({
 
 export const persistor = persistStore(store, {}, () => {
   store.dispatch(cleanOldInteractions());
-  
-  if (process.env.REACT_APP_ENV === 'development') {
-    const state = store.getState();
-    console.log('Store initialized and old interactions cleaned:', {
-      remainingInteractions: state.tracking.interactions.length,
-      interactions: state.tracking.interactions
-    });
-  }
+  devLog('Store initialized and old interactions cleaned:', store.getState().tracking.interactions);
 });
 
 export type RootState = ReturnType<typeof store.getState>;

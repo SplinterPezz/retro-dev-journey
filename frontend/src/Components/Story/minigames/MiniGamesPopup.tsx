@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { StoryDifficulty } from '../../../types/story';
-import CodeFixEditor from '../code/CodeFixEditor';
+import CodeFixEditor from '../code/LazyCodeFixEditor';
+import { sameCode } from '../code/sameCode';
+import { exceedsMistakeLimit } from '../../../config/story/difficulty';
 import PcMonitor from './PcMonitor';
 import '../../Common/pixel-button.css';
 import './MiniGamesPopup.css';
@@ -15,6 +17,7 @@ import {
   miniGameMistakesByDifficulty,
   tierFor,
 } from '../../../config/story/miniGames';
+import { isDev } from '../../../config/env';
 
 interface MiniGamesPopupProps {
   difficulty: StoryDifficulty;
@@ -30,12 +33,10 @@ const useMistakes = (difficulty: StoryDifficulty, onRestart: () => void) => {
   const miss = () => {
     const next = mistakes + 1;
     setMistakes(next);
-    if (limit !== null && next > limit) onRestart();
+    if (exceedsMistakeLimit(next, limit)) onRestart();
   };
   return { mistakes, limit, miss };
 };
-
-const normalise = (code: string) => code.replace(/\s+/g, '');
 
 // ---- Game 1: fix the build ----
 
@@ -56,7 +57,7 @@ const FixBuildGame: React.FC<FixBuildProps> = ({ difficulty, onDone, onRestart }
   const worth = BASE_POINTS * difficultyMultiplier[difficulty];
 
   const submit = (code: string) => {
-    if (normalise(code) === normalise(snippet.expected)) {
+    if (sameCode(code, snippet.expected)) {
       const nextPoints = points + worth;
       setPoints(nextPoints);
       setFeedback('none');
@@ -236,7 +237,7 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
         <div className="minigame-header">
           <span className="minigame-game-title">{gameTitles[gameIndex]}</span>
           <span className="minigame-running">Points: <strong>{total}</strong> / {max}</span>
-          {process.env.REACT_APP_ENV === 'development' && (
+          {isDev && (
             <button type="button" className="minigame-debug-complete" onClick={() => onFinish(max, max)}>
               Debug: complete
             </button>

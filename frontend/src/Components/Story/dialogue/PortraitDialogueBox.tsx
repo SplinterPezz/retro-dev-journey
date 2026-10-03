@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTypedText } from '../../../hooks/useTypedText';
 import DialogueChoices, { ChoiceButtonItem } from './DialogueChoices';
 import './PortraitDialogueBox.css';
@@ -37,9 +37,33 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
     }
   };
 
+  // Enter / Space do what a click on the box does (finish the line, then
+  // continue). Choice buttons handle their own keys once they are shown.
+  const handleBoxClickRef = useRef(handleBoxClick);
+  handleBoxClickRef.current = handleBoxClick;
+  const hasChoices = !!choices && choices.length > 0;
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('button, input, textarea, .cm-editor')) return;
+      if (hasChoices && !isTyping) return;
+      e.preventDefault();
+      handleBoxClickRef.current();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [hasChoices, isTyping]);
+
   return (
     <div className="portrait-dialogue-container">
-      <div className="rpgui-container framed-golden portrait-dialogue-box" onClick={handleBoxClick}>
+      <div
+        className="rpgui-container framed-golden portrait-dialogue-box"
+        onClick={handleBoxClick}
+        role="dialog"
+        aria-label={speakerName}
+        aria-live="polite"
+      >
         <div
           className="portrait-dialogue-portrait"
           style={{ backgroundImage: `url(${portraitImage})` }}

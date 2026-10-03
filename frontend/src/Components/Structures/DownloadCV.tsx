@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { StructureData } from '../../types/sandbox';
 import { downloadCV } from '../../Services/fileService';
 import { downloadCVCooldown } from '../../config/sandbox';
+import { isDev } from '../../config/env';
+import { useTimeouts } from '../../hooks/useTimeouts';
+import './Structure.css';
 
 interface DownloadCVProps {
     isNearby: boolean;
@@ -14,7 +17,7 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     const [cooldownTimer, setCooldownTimer] = useState(0);
     const [downloadStatus, setDownloadStatus] = useState<'idle' | 'downloading' | 'success' | 'error'>('idle');
     const downloadTriggeredRef = useRef(false);
-    const cooldownIntervalRef = useRef<NodeJS.Timeout | null>(null);
+    const later = useTimeouts();
 
     useEffect(() => {
         if (!isNearby) {
@@ -31,24 +34,15 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNearby, cooldownActive, isDownloading]);
 
+    // One-second countdown while the cooldown runs.
     useEffect(() => {
-        if (cooldownActive && cooldownTimer > 0) {
-            cooldownIntervalRef.current = setTimeout(() => {
-                setCooldownTimer(prev => {
-                    if (prev <= 1) {
-                        setCooldownActive(false);
-                        return 0;
-                    }
-                    return prev - 1;
-                });
-            }, 1000);
+        if (!cooldownActive) return;
+        if (cooldownTimer <= 0) {
+            setCooldownActive(false);
+            return;
         }
-
-        return () => {
-            if (cooldownIntervalRef.current) {
-                clearTimeout(cooldownIntervalRef.current);
-            }
-        };
+        const tick = setTimeout(() => setCooldownTimer((prev) => prev - 1), 1000);
+        return () => clearTimeout(tick);
     }, [cooldownActive, cooldownTimer]);
 
     const handleDownload = async () => {
@@ -66,18 +60,14 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
             setCooldownTimer(downloadCVCooldown);
             
             // Reset status after showing success briefly
-            setTimeout(() => {
-                setDownloadStatus('idle');
-            }, 2000);
+            later(() => setDownloadStatus('idle'), 2000);
             
         } catch (error) {
             console.error('Download failed:', error);
             setDownloadStatus('error');
             
             // Reset status after showing error briefly
-            setTimeout(() => {
-                setDownloadStatus('idle');
-            }, 3000);
+            later(() => setDownloadStatus('idle'), 3000);
         } finally {
             setIsDownloading(false);
         }
@@ -164,7 +154,7 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
                 </div>
 
                 {/* Development debug info */}
-                {process.env.REACT_APP_ENV === 'development' && (
+                {isDev && (
                     <>
                         <div 
                             className="interaction-radius"

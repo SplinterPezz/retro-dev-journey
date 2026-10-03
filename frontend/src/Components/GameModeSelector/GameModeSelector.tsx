@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import './GameModeSelector.css';
 import {
   gameModeTitlePrefix,
@@ -53,13 +53,9 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
         <h2 className="title-gamemode-box mb-3 mb-md-4 " >
           {gameModeTitlePrefix}{' '}
           {easterEggEnabled ? (
-            <span
-              className="easter-egg-btn"
-              onClick={toggleBackground}
-              title=""
-            >
+            <button type="button" className="easter-egg-btn" onClick={toggleBackground} aria-pressed={backgroundVisible}>
               {gameModeTitleEasterEggWord}
-            </span>
+            </button>
           ) : (
             <span>{gameModeTitleEasterEggWord}</span>
           )}

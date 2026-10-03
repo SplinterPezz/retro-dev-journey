@@ -26,3 +26,23 @@ code {
   line-height: 22px;
   text-shadow: -2px 0 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000;
 }
+
+/* Undo RPGUI's top margin on a button label. */
+.revert-top {
+  margin-top: revert;
+}
+
+/* Placeholder while the persisted state or a page chunk loads. */
+.page-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #000;
+  color: #fff;
+}
+
+/* Centred golden rule between a dialog's title and its body (dialogs, quiz, welcome). */
+.dialog-separator {
+  text-align: center;
+}

@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { QuizData, QuizCategory, QuizQuestion, StoryDifficulty } from '../../../types/story';
-import { maxMistakesByDifficulty } from '../../../config/story/difficulty';
+import { exceedsMistakeLimit, maxMistakesByDifficulty } from '../../../config/story/difficulty';
+import { sameCode } from '../code/sameCode';
+import { isDev } from '../../../config/env';
+import { useTimeouts } from '../../../hooks/useTimeouts';
 import DialogueChoices from '../dialogue/DialogueChoices';
-import CodeFixEditor from '../code/CodeFixEditor';
+import CodeFixEditor from '../code/LazyCodeFixEditor';
 import StoryIntroDialog from '../dialogue/StoryIntroDialog';
 import '../../Common/pixel-button.css';
 import './QuizPopup.css';
@@ -66,8 +69,6 @@ const questionsForDifficulty = (category: QuizCategory, difficulty: StoryDifficu
   return matching.length > 0 ? matching : category.questions;
 };
 
-const normalizeCode = (code: string) => code.replace(/\s+/g, '');
-
 // Multi-stage quiz: a one-time 2-page intro (StoryIntroDialog), then a
 // category picker, then that category's questions for the chosen difficulty.
 // Finishing a category marks it done; once every category is done, the whole
@@ -83,6 +84,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
   const [locked, setLocked] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [runId, setRunId] = useState(0);
+  const later = useTimeouts();
 
   const activeCategory: QuizCategory | undefined = useMemo(
     () => quiz.categories.find((c) => c.id === activeCategoryId),
@@ -126,7 +128,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
       setFeedback('correct');
       setNotice(null);
       const isLastQuestion = questionIndex === shuffledQuestions.length - 1;
-      setTimeout(() => {
+      later(() => {
         if (isLastQuestion) {
           onSetFlag(activeCategory.completionFlag);
           const allDone = quiz.categories.every(
@@ -147,14 +149,14 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
 
     // Brief "Wrong answer" flash, then the usual hint / restart message.
     const nextMistakes = mistakes + 1;
-    const restarts = mistakeLimit !== null && nextMistakes >= mistakeLimit;
+    const restarts = exceedsMistakeLimit(nextMistakes, mistakeLimit);
     const afterFlash = restarts
       ? 'Too many mistakes - this topic starts over from question 1.'
       : wrongText || 'Not quite - try again.';
     setFeedback('wrong');
     setNotice('Wrong answer');
     setLocked(true);
-    setTimeout(() => {
+    later(() => {
       setLocked(false);
       setNotice(afterFlash);
       if (restarts) {
@@ -176,7 +178,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
   const handleCodeSubmit = (code: string) => {
     const question = shuffledQuestions[questionIndex];
     if (!question || question.expectedCode === undefined) return;
-    applyResult(normalizeCode(code) === normalizeCode(question.expectedCode), question.onWrongText);
+    applyResult(sameCode(code, question.expectedCode), question.onWrongText);
   };
 
   if (stage === 'intro') {
@@ -231,7 +233,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
               <span className="quiz-popup-progress">
                 {doneCount} / {quiz.categories.length} topics
               </span>
-              {process.env.REACT_APP_ENV === 'development' && (
+              {isDev && (
                 <button type="button" className="quiz-debug-complete" onClick={handleDebugCompleteAll}>
                   Debug: complete all
                 </button>

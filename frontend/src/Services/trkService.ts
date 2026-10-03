@@ -1,5 +1,6 @@
 import { TrkData } from '../types/tracking';
 import { fetchFromApi } from './api';
+import { devLog, devError } from '../config/env';
 
 export const sendTrackingData = async (data: TrkData): Promise<void> => {
   try {
@@ -15,13 +16,9 @@ export const sendTrackingData = async (data: TrkData): Promise<void> => {
       body: JSON.stringify(payload),
     });
     
-    if (process.env.REACT_APP_ENV === 'development') {
-      console.log('Tracking data sent:', payload);
-    }
-    
+    devLog('Tracking data sent:', payload);
+
   } catch (error) {
-    if (process.env.REACT_APP_ENV === 'development') {
-      console.error('Failed to send tracking data:', error);
-    }
+    devError('Failed to send tracking data:', error);
   }
 };

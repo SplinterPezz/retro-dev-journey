@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -6,339 +6,208 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ThemeProvider } from '@mui/material/styles';
 import ReactApexChart from 'react-apexcharts';
 import './AdminPage.css';
-import { StyledTextField, blackCalendarTheme, apexUniqueUsers, apexDailyAvarage, apexInteractionsDaily, apexDailyDownloads, apexBrowsersPie, apexDevicesDonut } from './AdminChart';
+import { StyledTextField, blackCalendarTheme } from './adminTheme';
+import {
+  apexUniqueUsers,
+  apexPageTime,
+  apexInteractionsDaily,
+  apexDailyDownloads,
+  apexBrowsersPie,
+  apexDevicesDonut,
+} from './chartOptions';
 import {
   getDailyUniqueUsers,
   getPageTimeStats,
   getDownloadStats,
   getInteractionStats,
   getDeviceStats,
-  getBrowserStats
+  getBrowserStats,
 } from '../../Services/analyticsService';
+import { isApiError } from '../../Services/api';
 import { downloadCV, uploadCV } from '../../Services/fileService';
-import { analyticsBackgroundImage } from '../../config/admin';
+import { analyticsBackgroundImage, maxSizeFileCV } from '../../config/admin';
+import { devError } from '../../config/env';
+import { capitalize, dayLabel, toSeriesByPage } from './series';
+import {
+  BrowserStats,
+  DailyUserStats,
+  DeviceStats,
+  DownloadStats,
+  InteractionStats,
+  PageTimeStats,
+} from '../../types/analytics';
 
 type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
+
+interface AnalyticsData {
+  users: DailyUserStats[] | null;
+  pageTime: PageTimeStats[] | null;
+  interactions: InteractionStats[] | null;
+  downloads: DownloadStats[] | null;
+  devices: DeviceStats[] | null;
+  browsers: BrowserStats[] | null;
+}
+
+const NO_DATA: AnalyticsData = {
+  users: null,
+  pageTime: null,
+  interactions: null,
+  downloads: null,
+  devices: null,
+  browsers: null,
+};
+
+const withCategories = <C extends { options: { xaxis?: object } }>(chart: C, categories: string[]) => ({
+  ...chart.options,
+  xaxis: { ...chart.options.xaxis, categories },
+});
 
 export default function AdminPage() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs().subtract(30, 'day'));
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [uniqueUsers, setUniqueUsers] = useState(false);
-  const [pageTime, setPageTime] = useState(false);
-  const [interactions, setInteractions] = useState(false);
-  const [downloads, setDownloads] = useState(false);
-  const [devices, setDevices] = useState(false);
-  const [browsers, setBrowsers] = useState(false);
-
-
-  const [chartUniqueUsers, setChartUniqueUsers] = useState(apexUniqueUsers);
-  const [chartPageTime, setChartPageTime] = useState(apexDailyAvarage);
-  const [chartInteractions, setChartInteractions] = useState(apexInteractionsDaily);
-  const [chartDownloads, setChartDownloads] = useState(apexDailyDownloads);
-  const [chartDevices, setChartDevices] = useState(apexDevicesDonut);
-  const [chartBrowsers, setChartBrowsers] = useState(apexBrowsersPie);
-
+  const [data, setData] = useState<AnalyticsData>(NO_DATA);
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchData = async () => {
+  useEffect(() => {
     if (!startDate || !endDate) return;
+    let cancelled = false;
+    const dateRange = { start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') };
 
     setLoading(true);
     setError(null);
-
-    try {
-      const dateRange = {
-        start_date: startDate.format('YYYY-MM-DD'),
-        end_date: endDate.format('YYYY-MM-DD')
-      };
-
-      const [usersResponse, pageTimeResponse, interactionsResponse, downloadResponse, devicesResponse, browsersResponse] = await Promise.all([
-        getDailyUniqueUsers(dateRange),
-        getPageTimeStats(dateRange),
-        getInteractionStats(dateRange),
-        getDownloadStats(dateRange),
-        getDeviceStats(dateRange),
-        getBrowserStats(dateRange)
-      ]);
-
-      if ('data' in usersResponse && usersResponse.data !== null) {
-        setUniqueUsers(true)
-
-        const categories = usersResponse.data.map(item =>
-          dayjs(item.date).format('MMM DD')
-        );
-        const seriesData = usersResponse.data.map(item => item.uniqueUsers);
-
-        setChartUniqueUsers(prev => ({
-          ...prev,
-          series: [{
-            name: "Unique Users",
-            data: seriesData
-          }],
-          options: {
-            ...prev.options,
-            xaxis: {
-              ...prev.options.xaxis,
-              categories: categories
-            }
-          }
-        }));
-      }
-
-      if ('data' in pageTimeResponse && pageTimeResponse.data !== null) {
-        setPageTime(true)
-
-        // Group data by page
-        const pageGroups: { [page: string]: { date: string; averageTime: number }[] } = {};
-        pageTimeResponse.data.forEach(item => {
-          if (!pageGroups[item.page]) {
-            pageGroups[item.page] = [];
-          }
-          pageGroups[item.page].push({
-            date: item.date,
-            averageTime: item.averageTime
-          });
+    Promise.all([
+      getDailyUniqueUsers(dateRange),
+      getPageTimeStats(dateRange),
+      getInteractionStats(dateRange),
+      getDownloadStats(dateRange),
+      getDeviceStats(dateRange),
+      getBrowserStats(dateRange),
+    ])
+      .then(([users, pageTime, interactions, downloads, devices, browsers]) => {
+        if (cancelled) return;
+        const rows = <T,>(r: { data: T[] | null } | { success: boolean }): T[] | null =>
+          isApiError(r) || !('data' in r) ? null : r.data;
+        setData({
+          users: rows(users),
+          pageTime: rows(pageTime),
+          interactions: rows(interactions),
+          downloads: rows(downloads),
+          devices: rows(devices),
+          browsers: rows(browsers),
         });
+        if ([users, pageTime, interactions, downloads, devices, browsers].some(isApiError)) {
+          setError('Failed to fetch some data');
+        }
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setError('An error occurred while fetching data');
+        devError('Error on fetch:', err);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
 
-        // Get all unique dates for x-axis
-        const allDates = [...new Set(pageTimeResponse.data.map(item => item.date))].sort();
-        const categories = allDates.map(date => dayjs(date).format('MMM DD'));
-
-        // Create series for each page
-        const series = Object.keys(pageGroups).map(page => {
-          // Create data array matching all dates
-          const data = allDates.map(date => {
-            const entry = pageGroups[page].find(item => item.date === date);
-            return entry ? entry.averageTime : 0;
-          });
-
-          return {
-            name: page.charAt(0).toUpperCase() + page.slice(1),
-            data: data
-          };
-        });
-
-        setChartPageTime(prev => ({
-          ...prev,
-          series: series,
-          options: {
-            ...prev.options,
-            xaxis: {
-              ...prev.options.xaxis,
-              categories: categories
-            }
-          }
-        }));
-      }
-
-      if ('data' in interactionsResponse && interactionsResponse.data !== null) {
-        setInteractions(true);
-
-        // Sort by count descending and take top 10 for better readability
-        const sortedData = interactionsResponse.data
-          .sort((a, b) => b.count - a.count)
-          .slice(0, 10);
-
-        const categories = sortedData.map(item => {
-          // Capitalize first letter and handle special cases
-          if (item.info === '???') return 'Future Opportunity';
-          return item.info.charAt(0).toUpperCase() + item.info.slice(1);
-        });
-
-        const seriesData = sortedData.map(item => item.count);
-
-        setChartInteractions(prev => ({
-          ...prev,
-          series: [{
-            name: "Interactions",
-            data: seriesData
-          }],
-          options: {
-            ...prev.options,
-            xaxis: {
-              ...prev.options.xaxis,
-              categories: categories
-            }
-          }
-        }));
-      }
-
-      if ('data' in downloadResponse && downloadResponse.data !== null) {
-        setDownloads(true);
-
-        // Group data by page
-        const pageGroups: { [page: string]: { date: string; downloads: number }[] } = {};
-        downloadResponse.data.forEach(item => {
-          if (!pageGroups[item.page]) {
-            pageGroups[item.page] = [];
-          }
-          pageGroups[item.page].push({
-            date: item.date,
-            downloads: item.downloads
-          });
-        });
-
-        // Get all unique dates for x-axis
-        const allDates = [...new Set(downloadResponse.data.map(item => item.date))].sort();
-        const categories = allDates.map(date => dayjs(date).format('MMM DD'));
-
-        // Create series for each page
-        const series = Object.keys(pageGroups).map(page => {
-          // Create data array matching all dates
-          const data = allDates.map(date => {
-            const entry = pageGroups[page].find(item => item.date === date);
-            return entry ? entry.downloads : 0;
-          });
-
-          return {
-            name: page.charAt(0).toUpperCase() + page.slice(1),
-            data: data
-          };
-        });
-
-        setChartDownloads(prev => ({
-          ...prev,
-          series: series,
-          options: {
-            ...prev.options,
-            xaxis: {
-              ...prev.options.xaxis,
-              categories: categories
-            }
-          }
-        }));
-      }
-
-      if ('data' in devicesResponse && devicesResponse.data !== null) {
-        setDevices(true);
-
-        const labels = devicesResponse.data.map(item =>
-          item.device.charAt(0).toUpperCase() + item.device.slice(1)
-        );
-
-        const seriesData = devicesResponse.data.map(item => item.count);
-
-        setChartDevices((prev: any) => ({
-          ...prev,
-          series: seriesData,
-          options: {
-            ...prev.options,
-            labels: labels
-          }
-        }));
-      }
-
-      if ('data' in browsersResponse && browsersResponse.data !== null) {
-        setBrowsers(true);
-
-        const labels = browsersResponse.data.map(item =>
-          item.browser.charAt(0).toUpperCase() + item.browser.slice(1)
-        );
-
-        const seriesData = browsersResponse.data.map(item => item.count);
-
-        setChartBrowsers((prev: any) => ({
-          ...prev,
-          series: seriesData,
-          options: {
-            ...prev.options,
-            labels: labels
-          }
-        }));
-      }
-
-
-      if ('error' in usersResponse || 'error' in pageTimeResponse || 'error' in browsersResponse || 'error' in devicesResponse || 'error' in interactionsResponse || 'error' in downloadResponse) {
-        setError('Failed to fetch some data');
-      }
-
-    } catch (err) {
-      setError('An error occurred while fetching data');
-      process.env.REACT_APP_ENV === 'development' && console.log("Error: on fetch: ", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDownloadCV = () => {
-      try {
-        downloadCV();
-      }
-      catch(error){
-        process.env.REACT_APP_ENV === 'development' && console.error('Download failed:', error);
-      }
-  };
-
-  const handleUploadCV = async (file: File) => {
-    setUploadStatus('waiting');
-    
-    try {
-      const response = await uploadCV(file);
-      if ('message' in response) {
-        setUploadStatus('success');
-      } else {
-        setUploadStatus('error');
-      }
-    } catch (error) {
-      setUploadStatus('error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleFileSelection = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
-        e.target.value = '';
-        return;
-      }
-      handleUploadCV(file);
-    }
-  };
-
-  const getUploadColor = (): string => {
-    if(uploadStatus === 'error') return 'red';
-    if(uploadStatus === 'idle') return 'white';
-    if(uploadStatus === 'success') return 'green';
-    return 'gray';
-  }
-
-  useEffect(() => {
-    fetchData();
-    // Fetches when the date range changes; fetchData is recreated every render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      cancelled = true;
+    };
   }, [startDate, endDate]);
 
-  const handleDateChange = (newStartDate: Dayjs | null, newEndDate: Dayjs | null) => {
-    setStartDate(newStartDate);
-    setEndDate(newEndDate);
+  const charts = useMemo(() => {
+    const usersChart = data.users && {
+      series: [{ name: 'Unique Users', data: data.users.map((d) => d.uniqueUsers) }],
+      options: withCategories(apexUniqueUsers, data.users.map((d) => dayLabel(d.date))),
+    };
+
+    const pageTimeSeries = data.pageTime && toSeriesByPage(data.pageTime, (r) => r.averageTime);
+    const pageTimeChart = pageTimeSeries && {
+      series: pageTimeSeries.series,
+      options: withCategories(apexPageTime, pageTimeSeries.categories),
+    };
+
+    // Top 10 by count, for readability.
+    const topInteractions = data.interactions && [...data.interactions].sort((a, b) => b.count - a.count).slice(0, 10);
+    const interactionsChart = topInteractions && {
+      series: [{ name: 'Interactions', data: topInteractions.map((i) => i.count) }],
+      options: withCategories(
+        apexInteractionsDaily,
+        topInteractions.map((i) => (i.info === '???' ? 'Future Opportunity' : capitalize(i.info)))
+      ),
+    };
+
+    const downloadsSeries = data.downloads && toSeriesByPage(data.downloads, (r) => r.downloads);
+    const downloadsChart = downloadsSeries && {
+      series: downloadsSeries.series,
+      options: withCategories(apexDailyDownloads, downloadsSeries.categories),
+    };
+
+    const devicesChart = data.devices && {
+      series: data.devices.map((d) => d.count),
+      options: { ...apexDevicesDonut.options, labels: data.devices.map((d) => capitalize(d.device)) },
+    };
+
+    const browsersChart = data.browsers && {
+      series: data.browsers.map((b) => b.count),
+      options: { ...apexBrowsersPie.options, labels: data.browsers.map((b) => capitalize(b.browser)) },
+    };
+
+    return { usersChart, pageTimeChart, interactionsChart, downloadsChart, devicesChart, browsersChart };
+  }, [data]);
+
+  const handleDownloadCV = async () => {
+    try {
+      await downloadCV();
+    } catch (err) {
+      devError('Download failed:', err);
+    }
   };
+
+  const handleFileSelection = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target;
+    const file = input.files?.[0];
+    input.value = ''; // picking the same file again must fire onChange again
+    if (!file) return;
+
+    if (file.size > maxSizeFileCV * 1024 * 1024) {
+      setUploadStatus('error');
+      setUploadMessage(`File size must be less than ${maxSizeFileCV}MB`);
+      return;
+    }
+
+    setUploadStatus('waiting');
+    setUploadMessage(null);
+    const response = await uploadCV(file);
+    if ('message' in response) {
+      setUploadStatus('success');
+    } else {
+      setUploadStatus('error');
+      setUploadMessage(response.error ?? 'Upload failed');
+    }
+  };
+
+  const uploadColor = { error: 'red', idle: 'white', success: 'green', waiting: 'gray' }[uploadStatus];
+  const { usersChart, pageTimeChart, interactionsChart, downloadsChart, devicesChart, browsersChart } = charts;
 
   return (
     <div className="rpgui-content">
       <div className="admin-container">
         <div className="admin-background" style={{ backgroundImage: `url(${analyticsBackgroundImage})` }} />
         <div className="admin-content">
-          {/* Header */}
           <div className="admin-header">
             <div className="admin-title-section">
               <h1 className="admin-title">Dashboard</h1>
             </div>
           </div>
-          {/* Main content area */}
           <div className="admin-main-content">
             <div className="rpgui-container framed-golden main-dashboard">
               <div className="dashboard-header-content">
                 <div className="dashboard-info">
                   <h2 className="dashboard-title">Analytics Overview</h2>
-                  <p className="dashboard-description ms-2">
-                    Portfolio performance and visitor insights
-                  </p>
+                  <p className="dashboard-description ms-2">Portfolio performance and visitor insights</p>
                 </div>
 
                 <div className="date-picker-section">
@@ -346,25 +215,21 @@ export default function AdminPage() {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <div className="date-pickers-container">
                         <DatePicker
-                          className='date-picker start'
+                          className="date-picker start"
                           value={startDate}
-                          onChange={(newValue) => handleDateChange(newValue, endDate)}
+                          onChange={setStartDate}
                           maxDate={dayjs()}
                           enableAccessibleFieldDOMStructure={false}
-                          slots={{
-                            textField: StyledTextField
-                          }}
+                          slots={{ textField: StyledTextField }}
                         />
                         <DatePicker
                           value={endDate}
-                          className='date-picker'
-                          onChange={(newValue) => handleDateChange(startDate, newValue)}
+                          className="date-picker"
+                          onChange={setEndDate}
                           maxDate={dayjs()}
-                          minDate={startDate !== null ? startDate : dayjs()}
+                          minDate={startDate ?? dayjs()}
                           enableAccessibleFieldDOMStructure={false}
-                          slots={{
-                            textField: StyledTextField
-                          }}
+                          slots={{ textField: StyledTextField }}
                         />
                       </div>
                     </LocalizationProvider>
@@ -372,144 +237,75 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Loading/Error States */}
               {loading && (
-                <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>
-                  Loading chart data...
-                </div>
+                <div style={{ textAlign: 'center', color: '#ffffff', padding: '20px' }}>Loading chart data...</div>
               )}
 
-              {error && (
-                <div style={{ textAlign: 'center', color: '#ff6b6b', padding: '20px' }}>
-                  Error: {error}
-                </div>
-              )}
+              {error && <div style={{ textAlign: 'center', color: '#ff6b6b', padding: '20px' }}>Error: {error}</div>}
 
-              {/* Charts */}
               {!loading && !error && (
                 <>
-                  {(browsers && devices) && (
+                  {browsersChart && devicesChart && (
                     <div className="chart-container row pb-0 m-2 mt-4 mb-4">
-                      {/* Devices Donut Chart */}
                       <div className="col-12 col-md-6 mb-4">
-                        <div>
-                          <ReactApexChart
-                            options={chartDevices.options}
-                            series={chartDevices.series}
-                            type="donut"
-                            height={300}
-                          />
-                        </div>
+                        <ReactApexChart options={devicesChart.options} series={devicesChart.series} type="donut" height={300} />
                       </div>
-
-                      {/* Browsers Pie Chart */}
                       <div className="col-12 col-md-6 mb-4">
-                        <div>
-                          <ReactApexChart
-                            options={chartBrowsers.options}
-                            series={chartBrowsers.series}
-                            type="pie"
-                            height={300}
-                          />
-                        </div>
+                        <ReactApexChart options={browsersChart.options} series={browsersChart.series} type="pie" height={300} />
                       </div>
                     </div>
                   )}
 
-                  {/* Daily Users Chart */}
-                  {uniqueUsers && (
+                  {usersChart && (
                     <div className="chart-container mt-4 m-2">
-                      <ReactApexChart
-                        options={chartUniqueUsers.options}
-                        series={chartUniqueUsers.series}
-                        type="line"
-                        height={250}
-                      />
+                      <ReactApexChart options={usersChart.options} series={usersChart.series} type="line" height={250} />
                     </div>
                   )}
 
-                  {/* Page Time Chart */}
-                  {pageTime && (
+                  {pageTimeChart && (
                     <div className="chart-container mt-4 m-2">
-                      <ReactApexChart
-                        options={chartPageTime.options}
-                        series={chartPageTime.series}
-                        type="line"
-                        height={250}
-                      />
+                      <ReactApexChart options={pageTimeChart.options} series={pageTimeChart.series} type="line" height={250} />
                     </div>
                   )}
 
-                  {/* Interactions Chart */}
-                  {interactions && (
+                  {interactionsChart && (
                     <div className="chart-container mt-4 m-2">
-                      <ReactApexChart
-                        options={chartInteractions.options}
-                        series={chartInteractions.series}
-
-                        type="bar"
-                        height={350}
-                      />
+                      <ReactApexChart options={interactionsChart.options} series={interactionsChart.series} type="bar" height={350} />
                     </div>
                   )}
 
-
-                  {/* Downloads Chart */}
-                  {downloads && (
+                  {downloadsChart && (
                     <div className="chart-container mt-4 m-2">
-                      <ReactApexChart
-                        options={chartDownloads.options}
-                        series={chartDownloads.series}
-
-                        type="line"
-                        height={250}
-                      />
+                      <ReactApexChart options={downloadsChart.options} series={downloadsChart.series} type="line" height={250} />
                     </div>
                   )}
-
-                  
-
                 </>
               )}
               <div className="row mt-4 chart-container m-2">
-                    <div className='col-12 col-lg-6 dashboard-title' style={{alignContent:"center"}}>
-                      UPDATE CV:
-                    </div>
-                    <div className='col-12 col-lg-3 mb-3 mt-3'>
-                      <button
-                        className="rpgui-button"
-                        style={{width:"240px", height:"75px"}}
-                        type="button"
-                        onClick={x=> handleDownloadCV()}
-                      >
-                        <p className='revert-top'>DOWNLOAD</p>
-                      </button>
-                    </div>
-                    <div className='col-12 col-lg-3 mb-3 mt-3'>
-                      <input
-                        type="file"
-                        accept=".pdf"
-                        style={{ display: 'none' }}
-                        id="cv-upload-input"
-                        onChange={handleFileSelection}
-                      />
-                      <button
-                        className="rpgui-button golden"
-                        style={{width:"240px", height:"75px"}}
-                        type="button"
-                        onClick={() => document.getElementById('cv-upload-input')?.click()}
-                        disabled = {uploadStatus === ('waiting') ? true : false}
-                      >
-                        <p className='revert-top' 
-                          style={{
-                            marginTop:"20px",
-                            color: getUploadColor()
-                          }}>
-                          UPLOAD
-                        </p>
-                      </button>
-                    </div>
-                  </div>
+                <div className="col-12 col-lg-6 dashboard-title" style={{ alignContent: 'center' }}>
+                  UPDATE CV:
+                  {uploadMessage && <p style={{ color: '#ff6b6b', fontSize: '0.8rem', margin: 0 }}>{uploadMessage}</p>}
+                </div>
+                <div className="col-12 col-lg-3 mb-3 mt-3">
+                  <button className="rpgui-button" style={{ width: '240px', height: '75px' }} type="button" onClick={handleDownloadCV}>
+                    <p className="revert-top">DOWNLOAD</p>
+                  </button>
+                </div>
+                <div className="col-12 col-lg-3 mb-3 mt-3">
+                  <input ref={fileInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleFileSelection} />
+                  <button
+                    className="rpgui-button golden"
+                    style={{ width: '240px', height: '75px' }}
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadStatus === 'waiting'}
+                  >
+                    <p className="revert-top" style={{ marginTop: '20px', color: uploadColor }}>
+                      UPLOAD
+                    </p>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

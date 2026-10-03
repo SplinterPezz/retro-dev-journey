@@ -1,15 +1,8 @@
 import { ApiError, LoginModel, TokenAuth } from '../types/api';
-import { fetchFromApi } from './api'
+import { fetchFromApi } from './api';
 
-export async function login(payload: LoginModel): Promise<TokenAuth | ApiError> {
-  const response = await fetchFromApi<TokenAuth | ApiError>('/login', {
+export const login = (payload: LoginModel): Promise<TokenAuth | ApiError> =>
+  fetchFromApi<TokenAuth>('/login', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
-  
-  if (response) {
-    return response as TokenAuth;
-  }
-
-  return response as ApiError;
-}

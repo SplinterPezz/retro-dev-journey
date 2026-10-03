@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { setFlag } from '../../store/storySlice';

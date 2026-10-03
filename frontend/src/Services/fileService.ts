@@ -1,12 +1,12 @@
 import { fetchFromApi } from './api';
 import { ApiError, UploadResponse } from '../types/api';
 import { maxSizeFileCV } from '../config/admin';
+import { apiBaseUrl } from '../config/env';
 
 // Custom fetch for download CV as Blob
 export const downloadCV = async (): Promise<void> => {
   try {
-    const baseUrl = process.env.REACT_APP_API_URL || '';
-    const response = await fetch(`${baseUrl}/cv/download`);
+    const response = await fetch(`${apiBaseUrl}/cv/download`);
     
     if (!response.ok) {
       throw new Error('Failed to download CV');
@@ -45,7 +45,7 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     if (file.size > maxSizeFileCV * 1024 * 1024) {
       return {
         success: false,
-        error: 'File size exceeds 5MB limit'
+        error: `File size exceeds ${maxSizeFileCV}MB limit`
       };
     }
     // Create FormData for file upload

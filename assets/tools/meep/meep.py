@@ -60,10 +60,10 @@ def draw(bob):
     return C
 
 if __name__ == "__main__":
-    out_dir = "C:/Users/Dude/AppData/Local/Temp/claude/E--dev-retro-dev-journey/e3f37a46-6007-4a05-a6eb-71351bae674d/scratchpad/out/meep"
+    out_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../frontend/public/sprites/story/companion/meep")
     os.makedirs(out_dir, exist_ok=True)
     f0 = draw(0)
     f1 = draw(1)
-    f0.save(f"{out_dir}/meep_idle_0.png", preview=f"{out_dir}/_preview_meep_0.png")
-    f1.save(f"{out_dir}/meep_idle_1.png", preview=f"{out_dir}/_preview_meep_1.png")
+    f0.save(f"{out_dir}/meep_idle_0.png", preview=os.path.join(os.path.dirname(os.path.abspath(__file__)), "_preview_meep_0.png"))
+    f1.save(f"{out_dir}/meep_idle_1.png", preview=os.path.join(os.path.dirname(os.path.abspath(__file__)), "_preview_meep_1.png"))
     print("saved")

@@ -1,0 +1,15 @@
+import React, { Suspense, lazy } from 'react';
+import type { CodeFixEditorProps } from './CodeFixEditor';
+import './LazyCodeFixEditor.css';
+
+// CodeMirror is only needed by the code questions and the mini games: load it
+// on first use instead of with the Story scene.
+const CodeFixEditor = lazy(() => import('./CodeFixEditor'));
+
+const LazyCodeFixEditor: React.FC<CodeFixEditorProps> = (props) => (
+  <Suspense fallback={<pre className="code-fix-loading">{props.initialCode}</pre>}>
+    <CodeFixEditor {...props} />
+  </Suspense>
+);
+
+export default LazyCodeFixEditor;

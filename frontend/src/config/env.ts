@@ -12,3 +12,5 @@ export const devLog = (...args: unknown[]): void => {
 export const devError = (...args: unknown[]): void => {
   if (isDev) console.error(...args);
 };
+
+export const iubendaPolicyId: string = process.env.REACT_APP_IUBENDA_ID || '';

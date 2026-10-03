@@ -9,7 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
-import Card from "../../Components/Common/Card";
+import Card from "./Card";
 import { styled } from "@mui/material/styles";
 
 import { login } from "../../Services/authService";
@@ -17,10 +17,15 @@ import "./login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
 import { RootState } from "../../store/store";
-import { useNavigate } from "react-router-dom";
-import { playerSpritePrefix } from "../../config/player";
+import { useNavigate } from "react-router";
+import { playerTurnSprite } from "../../config/assets";
+import { useTimeouts } from "../../hooks/useTimeouts";
 import { LoginModel } from "../../types/api";
 import { loginBackgroundImage } from "../../config/login";
+
+type Field = "email" | "password";
+
+const capitalizeFirstLetter = (val: string) => val.charAt(0).toUpperCase() + val.slice(1);
 
 const SignInContainer = styled(Stack)(({ theme }) => ({
   height: "100vh",
@@ -104,16 +109,10 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorStatus, setErrorStatus] = useState("");
 
-  const [emailError, setEmailError] = useState(false);
-  const [emailShake, setEmailShake] = useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = useState("");
-  const [passwordError, setPasswordError] = useState(false);
-  const [passwordShake, setPasswordShake] = useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  // username validation feedback is set but not shown yet: only the setters are kept
-  const [, setUsernameError] = useState(false);
-  const [, setUsernameShake] = useState(false);
-  const [, setUsernameErrorMessage] = useState("");
+  // Message under each field; a field shakes for half a second when it gets one.
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<Field, string>>>({});
+  const [shaking, setShaking] = useState<Partial<Record<Field, boolean>>>({});
+  const later = useTimeouts();
 
   const handleCloseErrorMessage = (
     event?: React.SyntheticEvent | Event,
@@ -127,121 +126,47 @@ export default function SignIn() {
 
   const triggerError = (message: string, status: string) => {
     setErrorMessage(message);
-    setErrorStatus(status)
+    setErrorStatus(status);
     setOpenErrorMessage(true);
   };
 
+  const setFieldError = (field: Field, message: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: capitalizeFirstLetter(message) }));
+    setShaking((prev) => ({ ...prev, [field]: true }));
+    later(() => setShaking((prev) => ({ ...prev, [field]: false })), 500);
+  };
+
+  // Only "is it filled in": the password policy belongs to sign-up, and a
+  // login must accept any password the server knows.
   const validateInputs = () => {
     let isValid = true;
-
-    const validatePassword = (password_data: string) => {
-      let hasMinLen = false;
-      let hasUpper = false;
-      let hasLower = false;
-      let hasNumber = false;
-
-      // Check minimum length
-      if (password_data.length >= 8) {
-        hasMinLen = true;
-      }
-
-      // Iterate over each character in the password
-      for (const char of password_data) {
-        if (/[A-Z]/.test(char)) {
-          hasUpper = true;
-        } else if (/[a-z]/.test(char)) {
-          hasLower = true;
-        } else if (/[0-9]/.test(char)) {
-          hasNumber = true;
-        }
-      }
-
-      // Check all conditions
-      return hasMinLen && hasUpper && hasLower && hasNumber;
-    };
-
-    const validateEmail = (emailData: string) => {
-      if (!emailData) return "Please enter a valid email address.";
-      return "";
-    };
-
-    const errorMessage = validateEmail(email);
-
-    if (errorMessage) {
-      emailErrorImpl(errorMessage);
+    if (!email.trim()) {
+      setFieldError("email", "Please enter your email or username.");
       isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage("");
     }
-
-    // Password validation
-    if (!password || !validatePassword(password)) {
-      var messagePassword =
-        "Password should be 8+ characters with uppercase, lowercase and number";
-      passwordErrorImpl(messagePassword);
+    if (!password) {
+      setFieldError("password", "Please enter your password.");
       isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage("");
     }
-
     return isValid;
   };
 
+  // Maps a server-side field error onto the form.
   const handleErrorField = (field: string, message: string) => {
-    switch (field) {
-      case "email":
-        emailErrorImpl(message);
-        break;
-      case "password":
-        passwordErrorImpl(message);
-        break;
-      case "unauthorized":
-        emailErrorImpl("");
-        passwordErrorImpl(message);
-        break;
-      default:
-        usernameErrorImpl(message);
-        break;
+    if (field === "email" || field === "password") {
+      setFieldError(field, message);
+    } else if (field === "unauthorized") {
+      setFieldError("email", "");
+      setFieldError("password", message);
+    } else {
+      triggerError(capitalizeFirstLetter(message), "error");
     }
   };
 
-  function emailErrorImpl(message: string) {
-    setEmailError(true);
-    setEmailShake(true);
-    setTimeout(() => {
-      setEmailShake(false);
-    }, 500);
-    setEmailErrorMessage(capitalizeFirstLetter(message));
-  }
-  function passwordErrorImpl(message: string) {
-    setPasswordError(true);
-    setPasswordShake(true);
-    setTimeout(() => {
-      setPasswordShake(false);
-    }, 500);
-    setPasswordErrorMessage(capitalizeFirstLetter(message));
-  }
-  function usernameErrorImpl(message: string) {
-    setUsernameError(true);
-    setUsernameShake(true);
-    setTimeout(() => {
-      setUsernameShake(false);
-    }, 500);
-    setUsernameErrorMessage(capitalizeFirstLetter(message));
-  }
-
-  function capitalizeFirstLetter(val: string) {
-    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
-  }
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFieldErrors({});
 
-    resetErrors();
-
-    // Validate inputs first
     if (!validateInputs()) {
       return;
     }
@@ -253,34 +178,25 @@ export default function SignIn() {
     try {
       const loginToken = await login(loginPayload);
       if ("token" in loginToken) {
-        triggerError('Login success!', "success")
-
-        //set loginToken.token and loginToken.expiration and email to store
+        triggerError("Login success!", "success");
         dispatch(loginSuccess({
           id: loginToken.id,
           user: loginToken.user,
           token: loginToken.token,
           expiration: loginToken.expiration,
         }));
-
       } else if (loginToken.fieldError && loginToken.error) {
         handleErrorField(loginToken.fieldError, loginToken.error);
       } else {
-        triggerError('Something went wrong : ' + loginToken.error, "error")
+        triggerError("Something went wrong : " + loginToken.error, "error");
       }
     } catch (err) {
-      triggerError('Something went wrong : ' + err, "error")
+      triggerError("Something went wrong : " + err, "error");
     }
   };
 
-  const resetErrors = () => {
-    setEmailError(false);
-    setEmailErrorMessage("");
-    setPasswordError(false);
-    setPasswordErrorMessage("");
-    setUsernameError(false);
-    setUsernameErrorMessage("");
-  };
+  const emailError = fieldErrors.email !== undefined;
+  const passwordError = fieldErrors.password !== undefined;
 
   return (
     <>
@@ -322,7 +238,7 @@ export default function SignIn() {
                 height: "50px",
                 imageRendering: "pixelated"
               }}
-              src={`/sprites/player/${playerSpritePrefix}_turn.gif`}
+              src={playerTurnSprite}
               alt="Character animation"
             />
           </Typography>
@@ -353,7 +269,7 @@ export default function SignIn() {
               </FormLabel>
               <TextField
                 error={emailError}
-                helperText={emailErrorMessage}
+                helperText={fieldErrors.email}
                 id="email"
                 type="email"
                 name="email"
@@ -366,7 +282,7 @@ export default function SignIn() {
                 fullWidth
                 variant="outlined"
                 color={emailError ? "error" : "primary"}
-                className={emailShake ? "shake" : ""}
+                className={shaking.email ? "shake" : ""}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
@@ -396,7 +312,7 @@ export default function SignIn() {
               </FormLabel>
               <TextField
                 error={passwordError}
-                helperText={passwordErrorMessage}
+                helperText={fieldErrors.password}
                 name="password"
                 placeholder="••••••••"
                 type="password"
@@ -408,7 +324,7 @@ export default function SignIn() {
                 fullWidth
                 variant="outlined"
                 color={passwordError ? "error" : "primary"}
-                className={passwordShake ? "shake" : ""}
+                className={shaking.password ? "shake" : ""}
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     backgroundColor: "rgba(255, 255, 255, 0.8)",

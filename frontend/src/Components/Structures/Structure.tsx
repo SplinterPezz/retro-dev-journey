@@ -1,6 +1,7 @@
 import React from 'react';
 import { StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
 import './Structure.css';
+import { isDev } from '../../config/env';
 import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
 
 interface StructureProps {
@@ -101,7 +102,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
         )}
         
         {/* Interaction radius indicator (debug) */}
-        {process.env.REACT_APP_ENV === 'development' && (
+        {isDev && (
           <div 
             className="interaction-radius"
             style={{

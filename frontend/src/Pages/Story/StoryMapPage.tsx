@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
@@ -16,6 +16,7 @@ import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrain
 import { companies } from '../../config/career';
 import { storyChapterOrder } from '../../config/story/chapters';
 import { isDev } from '../../config/env';
+import '../../game/DebugOverlay.css';
 import './StoryMapPage.css';
 
 const worldBounds = {

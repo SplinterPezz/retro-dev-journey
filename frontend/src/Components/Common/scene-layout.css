@@ -8,3 +8,17 @@
   overflow: hidden;
   position: relative;
 }
+
+/* Home button in the top-left corner of the Sandbox and the story map. */
+.back-button {
+  position: absolute;
+  top: 18px;
+  left: 20px;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .back-button {
+    left: 10px;
+  }
+}
