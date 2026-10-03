@@ -414,12 +414,18 @@ public/sprites/
 
 ## ⚙️ Configuration
 
-### Frontend World Configuration (`frontend/src/Pages/Sandbox/config.ts`)
+### Frontend World Configuration (`frontend/src/config/`)
 
-The main configuration file controls the entire game world:
+The game world is configured in plain TypeScript files:
+
+- `world.ts`: world size, main path, player spawn and hitbox (shared by the Sandbox and the Story map)
+- `career.ts`: companies (buildings) and technologies (statues)
+- `environments.ts`: trees and small decorations
+- `sandbox.ts`: Sandbox-only settings (music, background, Download CV button)
+- `story/`: Story Mode chapters, quizzes and mini games
 
 ```typescript
-// World Configuration
+// world.ts
 export const worldConfig: WorldConfig = {
   width: 2000,           // World width in pixels
   height: 3024,          // World height in pixels
@@ -434,7 +440,7 @@ export const mainPathConfig = {
   width: tileSize                 // Path width
 };
 
-// Career Data Configuration
+// career.ts
 const companiesData: CompanyData[] = [
   {
     id: "codesour",

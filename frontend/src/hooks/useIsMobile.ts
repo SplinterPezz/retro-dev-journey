@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { isMobileDevice } from '../Services/tracking/device';
+import { isMobileDevice } from '../services/tracking/device';
 
 export { isMobileDevice };
 

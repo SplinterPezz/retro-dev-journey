@@ -2,8 +2,8 @@ import React from 'react';
 import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import { StoryOrientation } from '../../types/story';
 import './OrientationChoice.css';
-import '../../Components/Common/pixel-button.css';
-import '../../Components/Common/fullscreen-page.css';
+import '../../components/Common/pixel-button.css';
+import '../../components/Common/fullscreen-page.css';
 
 interface OrientationChoiceProps {
   onChoose: (orientation: StoryOrientation) => void;

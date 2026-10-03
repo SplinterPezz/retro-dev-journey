@@ -12,7 +12,7 @@ import Stack from "@mui/material/Stack";
 import Card from "./Card";
 import { styled } from "@mui/material/styles";
 
-import { login } from "../../Services/authService";
+import { login } from "../../services/authService";
 import "./login.css";
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";

@@ -8,17 +8,17 @@ import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
 import DebugOverlay from '../../game/DebugOverlay';
-import Player from '../../Components/Player/Player';
-import Structure from '../../Components/Structures/Structure';
-import StructureDialog from '../../Components/Structures/StructureDialog';
-import PathRenderer from '../../Components/Path/PathRenderer';
-import TerrainRenderer from '../../Components/Terrain/TerrainRenderer';
-import Environment from '../../Components/Structures/Environment';
-import DownloadCV from '../../Components/Structures/DownloadCV';
-import PixelProgressBar from '../../Components/Common/PixelProgressBar';
-import HomeButton from '../../Components/Common/HomeButton';
-import DailyQuest from '../../Components/DailyQuest/DailyQuest';
-import WelcomeDialog from '../../Components/WelcomeDialog/WelcomeDialog';
+import Player from '../../components/Player/Player';
+import Structure from '../../components/Structures/Structure';
+import StructureDialog from '../../components/Structures/StructureDialog';
+import PathRenderer from '../../components/Path/PathRenderer';
+import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
+import Environment from '../../components/Structures/Environment';
+import DownloadCV from '../../components/Structures/DownloadCV';
+import PixelProgressBar from '../../components/Common/PixelProgressBar';
+import HomeButton from '../../components/Common/HomeButton';
+import DailyQuest from '../../components/DailyQuest/DailyQuest';
+import WelcomeDialog from '../../components/WelcomeDialog/WelcomeDialog';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import {
   worldConfig,

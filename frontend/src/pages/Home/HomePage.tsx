@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import AudioControls from "../../Components/AudioControls/AudioControls";
-import GameModeSelector from "../../Components/GameModeSelector/GameModeSelector";
+import AudioControls from "../../components/AudioControls/AudioControls";
+import GameModeSelector from "../../components/GameModeSelector/GameModeSelector";
 import "./HomePage.css";
-import IntroDialog from "../../Components/DialogBox/IntroDialogBox";
+import IntroDialog from "../../components/DialogBox/IntroDialogBox";
 import { useTracking } from "../../hooks/useTracking";
-import { downloadCV } from '../../Services/fileService';
+import { downloadCV } from '../../services/fileService';
 import { useNavigate } from 'react-router';
 import { playerTurnSprite } from "../../config/assets";
 import { isDev, devLog, devError } from "../../config/env";

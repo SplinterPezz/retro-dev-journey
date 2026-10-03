@@ -5,11 +5,11 @@ import { AppDispatch, RootState } from '../../store/store';
 import { setDifficulty, setOrientation } from '../../store/storySlice';
 import { StoryDifficulty, StoryOrientation } from '../../types/story';
 import { storyDifficultyLabels } from '../../config/story/difficulty';
-import HomeButton from '../../Components/Common/HomeButton';
+import HomeButton from '../../components/Common/HomeButton';
 import { isMobileDevice } from '../../hooks/useIsMobile';
 import { enterLandscape, isLandscape } from '../../hooks/screenOrientation';
 import OrientationChoice from './OrientationChoice';
-import '../../Components/Common/fullscreen-page.css';
+import '../../components/Common/fullscreen-page.css';
 import './StoryDifficultyPage.css';
 
 const difficulties: StoryDifficulty[] = ['junior', 'middle', 'senior'];

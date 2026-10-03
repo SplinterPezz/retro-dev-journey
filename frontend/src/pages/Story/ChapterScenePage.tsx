@@ -6,7 +6,7 @@ import { setFlag } from '../../store/storySlice';
 import { StoryChapterConfig } from '../../types/story';
 import { getChapterIndex } from '../../config/story/chapters';
 import InteriorScene from './InteriorScene';
-import StoryIntroDialog from '../../Components/Story/dialogue/StoryIntroDialog';
+import StoryIntroDialog from '../../components/Story/dialogue/StoryIntroDialog';
 
 interface ChapterScenePageProps {
   chapter: StoryChapterConfig;

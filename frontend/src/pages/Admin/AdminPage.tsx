@@ -22,9 +22,9 @@ import {
   getInteractionStats,
   getDeviceStats,
   getBrowserStats,
-} from '../../Services/analyticsService';
-import { isApiError } from '../../Services/api';
-import { downloadCV, uploadCV } from '../../Services/fileService';
+} from '../../services/analyticsService';
+import { isApiError } from '../../services/api';
+import { downloadCV, uploadCV } from '../../services/fileService';
 import { analyticsBackgroundImage, maxSizeFileCV } from '../../config/admin';
 import { devError } from '../../config/env';
 import { capitalize, dayLabel, toSeriesByPage } from './series';

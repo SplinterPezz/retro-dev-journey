@@ -1,5 +1,5 @@
 import { DialogueChoiceOption, DialogueNode, StoryNpcData } from '../../types/story';
-import type { ChoiceButtonItem } from '../../Components/Story/dialogue/DialogueChoices';
+import type { ChoiceButtonItem } from '../../components/Story/dialogue/DialogueChoices';
 
 type Flags = Record<string, boolean>;
 

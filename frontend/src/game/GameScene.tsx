@@ -4,10 +4,10 @@ import { cameraStyle } from './camera';
 import { useZoomScale } from './zoom';
 import { useLogicalViewport } from '../hooks/screenOrientation';
 import { useIsMobile } from '../hooks/useIsMobile';
-import ZoomSlider from '../Components/Common/ZoomSlider';
-import MobileJoystick, { JoystickMoveEvent } from '../Components/Common/MobileJoystick';
-import AudioControls from '../Components/AudioControls/AudioControls';
-import '../Components/Common/scene-layout.css';
+import ZoomSlider from '../components/Common/ZoomSlider';
+import MobileJoystick, { JoystickMoveEvent } from '../components/Common/MobileJoystick';
+import AudioControls from '../components/AudioControls/AudioControls';
+import '../components/Common/scene-layout.css';
 
 interface GameSceneProps {
   // Prefix of the scene's CSS classes: `${name}-viewport`, `${name}-world`.

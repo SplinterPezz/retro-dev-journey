@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from '../store/store';
 import { setOrientation } from '../store/storySlice';
 import { StoryOrientation } from '../types/story';
 import { isMobileDevice } from './useIsMobile';
-import '../Components/Common/ScreenRotation.css';
+import '../components/Common/ScreenRotation.css';
 
 export const isLandscape = (orientation: StoryOrientation | null): boolean =>
   orientation === 'landscape-primary' || orientation === 'landscape-secondary';

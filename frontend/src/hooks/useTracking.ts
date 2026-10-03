@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { setUUID, addInteraction, clearAllTrackingData } from '../store/trackingSlice';
 import { TrkData, PageType, timeTrackingIntervals } from '../types/tracking';
-import { sendTrackingData } from '../Services/trkService';
-import { generateVisitorId, getDeviceInfo, createInteractionKey } from '../Services/tracking/device';
+import { sendTrackingData } from '../services/trkService';
+import { generateVisitorId, getDeviceInfo, createInteractionKey } from '../services/tracking/device';
 import { questPrefix } from '../config/tracking';
 import { devLog } from '../config/env';
 

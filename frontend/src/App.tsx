@@ -6,19 +6,19 @@ import { store, persistor } from './store/store';
 import { cleanOldInteractions } from './store/trackingSlice';
 import { useIubenda } from './hooks/useIubenda';
 import { useFallbackToPortrait, useScreenRotation } from './hooks/screenOrientation';
-import HomePage from './Pages/Home/HomePage';
-import PrivacyRedirect, { privacyRedirects } from './Components/PrivacyRedirect/PrivacyRedirect';
-import PrivateRoute from './Components/Routing/PrivateRoute';
+import HomePage from './pages/Home/HomePage';
+import PrivacyRedirect, { privacyRedirects } from './components/PrivacyRedirect/PrivacyRedirect';
+import PrivateRoute from './components/Routing/PrivateRoute';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Only the home page is in the main bundle; every other page is its own chunk,
 // so a first visit does not download the game, MUI or the charts.
-const SandboxPage = lazy(() => import('./Pages/Sandbox/SandboxPage'));
-const StoryMapPage = lazy(() => import('./Pages/Story/StoryMapPage'));
-const StoryDifficultyPage = lazy(() => import('./Pages/Story/StoryDifficultyPage'));
-const ChapterRoute = lazy(() => import('./Pages/Story/ChapterRoute'));
-const SignIn = lazy(() => import('./Pages/Login/SignIn'));
-const AdminPage = lazy(() => import('./Pages/Admin/AdminPage'));
+const SandboxPage = lazy(() => import('./pages/Sandbox/SandboxPage'));
+const StoryMapPage = lazy(() => import('./pages/Story/StoryMapPage'));
+const StoryDifficultyPage = lazy(() => import('./pages/Story/StoryDifficultyPage'));
+const ChapterRoute = lazy(() => import('./pages/Story/ChapterRoute'));
+const SignIn = lazy(() => import('./pages/Login/SignIn'));
+const AdminPage = lazy(() => import('./pages/Admin/AdminPage'));
 
 const AppInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   useIubenda();

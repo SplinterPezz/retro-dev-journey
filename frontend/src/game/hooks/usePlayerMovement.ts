@@ -3,7 +3,7 @@ import { Position, Direction, CollidableEntity, EnvironmentData, Hitbox, WorldBo
 import { playerHitbox as defaultPlayerHitbox } from '../../config/world';
 import { Blocker, hitsAny, toBlockers } from '../collision';
 import { getDirectionFromJoystick, getDirectionFromKeys, getJoystickIntensity, stepPosition } from '../movement';
-import type { JoystickMoveEvent } from '../../Components/Common/MobileJoystick';
+import type { JoystickMoveEvent } from '../../components/Common/MobileJoystick';
 
 const validKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' '];
 
