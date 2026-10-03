@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AnimatedQuestContent, ToggleButton } from '../DailyQuest/DailyQuestComponent';
+import { ToggleButton } from '../DailyQuest/DailyQuestComponent';
 import './StoryProgress.css';
 
 export interface StoryObjective {
@@ -43,7 +43,12 @@ const StoryProgress: React.FC<StoryProgressProps> = ({ objectives }) => {
           </div>
         </div>
 
-        <AnimatedQuestContent isVisible={!isCollapsed}>
+        {/* A CSS transition, not the keyframe animation the Sandbox uses: a keyframe
+            left at its end state after another popup could keep the list hidden. */}
+        <div
+          className="story-progress-collapsible"
+          style={{ maxHeight: isCollapsed ? 0 : '60vh', opacity: isCollapsed ? 0 : 1 }}
+        >
           <div className="story-progress-list">
             {objectives.map((o) => (
               <div key={o.id} className={`story-progress-item${o.done ? ' done' : ''}`}>
@@ -52,7 +57,7 @@ const StoryProgress: React.FC<StoryProgressProps> = ({ objectives }) => {
               </div>
             ))}
           </div>
-        </AnimatedQuestContent>
+        </div>
       </div>
     </div>
   );

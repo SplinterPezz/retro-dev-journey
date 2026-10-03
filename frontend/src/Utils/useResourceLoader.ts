@@ -121,6 +121,8 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
     };
 
     loadResources();
+    // Runs per resource list; config comes from the caller on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.images, config.audio, config.fonts, config.minDuration]);
 
   return state;

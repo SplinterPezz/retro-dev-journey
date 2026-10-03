@@ -63,6 +63,15 @@ export interface StoryNpcData {
   // a prop's collisionHitbox is refused and the NPC turns around instead.
   // Omit for a stationary NPC.
   patrol?: { waypoints: Position[]; speed: number; pauseMs: number };
+  // Seating: once seatedFlag is set the NPC walks to seatedPosition and stays there.
+  seatedFlag?: string;
+  seatedPosition?: Position;
+  // Cue: when autoStartFlag is set the dialogue at autoStartNodeId opens by itself, once.
+  autoStartFlag?: string;
+  autoStartNodeId?: string;
+  // Answer once: once answeredFlag is set, approaching the NPC opens afterAnswerNodeId instead of the start node.
+  answeredFlag?: string;
+  afterAnswerNodeId?: string;
 }
 
 // ---- mini-quiz ----
@@ -108,6 +117,7 @@ export interface StoryPropData {
   position: Position;
   imageSize?: ImageSize;
   collisionHitbox?: Hitbox;
+  visibleWhenFlag?: string; // hidden until this flag is set (e.g. the arrow at the laptop)
 }
 
 // ---- Meep companion commentary ----
@@ -120,6 +130,16 @@ export interface MeepBeat {
 }
 
 // ---- chapter ----
+
+// A laptop (or any spot) that starts the end-of-day mini games when the player
+// walks up to it. Done once: the completion flag is set when the games finish.
+export interface MiniGameMarker {
+  id: string;
+  position: Position;
+  interactionRadius?: number;
+  completionFlag: string;
+  requiredFlag?: string; // only available once this flag is set
+}
 
 export interface IntroPage {
   text: string;
@@ -137,9 +157,11 @@ export interface StoryChapterConfig {
   props: StoryPropData[];
   npcs: StoryNpcData[];
   quizzes: QuizData[];
-  doorPosition: Position;
+  doorPosition: Position; // where the door sprite is drawn (top-left)
+  doorInteractionPosition?: Position; // centre of the walk-up zone; defaults to doorPosition
   doorInteractionRadius?: number;
   meepBeats: MeepBeat[];
   completion: { requiredFlags: string[] };
+  miniGames?: MiniGameMarker[];
   objectives?: { id: string; label: string; flag: string }[]; // shown in the Sandbox-style progress panel, in order
 }

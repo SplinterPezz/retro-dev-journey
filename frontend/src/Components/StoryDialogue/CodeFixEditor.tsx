@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { java } from '@codemirror/lang-java';
 import './CodeFixEditor.css';
+import '../Common/pixel-button.css';
+import { formatJava } from './formatJava';
 
 interface CodeFixEditorProps {
   initialCode: string;
@@ -25,14 +27,19 @@ const CodeFixEditor: React.FC<CodeFixEditorProps> = ({ initialCode, onSubmit, di
         theme="dark"
         basicSetup={{ lineNumbers: true, foldGutter: false, highlightActiveLine: false }}
       />
-      <button
-        type="button"
-        className="code-fix-submit"
-        disabled={disabled}
-        onClick={() => onSubmit(code)}
-      >
-        Check fix
-      </button>
+      <div className="code-fix-actions">
+        <button type="button" className="code-fix-format pixel-button" disabled={disabled} onClick={() => setCode(formatJava(code))}>
+          Format
+        </button>
+        <button
+          type="button"
+          className="code-fix-submit pixel-button"
+          disabled={disabled}
+          onClick={() => onSubmit(code)}
+        >
+          Check fix
+        </button>
+      </div>
     </div>
   );
 };

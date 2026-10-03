@@ -1,0 +1,36 @@
+/* The orange pixel-bevel button used by the quiz, the zoom controls and the
+   orientation choice. A component adds only its own size and label font on
+   top of this class. */
+.pixel-button {
+  color: #2d1e0f;
+  background: #e8a13f;
+  border: none;
+  border-radius: 0;
+  box-shadow:
+    inset 3px 3px 0 0 #ffd98a,
+    inset -3px -3px 0 0 #8a4f16,
+    0 3px 0 0 #3a2410;
+  cursor: pointer;
+}
+
+.pixel-button:hover:not(:disabled) {
+  background: #f2b150;
+}
+
+.pixel-button:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow:
+    inset -3px -3px 0 0 #ffd98a,
+    inset 3px 3px 0 0 #8a4f16,
+    0 0 0 0 #3a2410;
+}
+
+.pixel-button:disabled {
+  background: #6b6b6b;
+  color: #a8a8a8;
+  box-shadow:
+    inset 3px 3px 0 0 #8a8a8a,
+    inset -3px -3px 0 0 #3e3e3e,
+    0 3px 0 0 #1f1f1f;
+  cursor: not-allowed;
+}

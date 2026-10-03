@@ -86,14 +86,14 @@ export default function HomePage() {
 
             </div>
             <div className="social-container">
-                <a onClick={handleAdminPage}>
-                  <img className="social-image" src={`/sprites/player/${playerSpritePrefix}_turn.gif`} />
+                <a href="/admin" onClick={(e) => { e.preventDefault(); handleAdminPage(); }}>
+                  <img className="social-image" alt="Admin" src={`/sprites/player/${playerSpritePrefix}_turn.gif`} />
                 </a>
-                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
-                  <img className="social-image" src="/sprites/others/linkedin.png" />
+                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" rel="noreferrer" onClick={x => handleTrkSocial('linkedin')}>
+                  <img className="social-image" alt="LinkedIn" src="/sprites/others/linkedin.png" />
                 </a>
-                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
-                  <img className="social-image" src="/sprites/others/github.png" />
+                <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" rel="noreferrer" onClick={x => handleTrkSocial('github')}>
+                  <img className="social-image" alt="GitHub" src="/sprites/others/github.png" />
                 </a>
               </div>
           </div>

@@ -3,7 +3,9 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { setZoom } from '../../store/zoomSlice';
 import { useZoomLevel, ZOOM_LEVEL_COUNT } from './zoomStore';
+import './pixel-button.css';
 import './ZoomSlider.css';
+import './pixel-button.css';
 
 // Geometry in px, shared with ZoomSlider.css: the first tick sits TICK_TOP
 // below the top of the track, and the ticks are TICK_GAP apart.
@@ -48,7 +50,7 @@ const ZoomSlider: React.FC = () => {
     <div className="zoom-slider">
       <button
         type="button"
-        className="zoom-slider-button"
+        className="zoom-slider-button pixel-button"
         disabled={level === ZOOM_LEVEL_COUNT}
         onClick={() => dispatch(setZoom(level + 1))}
         aria-label="Zoom in"
@@ -74,7 +76,7 @@ const ZoomSlider: React.FC = () => {
 
       <button
         type="button"
-        className="zoom-slider-button"
+        className="zoom-slider-button pixel-button"
         disabled={level === 1}
         onClick={() => dispatch(setZoom(level - 1))}
         aria-label="Zoom out"

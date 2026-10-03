@@ -11,27 +11,6 @@
   font-size: 1.1rem;
   font-weight: bold;
   line-height: 1;
-  color: #2d1e0f;
-  background: #e8a13f;
-  border: none;
-  border-radius: 0;
-  box-shadow:
-    inset 2px 2px 0 0 #ffd98a,
-    inset -2px -2px 0 0 #8a4f16,
-    0 2px 0 0 #3a2410;
-  cursor: pointer;
-}
-
-.quiz-popup-exit:hover {
-  background: #f2b150;
-}
-
-.quiz-popup-exit:active {
-  transform: translateY(2px);
-  box-shadow:
-    inset -2px -2px 0 0 #ffd98a,
-    inset 2px 2px 0 0 #8a4f16,
-    0 0 0 0 #3a2410;
 }
 
 .quiz-popup-backdrop {
@@ -149,4 +128,22 @@
   position: static;
   color: #c8c8c8;
   font-size: 0.75rem;
+}
+
+/* Debug-only shortcut (REACT_APP_ENV=development), same red as the other debug buttons. */
+.quiz-debug-complete {
+  display: block;
+  margin: 12px auto 0;
+  padding: 6px 10px;
+  background: #b71c1c;
+  color: #fff;
+  border: 1px solid #ff8a80;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.quiz-debug-complete:hover {
+  background: #d32f2f;
 }

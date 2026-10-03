@@ -28,6 +28,8 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
             handleDownload();
             downloadTriggeredRef.current = true;
         }
+        // Triggered by proximity only; the guard ref stops repeats.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNearby, cooldownActive, isDownloading]);
 
     useEffect(() => {

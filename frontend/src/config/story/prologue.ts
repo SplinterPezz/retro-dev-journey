@@ -33,6 +33,7 @@ export const prologueChapter: StoryChapterConfig = {
   floorImage: '/sprites/story/props/floor_classroom.png',
   playerSpawn: { x: 650, y: 780 },
   doorPosition: { x: 650, y: 895 },
+  doorInteractionPosition: { x: 714, y: 900 }, // centre of the door picture, reachable from the room
   doorInteractionRadius: 70,
 
   props: [
@@ -66,6 +67,8 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'laptop-3', image: '/sprites/story/props/laptop_3.png', position: { x: 847, y: 486 }, imageSize: { width: 64, height: 40 } },
     { id: 'laptop-4', image: '/sprites/story/props/laptop_1.png', position: { x: 517, y: 646 }, imageSize: { width: 64, height: 40 } },
     { id: 'laptop-5', image: '/sprites/story/props/laptop_2.png', position: { x: 847, y: 646 }, imageSize: { width: 64, height: 40 } },
+    // arrow above the student laptop: shown once the four objectives are done
+    { id: 'laptop-arrow', image: '/sprites/story/props/arrow_down.png', position: { x: 690, y: 282 }, imageSize: { width: 48, height: 48 }, visibleWhenFlag: 'objectivesDone' },
     // chalkboard + bin flank the cattedra symmetrically
     { id: 'chalkboard', image: '/sprites/story/props/chalkboard_wheels.png', position: { x: 400, y: 150 }, imageSize: { width: 110, height: 110 } },
     { id: 'trash-bin', image: '/sprites/story/props/trash_bin.png', position: { x: 900, y: 150 }, imageSize: { width: 72, height: 72 } },
@@ -78,6 +81,10 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'backpack', image: '/sprites/story/props/backpack.png', position: { x: 110, y: 230 }, imageSize: { width: 80, height: 80 } },
   ],
 
+  miniGames: [
+    { id: 'laptop-games', position: { x: 714, y: 380 }, interactionRadius: 80, completionFlag: 'miniGamesDone', requiredFlag: 'objectivesDone' },
+  ],
+
   npcs: [
     {
       id: 'teacher',
@@ -85,18 +92,35 @@ export const prologueChapter: StoryChapterConfig = {
       spriteBase: SPRITE.generic,
       position: { x: 650, y: 100 },
       patrol: { waypoints: [{ x: 560, y: 100 }, { x: 740, y: 100 }], speed: 25, pauseMs: 2500 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 650, y: 250 },
+      autoStartFlag: 'objectivesDone',
+      autoStartNodeId: 'sitDown',
+      answeredFlag: 'instructorAnswered',
+      afterAnswerNodeId: 'alreadyAnswered',
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          alreadyAnswered: {
+            id: 'alreadyAnswered',
+            speaker: 'Instructor',
+            text: "We covered that already. Let's keep going.",
+          },
+          sitDown: {
+            id: 'sitDown',
+            speaker: 'Instructor',
+            text: "Ok guys, everyone take a seat. We're continuing the lesson.",
+            setFlag: 'seated',
+          },
           start: {
             id: 'start',
             speaker: 'Instructor',
             text: "You, in the back - settle down, we start shortly. Before that, though: has anyone here ever written a line of code before signing up for this course?",
             setFlag: 'talkedInstructor',
             choices: [
-              { text: 'Never. This is all brand new to me.', next: 'never' },
-              { text: "A little, nothing serious.", next: 'alittle' },
-              { text: "Yeah, I've messed around with it before.", next: 'experienced' },
+              { text: 'Never. This is all brand new to me.', next: 'never', setFlag: 'instructorAnswered' },
+              { text: "A little, nothing serious.", next: 'alittle', setFlag: 'instructorAnswered' },
+              { text: "Yeah, I've messed around with it before.", next: 'experienced', setFlag: 'instructorAnswered' },
             ],
           },
           never: {
@@ -427,6 +451,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate1,
       position: { x: 250, y: 570 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 384, y: 722 },
       patrol: { waypoints: [{ x: 250, y: 570 }, { x: 400, y: 570 }], speed: 35, pauseMs: 3000 },
       dialogue: {
         startNodeId: 'start',
@@ -450,6 +476,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate2,
       position: { x: 880, y: 570 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 879, y: 722 },
       dialogue: {
         startNodeId: 'start',
         nodes: {
@@ -472,6 +500,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate3,
       position: { x: 466, y: 420 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 549, y: 562 },
       dialogue: {
         startNodeId: 'start',
         nodes: {
@@ -494,6 +524,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate4,
       position: { x: 300, y: 260 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 549, y: 722 },
       patrol: { waypoints: [{ x: 300, y: 260 }, { x: 1000, y: 260 }], speed: 45, pauseMs: 2600 },
       dialogue: {
         startNodeId: 'start',
@@ -517,6 +549,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate5,
       position: { x: 110, y: 340 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 714, y: 722 },
       patrol: { waypoints: [{ x: 110, y: 340 }, { x: 110, y: 600 }], speed: 35, pauseMs: 2800 },
       dialogue: {
         startNodeId: 'start',
@@ -540,6 +574,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate6,
       position: { x: 1230, y: 330 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 1044, y: 562 },
       dialogue: {
         startNodeId: 'start',
         nodes: {
@@ -562,6 +598,8 @@ export const prologueChapter: StoryChapterConfig = {
       name: 'Classmate',
       spriteBase: SPRITE.classmate7,
       position: { x: 1230, y: 640 },
+      seatedFlag: 'seated',
+      seatedPosition: { x: 1044, y: 722 },
       dialogue: {
         startNodeId: 'start',
         nodes: {

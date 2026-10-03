@@ -99,7 +99,6 @@ export default function SignIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
   const [openErrorMessage, setOpenErrorMessage] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -111,9 +110,10 @@ export default function SignIn() {
   const [passwordError, setPasswordError] = useState(false);
   const [passwordShake, setPasswordShake] = useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
-  const [usernameError, setUsernameError] = useState(false);
-  const [usernameShake, setUsernameShake] = useState(false);
-  const [usernameErrorMessage, setUsernameErrorMessage] = useState("");
+  // username validation feedback is set but not shown yet: only the setters are kept
+  const [, setUsernameError] = useState(false);
+  const [, setUsernameShake] = useState(false);
+  const [, setUsernameErrorMessage] = useState("");
 
   const handleCloseErrorMessage = (
     event?: React.SyntheticEvent | Event,
