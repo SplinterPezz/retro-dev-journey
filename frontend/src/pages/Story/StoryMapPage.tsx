@@ -21,13 +21,23 @@ import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
 import UnlockPopup from '../../components/Story/hud/UnlockPopup';
 import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
+import SkillWindow from '../../components/Story/hud/SkillWindow';
+import ItemInspector from '../../components/GameMenu/ItemInspector';
+import { skillEntry } from '../../components/GameMenu/useCollections';
 import LoadingSplash from '../../components/Common/LoadingSplash';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { storyMapAssets } from '../../config/story/assets';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
-import { ChapterMeta, InDevelopmentRedirect, isTechnologyUnlocked, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import {
+  chapterDisplayName,
+  companyDisplayName,
+  InDevelopmentRedirect,
+  isTechnologyUnlocked,
+  storyChapterOrder,
+  storyMapAudioTrack,
+} from '../../config/story/chapters';
 import { MEEP_LAG_MS } from './sceneRules';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
@@ -37,22 +47,19 @@ import './StoryMapPage.css';
 
 const MAP_PLAYER_SPEED = 270;
 const BUILDING_REACH = 90;
+const STATUE_REACH = 80;
+const STATUE_HIDE_DELAY_MS = 50;
 const ENTER_DELAY_MS = 500;
-
-// "Eikony (IT)" -> "Eikony"
-const chapterName = (companyName: string) => companyName.replace(/ \(IT\)$/, '');
-
-const companyOf = (chapter: ChapterMeta) => companies.find((co) => co.id === chapter.companyId);
 
 const isChapterToWrite = (company: StructureData) =>
   company.id !== COMPANY_IDS.futureOpportunity && !storyChapterOrder.some((c) => c.companyId === company.id);
 
 const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
-  const written = storyChapterOrder.map((chapter) => {
-    const company = companyOf(chapter);
-    return { id: company?.id ?? chapter.id, name: company ? chapterName(company.name) : chapter.name ?? chapter.id };
-  });
-  const toWrite = companies.filter(isChapterToWrite).map((co) => ({ id: co.id, name: chapterName(co.name) }));
+  const written = storyChapterOrder.map((chapter) => ({
+    id: chapter.companyId ?? chapter.id,
+    name: chapterDisplayName(chapter.id),
+  }));
+  const toWrite = companies.filter(isChapterToWrite).map((co) => ({ id: co.id, name: companyDisplayName(co.name) }));
 
   return [...written, ...toWrite].map((quest, i) => {
     const isCurrent = i === unlockedIndex && i < written.length;
@@ -183,6 +190,8 @@ const StoryMapPage: React.FC = () => {
   const discovery = newDiscoveries[0];
   const discoveriesLeft = newDiscoveries.length - 1;
   const discoveryTech = discovery?.data as TechnologyData | undefined;
+  const [shownStatue, setShownStatue] = useState<StructureData | null>(null);
+  const [inspecting, setInspecting] = useState(false);
   const discoveryPopup = discovery && discoveryTech && (
     <UnlockPopup
       kicker="New technology unlocked!"
@@ -204,7 +213,7 @@ const StoryMapPage: React.FC = () => {
     structures: solidStructures,
     environments,
     playerHitbox,
-    canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen && !splashCovering,
+    canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen && !splashCovering && !inspecting,
   });
 
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
@@ -236,8 +245,37 @@ const StoryMapPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [nearbyDoor, activeChapter, exiting, shownAtDoor, navigate]);
 
+  const { nearbyStructure: nearbyStatue } = useCollisionDetection({
+    playerPosition,
+    structures: statues,
+    interactionRadius: STATUE_REACH,
+  });
+
+  // like the Sandbox: shown while walking past, hidden a beat after leaving so a radius edge does not flicker it
+  useEffect(() => {
+    if (nearbyStatue) {
+      setShownStatue(nearbyStatue);
+      return;
+    }
+    const timer = setTimeout(() => setShownStatue(null), STATUE_HIDE_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [nearbyStatue]);
+
+  const shownSkill = shownStatue?.data as TechnologyData | undefined;
+  const skillVisible = !!shownSkill && !splash.visible && !menuOpen && !discovery && !inDevelopmentOpen;
+  const skillWindow = skillVisible && shownSkill && (
+    <>
+      <SkillWindow
+        entry={skillEntry(shownSkill, true)}
+        chapterName={chapterDisplayName(shownSkill.storyChapter ?? '')}
+        onInspect={() => setInspecting(true)}
+      />
+      {inspecting && <ItemInspector entry={skillEntry(shownSkill, true)} onClose={() => setInspecting(false)} />}
+    </>
+  );
+
   const inDevelopmentPopup = inDevelopmentOpen && (
-    <InDevelopmentPopup chapterName={activeCompany ? chapterName(activeCompany.name) : undefined} onClose={() => setInDevelopmentOpen(false)} />
+    <InDevelopmentPopup chapterName={activeCompany ? companyDisplayName(activeCompany.name) : undefined} onClose={() => setInDevelopmentOpen(false)} />
   );
 
   const debugActions: DebugAction[] = [{ label: 'Reset story', tone: 'danger', onClick: resetAll }];
@@ -273,7 +311,7 @@ const StoryMapPage: React.FC = () => {
           name="story-map"
           world={worldConfig}
           playerPosition={playerPosition}
-          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery && !menuOpen }}
+          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery && !menuOpen && !inspecting }}
           music={storyMapAudioTrack}
           playerHitbox={playerHitbox}
           debugActions={debugActions}
@@ -289,6 +327,7 @@ const StoryMapPage: React.FC = () => {
         </GameScene>
         {!splash.visible && discoveryPopup}
         {!discovery && inDevelopmentPopup}
+        {skillWindow}
       </div>
     </div>
   );

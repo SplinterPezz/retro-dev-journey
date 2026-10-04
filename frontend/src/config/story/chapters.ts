@@ -1,6 +1,7 @@
 import { ChapterProgress } from '../../types/story';
 import { TechnologyData } from '../../types/sandbox';
 import { CHAPTER_IDS, COMPANY_IDS } from '../ids';
+import { companies } from '../career';
 import { PROLOGUE_FLAGS } from './flags';
 import { storyUi } from './sprites';
 
@@ -39,4 +40,14 @@ export const isTechnologyUnlocked = (tech: TechnologyData, progress: Record<stri
   if (!tech.storyChapter) return false;
   const chapter = storyChapterOrder.find((c) => c.id === tech.storyChapter) ?? { id: tech.storyChapter };
   return isChapterFinished(chapter, progress);
+};
+
+// "Eikony (IT)" -> "Eikony"
+export const companyDisplayName = (companyName: string): string => companyName.replace(/ \(IT\)$/, '');
+
+export const chapterDisplayName = (chapterId: string): string => {
+  const chapter = storyChapterOrder.find((c) => c.id === chapterId);
+  const company = chapter?.companyId && companies.find((co) => co.id === chapter.companyId);
+  if (company) return companyDisplayName(company.name);
+  return chapter?.name ?? chapterId;
 };

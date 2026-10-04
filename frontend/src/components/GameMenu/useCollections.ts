@@ -29,17 +29,19 @@ export const itemEntries = (progress: Record<string, ChapterProgress>): Collecti
     }))
   );
 
+export const skillEntry = (tech: TechnologyData, found: boolean): CollectionEntry => ({
+  id: tech.id,
+  name: tech.name,
+  image: tech.image,
+  description: tech.learnedText ?? tech.description ?? '',
+  rarity: tech.rarity,
+  found,
+});
+
 export const skillEntries = (progress: Record<string, ChapterProgress>): CollectionEntry[] =>
   technologies.map((structure) => {
     const tech = structure.data as TechnologyData;
-    return {
-      id: tech.id,
-      name: tech.name,
-      image: tech.image,
-      description: tech.learnedText ?? tech.description ?? '',
-      rarity: tech.rarity,
-      found: isTechnologyUnlocked(tech, progress),
-    };
+    return skillEntry(tech, isTechnologyUnlocked(tech, progress));
   });
 
 export const useCollection = (kind: 'items' | 'skills'): CollectionEntry[] => {

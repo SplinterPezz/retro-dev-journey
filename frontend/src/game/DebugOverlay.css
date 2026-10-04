@@ -65,7 +65,7 @@
 .debug-toolbar {
   position: fixed;
   bottom: 8px;
-  left: 84px;
+  left: 92px;
   z-index: 999;
   display: flex;
   flex-direction: column;

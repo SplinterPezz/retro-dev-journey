@@ -205,3 +205,74 @@
     font-size: 0.9rem;
   }
 }
+/* Phone landscape: little height, so short data on the left and the long texts on the right, scrolling on
+   their own. Last in the file and !important to win over the max-width rules above. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .structure-dialog {
+    --dialog-gap: 12px;
+    --dialog-width: min(60vw, 600px);
+    --dialog-chrome: 120px; /* title, separator and frame padding */
+    width: var(--dialog-width) !important;
+    top: var(--dialog-gap) !important;
+    height: auto;
+    max-height: calc(100dvh - 2 * var(--dialog-gap));
+  }
+
+  .structure-dialog .rpgui-container {
+    padding: 12px 16px !important;
+  }
+
+  .structure-title {
+    font-size: 1.1em !important;
+    margin: 0 !important;
+  }
+
+  .structure-dialog .dialog-separator {
+    margin: 6px 0;
+  }
+
+  .dialog-content-structure {
+    max-height: none;
+    overflow: visible;
+    margin-bottom: 0;
+  }
+
+  .company-info,
+  .technology-info {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 16px;
+  }
+
+  .info-column--long {
+    max-height: calc(100dvh - 2 * var(--dialog-gap) - var(--dialog-chrome));
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .info-section {
+    margin-bottom: 10px;
+  }
+
+  .info-section label {
+    font-size: 0.75rem;
+  }
+
+  .info-section p {
+    font-size: 0.85rem;
+  }
+
+  .tech-tags {
+    gap: 3px;
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    padding: 2px 6px;
+  }
+
+  .project-list li {
+    padding: 5px 8px;
+    margin-bottom: 5px;
+  }
+}

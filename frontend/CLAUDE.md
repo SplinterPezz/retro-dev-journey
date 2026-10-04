@@ -216,6 +216,7 @@ Also:
 
 Test the three layouts **once, at the end of the development** (Chrome DevTools device mode, or the browser
 tools): not after every change. Same for browser automation (Playwright / Chrome) - one pass at the end.
+**Before that pass, ask the user** whether they already tested it themselves or want you to do it.
 
 ## Tests
 
@@ -256,6 +257,9 @@ Node must match `engines` in `package.json` (>= 22.13). Majors pending as of 202
 react-apexcharts 2, lucide-react 1, TypeScript 7, env-cmd 11, jest-dom 7.
 
 ## Working with the user
+
+- Before any browser test (screenshots, automation, device mode), ask whether the user has already tested it or
+  wants you to. When you do test, use a tab of your own, never the one the user is playing in, and close it after.
 
 - For audio, visuals or anything subjective, make a quick sample first (WAV, screenshot) and integrate only once
   the user has picked one.

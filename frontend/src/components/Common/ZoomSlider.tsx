@@ -1,16 +1,17 @@
 import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
+import { ZoomIn, ZoomOut } from 'lucide-react';
 import { AppDispatch } from '../../store/store';
 import { setZoom } from '../../store/zoomSlice';
 import { useZoomLevel, ZOOM_LEVEL_COUNT } from '../../game/zoom';
-import './pixel-button.css';
+import '../AudioControls/AudioControls.css';
 import './ZoomSlider.css';
-import './pixel-button.css';
 
 // px, kept in sync with ZoomSlider.css
 const TICK_TOP = 8;
 const TICK_GAP = 32;
 const TRACK_HEIGHT = TICK_TOP * 2 + TICK_GAP * (ZOOM_LEVEL_COUNT - 1);
+const ICON_SIZE = 24;
 
 const ZoomSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,12 +48,12 @@ const ZoomSlider: React.FC = () => {
     <div className="zoom-slider">
       <button
         type="button"
-        className="zoom-slider-button pixel-button"
+        className="rpgui-button zoom-slider-button"
         disabled={level === ZOOM_LEVEL_COUNT}
         onClick={() => dispatch(setZoom(level + 1))}
         aria-label="Zoom in"
       >
-        +
+        <ZoomIn size={ICON_SIZE} color="white" className="volume-filter" aria-hidden="true" />
       </button>
 
       <div
@@ -73,12 +74,12 @@ const ZoomSlider: React.FC = () => {
 
       <button
         type="button"
-        className="zoom-slider-button pixel-button"
+        className="rpgui-button zoom-slider-button"
         disabled={level === 1}
         onClick={() => dispatch(setZoom(level - 1))}
         aria-label="Zoom out"
       >
-        -
+        <ZoomOut size={ICON_SIZE} color="white" className="volume-filter" aria-hidden="true" />
       </button>
     </div>
   );

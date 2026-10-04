@@ -16,5 +16,7 @@ export const collectionTexts = {
   missingName: '???',
   back: 'Back to the menu',
   dragHint: 'Drag to rotate',
+  unlockedIn: 'Unlocked in',
+  inspect: 'Inspect',
   close: 'Close',
 };
