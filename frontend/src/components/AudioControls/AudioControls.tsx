@@ -17,9 +17,6 @@ interface AudioControlsProps {
   volumeStep?: number;
 }
 
-// The home page's music controls: volume up / down and mute. Volume and mute
-// are the same saved setting the game menu changes (state.settings), so a
-// choice made here holds on every page, and the other way round.
 const AudioControls: React.FC<AudioControlsProps> = ({
   audioSrc,
   className = '',
@@ -39,7 +36,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
     setShowVolumeControls(!showVolumeControls);
   };
 
-  // Raising the volume turns muted music back on; lowering it to 0 mutes it.
   const increaseVolume = () => {
     const newVolume = Math.min(volume + volumeStep, 100);
     dispatch(setMusicVolume(newVolume));
@@ -56,11 +52,9 @@ const AudioControls: React.FC<AudioControlsProps> = ({
     <div className={`rpgui-content`}>
       <div className={`volume-position ${className}`}>
         <div className='audio-container'>
-          {/* Mobile only: sit to the left of the volume controls */}
           <OrientationToggleButton golden={buttonStyle === 'golden'} />
           <FullscreenButton golden={buttonStyle === 'golden'} />
 
-          {/* Volume Controls Button */}
           <button
             className={`volume-controls d-none d-sm-block rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
             type="button"
@@ -74,7 +68,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
             />
           </button>
 
-          {/* Mute/Unmute Button */}
           <button
             className={`unmute-controls rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
             type="button"
@@ -97,7 +90,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
           </button>
         </div>
 
-        {/* Volume Arrow Controls */}
         {showVolumeControls && (
           <div
             className={`volume-buttons-container rpgui-container ${containerStyle} d-none d-sm-flex`}
@@ -108,7 +100,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
               </span>
             )}
 
-            {/* Volume Up Button */}
             <button
               className={`volume-buttons rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
               type="button"
@@ -123,7 +114,6 @@ const AudioControls: React.FC<AudioControlsProps> = ({
               />
             </button>
 
-            {/* Volume Down Button */}
             <button
               className={`volume-buttons rpgui-button ${buttonStyle === 'golden' ? 'golden' : ''}`}
               type="button"

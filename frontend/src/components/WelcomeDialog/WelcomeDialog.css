@@ -177,8 +177,6 @@
     padding-top: 12px;
   }
 }
-/* Landscape phone: the stacked dialog is taller than the screen. It becomes
-   wider and shorter - the two sections side by side, the button below them. */
 @media (orientation: landscape) and (max-height: 500px) {
   .welcome-dialog {
     width: 640px !important;
@@ -237,7 +235,6 @@
     grid-column: 1 / -1;
   }
 
-  /* wide enough, with RPGUI's side padding trimmed, for the label on one line */
   .accept-button,
   .accept-button.button-mobile {
     width: 280px !important;

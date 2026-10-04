@@ -1,10 +1,9 @@
 import { fetchFromApi } from './api';
 import { ApiError, UploadResponse } from '../types/api';
-import { maxSizeFileCV } from '../config/admin';
+import { maxCvSizeMb } from '../config/admin';
 import { apiBaseUrl } from '../config/env';
 import { API_ENDPOINTS } from '../config/apiEndpoints';
 
-// Custom fetch for download CV as Blob
 export const downloadCV = async (): Promise<void> => {
   try {
     const response = await fetch(`${apiBaseUrl}${API_ENDPOINTS.cvDownload}`);
@@ -23,7 +22,6 @@ export const downloadCV = async (): Promise<void> => {
       }
     }
     
-    // Create blob and download
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -40,16 +38,14 @@ export const downloadCV = async (): Promise<void> => {
   }
 };
 
-// Upload CV file (authenticated)
 export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> => {
   try {
-    if (file.size > maxSizeFileCV * 1024 * 1024) {
+    if (file.size > maxCvSizeMb * 1024 * 1024) {
       return {
         success: false,
-        error: `File size exceeds ${maxSizeFileCV}MB limit`
+        error: `File size exceeds ${maxCvSizeMb}MB limit`
       };
     }
-    // Create FormData for file upload
     const formData = new FormData();
     formData.append('cv', file);
     

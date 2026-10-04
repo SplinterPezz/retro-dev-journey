@@ -3,23 +3,15 @@ import { CHAPTER_IDS } from '../ids';
 import { PROLOGUE_FLAGS } from './flags';
 import { meepSprite, storyCollectible } from './sprites';
 
-// Hidden collectibles per chapter. Kept apart from the chapter configs so the
-// story map can show the counts without loading every dialogue.
-//
-// Each one is found a different way (see CollectibleUnlock): lying in plain
-// sight but only visible up close, given in a dialogue, reached through a
-// secret path outside the walls, made by doing things in the right order, or
-// waiting long enough in the right spot.
+// Apart from the chapter configs, so the story map can count them without loading every dialogue.
 
 export const collectibleIcon = storyCollectible('collectible_icon');
-// Meep cheers from the corner of the "found" window.
 export const collectibleCheer = meepSprite('idle');
 
 export const chapterCollectibles: Record<string, ChapterCollectibles> = {
   [CHAPTER_IDS.prologue]: {
     items: [
       {
-        // dialogue: tell Manuel you play an instrument too
         id: 'drumstick',
         name: "Manuel's spare drumstick",
         description:
@@ -28,7 +20,6 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         unlock: { kind: 'flag', flag: PROLOGUE_FLAGS.gotDrumstick },
       },
       {
-        // hidden: on the bathroom floor, in front of the last stall, visible only from a few steps
         id: 'flappyPhone',
         name: 'A phone with Flappy Bird',
         description:
@@ -38,7 +29,6 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         revealRadius: 90,
       },
       {
-        // off the map: through the gap in the right wall, behind the globe
         id: 'floppy',
         name: 'Floppy disk',
         description:
@@ -48,7 +38,6 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         revealRadius: 180,
       },
       {
-        // sequence: coffee machine, water dispenser, coffee machine again
         id: 'javaManual',
         name: 'Coffee-stained Java manual',
         description:
@@ -59,14 +48,13 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         unlock: {
           kind: 'sequence',
           spots: {
-            coffee: { x: 290, y: 1015, radius: 55 }, // in front of the coffee table
-            water: { x: 100, y: 1050, radius: 55 }, // next to the water dispenser
+            coffee: { x: 290, y: 1015, radius: 55 },
+            water: { x: 100, y: 1050, radius: 55 },
           },
           order: ['coffee', 'water', 'coffee'],
         },
       },
       {
-        // idle: stand still in front of the corkboard
         id: 'stickyNote',
         name: 'Sticky note: password123',
         description:
@@ -74,13 +62,12 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         image: storyCollectible('collectible_sticky_note'),
         position: { x: 1165, y: 540 },
         revealRadius: 180,
-        // left of the board: clear of classmate-7, who stands below it until the class sits down
+        // clear of classmate-7, who stands below the board until the class sits down
         unlock: { kind: 'idle', spot: { x: 1150, y: 515, radius: 45 }, seconds: 5 },
       },
     ],
     allFoundText:
       'Every lost thing in the ANFE classroom found its way to you. Years later the floppy is still in a drawer, the drumstick still taps on desks during meetings, and password123 is - hopefully - nobody\'s password anymore.',
-    // behind the globe a gap in the right wall leads along the outside of the room, down to the floppy
     secretPaths: [
       { minX: 1240, minY: 200, maxX: 1420, maxY: 240 },
       { minX: 1380, minY: 200, maxX: 1420, maxY: 520 },

@@ -1,5 +1,3 @@
-/* Full-screen viewport of a scene: the Sandbox, the story map and the chapter
-   interiors. The world is moved inside it by a camera transform. */
 .sandbox-viewport,
 .story-map-viewport,
 .interior-scene-viewport {
@@ -9,7 +7,6 @@
   position: relative;
 }
 
-/* Home button in the top-left corner of the Sandbox and the story map. */
 .back-button {
   position: absolute;
   top: 18px;

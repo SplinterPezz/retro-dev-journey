@@ -10,9 +10,6 @@ interface OrientationToggleButtonProps {
   golden?: boolean;
 }
 
-// Mobile-only switch between portrait and landscape, always visible. The icon
-// shows the layout a tap will switch to: horizontal while upright, vertical
-// while in landscape.
 const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golden = false }) => {
   const dispatch = useDispatch<AppDispatch>();
   const orientation = useSelector((state: RootState) => state.story.orientation);
@@ -23,8 +20,7 @@ const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golde
   const landscape = isLandscape(orientation);
 
   const toggle = () => {
-    // Landscape was chosen but the phone is upright (e.g. after the browser was
-    // reopened, which drops the screen lock): a tap asks for the lock again.
+    // reopening the browser drops the screen lock: a tap asks for it again
     if (landscape && isPortraitViewport()) {
       void enterLandscape(orientation as 'landscape-primary' | 'landscape-secondary');
       return;

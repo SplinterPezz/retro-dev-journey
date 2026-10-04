@@ -12,27 +12,18 @@ code {
     monospace;
 }
 
-/* One font for every RPGUI button. RPGUI only sets it inside .rpgui-content, so
-   buttons rendered outside that wrapper (e.g. Download CV on the home page)
-   fell back to the system font. */
+/* RPGUI sets its font only inside .rpgui-content; buttons outside it fell back to the system font. */
 .rpgui-button,
 .rpgui-button p {
   font-family: 'Press Start 2P', cursive;
 }
 
-/* Label look of the RPGUI buttons: a black outline on all four sides and the
-   22px line box RPGUI gives them. Story Mode / Sandbox / Download CV use this. */
 .rpgui-button p {
   line-height: 22px;
   text-shadow: -2px 0 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000;
 }
 
-/* Golden buttons: the label sits on the middle of the orange plank, whatever
-   the button's height. button-golden.png is drawn at 80% of the height,
-   centred, and its plank's middle is row 12.5 of 24: 10% + 80% * 12.5 / 24
-   = 51.7% from the top (plus 1px: Press Start 2P draws its capitals a little
-   high in their box). The label is taken out of the flow, so it can never
-   push RPGUI's floated end caps out of line. */
+/* button-golden.png covers the middle 80% and its plank's middle is row 12.5 of 24: 10% + 80% * 12.5 / 24. */
 .rpgui-button.golden {
   position: relative;
 }
@@ -48,12 +39,10 @@ code {
   white-space: nowrap;
 }
 
-/* Undo RPGUI's top margin on a button label. */
 .revert-top {
   margin-top: revert;
 }
 
-/* Placeholder while the persisted state or a page chunk loads. */
 .page-loading {
   display: flex;
   align-items: center;
@@ -63,7 +52,6 @@ code {
   color: #fff;
 }
 
-/* Centred golden rule between a dialog's title and its body (dialogs, quiz, welcome). */
 .dialog-separator {
   text-align: center;
 }

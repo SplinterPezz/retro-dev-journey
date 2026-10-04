@@ -5,8 +5,6 @@ import { AppDispatch, RootState } from '../../store/store';
 import { selectDialogueSound, setDialogueMuted, setDialogueVolume } from '../../store/settingsSlice';
 import '../AudioControls/AudioControls.css';
 
-// The dialogue row of the game menu: volume bar and mute toggle of the typing
-// sound the dialogue box makes, working like the music row.
 const DialogueSoundControl: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const settings = useSelector((state: RootState) => state.settings);

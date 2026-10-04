@@ -9,9 +9,7 @@ interface FullscreenButtonProps {
   golden?: boolean;
 }
 
-// Mobile-only fullscreen toggle. Browsers cannot hide the address bar with CSS;
-// the Fullscreen API does it, but only from a tap, and iOS Safari does not
-// offer it for pages - so the button is hidden wherever it is unsupported.
+// iOS Safari has no Fullscreen API for pages: the button hides where it is unsupported.
 const FullscreenButton: React.FC<FullscreenButtonProps> = ({ golden = false }) => {
   const isMobile = useIsMobile();
   const orientation = useSelector((state: RootState) => state.story.orientation);
@@ -26,7 +24,6 @@ const FullscreenButton: React.FC<FullscreenButtonProps> = ({ golden = false }) =
     return () => document.removeEventListener('fullscreenchange', sync);
   }, []);
 
-  // Hidden in landscape: the orientation toggle is the control there.
   if (!isMobile || !supported || isLandscape(orientation)) return null;
 
   const toggle = () => {

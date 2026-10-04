@@ -7,14 +7,11 @@ import './pixel-button.css';
 import './ZoomSlider.css';
 import './pixel-button.css';
 
-// Geometry in px, shared with ZoomSlider.css: the first tick sits TICK_TOP
-// below the top of the track, and the ticks are TICK_GAP apart.
+// px, kept in sync with ZoomSlider.css
 const TICK_TOP = 8;
 const TICK_GAP = 32;
 const TRACK_HEIGHT = TICK_TOP * 2 + TICK_GAP * (ZOOM_LEVEL_COUNT - 1);
 
-// Pixel-art vertical zoom slider, shown on every device (bottom left).
-// Level 5 is at the top, level 1 at the bottom, like the zoom slider in maps.
 const ZoomSlider: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const level = useZoomLevel();

@@ -1,6 +1,4 @@
-// Re-indents Java code by its braces, four spaces per level, and drops blank
-// runs. It does not parse Java: it is enough for the short snippets in the
-// mini games, where the answer is compared ignoring whitespace anyway.
+// Not a Java parser: re-indents by braces, enough for the short mini-game snippets.
 export const formatJava = (code: string): string => {
   let depth = 0;
   const lines = code.split('\n').map((raw) => {

@@ -1,14 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { DEFAULT_DIALOGUE_VOLUME, DEFAULT_MUSIC_VOLUME } from '../config/menu';
 
-// Player preferences that hold across pages and visits (saved with the rest
-// of the state). Set from the game menu.
 export interface SettingsState {
-  musicVolume: number; // 0-100
+  musicVolume: number;
   musicMuted: boolean;
-  dialogueVolume: number; // 0-100, the typing sound of the dialogue box
+  dialogueVolume: number;
   dialogueMuted: boolean;
-  soundAsked: boolean; // the one-time "Do you want sound?" screen has been answered
+  soundAsked: boolean;
 }
 
 const initialState: SettingsState = {
@@ -37,7 +35,6 @@ const settingsSlice = createSlice({
     setDialogueMuted(state, action: PayloadAction<boolean>) {
       state.dialogueMuted = action.payload;
     },
-    // the answer to "Do you want sound?": music and dialogue sound together
     chooseSound(state, action: PayloadAction<boolean>) {
       state.musicMuted = !action.payload;
       state.dialogueMuted = !action.payload;
@@ -46,8 +43,7 @@ const settingsSlice = createSlice({
   },
 });
 
-// Settings saved before the dialogue sound existed come back without its
-// fields (redux-persist restores the saved slice as it was): read them here.
+// settings saved before these fields existed come back without them
 export const selectDialogueSound = (settings: Partial<SettingsState>) => ({
   dialogueVolume: settings.dialogueVolume ?? DEFAULT_DIALOGUE_VOLUME,
   dialogueMuted: settings.dialogueMuted ?? true,

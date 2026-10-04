@@ -11,9 +11,6 @@ export interface CodeFixEditorProps {
   disabled?: boolean;
 }
 
-// Editable Java snippet for code-fix quiz questions. The player edits the
-// buggy code and submits; the quiz compares the result to the expected code
-// with whitespace ignored (see QuizPopup).
 const CodeFixEditor: React.FC<CodeFixEditorProps> = ({ initialCode, onSubmit, disabled = false }) => {
   const [code, setCode] = useState(initialCode);
 

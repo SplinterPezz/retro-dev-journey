@@ -11,8 +11,7 @@ export const isLandscape = (orientation: StoryOrientation | null): boolean =>
 
 export const isPortraitViewport = (): boolean => window.matchMedia('(orientation: portrait)').matches;
 
-// Asks the browser to lock the screen. Only works in fullscreen on Android
-// Chrome, and not at all on iOS Safari - callers fall back to CSS rotation.
+// only works in fullscreen on Android Chrome, never on iOS Safari: callers fall back to CSS rotation
 const lockOrientation = async (orientation: StoryOrientation): Promise<boolean> => {
   if (orientation === 'portrait') return false;
   try {
@@ -31,9 +30,7 @@ export const unlockOrientation = (): void => {
   }
 };
 
-// Called from a tap: goes fullscreen first (needed for the lock), then locks.
-// True while a landscape request is in progress, so the fallback below does not
-// undo it while the phone is still upright.
+// true while a landscape request runs, so the portrait fallback does not undo it
 let landscapeRequestPending = false;
 
 export const enterLandscape = async (orientation: StoryOrientation): Promise<void> => {
@@ -43,15 +40,13 @@ export const enterLandscape = async (orientation: StoryOrientation): Promise<voi
       await document.documentElement.requestFullscreen();
     }
   } catch {
-    // refused - the lock below may still work, or the CSS fallback applies
+    // refused: the lock may still work, otherwise the CSS rotation applies
   }
   await lockOrientation(orientation);
   landscapeRequestPending = false;
 };
 
-// True when the picture has to be turned with CSS: a phone that chose a
-// landscape layout but is still held upright. Once the phone is physically
-// landscape (or the lock worked) this turns false and nothing is rotated.
+// a phone that chose landscape but is still held upright
 const useCssRotation = (orientation: StoryOrientation | null): boolean => {
   const [rotated, setRotated] = useState(false);
 
@@ -71,8 +66,6 @@ const useCssRotation = (orientation: StoryOrientation | null): boolean => {
   return rotated;
 };
 
-// Keeps the <html> class in step with the rotation, so ScreenRotation.css can
-// turn the whole app. Mounted once at the app root.
 export const useScreenRotation = (): void => {
   const orientation = useSelector((state: RootState) => state.story.orientation);
   const rotated = useCssRotation(orientation);
@@ -85,8 +78,7 @@ export const useScreenRotation = (): void => {
     }
   }, [rotated, orientation]);
 
-  // The turned layout is sized from the real visible size, measured here,
-  // not from vh/vw - those go stale when the page is reopened.
+  // measured, not vh/vw: those go stale when the page is reopened
   useEffect(() => {
     const root = document.documentElement;
     const measure = () => {
@@ -99,8 +91,7 @@ export const useScreenRotation = (): void => {
   }, []);
 };
 
-// The size the scene should centre on. When the picture is turned with CSS the
-// layout is the device's height by its width, so the two are swapped.
+// width and height swap while the picture is turned with CSS
 export const useLogicalViewport = (): { width: number; height: number } => {
   const orientation = useSelector((state: RootState) => state.story.orientation);
   const rotated = useCssRotation(orientation);
@@ -115,10 +106,7 @@ export const useLogicalViewport = (): { width: number; height: number } => {
   return rotated ? { width: size.height, height: size.width } : size;
 };
 
-// Without fullscreen the screen lock is gone after the browser is reopened or
-// fullscreen is left. A phone that is upright while the layout says landscape
-// is then shown as portrait. A tap on the rotate button brings landscape back,
-// since it is a user gesture that can go fullscreen again.
+// Reopening the browser or leaving fullscreen drops the lock: an upright phone goes back to portrait.
 export const useFallbackToPortrait = (): void => {
   const dispatch = useDispatch<AppDispatch>();
   const orientation = useSelector((state: RootState) => state.story.orientation);
@@ -132,8 +120,7 @@ export const useFallbackToPortrait = (): void => {
         dispatch(setOrientation('portrait'));
       }
     };
-    // The phone turns upright on its own when fullscreen ends (Android back),
-    // so the orientation change is checked as well as fullscreen itself.
+    // leaving fullscreen (Android back) also turns the phone upright
     const query = window.matchMedia('(orientation: portrait)');
     check();
     document.addEventListener('fullscreenchange', check);

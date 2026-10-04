@@ -30,11 +30,9 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
             void handleDownload();
             downloadTriggeredRef.current = true;
         }
-        // Triggered by proximity only; the guard ref stops repeats.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNearby, cooldownActive, isDownloading]);
 
-    // One-second countdown while the cooldown runs.
     useEffect(() => {
         if (!cooldownActive) return;
         if (cooldownTimer <= 0) {
@@ -55,25 +53,21 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
             await downloadCV();
             setDownloadStatus('success');
             
-            // Start cooldown
             setCooldownActive(true);
             setCooldownTimer(downloadCVCooldown);
             
-            // Reset status after showing success briefly
             later(() => setDownloadStatus('idle'), 2000);
             
         } catch (error) {
             console.error('Download failed:', error);
             setDownloadStatus('error');
             
-            // Reset status after showing error briefly
             later(() => setDownloadStatus('idle'), 3000);
         } finally {
             setIsDownloading(false);
         }
     };
 
-    // Get the appropriate image based on state
     const getDisplayImage = () => {
         if (isNearby && !cooldownActive) {
             return structure.data.animatedImage || structure.data.image;
@@ -84,7 +78,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         return structure.data.image;
     };
 
-    // Get status message
     const getStatusMessage = () => {
         if (isDownloading) return 'Downloading CV...';
         if (downloadStatus === 'success') return 'CV Downloaded!';
@@ -94,7 +87,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         return '';
     };
 
-    // Get status color
     const getStatusColor = () => {
         switch (downloadStatus) {
             case 'downloading': return '#ffd700';
@@ -127,7 +119,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
                         alt="Download CV"
                     />
                     
-                    {/* Download indicator */}
                     {(isDownloading || downloadStatus !== 'idle' || cooldownActive) && (
                         <div
                             className="download-status-indicator"
@@ -153,7 +144,6 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
                     )}
                 </div>
 
-                {/* Development debug info */}
                 {isDev && (
                     <>
                         <div 

@@ -7,7 +7,6 @@ interface CollectibleCounterProps {
   total: number;
 }
 
-// Always on screen in a chapter: how many of its collectibles were found.
 const CollectibleCounter: React.FC<CollectibleCounterProps> = ({ found, total }) => (
   <div className={`collectible-counter${found >= total ? ' complete' : ''}`} title="Collectibles" aria-label={`Collectibles ${found} of ${total}`}>
     <img src={collectibleIcon} alt="" className="collectible-counter-icon" />

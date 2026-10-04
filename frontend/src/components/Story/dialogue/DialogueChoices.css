@@ -7,12 +7,7 @@
   width: 100%;
 }
 
-/* Custom pixel-styled button (not RPGUI's border-image button) - sized by
-   its own content so it can wrap long answer text onto multiple lines
-   instead of being squeezed into a fixed-width frame. The "pixely" look
-   comes from hard-edged inset box-shadows acting as a beveled border
-   (NES/SNES button style) instead of border-radius + blurred shadows, which
-   read as smooth/modern rather than retro. */
+/* Not RPGUI's border-image button: this one sizes to its content so long answers can wrap. */
 .story-choice-button {
   width: 100%;
   box-sizing: border-box;
@@ -29,9 +24,6 @@
   transition: transform 0.06s ease;
 }
 
-/* Choices that answer a question the NPC just asked - a different accent
-   (teal instead of amber) plus a leading ">" mark so they read as "this is
-   MY answer" rather than a generic branch/topic pick. */
 .story-choice-button.story-choice-button--answer {
   background: #2f8f8a;
   color: #e8fbf9;
@@ -59,7 +51,6 @@
   text-shadow: none !important;
 }
 
-/* Label on the left, progress dots pinned to the right, inside the button. */
 .story-choice-row {
   display: flex;
   align-items: center;
@@ -68,12 +59,7 @@
   width: 100%;
 }
 
-/* RPGUI's base stylesheet has `.rpgui-content span { color:#fff; text-shadow:
-   -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000; font-size:1em }`, which
-   out-specifies a plain class selector. The old markup never hit it (the
-   label was a bare text node, not a span) - now that it's wrapped for the
-   flex layout, reset both back to the button's own color/weight instead of
-   inheriting RPGUI's white-with-heavy-outline look. */
+/* RPGUI's .rpgui-content span (white text, heavy outline) out-specifies a plain class selector. */
 .story-choice-row,
 .story-choice-text {
   color: inherit !important;
@@ -102,9 +88,7 @@
   background: currentColor;
 }
 
-/* Re-asserted after .story-choice-button--answer (same specificity, later
-   in source order) so an already-answered question still greys out instead
-   of keeping its teal accent. */
+/* after --answer (same specificity), so an answered question still greys out */
 .story-choice-button--answer:disabled {
   background: #6b6b6b;
   color: #a8a8a8;
@@ -125,8 +109,6 @@
   }
 }
 
-/* Choices ease in one after another when a line finishes typing, instead of
-   popping onto the screen all at once. */
 .story-choice-button {
   animation: story-choice-in 0.25s ease-out backwards;
 }
@@ -142,7 +124,6 @@
   }
 }
 
-/* A choice with a hint: the button and its "?" share one row. */
 .story-choice-wrap {
   position: relative;
   display: flex;
@@ -155,7 +136,6 @@
   width: auto;
 }
 
-/* Pixel "?" in the teal answer style, so it stands apart from the orange topics. */
 .story-choice-hint-button {
   flex: 0 0 34px;
   padding: 0;
@@ -184,7 +164,6 @@
     0 0 0 0 #0c2e2b;
 }
 
-/* Speech balloon under the row, with a pixel tail pointing up at the "?". */
 .story-choice-balloon {
   position: absolute;
   top: calc(100% + 10px);

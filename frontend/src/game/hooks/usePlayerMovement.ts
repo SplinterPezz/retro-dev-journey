@@ -14,9 +14,7 @@ export interface PlayerMovementConfig {
   environments?: readonly EnvironmentData[];
   playerHitbox?: Hitbox;
   canMove?: boolean;
-  // Optional walkable areas: the player's position must stay inside one of
-  // them (e.g. the room plus a secret path outside its walls). worldBounds
-  // still clamps, so it should cover them all.
+  // worldBounds still clamps, so it must cover every area
   areas?: readonly WorldBounds[];
 }
 
@@ -28,7 +26,6 @@ interface JoystickState {
 
 const IDLE_JOYSTICK: JoystickState = { isActive: false, direction: 'idle', intensity: 0 };
 
-// Typing into a field or the code editor is not movement.
 const isTextTarget = (target: EventTarget | null): boolean => {
   const el = target as HTMLElement | null;
   return !!el && (el.isContentEditable || !!el.closest?.('input, textarea, .cm-editor'));
@@ -36,18 +33,12 @@ const isTextTarget = (target: EventTarget | null): boolean => {
 
 const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean => areas.some((a) => isInside(p, a));
 
-// Running: Shift / Space on the keyboard, or pushing the joystick past this
-// far; either way 1.5x speed. The joystick also scales with how far it is
-// pushed, and its walking pace is the base speed / RUN_SPEED_FACTOR.
+// the joystick walks at speed / RUN_SPEED_FACTOR and runs past JOYSTICK_RUN_INTENSITY
 const RUN_SPEED_FACTOR = 1.5;
 const JOYSTICK_RUN_INTENSITY = 0.7;
 
-// Moves the player with the keyboard or the touch joystick.
-//
-// The animation loop is started once and reads everything it needs from refs
-// (config, pressed keys, joystick), so a render never restarts it. Position is
-// pushed to React state only when it actually changes, and direction/moving
-// only on a change, so standing still costs no renders at all.
+// The loop starts once and reads everything from refs; state changes only on a real
+// change, so standing still costs no renders.
 export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const [position, setPosition] = useState(config.initialPosition);
   const [direction, setDirection] = useState<Direction>('idle');
@@ -56,7 +47,6 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const configRef = useRef(config);
   configRef.current = config;
 
-  // Blockers are rebuilt only when the caller passes new arrays.
   const blockersRef = useRef<{ structures?: readonly CollidableEntity[]; environments?: readonly EnvironmentData[]; list: Blocker[] }>({
     list: [],
   });
@@ -87,7 +77,6 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     }
   }, []);
 
-  // Puts the player somewhere else at once (a cutscene seat), standing still.
   const teleport = useCallback((to: Position) => {
     keysRef.current.clear();
     joystickRef.current = IDLE_JOYSTICK;
@@ -142,8 +131,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
       }, 100);
     };
 
-    // A long press on a phone would open the context menu over the game;
-    // fields and the code editor keep theirs.
+    // a long press would open the context menu over the game
     const handleContextMenu = (e: Event) => {
       if (!isTextTarget(e.target)) e.preventDefault();
     };
@@ -183,14 +171,12 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
       const cfg = configRef.current;
       const keys = keysRef.current;
 
-      // Unfocused window: drop held keys (keyup never arrives) but keep the
-      // joystick, which is touch-driven.
+      // unfocused window: keyup never arrives, so drop held keys
       if (!isWindowFocusedRef.current && !joystickRef.current.isActive) {
         keys.clear();
       }
 
-      // canMove only gates new keydowns; a key already held when it flips to
-      // false (a quiz opening mid-step) must stop the player right away.
+      // a key held when canMove turns false must stop the player at once
       if (cfg.canMove === false) {
         keys.clear();
         joystickRef.current = IDLE_JOYSTICK;
@@ -208,8 +194,6 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
       const dir = useJoystick ? js.direction : getDirectionFromKeys(keys);
       const moving = dir !== 'idle';
 
-      // Keep facing the last real direction at rest instead of snapping back
-      // to a frontal pose.
       if (moving && directionRef.current !== dir) {
         directionRef.current = dir;
         setDirection(dir);

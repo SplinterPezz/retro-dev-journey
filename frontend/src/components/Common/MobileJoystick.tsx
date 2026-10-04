@@ -9,9 +9,6 @@ interface MobileJoystickProps {
   onStop: () => void;
 }
 
-// Touch joystick used by every scene that moves the player on phones. The
-// placement and skin live in MobileJoystick.css so the Sandbox and the Story
-// scenes look identical.
 const MobileJoystick: React.FC<MobileJoystickProps> = React.memo(({ onMove, onStop }) => (
   <div className="mobile-joystick">
     <Joystick

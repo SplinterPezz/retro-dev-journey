@@ -5,16 +5,13 @@ import './DebugOverlay.css';
 export interface DebugAction {
   label: string;
   onClick: () => void;
-  tone?: 'danger' | 'warning' | 'success'; // red (default), orange, green
+  tone?: 'danger' | 'warning' | 'success';
 }
 
 interface DebugToolbarProps {
   actions: DebugAction[];
 }
 
-// The development-only buttons in the bottom-left corner (reset the story,
-// skip a chapter...). Each page lists the ones it needs; they stack by
-// themselves, first one at the top. Renders nothing in production.
 const DebugToolbar: React.FC<DebugToolbarProps> = ({ actions }) => {
   if (!isDev || actions.length === 0) return null;
   return (

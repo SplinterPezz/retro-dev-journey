@@ -7,8 +7,6 @@ interface BobbingPropProps {
   prop: StoryPropData;
 }
 
-// A prop that floats up and down with a sparkle, like the quiz question mark.
-// It only draws: it has no collision and no interaction.
 const BobbingProp: React.FC<BobbingPropProps> = ({ prop }) => (
   <div
     className="bobbing-prop"

@@ -10,7 +10,6 @@
   box-sizing: border-box;
 }
 
-/* Lives on the monitor screen: no box of its own, green terminal text. */
 .minigame-popup {
   width: 100%;
   color: #9dffb0;
@@ -170,8 +169,6 @@
   font-size: 0.7rem;
 }
 
-/* Screen layout: the header wraps on small screens, the running score is a
-   badge, and each game has room to breathe. */
 .minigame-header {
   flex-wrap: wrap;
   row-gap: 8px;
@@ -226,7 +223,6 @@
   color: #fff3c4;
 }
 
-/* Debug-only shortcut (REACT_APP_ENV=development), same red as the other debug buttons. */
 .minigame-debug-complete {
   padding: 4px 8px;
   background: #b71c1c;

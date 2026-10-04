@@ -23,11 +23,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  /* Set as a CSS var from an inline style in QuizMarker.tsx, not a url()
-     here - css-loader resolves url() in a .css file as a module request
-     relative to this file, which breaks for public-folder absolute paths
-     (every other public sprite in this codebase goes through JS inline
-     style/vars for the same reason - see Player.tsx). */
+  /* set from QuizMarker.tsx: a public path cannot be a url() in a .css file */
   background-image: var(--sparkle-image);
   background-size: contain;
   background-repeat: no-repeat;

@@ -4,14 +4,11 @@ import './LoadingSplash.css';
 
 interface LoadingSplashProps {
   title: string;
-  leaving: boolean; // fading out (see useLoadingSplash)
+  leaving: boolean;
   loaded: number;
   total: number;
 }
 
-// The black screen over a scene while it loads: its title in the middle, the
-// resources loaded so far and a spinning icon in the bottom-right corner.
-// Driven by hooks/useLoadingSplash (Story chapters, Sandbox).
 const LoadingSplash: React.FC<LoadingSplashProps> = ({ title, leaving, loaded, total }) => (
   <div className={`chapter-splash${leaving ? ' chapter-splash--leaving' : ''}`}>
     <h1 className="chapter-splash-title">{title}</h1>

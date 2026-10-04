@@ -26,12 +26,10 @@
     font-size: 1.6em !important; 
 }
 
-
 .easter-egg-btn {
     position: relative;
     display: inline-block;
     user-select: none;
-    /* a real button for keyboard and screen readers, drawn as the title word */
     background: none;
     border: none;
     padding: 0;
@@ -104,7 +102,7 @@
 @media (max-width: 480px) {
     .game-mode-selector {
         min-width: 300px;
-        /* below the admin / LinkedIn / GitHub icons (they end at y=76) */
+        /* below the top-right icons, which end at y=76 */
         top: 90px;
         margin-left: -5px;
     }
@@ -117,16 +115,12 @@
         padding: 15px;
     }
 }
-/* Landscape phone: stacked, the card is taller than the screen. It stays one
-   column but compacts: Story Mode and Sandbox side by side, Download CV centred
-   below them, and it sits below the top icons instead of vertically centred. */
 @media (orientation: landscape) and (max-height: 500px) {
     .game-mode-selector {
         top: 84px;
         left: 50%;
         min-width: 0;
         width: min(600px, calc((100vw - 184px) / 0.8));
-        /* centred, and scaled down from its top edge so it fits under the top icons */
         transform: translateX(-50%) scale(0.8);
         transform-origin: top center;
     }
@@ -183,8 +177,6 @@
     }
 }
 
-/* Landscape phone: Story Mode on the left, Sandbox on the right, and the CV
-   download centred underneath both. */
 @media (orientation: landscape) and (max-height: 500px) {
     .game-mode-selector .rpgui-container {
         grid-template-columns: 1fr;

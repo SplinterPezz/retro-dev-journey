@@ -4,11 +4,9 @@ import './PcMonitor.css';
 
 interface PcMonitorProps {
   children: React.ReactNode;
-  onPowerOff: () => void; // the monitor's power button closes what is on screen
+  onPowerOff: () => void;
 }
 
-// A pixel-art monitor seen from the front. Whatever is passed as children is
-// drawn on its screen; the power button under the screen switches it off.
 const PcMonitor: React.FC<PcMonitorProps> = ({ children, onPowerOff }) => (
   <div className="pc-monitor-backdrop">
     <div className="pc-monitor">

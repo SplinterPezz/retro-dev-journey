@@ -14,7 +14,7 @@ import '../AudioControls/AudioControls.css';
 import './GameMenu.css';
 
 interface GameMenuProps {
-  withMusic: boolean; // the music row, on pages that play music (the dialogue sound row is always there)
+  withMusic: boolean;
 }
 
 const GoldenSeparator = () => (
@@ -23,8 +23,6 @@ const GoldenSeparator = () => (
   </div>
 );
 
-// The game menu window: the player card, the menu entries and the sound
-// controls (music, dialogue). Closed with its X only.
 const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
   const navigate = useNavigate();
   const { close } = useGameMenu();
@@ -39,8 +37,6 @@ const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
             <X size={20} color="white" strokeWidth={3} className="volume-filter" />
           </button>
 
-          {/* Two columns: stacked in portrait (so the order reads profile, Home,
-              Items, Skills, sound), side by side on a landscape phone. */}
           <div className="game-menu-columns">
             <div className="game-menu-column">
               <div className="game-menu-profile">
@@ -68,7 +64,6 @@ const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
 
             <div className="game-menu-column game-menu-column-right">
               <div className="game-menu-entries">
-                {/* not wired yet */}
                 <button type="button" className="rpgui-button golden game-menu-entry">
                   <p>
                     <Backpack size={20} color="white" className="volume-filter" aria-hidden="true" />

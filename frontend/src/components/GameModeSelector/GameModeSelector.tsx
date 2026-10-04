@@ -35,7 +35,6 @@ interface GameSelectorProps {
 const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  // The difficulty is chosen once per story, so having one means a story exists.
   const hasStory = useSelector((state: RootState) => state.story.difficulty !== null);
   const [backgroundVisible, setBackgroundVisible] = useState(true);
   const [askingStory, setAskingStory] = useState(false);

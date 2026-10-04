@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-// setTimeout tied to the component: every pending timer is cleared on
-// unmount, so a delayed callback never runs after the component is gone
-// (e.g. a quiz closed with its X while "Correct!" is still showing).
+// Pending timers are cleared on unmount, so a callback never runs on a closed component.
 export const useTimeouts = () => {
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
 

@@ -3,19 +3,17 @@ import '../dialogue/StoryIntroDialog.css';
 import './UnlockPopup.css';
 
 interface UnlockPopupProps {
-  kicker: string; // e.g. "New technology unlocked!"
+  kicker: string;
   image: string;
   title: string;
-  subtitle?: string; // e.g. the technology's category
+  subtitle?: string;
   text: string;
-  note?: string; // a closing line, e.g. where it now shows up
-  cornerImage?: string; // peeks out of the card's top-right corner (e.g. Meep cheering)
-  remaining: number; // still to show after this one
+  note?: string;
+  cornerImage?: string;
+  remaining: number;
   onConfirm: () => void;
 }
 
-// "You got something" window: a technology after a chapter, a collectible
-// when it is found. Same backdrop and golden frame as the chapter intro.
 const UnlockPopup: React.FC<UnlockPopupProps> = ({ kicker, image, title, subtitle, text, note, cornerImage, remaining, onConfirm }) => (
   <>
     <div className="story-intro-backdrop" />

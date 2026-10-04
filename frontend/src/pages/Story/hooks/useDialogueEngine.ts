@@ -6,12 +6,9 @@ import { seenFlag } from '../../../config/story/flags';
 interface ActiveDialogue {
   npc: StoryNpcData;
   nodeId: string;
-  cued: boolean; // opened by the story, not by walking up: runs to its end even if the player walks away
+  cued: boolean;
 }
 
-// The NPC conversation currently on screen: which node is shown, what its
-// choices look like, and how a pick or a "continue" moves it on. `npcs` are
-// the scene's NPCs, for lines that hand over to another character.
 export const useDialogueEngine = (
   npcs: StoryNpcData[],
   flags: StoryFlags,
@@ -23,8 +20,7 @@ export const useDialogueEngine = (
   const cue = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: true }), []);
   const close = useCallback(() => setActive(null), []);
 
-  // A node's own flag is set as soon as it is shown, plus its implicit "seen"
-  // flag, which is what locks an isAnswer choice once its question was asked.
+  // the seen flag is what locks an isAnswer choice once its question was asked
   const npcId = active?.npc.id;
   const nodeId = active?.nodeId;
   useEffect(() => {
@@ -32,7 +28,6 @@ export const useDialogueEngine = (
     const node = getNode(active.npc, active.nodeId);
     if (node?.setFlag) setFlag(node.setFlag);
     setFlag(seenFlag(active.npc.id, active.nodeId));
-    // Once per node shown.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [npcId, nodeId]);
 
@@ -61,8 +56,7 @@ export const useDialogueEngine = (
     [active, node, flags]
   );
 
-  // A cued dialogue (e.g. the instructor after the objectives, or the comments
-  // on the mini games) runs to its end even if the player walks away.
+  // a cued dialogue runs to its end even if the player walks away
   const isCued = !!active?.cued;
 
   return { active, node, choices, isCued, open, cue, close, selectChoice, advance };

@@ -11,15 +11,12 @@ interface PortraitDialogueBoxProps {
   portraitImage: string;
   text: string;
   choices?: ChoiceButtonItem[];
-  onAdvance?: () => void; // called when there are no choices and the player continues
+  onAdvance?: () => void;
   onChoiceSelect?: (id: string) => void;
   typingSpeed?: number;
-  voiceKey?: string; // whose typing sound the line has (src/config/typingVoices.ts)
+  voiceKey?: string;
 }
 
-// Bottom-anchored visual-novel style box: NPC portrait (cropped from its own
-// idle sprite via CSS, no separate bust asset needed) + name + typed text,
-// then either branching choices or a "continue" prompt.
 const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
   speakerName,
   portraitImage,
@@ -43,12 +40,9 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
     }
   };
 
-  // Enter / Space do what a click on the box does (finish the line, then
-  // continue). Choice buttons handle their own keys once they are shown.
   const handleBoxClickRef = useRef(handleBoxClick);
   handleBoxClickRef.current = handleBoxClick;
   const hasChoices = !!choices && choices.length > 0;
-  // the game menu covers the box: its keys must not advance the line behind it
   const { isOpen: menuOpen } = useGameMenu();
   const menuOpenRef = useRef(menuOpen);
   menuOpenRef.current = menuOpen;

@@ -40,7 +40,6 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure }) => {
   );
 };
 
-// Company information component
 const CompanyInfo: React.FC<{ company: CompanyData }> = ({ company }) => (
   <div className="company-info">
     <div className="info-section">
@@ -85,7 +84,6 @@ const CompanyInfo: React.FC<{ company: CompanyData }> = ({ company }) => (
   </div>
 );
 
-// Technology information component
 const TechnologyInfo: React.FC<{ technology: TechnologyData }> = ({ technology }) => (
   <div className="technology-info">
     <div className="info-section">

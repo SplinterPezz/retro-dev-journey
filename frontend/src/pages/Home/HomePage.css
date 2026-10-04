@@ -38,7 +38,6 @@
   object-position: center;
 }
 
-
 .homepage-overlay {
   position: absolute;
   top: 0;
@@ -95,8 +94,6 @@
   top: 20px;
 }
 
-/* Phones: the social icons move to the top right so the audio bar can take
-   the bottom right corner without covering them. */
 @media (max-width: 575px ){
   .social-container {
     top: 20px;
@@ -144,8 +141,6 @@
   cursor: not-allowed;
   pointer-events: none;
 }
-/* Landscape phone: the social icons sit centred above the centred game-mode
-   card instead of hanging off the right edge. */
 @media (orientation: landscape) and (max-height: 500px) {
   .social-container {
     left: 50%;

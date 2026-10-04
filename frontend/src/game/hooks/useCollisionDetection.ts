@@ -8,13 +8,8 @@ interface CollisionDetectionConfig<T extends CollidableEntity> {
   interactionRadius: number;
 }
 
-// The entity whose interaction radius the player is standing in, if any.
-//
-// Derived during render (no effect + setState round trip). The returned
-// object keeps its identity while the same id stays nearby, even if the
-// caller rebuilds the list (e.g. a patrolling NPC moving), so effects that
-// depend on it only re-run when the nearby entity actually changes. Use it
-// for its id; its position may be the one it had when it came into range.
+// Derived during render. The result keeps its identity while the same id stays
+// nearby, so effects depending on it re-run only when that entity changes.
 export const useCollisionDetection = <T extends CollidableEntity>({
   playerPosition,
   structures,

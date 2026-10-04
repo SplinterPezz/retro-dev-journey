@@ -4,7 +4,6 @@ import { iubendaPolicyId } from '../../config/env';
 const PRIVACY_POLICY = 'legal?an=no&s_ck=false&newmarkup=yes';
 const COOKIE_POLICY = 'cookie-policy?an=no&s_ck=false&newmarkup=yes';
 
-// Short URLs on our domain that forward to the policies hosted by iubenda.
 export const privacyRedirects: { path: string; urlPath: string }[] = [
   ...['/privacy-policy', '/policy', '/privacy'].map((path) => ({ path, urlPath: PRIVACY_POLICY })),
   ...['/cookie', '/cookies', '/cookie-policy'].map((path) => ({ path, urlPath: COOKIE_POLICY })),

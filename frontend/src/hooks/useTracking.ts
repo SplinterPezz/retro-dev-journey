@@ -5,7 +5,7 @@ import { setUUID, addInteraction, clearAllTrackingData } from '../store/tracking
 import { TrkData, PageType, timeTrackingIntervals } from '../types/tracking';
 import { sendTrackingData } from '../services/trkService';
 import { generateVisitorId, getDeviceInfo, createInteractionKey } from '../services/tracking/device';
-import { questPrefix } from '../config/tracking';
+import { questSuffix } from '../config/tracking';
 import { devLog } from '../config/env';
 
 interface UseTrackingProps {
@@ -15,14 +15,8 @@ interface UseTrackingProps {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-// Page analytics, active only after the cookie consent.
-//
-// - a random visitor id is created once consent is given, wiped on revoke;
-// - view time: one event per threshold (0s, 30s, 60s...) per page per day;
-// - interactions: one event per info per page per day (trackInteraction).
-//
-// Sent keys are kept in the persisted store and read through a ref, so
-// recording one does not restart the view timers.
+// Active only after cookie consent: one event per view-time threshold and per
+// interaction, per page per day.
 export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
   const dispatch = useDispatch();
   const { uuid, interactions } = useSelector((state: RootState) => state.tracking);
@@ -50,7 +44,6 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     }
   }, [consentGiven, uuid, dispatch]);
 
-  // Records `key` as sent; false when it already was.
   const markSent = useCallback(
     (key: string): boolean => {
       if (interactionsRef.current.includes(key)) {
@@ -64,7 +57,6 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     [dispatch]
   );
 
-  // Sends an interaction (once per day). Returns the keys sent so far.
   const trackInteraction = useCallback(
     (info: string): string[] => {
       if (!uuid || !isTrackingAllowed) {
@@ -79,7 +71,7 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
         date: new Date(),
         uuid,
         type: 'interaction',
-        info: info.replace(questPrefix, ''),
+        info: info.replace(questSuffix, ''),
         page,
         ...deviceInfoRef.current,
       };
@@ -89,7 +81,6 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
     [uuid, page, isTrackingAllowed, markSent]
   );
 
-  // View time thresholds. Restarted only by a change of page, id or consent.
   useEffect(() => {
     if (!isTrackingAllowed || !uuid) {
       devLog('Time tracking blocked - UUID:', !!uuid, 'Tracking allowed:', isTrackingAllowed);

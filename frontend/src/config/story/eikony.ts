@@ -3,7 +3,6 @@ import { CHAPTER_IDS } from '../ids';
 import { EIKONY_FLAGS as FLAG } from './flags';
 import { npcSpriteBase, storyProp } from './sprites';
 
-// NPC ids: dialogue hand-overs (nextNpcId) and cued scenes (npcId) refer to them.
 const NPC = {
   giancarlo: 'giancarlo',
   designer: 'designer',

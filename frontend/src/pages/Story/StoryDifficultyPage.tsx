@@ -18,16 +18,13 @@ const StoryDifficultyPage: React.FC = () => {
   const difficulty = useSelector((state: RootState) => state.story.difficulty);
 
   const handleSelect = (level: StoryDifficulty) => {
-    // the redirect below then replaces this page with the story
     dispatch(setDifficulty(level));
   };
 
-  // Asked once per story: only a new story (or Reset story) clears it.
   if (difficulty) {
     return <Navigate to={ROUTES.storyMap} replace />;
   }
 
-  // the first time, the orientation (phones) and sound questions come first
   return (
     <FirstVisitSetup>
       <div className="story-difficulty-page fullscreen-page">

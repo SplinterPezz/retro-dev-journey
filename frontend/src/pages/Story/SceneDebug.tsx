@@ -6,8 +6,6 @@ import { ChapterCollectibles, CollectibleData, StoryChapterConfig, StoryFlags } 
 import { PICKUP_RADIUS } from './hooks/useCollectibles';
 import { DEFAULT_NPC_REACH, DEFAULT_STATION_REACH, npcStandingPosition } from './sceneRules';
 
-// Circles of one collectible: the spot to wait in, one per spot of a sequence
-// (labelled with the steps that happen there), or else where it is picked up.
 const collectibleZones = (item: CollectibleData): DebugCollectibleZone[] => {
   const unlock = item.unlock;
   if (unlock?.kind === 'sequence') {
@@ -37,9 +35,6 @@ interface SceneDebugProps {
   npcStates: Record<string, NpcPatrolState>;
 }
 
-// Development builds only: walk-up zones (dashed circles), collision boxes,
-// the picture box of flag-gated props, collectible spots and the walkable
-// strips outside the room. The player's own box is drawn by GameScene.
 const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds, flags, npcStates }) => {
   const notFound = (collectibles?.items ?? []).filter((item) => !foundIds.includes(item.id));
   const outsideTheRoom = [...(collectibles?.secretPaths ?? []), ...(chapter.sideRooms ?? []).flatMap((r) => r.walkable)];

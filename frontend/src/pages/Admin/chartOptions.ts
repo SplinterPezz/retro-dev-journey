@@ -1,4 +1,3 @@
-// ApexCharts options of the dashboard charts; the data is filled in by AdminPage.
 import { ApexOptions } from 'apexcharts';
 import { timeTrackingIntervals } from '../../types/tracking';
 
@@ -87,7 +86,6 @@ export const apexUniqueUsers = {
       }
     } as ApexOptions,
   }
-
 
 export const apexPageTime = {
     series: [] as { name: string; data: number[] }[],

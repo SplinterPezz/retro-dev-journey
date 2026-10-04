@@ -5,10 +5,7 @@
   width: 180px;
   transform: translateX(-50%);
   text-align: center;
-  /* same easing as .meep-container (Meep.css) - both read the same lagged
-     position each tick, but without this the bubble would snap to each new
-     coordinate instantly while Meep's sprite glides into it, making the
-     bubble visibly outrun Meep instead of sitting locked above it. */
+  /* same easing as .meep-container, or the bubble snaps while Meep glides */
   transition: left 0.15s linear, top 0.15s linear;
 }
 

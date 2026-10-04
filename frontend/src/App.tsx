@@ -14,8 +14,7 @@ import { GameMenuProvider } from './components/GameMenu/GameMenuContext';
 import { ROUTES } from './config/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Only the home page is in the main bundle; every other page is its own chunk,
-// so a first visit does not download the game, MUI or the charts.
+// Every page but Home is its own chunk: a first visit does not download the game.
 const SandboxPage = lazy(() => import('./pages/Sandbox/SandboxPage'));
 const StoryMapPage = lazy(() => import('./pages/Story/StoryMapPage'));
 const StoryDifficultyPage = lazy(() => import('./pages/Story/StoryDifficultyPage'));

@@ -11,7 +11,6 @@ import {
 import { ApiError } from '../types/api';
 import { API_ENDPOINTS } from '../config/apiEndpoints';
 
-// GET <endpoint>?start_date=...&end_date=...
 const getAnalytics = <T>(endpoint: string, dateFilter?: DateRangeFilter): Promise<T | ApiError> => {
   const params = new URLSearchParams();
   if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);

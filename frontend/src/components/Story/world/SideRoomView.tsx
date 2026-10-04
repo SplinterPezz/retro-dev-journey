@@ -15,9 +15,6 @@ const boundsStyle = (b: WorldBounds, grow = 0): React.CSSProperties => ({
   height: b.maxY - b.minY + grow * 2,
 });
 
-// Surfaces, open door and, for a dark room, the shade over it: the shade fades
-// out (with a short neon flicker) while the player stands in the room. The
-// doorway is see-through in the door sprite, so it darkens and lights with the room.
 const SideRoomView: React.FC<SideRoomViewProps> = ({ room, lit }) => (
   <>
     {room.surfaces.map((s, i) => (
@@ -31,7 +28,7 @@ const SideRoomView: React.FC<SideRoomViewProps> = ({ room, lit }) => (
         }}
       />
     ))}
-    {/* 1px wider than the surfaces: neighbouring shades overlap instead of leaving a hairline between them when zoomed */}
+    {/* 1px wider: neighbouring shades overlap instead of leaving a hairline when zoomed */}
     {room.dark &&
       room.surfaces.map((s, i) => (
         <div key={i} className={`side-room-shade${lit ? ' side-room-shade--lit' : ''}`} style={boundsStyle(s.bounds, 1)} />

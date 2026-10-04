@@ -8,10 +8,6 @@ interface QuizMarkerProps {
   image?: string;
 }
 
-// Floating visual marker for a quiz station - previously a quiz had no sprite
-// at all, just an invisible trigger radius. Same language as Sandbox's
-// technology statues (java.png/python.png): one iconic object + a sparkle
-// overlay, here with a gentle bob animation since it's meant to catch the eye.
 const QuizMarker: React.FC<QuizMarkerProps> = ({
   position,
   image = quizMarkerImage,

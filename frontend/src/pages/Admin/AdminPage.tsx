@@ -26,7 +26,7 @@ import {
 } from '../../services/analyticsService';
 import { isApiError } from '../../services/api';
 import { downloadCV, uploadCV } from '../../services/fileService';
-import { analyticsBackgroundImage, maxSizeFileCV } from '../../config/admin';
+import { analyticsBackgroundImage, maxCvSizeMb } from '../../config/admin';
 import { devError } from '../../config/env';
 import { capitalize, dayLabel, toSeriesByPage } from './series';
 import {
@@ -130,7 +130,6 @@ export default function AdminPage() {
       options: withCategories(apexPageTime, pageTimeSeries.categories),
     };
 
-    // Top 10 by count, for readability.
     const topInteractions = data.interactions && [...data.interactions].sort((a, b) => b.count - a.count).slice(0, 10);
     const interactionsChart = topInteractions && {
       series: [{ name: 'Interactions', data: topInteractions.map((i) => i.count) }],
@@ -173,9 +172,9 @@ export default function AdminPage() {
     input.value = ''; // picking the same file again must fire onChange again
     if (!file) return;
 
-    if (file.size > maxSizeFileCV * 1024 * 1024) {
+    if (file.size > maxCvSizeMb * 1024 * 1024) {
       setUploadStatus('error');
-      setUploadMessage(`File size must be less than ${maxSizeFileCV}MB`);
+      setUploadMessage(`File size must be less than ${maxCvSizeMb}MB`);
       return;
     }
 

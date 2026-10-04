@@ -39,7 +39,7 @@ import {
   sandboxAudioTrack,
   sandboxBackgroundImage,
 } from '../../config/sandbox';
-import { questPrefix } from '../../config/tracking';
+import { questSuffix } from '../../config/tracking';
 import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
 import { StructureData } from '../../types/sandbox';
@@ -53,7 +53,6 @@ const sandboxContainerStyle: SandboxContainerCSSProperties = {
   '--sandbox-background-image': `url(${sandboxBackgroundImage})`,
 };
 
-// Everything below comes from static config, so it is built once per load.
 const careerStructures: StructureData[] = [...companies, ...technologies];
 const interactiveStructures: StructureData[] = hideDownloadButtonInSandbox
   ? careerStructures
@@ -92,8 +91,7 @@ interface StaticWorldProps {
   nearbyId: string | null;
 }
 
-// The whole world except the player. Re-renders only when the nearby
-// structure changes, never on a player step.
+// re-renders only when the nearby structure changes, never on a player step
 const StaticWorld: React.FC<StaticWorldProps> = React.memo(({ nearbyId }) => {
   const pathSegments = useMemo(
     () =>
@@ -171,9 +169,7 @@ const SandboxPage: React.FC = () => {
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });
 
-  // the black "A new journey begins!" screen while the sprites and music load
   const splash = useLoadingSplash(requiredImages, requiredAudio);
-  // still while the loading screen covers the world (free once it fades out)
   const splashCovering = splash.visible && !splash.leaving;
   const canPlayerMove = (tipsAcceptedDesktop || tipsAcceptedMobile) && !menuOpen && !splashCovering;
 
@@ -193,9 +189,7 @@ const SandboxPage: React.FC = () => {
     interactionRadius: 70,
   });
 
-  // Info dialog for the structure the player stands next to (not the download
-  // button, which has its own feedback). Closing waits a beat so walking along
-  // the edge of a radius doesn't flicker it.
+  // closing waits a beat so walking along a radius edge does not flicker it
   useEffect(() => {
     if (nearbyStructure && nearbyStructure.id !== downloadButton.id) {
       setSelectedStructure(nearbyStructure);
@@ -205,10 +199,9 @@ const SandboxPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [nearbyStructure]);
 
-  // Track interaction with structure, also for the daily quest
   useEffect(() => {
     if (nearbyStructure) {
-      trackInteraction(nearbyStructure.data.id + questPrefix);
+      trackInteraction(nearbyStructure.data.id + questSuffix);
     }
   }, [nearbyStructure, trackInteraction]);
 
@@ -231,7 +224,6 @@ const SandboxPage: React.FC = () => {
               <div className="back-button ms-3">
                 <MenuButton />
               </div>
-              {/* only once the loading screen has gone: it would sit on top of it */}
               {!splash.visible && (
                 <div className="minimap">
                   <div className="rpgui-container framed-grey">
@@ -257,14 +249,12 @@ const SandboxPage: React.FC = () => {
         </GameScene>
 
         {selectedStructure && <StructureDialog structure={selectedStructure} />}
-        <DailyQuest questPrefix={questPrefix} showProgress={true} />
+        <DailyQuest questSuffix={questSuffix} showProgress={true} />
       </div>
     </div>
   );
 };
 
-// The first visit asks the one-time questions (orientation on phones, sound)
-// before the sandbox loads and starts its music.
 const SandboxRoute: React.FC = () => (
   <FirstVisitSetup>
     <SandboxPage />

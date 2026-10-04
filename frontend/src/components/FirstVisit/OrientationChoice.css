@@ -1,6 +1,3 @@
-/* Full-screen choice on phones. The buttons use the custom pixel-bevel orange
-   style of the dialogue choices (not RPGUI's frame), with a large icon above
-   the label. */
 .orientation-choice-box {
   width: 100%;
   max-width: 560px;
@@ -45,7 +42,6 @@
   color: #2d1e0f;
 }
 
-/* The label uses the game's pixel font, like the other titles and buttons. */
 .orientation-choice-button span {
   font-family: 'Press Start 2P', cursive;
   font-size: 0.7rem;

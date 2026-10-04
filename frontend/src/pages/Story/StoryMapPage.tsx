@@ -21,6 +21,9 @@ import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
 import UnlockPopup from '../../components/Story/hud/UnlockPopup';
 import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
+import LoadingSplash from '../../components/Common/LoadingSplash';
+import { useLoadingSplash } from '../../hooks/useLoadingSplash';
+import { storyMapAssets } from '../../config/story/assets';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
@@ -32,21 +35,18 @@ import { chapterPath } from '../../config/routes';
 import { COMPANY_IDS } from '../../config/ids';
 import './StoryMapPage.css';
 
-const MAP_PLAYER_SPEED = 270; // a little faster than in the chapters: the map is big
-const BUILDING_REACH = 90; // walking this close to the current chapter's building enters it
-const ENTER_DELAY_MS = 500; // a beat between reaching the building and the chapter loading
+const MAP_PLAYER_SPEED = 270;
+const BUILDING_REACH = 90;
+const ENTER_DELAY_MS = 500;
 
 // "Eikony (IT)" -> "Eikony"
 const chapterName = (companyName: string) => companyName.replace(/ \(IT\)$/, '');
 
 const companyOf = (chapter: ChapterMeta) => companies.find((co) => co.id === chapter.companyId);
 
-// A company building that has no chapter yet (the "???" teaser is never one).
 const isChapterToWrite = (company: StructureData) =>
   company.id !== COMPANY_IDS.futureOpportunity && !storyChapterOrder.some((c) => c.companyId === company.id);
 
-// Every chapter of the story, in order: the playable ones, then the companies
-// still to be written. Done before the current one, locked after it.
 const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   const written = storyChapterOrder.map((chapter) => {
     const company = companyOf(chapter);
@@ -65,10 +65,8 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   });
 };
 
-// The Sandbox decoration, all of it; the technologies come with the chapters.
 const environments = [...treesEnvironments, ...detailsEnvironments];
 
-// Statues whose chapter is finished, in the order of the Sandbox config.
 const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
   technologies.filter((t) => {
     const chapterId = (t.data as TechnologyData).storyChapter;
@@ -85,13 +83,12 @@ const worldBounds = {
 
 interface MapWorldProps {
   nearbyId: string | null;
-  lockedIds: string[]; // buildings whose chapter is not open yet
-  statues: StructureData[]; // the technologies unlocked so far
-  pathTargets: StructureData[]; // what the paths lead to: the buildings and those statues
+  lockedIds: string[];
+  statues: StructureData[];
+  pathTargets: StructureData[];
 }
 
-// Terrain, paths, buildings, statues and decoration: re-rendered only when the
-// nearby door or the unlocked statues change.
+// re-renders only when the nearby door or the unlocked statues change
 const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds, statues, pathTargets }) => {
   const pathSegments = useMemo(
     () =>
@@ -145,8 +142,6 @@ const StoryMapPage: React.FC = () => {
   const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
   const dispatch = useDispatch<AppDispatch>();
   const [exiting, setExiting] = useState(false);
-  // "still in development": opened by walking into a chapter that isn't ready,
-  // or when its URL sent the player back here
   const location = useLocation();
   const [inDevelopmentOpen, setInDevelopmentOpen] = useState(
     () => !!(location.state as InDevelopmentRedirect | null)?.inDevelopment
@@ -160,17 +155,14 @@ const StoryMapPage: React.FC = () => {
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
   const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
-  // every building that is neither done nor the current chapter (the "???" teaser too)
   const lockedIds = useMemo(() => {
     const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
     return companies.filter((c) => !open.has(c.id)).map((c) => c.id);
   }, [quests]);
 
-  // A chapter without a building on the overworld (the Prologue) is played on
-  // its own map: go straight there while it is the current one, or while its
-  // last scene has not been seen yet.
+  // a chapter without a building (the Prologue) plays on its own map: go there until its last scene is seen
   const unfinishedStandalone = storyChapterOrder.find((chapter, i) => {
-    if (chapter.companyId) return false; // it has a building: entered from the map
+    if (chapter.companyId) return false;
     const isCurrent = i === unlockedChapterIndex;
     const lastSceneUnseen = !!chapter.endFlag && !chapters[chapter.id]?.flags[chapter.endFlag];
     return isCurrent || lastSceneUnseen;
@@ -186,9 +178,10 @@ const StoryMapPage: React.FC = () => {
     [activeChapter]
   );
 
-  // Technologies of the finished chapters: on the map, and announced one by one
-  // until each "unlocked" window has been confirmed.
   const statues = useMemo(() => unlockedTechnologies(chapters), [chapters]);
+  const mapAssets = useMemo(() => storyMapAssets(statues), [statues]);
+  const splash = useLoadingSplash(mapAssets);
+  const splashCovering = splash.visible && !splash.leaving;
   const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
   const newDiscoveries = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id));
   const discovery = newDiscoveries[0];
@@ -214,10 +207,9 @@ const StoryMapPage: React.FC = () => {
     structures: solidStructures,
     environments,
     playerHitbox,
-    canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen,
+    canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen && !splashCovering,
   });
 
-  // Meep, the mascot, follows the player on the map too, as in the chapters.
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
 
   const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
@@ -228,7 +220,6 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: BUILDING_REACH,
   });
 
-  // A chapter that isn't ready opens the window once per walk-up instead.
   const [shownAtDoor, setShownAtDoor] = useState(false);
   useEffect(() => {
     if (!nearbyDoor) {
@@ -255,7 +246,7 @@ const StoryMapPage: React.FC = () => {
   const debugActions: DebugAction[] = [{ label: 'Reset story', tone: 'danger', onClick: resetAll }];
 
   if (unfinishedStandalone) {
-    return null; // redirecting to that chapter
+    return null;
   }
 
   if (!activeChapter) {
@@ -276,6 +267,9 @@ const StoryMapPage: React.FC = () => {
 
   return (
     <div className="rpgui-content">
+      {splash.visible && (
+        <LoadingSplash title="The journey continues" leaving={splash.leaving} loaded={splash.loaded} total={splash.total} />
+      )}
       <div className={`story-map-container${exiting ? ' exiting' : ''}`}>
         <StoryProgress objectives={quests} name="Chapters" />
         <GameScene
@@ -296,7 +290,7 @@ const StoryMapPage: React.FC = () => {
           <Meep position={meepPosition} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>
-        {discoveryPopup}
+        {!splash.visible && discoveryPopup}
         {!discovery && inDevelopmentPopup}
       </div>
     </div>

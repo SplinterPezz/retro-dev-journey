@@ -1,8 +1,6 @@
 import { DeviceInfo, DeviceType, PageType, ViewType } from '../../types/tracking';
 
-// Random per-browser id, created only after consent and kept in the persisted
-// store. Not derived from the device, so two identical phones are two users
-// and nothing is fingerprinted.
+// Random, not derived from the device: nothing is fingerprinted.
 export const generateVisitorId = (): string => {
   if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
     return crypto.randomUUID();
@@ -17,8 +15,6 @@ export const generateVisitorId = (): string => {
 
 const MOBILE_UA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini|windows phone|mobile/i;
 
-// Phones and tablets: a mobile user agent, or a touch screen that is small.
-// The one place that decides it, for the UI and for the analytics.
 export const isMobileDevice = (
   userAgent: string = navigator.userAgent,
   viewportWidth: number = window.innerWidth,

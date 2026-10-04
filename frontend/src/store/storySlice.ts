@@ -24,7 +24,6 @@ const storySlice = createSlice({
       const chapter = ensureChapter(state, action.payload.chapterId);
       chapter.flags[action.payload.flag] = true;
     },
-    // Keeps the best result per mini game.
     recordScore(state, action: PayloadAction<{ chapterId: string; gameId: string; score: MiniGameScore }>) {
       const chapter = ensureChapter(state, action.payload.chapterId);
       const { gameId, score } = action.payload;

@@ -9,8 +9,6 @@ const authExpired: ApiError = { success: false, error: 'Authentication expired' 
 export const isApiError = (value: unknown): value is ApiError =>
   typeof value === 'object' && value !== null && 'success' in value && (value as ApiError).success === false;
 
-// fetch() against the backend: JSON by default, the admin token on private
-// endpoints, and every failure returned as an ApiError instead of thrown.
 export async function fetchFromApi<T>(
   endpoint: string,
   options: RequestInit = {}
@@ -24,8 +22,7 @@ export async function fetchFromApi<T>(
     return authExpired;
   }
 
-  // Caller headers first, then the ones this function owns: the caller cannot
-  // drop the Authorization header by passing its own headers.
+  // set after the caller's, so the caller cannot drop the Authorization header
   const headers = new Headers(options.headers);
   if (!headers.has('Accept')) headers.set('Accept', '*/*');
   if (!(options.body instanceof FormData) && !headers.has('Content-Type')) {

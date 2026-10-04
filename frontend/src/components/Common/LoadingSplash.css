@@ -1,7 +1,4 @@
-/* The black loading screen of a scene (LoadingSplash): a big title in the
-   middle, the progress and a spinning icon in the bottom-right corner, then a
-   fade out. The Story's closing curtain reuses the same base classes (see
-   InteriorScene.css), hence their chapter- names. */
+/* The Story's closing curtain (InteriorScene.css) reuses these classes. */
 .chapter-splash {
   position: fixed;
   inset: 0;
@@ -13,7 +10,7 @@
   pointer-events: none;
 }
 
-/* the fade length matches SPLASH_FADE_MS in hooks/useLoadingSplash */
+/* same length as SPLASH_FADE_MS in hooks/useLoadingSplash */
 .chapter-splash--leaving {
   animation: chapter-splash-fade 0.9s linear forwards;
 }
@@ -35,7 +32,7 @@
 
 .chapter-splash-loading {
   position: absolute;
-  right: 72px; /* clear of the iubenda privacy button in the corner */
+  right: 72px; /* clear of the iubenda button */
   bottom: 20px;
   display: flex;
   align-items: center;
@@ -45,7 +42,6 @@
   font-size: 0.75rem;
 }
 
-/* spins in place like a wheel */
 .chapter-splash-loading-icon {
   width: 32px;
   height: 32px;

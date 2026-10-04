@@ -1,15 +1,11 @@
-/* Fallback for browsers that cannot lock the screen orientation (iOS Safari,
-   or Android when fullscreen was refused): the whole app is drawn sideways.
-   #root is laid out as the device's height by its width, then turned 90deg so
-   it fills the upright screen. primary turns clockwise, secondary the other way. */
+/* Fallback where the orientation cannot be locked (iOS Safari, refused fullscreen): the app is drawn sideways. */
 html.rotate-landscape-primary,
 html.rotate-landscape-secondary {
   background: #000;
   overflow: hidden;
 }
 
-/* --rot-w / --rot-h are the visible window size, set from JavaScript
-   (screenOrientation.ts). vh/vw are only the fallback before that runs. */
+/* --rot-w / --rot-h are set from screenOrientation.ts; vh/vw only until it runs */
 html.rotate-landscape-primary #root,
 html.rotate-landscape-secondary #root {
   position: fixed;

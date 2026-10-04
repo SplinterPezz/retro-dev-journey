@@ -1,9 +1,8 @@
-/* The monitor sprite is 512x400. The screen and the power button are placed
-   with the same percentages, so they stay on the drawn parts at any size. */
+/* Screen and power button are placed in sprite pixels over the 512x400 monitor, so they stay on the drawing at any size. */
 .pc-monitor-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 10000; /* above Meep and the world, so the monitor covers them */
+  z-index: 10000; /* above Meep and the world */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18,7 +17,6 @@
   aspect-ratio: 512 / 400;
 }
 
-/* Desktop: a little bigger, but never taller than the window. */
 @media (min-width: 769px) {
   .pc-monitor {
     width: min(80vw, 820px, calc((100vh - 40px) * 512 / 400));
@@ -34,13 +32,12 @@
   pointer-events: none;
 }
 
-/* screen well: 56..456 x 40..308 in the sprite */
 .pc-monitor-screen {
   position: absolute;
-  left: 10.94%;
-  top: 10%;
-  width: 78.13%;
-  height: 67%;
+  left: calc(56 / 512 * 100%);
+  top: calc(40 / 400 * 100%);
+  width: calc(400 / 512 * 100%);
+  height: calc(268 / 400 * 100%);
   overflow: hidden;
   background: #0d1b2a;
 }
@@ -58,7 +55,6 @@
   font-size: 0.9rem;
 }
 
-/* CRT lines over the whole screen */
 .pc-monitor-scanlines {
   position: absolute;
   inset: 0;
@@ -67,13 +63,12 @@
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
 }
 
-/* power button: centre (256, 320) in the sprite, sits on the chin */
 .pc-monitor-power {
   position: absolute;
-  left: 46.48%;
-  top: 75.5%;
-  width: 7.03%;
-  height: 9%;
+  left: calc(238 / 512 * 100%);
+  top: calc(302 / 400 * 100%);
+  width: calc(36 / 512 * 100%);
+  height: calc(36 / 400 * 100%);
   padding: 0;
   background: transparent;
   border: none;
@@ -81,16 +76,12 @@
   border-radius: 50%;
 }
 
-/* Phone in landscape: the height is the limit, so the monitor takes as much of
-   the height as it can (the sprite keeps its 512:400 shape). */
 @media (orientation: landscape) and (max-height: 500px) {
   .pc-monitor {
     width: min(94vw, calc((100vh - 8px) * 512 / 400));
   }
 }
 
-/* Blinking LED in the middle of the power button: a hard-edged square that
-   switches on and off in steps, so it reads as pixel art. */
 .pc-monitor-led {
   position: absolute;
   left: 50%;

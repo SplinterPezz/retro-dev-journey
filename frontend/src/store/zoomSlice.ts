@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-// Five zoom levels for the scenes: 1 is the furthest out, 5 the closest in.
-// Level 3 is the normal 1:1 view, the default. Kept in the store and persisted,
-// so the chosen zoom survives a reload.
+// Level 3 is the 1:1 view.
 export const ZOOM_LEVEL_COUNT = 5;
 const DEFAULT_LEVEL = 3;
 

@@ -24,13 +24,11 @@ import { isDev } from '../../../config/env';
 interface MiniGamesPopupProps {
   difficulty: StoryDifficulty;
   onFinish: (earned: number, max: number) => void;
-  onPowerOff: () => void; // power button on the monitor: leave without finishing
+  onPowerOff: () => void;
 }
 
-// How long the right/wrong line stays before the next question.
 const FEEDBACK_MS = 1400;
 
-// Every question of the three games, in the order they are played.
 type GameId = 'fixBuild' | 'pickCommit' | 'readLog';
 type Step =
   | { game: 'fixBuild'; round: number; snippet: FixSnippet }
@@ -50,11 +48,9 @@ const gameTitles: Record<GameId, string> = {
 };
 
 interface QuestionProps {
-  locked: boolean; // the answer is in: inputs stay disabled until the next question
+  locked: boolean;
   onAnswer: (correct: boolean) => void;
 }
-
-// ---- Game 1: fix the build ----
 
 const FixBuildQuestion: React.FC<QuestionProps & { snippet: FixSnippet; showHintButton: boolean; counter: string }> = ({
   snippet,
@@ -82,8 +78,6 @@ const FixBuildQuestion: React.FC<QuestionProps & { snippet: FixSnippet; showHint
   );
 };
 
-// ---- Game 2: which commit broke everything? ----
-
 const PickCommitQuestion: React.FC<QuestionProps & { commit: CommitRound; count: number; counter: string }> = ({
   commit,
   count,
@@ -103,8 +97,6 @@ const PickCommitQuestion: React.FC<QuestionProps & { commit: CommitRound; count:
   </div>
 );
 
-// ---- Game 3: find the error in the log ----
-
 const ReadLogQuestion: React.FC<QuestionProps & { log: { lines: string[]; errorIndex: number }; counter: string }> = ({
   log,
   counter,
@@ -123,23 +115,19 @@ const ReadLogQuestion: React.FC<QuestionProps & { log: { lines: string[]; errorI
   </div>
 );
 
-// ---- The questions one after another, with the running score ----
-
 const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, onPowerOff }) => {
   const steps = useMemo(() => buildSteps(difficulty), [difficulty]);
   const [results, setResults] = useState<boolean[]>([]);
-  const [feedback, setFeedback] = useState<boolean | null>(null); // the last answer, shown until the next question
+  const [feedback, setFeedback] = useState<boolean | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => () => clearTimeout(timerRef.current), []);
 
   const worth = BASE_POINTS * difficultyMultiplier[difficulty];
   const max = steps.length * worth;
   const total = results.filter(Boolean).length * worth;
-  // The question on screen stays the answered one while its feedback shows.
   const stepIndex = feedback === null ? results.length : results.length - 1;
   const finished = feedback === null && results.length >= steps.length;
 
-  // One try: right or wrong, the game moves on after a moment.
   const answer = (correct: boolean) => {
     if (feedback !== null) return;
     setResults((prev) => [...prev, correct]);
@@ -186,7 +174,6 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
             </button>
           )}
         </div>
-        {/* above the question, so it is seen without scrolling the monitor */}
         {feedback === true && <p className="minigame-feedback minigame-right">Correct! +{worth} pts</p>}
         {feedback === false && <p className="minigame-feedback minigame-wrong">Wrong - no points for this one. On to the next.</p>}
         {step.game === 'fixBuild' && (

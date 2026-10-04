@@ -6,16 +6,14 @@ export interface StoryObjective {
   id: string;
   label: string;
   done: boolean;
-  locked?: boolean; // not available yet (a later chapter)
+  locked?: boolean;
 }
 
 interface StoryProgressProps {
   objectives: StoryObjective[];
-  name?: string; // what the list is: the panel title and its toggle say it
+  name?: string;
 }
 
-// A list of objectives (a chapter's, or the chapters of the story), in the
-// same panel as the Sandbox daily quests.
 const StoryProgress: React.FC<StoryProgressProps> = ({ objectives, name = 'Objectives' }) => {
   const doneCount = objectives.filter((o) => o.done).length;
   const percentage = objectives.length ? (doneCount / objectives.length) * 100 : 0;

@@ -21,8 +21,6 @@
   image-rendering: crisp-edges;
 }
 
-
-/* The chapter list sits above the world, like the objectives in a chapter. */
 .story-map-container .daily-quest-container {
   z-index: 150;
 }
@@ -36,9 +34,7 @@
 }
 
 .story-map-stub .rpgui-container {
-  /* RPGUI's base .rpgui-container rule is position:fixed with no insets,
-     which takes it out of flow and defeats this wrapper's flex centering -
-     same fix as the dialogue/quiz boxes. */
+  /* RPGUI's .rpgui-container is position: fixed (see PortraitDialogueBox.css) */
   position: relative !important;
   padding: 30px;
   min-width: 320px;

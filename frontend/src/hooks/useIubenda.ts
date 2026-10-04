@@ -20,8 +20,6 @@ declare global {
     }
 }
 
-// Mirrors the iubenda cookie consent into the store. Mounted once, in
-// AppInitializer, so every page follows consent changes.
 export const useIubenda = () => {
     const dispatch = useDispatch();
 
@@ -54,7 +52,6 @@ export const useIubenda = () => {
 }, []);
 
     useEffect(() => {
-        // Set callback handlers for iubenda events
         const handler = (consent: boolean) => updateConsent(consent);
 
         window.iubendaConsentCallback = handler;

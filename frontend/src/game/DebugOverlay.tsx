@@ -22,8 +22,6 @@ interface DebugRect {
   height: number;
 }
 
-// Collectibles, in their own colour: where one is picked up, or the spot its
-// sequence or wait needs.
 export interface DebugCollectibleZone extends DebugZone {
   variant: 'pickup' | 'trigger';
   label?: string;
@@ -31,11 +29,11 @@ export interface DebugCollectibleZone extends DebugZone {
 
 interface DebugOverlayProps {
   player?: DebugHitbox;
-  hitboxes?: DebugHitbox[]; // collision boxes, relative to their position
-  zones?: DebugZone[]; // walk-up radius of interactive things
-  rects?: DebugRect[]; // picture boxes of visual-only things
+  hitboxes?: DebugHitbox[];
+  zones?: DebugZone[];
+  rects?: DebugRect[];
   collectibleZones?: DebugCollectibleZone[];
-  secretPaths?: DebugRect[]; // walkable strips outside the room
+  secretPaths?: DebugRect[];
 }
 
 const box = (left: number, top: number, width: number, height: number): React.CSSProperties => ({
@@ -45,7 +43,6 @@ const box = (left: number, top: number, width: number, height: number): React.CS
   height,
 });
 
-// Hitboxes and interaction zones of a scene, drawn in development builds only.
 const DebugOverlay: React.FC<DebugOverlayProps> = ({
   player,
   hitboxes = [],

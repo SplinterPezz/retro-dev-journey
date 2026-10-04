@@ -5,10 +5,10 @@ import './DialogueChoices.css';
 export interface ChoiceButtonItem {
   id: string;
   label: string;
-  isAnswer?: boolean; // styled distinctly - picking this choice leads into a question the NPC turns back on the player
-  disabled?: boolean; // this specific choice is disabled (e.g. an already-completed quiz category)
-  progress?: { done: number; total: number }; // renders filled/empty dots on the right of the button - signals there's more than one variant behind an isAnswer choice (e.g. "Got a random question for you" hides 2 different questions), so answering one doesn't look like a dead end
-  hint?: string; // easter egg: a "?" next to the button opens a speech balloon with this text
+  isAnswer?: boolean;
+  disabled?: boolean;
+  progress?: { done: number; total: number };
+  hint?: string;
 }
 
 interface DialogueChoicesProps {
@@ -17,18 +17,10 @@ interface DialogueChoicesProps {
   disabled?: boolean;
 }
 
-// Stacked custom-styled buttons, shared by dialogue branching choices and
-// the quiz answer options - both are "pick one of N labelled buttons", often
-// with longer, variable-length text. Deliberately NOT an rpgui-button: that
-// asset draws its corner studs as floated pseudo-elements that only line up
-// at one fixed pixel width (see StoryIntroDialog's "Continue" button for
-// where that style is still right - a short, fixed label), which breaks on
-// longer answer text that needs to wrap. This is a plain CSS button instead,
-// free to size to its content.
+// Not an rpgui-button: its corner studs only line up at one fixed width, and these labels wrap.
 const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, disabled = false }) => {
   const [openHintId, setOpenHintId] = useState<string | null>(null);
 
-  // A tap anywhere outside the open hint's row closes its balloon.
   useEffect(() => {
     if (!openHintId) return;
     const closeIfOutside = (event: PointerEvent) => {

@@ -2,12 +2,9 @@ import { PathSegment } from '../types/sandbox';
 import { playerSpritePrefix } from './player';
 import { storyUi } from './story/sprites';
 
-// Single list of the sprites that more than one place needs: the components
-// that draw them and the loading screens that preload them.
-
 const playerSprite = (name: string) => `/sprites/player/${playerSpritePrefix}_${name}.gif`;
 
-// Keyed by the CSS variable Player.css reads.
+// keyed by the CSS variables Player.css reads
 export const playerSprites = {
   '--player-sprite-idle': playerSprite('idle'),
   '--player-sprite-idle-n': playerSprite('idle_N'),
@@ -22,7 +19,6 @@ export const playerSprites = {
 } as const;
 
 export const playerTurnSprite = playerSprite('turn');
-// Standing still, facing the screen (the game menu's player card).
 export const playerIdleSprite = playerSprite('idle');
 
 export const pathSprites: Record<PathSegment['type'], string> = {
@@ -36,11 +32,8 @@ export const pathSprites: Record<PathSegment['type'], string> = {
 export const preloadPlayerSprites: string[] = Object.values(playerSprites);
 export const preloadPathSprites: string[] = Object.values(pathSprites);
 
-// Floats over the buildings of the story map whose chapter is still locked.
 export const lockSprite = storyUi('lock');
 
-// Spins in the corner of the loading screens.
 export const loadingIcon = '/favicon.ico';
 
-// The tick of the dialogue box while a line is typed (src/audio/typingSound.ts).
 export const textTypingSound = '/audio/text_typing_click.wav';

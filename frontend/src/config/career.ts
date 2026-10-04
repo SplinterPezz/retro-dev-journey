@@ -2,9 +2,6 @@ import { StructureData, CompanyData, TechnologyData } from '../types/sandbox';
 import { mainPathConfig } from './world';
 import { CHAPTER_IDS, COMPANY_IDS } from './ids';
 
-// Career milestones shown as buildings (companies) and statues (technologies)
-// in the Sandbox; the companies are also the chapter buildings of Story Mode.
-
 const companiesData: CompanyData[] = [
   {
     id: COMPANY_IDS.eikony,

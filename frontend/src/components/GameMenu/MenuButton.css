@@ -1,14 +1,10 @@
-/* Only the label's look is set here: the button keeps RPGUI's golden frame
-   untouched (overriding its padding or display breaks the end caps), and the
-   label's vertical place comes from the golden button rule in index.css. */
+/* overriding the golden button's padding or display breaks its end caps */
 .menu-button p {
   font-size: 0.8rem;
   color: #fff !important;
 }
 
-/* Top-left placement used by the story screens, matching the Sandbox back
-   button (.back-button + ms-3): 18px from the top, 36px from the left
-   (20px plus the 16px margin), 26px on phones and tablets. */
+/* matches the Sandbox back button (.back-button + ms-3) */
 .menu-fixed-top-left {
   position: fixed;
   top: 18px;

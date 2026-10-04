@@ -6,7 +6,7 @@ export const downloadCVCooldown: number = 60;
 export const sandboxAudioTrack: string = '/audio/sandbox_compressed.mp3';
 export const sandboxBackgroundImage: string = '/backgrounds/sky_sandbox.png';
 
-export const hideDownloadButtonInSandbox: boolean = false; // default false (button visible); set to true to hide the Download CV button in the sandbox
+export const hideDownloadButtonInSandbox: boolean = false;
 
 export const downloadButton : StructureData = {
   id: downloadButtonId,

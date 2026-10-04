@@ -28,9 +28,7 @@
   top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  /* always visible, not just on proximity - smaller than the player's own
-     tag (Player.css .player-nametag) so the player's is clearly the bigger
-     one of the two. */
+  /* smaller than the player's own tag (Player.css) */
   opacity: 1;
   pointer-events: none;
   text-align: center;

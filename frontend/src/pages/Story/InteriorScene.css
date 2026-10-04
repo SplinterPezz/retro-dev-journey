@@ -14,9 +14,7 @@
   image-rendering: crisp-edges;
 }
 
-/* The closing scene's curtain: the loading screen's classes
-   (components/Common/LoadingSplash.css) with a heading and a fade in. It
-   fades to black first (FADE in useChapterOutro). */
+/* The closing curtain: LoadingSplash.css classes plus a heading and a fade in. */
 .chapter-splash--entering {
   animation: chapter-splash-fade-in 0.9s linear forwards;
 }
@@ -41,7 +39,7 @@
   to { opacity: 1; }
 }
 
-/* Objectives sit above the world tiles/props and below the dialogue boxes. */
+/* above the world, below the dialogue boxes */
 .interior-scene-container .daily-quest-container {
   z-index: 150;
 }

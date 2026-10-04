@@ -1,4 +1,3 @@
-// MUI theme and text field of the date pickers on the dashboard.
 import { styled, createTheme } from '@mui/material/styles';
 import { TextField } from '@mui/material';
 

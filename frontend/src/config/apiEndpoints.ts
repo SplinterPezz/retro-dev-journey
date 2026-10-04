@@ -1,4 +1,3 @@
-// Every backend endpoint the frontend calls, relative to apiBaseUrl.
 
 export const API_ENDPOINTS = {
   login: '/login',
@@ -15,5 +14,4 @@ export const API_ENDPOINTS = {
   },
 } as const;
 
-// Called without the auth token.
 export const PUBLIC_ENDPOINTS: readonly string[] = [API_ENDPOINTS.login, API_ENDPOINTS.trackingInfo, API_ENDPOINTS.cvDownload];

@@ -8,7 +8,7 @@ import { DailyQuest as DailyQuestItem } from '../../types/sandbox';
 import QuestPanel from '../QuestPanel/QuestPanel';
 
 interface DailyQuestProps {
-  questPrefix: string;
+  questSuffix: string;
   className?: string;
   showProgress?: boolean;
   maxVisible?: number;
@@ -23,7 +23,7 @@ const questTypeIcon: Record<DailyQuestItem['type'], string> = {
 };
 
 const DailyQuest: React.FC<DailyQuestProps> = ({ 
-  questPrefix, 
+  questSuffix, 
   className = '',
   showProgress = true,
   maxVisible 
@@ -34,8 +34,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
   
   const dailyQuests: DailyQuestItem[] = useMemo(() => {
     const companyQuests: DailyQuestItem[] = companies.map((company) => ({
-      id: company.id + questPrefix,
-      done: interactions.some(interaction => interaction.includes(company.id + questPrefix)),
+      id: company.id + questSuffix,
+      done: interactions.some(interaction => interaction.includes(company.id + questSuffix)),
       name: `${company.name}`,
       shortName: company.data.shortName !== undefined ? company.data.shortName : company.name,
       icon: company.data.image || defaultBuilding,
@@ -43,8 +43,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     }));
     
     const technologyQuests: DailyQuestItem[] = technologies.map((tech) => ({
-      id: tech.id + questPrefix,
-      done: interactions.some(interaction => interaction.includes(tech.id + questPrefix)),
+      id: tech.id + questSuffix,
+      done: interactions.some(interaction => interaction.includes(tech.id + questSuffix)),
       name: `${tech.name}`,
       shortName: tech.data.shortName !== undefined ? tech.data.shortName : tech.name,
       icon: tech.data.image || defaultStatue,
@@ -56,8 +56,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     }
 
     const downloadQuest: DailyQuestItem = {
-      id: downloadButton.data.id + questPrefix,
-      done: interactions.some(interaction => interaction.includes(downloadButton.data.id + questPrefix)),
+      id: downloadButton.data.id + questSuffix,
+      done: interactions.some(interaction => interaction.includes(downloadButton.data.id + questSuffix)),
       name: `Download CV`,
       shortName: `DownloadCV`,
       icon: downloadButton.data.image || defaultStatue,
@@ -65,7 +65,7 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     };
 
     return [...companyQuests, ...technologyQuests, downloadQuest];
-  }, [questPrefix, interactions]);
+  }, [questSuffix, interactions]);
 
   const completedQuests = dailyQuests.filter(quest => quest.done);
   const completionPercentage = (completedQuests.length / dailyQuests.length) * 100;

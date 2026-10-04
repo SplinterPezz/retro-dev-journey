@@ -12,9 +12,9 @@ const extractDateFromKey = (key: string): string | null => {
     // YYYY-MM-DD
     const dateParts = parts.slice(-3);
     if (dateParts.length === 3 && 
-        dateParts[0].length === 4 && // YYYY
-        dateParts[1].length === 2 && // MM
-        dateParts[2].length === 2) { // DD
+        dateParts[0].length === 4 &&
+        dateParts[1].length === 2 &&
+        dateParts[2].length === 2) {
       return dateParts.join('-');
     }
   }

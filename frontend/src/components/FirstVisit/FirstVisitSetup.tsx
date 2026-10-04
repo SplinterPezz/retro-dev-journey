@@ -10,17 +10,12 @@ import { enterLandscape, isLandscape } from '../../hooks/screenOrientation';
 import OrientationChoice from './OrientationChoice';
 import SoundChoice from './SoundChoice';
 
-// The one-time questions before the first game, whichever mode is opened first
-// (Story or Sandbox): on phones how to hold it, then on every device whether
-// to play with sound. Each is asked once and saved; afterwards `children` (the
-// page) is shown straight away, and is not mounted before then.
+// Asked once before the first game, Story or Sandbox: orientation (phones), then sound.
 const FirstVisitSetup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch<AppDispatch>();
   const orientation = useSelector((state: RootState) => state.story.orientation);
-  // `!!` also catches settings saved before the field existed (undefined)
   const soundAsked = useSelector((state: RootState) => !!state.settings.soundAsked);
-  // Decided once, when the page opens: a desktop that later turns into a phone
-  // is not asked. Phones are asked until they have picked an orientation.
+  // a desktop that later turns into a phone is not asked
   const [isPhoneOnOpen] = useState(() => isMobileDevice());
 
   const handleOrientation = (choice: StoryOrientation) => {
@@ -30,7 +25,6 @@ const FirstVisitSetup: React.FC<{ children: React.ReactNode }> = ({ children }) 
     }
   };
 
-  // `!orientation` also catches saves made before the field existed (undefined).
   const question =
     isPhoneOnOpen && !orientation ? (
       <OrientationChoice onChoose={handleOrientation} />

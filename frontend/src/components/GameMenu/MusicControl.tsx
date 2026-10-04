@@ -5,9 +5,6 @@ import { AppDispatch, RootState } from '../../store/store';
 import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
 import '../AudioControls/AudioControls.css';
 
-// The music row of the game menu: a volume bar and a mute toggle (the same
-// button and icons the top-right audio controls used). Moving the bar while
-// muted turns the music back on, as the old volume buttons did.
 const MusicControl: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { musicVolume, musicMuted } = useSelector((state: RootState) => state.settings);

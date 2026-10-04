@@ -16,13 +16,10 @@ export class PathGenerator {
     this.pathSegments = [];
     this.intersectionInfo.clear();
 
-    // 1. Generate main vertical path
     this.generateMainPath();
 
-    // 2. Generate horizontal branches to structures
     this.generateStructureBranches();
 
-    // 3. Update main path intersections
     this.updateMainPathIntersections();
 
     return this.pathSegments;
@@ -31,11 +28,9 @@ export class PathGenerator {
   private generateMainPath(): void {
     const { startPosition, endPosition, tileSize } = this.config;
 
-    // Find the "???" company to extend path to it
     const futureCompany = this.config.structures.find(s => s.id === COMPANY_IDS.futureOpportunity);
     const actualEndY = futureCompany ? futureCompany.position.y : endPosition.y;
 
-    // Start segment
     this.addPathSegment({
       id: 'main-start',
       position: { x: startPosition.x, y: startPosition.y },
@@ -44,7 +39,6 @@ export class PathGenerator {
       zIndex: 1
     });
 
-    // Core segments (vertical path) - extend to the ??? company
     const segments = Math.floor((actualEndY - startPosition.y) / tileSize);
 
     for (let i = 1; i < segments; i++) {
@@ -60,7 +54,6 @@ export class PathGenerator {
       });
     }
 
-    // End segment
     this.addPathSegment({
       id: `main-core-${segments+1}`,
       position: { x: startPosition.x, y: actualEndY },
@@ -78,11 +71,9 @@ export class PathGenerator {
       const structurePos = structure.position;
       const branchY = this.findNearestMainPathY(structurePos.y);
 
-      // Determine if structure is left or right of main path
       const isLeft = structurePos.x < this.mainPathX;
       const direction = isLeft ? 'left' : 'right';
 
-      // Update intersection info for this Y position
       const intersectionKey = `${this.mainPathX},${branchY}`;
       const currentInfo = this.intersectionInfo.get(intersectionKey) || { count: 0, directions: [] };
       currentInfo.count += 1;
@@ -91,7 +82,6 @@ export class PathGenerator {
       }
       this.intersectionInfo.set(intersectionKey, currentInfo);
 
-      // Generate horizontal branch
       this.generateHorizontalBranch(
         { x: this.mainPathX, y: branchY },
         structurePos,
@@ -113,7 +103,6 @@ export class PathGenerator {
     const segments = Math.floor(deltaX / tileSize);
     
     
-    // Generate horizontal segments
     for (let i = 1; i <= segments; i++) {
       const x = start.x + (isLeft ? -i * tileSize : i * tileSize);
       
@@ -166,7 +155,6 @@ export class PathGenerator {
   }
 }
 
-// Utility function to create path generator
 export const createPathGenerator = (config: PathGenerationConfig): PathGenerator => {
   return new PathGenerator(config);
 };

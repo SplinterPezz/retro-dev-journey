@@ -20,7 +20,6 @@
   image-rendering: crisp-edges;
 }
 
-/* Sprite animations */
 .player-sprite.idle-down {
   background-image: var(--player-sprite-idle);
 }
@@ -56,29 +55,24 @@
   background-image: var(--player-sprite-idle-se);
 }
 
-/* Walking down */
 .player-sprite.walking-down {
   background-image: var(--player-sprite-walk-s);
 }
 
-/* Walking up */
 .player-sprite.walking-up {
   background-image: var(--player-sprite-walk-n);
 }
 
-/* Walking left -  flip the left sprite horizontally  */
 .player-sprite.walking-left {
   background-image: var(--player-sprite-walk-e);
   transform: scaleX(-1);
 }
 
-/* Walking right */
 .player-sprite.walking-right {
   background-image: var(--player-sprite-walk-e);
 
 }
 
-/* Diagonal movements  -  flip the left sprite horizontally */
 .player-sprite.walking-up-left {
   background-image: var(--player-sprite-walk-ne);
   transform: scaleX(-1);
@@ -88,18 +82,15 @@
   background-image: var(--player-sprite-walk-ne);
 }
 
-/* Walking down-left - flip the SE sprite horizontally */
 .player-sprite.walking-down-left {
   background-image: var(--player-sprite-walk-se);
   transform: scaleX(-1);
 }
 
-/* Walking down-right - use the SE sprite as-is */
 .player-sprite.walking-down-right {
   background-image: var(--player-sprite-walk-se);
 }
 
-/* Player name tag */
 .player-nametag {
   position: absolute;
   bottom: 100%;
@@ -114,8 +105,7 @@
   color: #ffd700;
   padding: 4px 9px;
   border-radius: 3px;
-  /* bigger than the NPC name tags (InteriorNpc.css) - the player's own tag
-     should read as the biggest one of the two. */
+  /* bigger than the NPC name tags (InteriorNpc.css) */
   font-size: 14px;
   font-weight: bold;
   font-family: 'Courier New', monospace;
@@ -124,7 +114,6 @@
   border: 1px solid #8b4513;
 }
 
-/* Player shadow */
 .player-shadow {
   position: absolute;
   bottom: 16px;

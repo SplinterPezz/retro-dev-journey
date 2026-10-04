@@ -4,12 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  /* No backdrop-filter: blurring the whole viewport every frame while the
-     box in front of it is also running its 0.4s scale/opacity entrance
-     animation is expensive to composite and was the actual source of the
-     jank on open (every intro uses this backdrop - chapter intro and quiz
-     intro alike). A darker flat overlay reads just as "dim the world behind
-     me" without the per-frame blur cost. */
+  /* no backdrop-filter: blurring the viewport during the entrance animation made it stutter */
   background: rgba(0, 0, 0, 0.82);
   z-index: 250;
 }
@@ -37,8 +32,7 @@
 }
 
 .story-intro-box {
-  /* see PortraitDialogueBox.css for why: RPGUI's base .rpgui-container rule
-     is position:fixed with no insets, which escapes this wrapper entirely. */
+  /* RPGUI's .rpgui-container is position: fixed (see PortraitDialogueBox.css) */
   position: relative !important;
   padding: 24px !important;
   padding-bottom: 36px !important;
@@ -91,8 +85,7 @@
   font-size: 0.75rem;
 }
 
-/* RPGUI's golden button pads 35px per side, which pushed "Continue" (~102px)
-   past the 160px mobile width. A tighter side padding keeps the label inside. */
+/* RPGUI's 35px side padding pushed "Continue" past the 160px mobile width */
 .story-intro-button {
   width: 180px !important;
   padding-left: 16px !important;
@@ -122,8 +115,6 @@
   }
 }
 
-/* Landscape phone: a slightly smaller box - wider and with smaller text, so
-   it no longer fills the whole height of the short screen. */
 @media (orientation: landscape) and (max-height: 500px) {
   .story-intro-dialog {
     width: 540px;
@@ -139,7 +130,7 @@
     margin-bottom: 4px;
   }
 
-  /* scoped to the dialog to beat RPGUI's .rpgui-content p */
+  /* scoped to beat RPGUI's .rpgui-content p */
   .story-intro-dialog .story-intro-text {
     margin-top: 6px;
     font-size: 0.7rem;

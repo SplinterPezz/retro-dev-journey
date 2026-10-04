@@ -5,12 +5,9 @@ import { useGameMenu } from './GameMenuContext';
 import './MenuButton.css';
 
 interface MenuButtonProps {
-  withMusic?: boolean; // show the music controls in the menu (pages that play music)
+  withMusic?: boolean;
 }
 
-// The golden "☰ Menu" button of the game screens, and the menu it opens.
-// Placement is up to the caller: wrap it in a container (e.g.
-// `menu-fixed-top-left`) to position it.
 const MenuButton: React.FC<MenuButtonProps> = ({ withMusic = true }) => {
   const { isOpen, open } = useGameMenu();
   return (

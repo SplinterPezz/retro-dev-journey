@@ -1,7 +1,5 @@
 import { EnvironmentData } from '../types/game';
 
-// Decoration of the overworld: trees and small details. Plain data.
-
 export const treesEnvironments: EnvironmentData[]=[
   {
     image: '/sprites/trees/carrubba_1.png',

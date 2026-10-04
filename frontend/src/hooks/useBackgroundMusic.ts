@@ -3,19 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { setMusicMuted } from '../store/settingsSlice';
 
-// Plays a page's music in a loop, at the volume and mute state saved in
-// state.settings (shared by the home page controls and the game menu).
-//
-// Browsers refuse to start sound on a page nobody has clicked or typed on yet
-// (e.g. right after a reload). When that happens the music is switched to
-// muted, so the controls show it off and it only starts when the player turns
-// it on - never by surprise on some unrelated click.
+// When the browser blocks autoplay the music is switched to muted, so it never starts by surprise later.
 export const useBackgroundMusic = (src?: string) => {
   const dispatch = useDispatch<AppDispatch>();
   const { musicVolume, musicMuted } = useSelector((state: RootState) => state.settings);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // One audio element per track, stopped when the page goes away.
   useEffect(() => {
     if (!src) return;
     const audio = new Audio(src);

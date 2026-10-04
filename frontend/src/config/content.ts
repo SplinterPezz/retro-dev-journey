@@ -1,10 +1,8 @@
-// Shared textual/content config — dialogs and copy reused or configured
-// independently of any single page/component.
 
 export interface DialogMessageConfig {
   speaker: string;
   text: string;
-  delay: number; // delay in ms before this message appears (non-debug mode)
+  delay: number;
 }
 
 export const introDialogMessages: DialogMessageConfig[] = [
@@ -28,6 +26,4 @@ export const introDialogMessages: DialogMessageConfig[] = [
 export const introDialogTypingSpeed: number = 50;
 export const introDialogMessageDuration: number = 3000;
 
-// set to true to always show the full animated intro dialog (typing effect,
-// all messages in sequence), even when the app is running with debugMode on
 export const forceIntroDialogAnimation: boolean = false;

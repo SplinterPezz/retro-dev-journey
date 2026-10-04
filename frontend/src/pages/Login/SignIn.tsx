@@ -110,7 +110,6 @@ export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState("");
   const [errorStatus, setErrorStatus] = useState("");
 
-  // Message under each field; a field shakes for half a second when it gets one.
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<Field, string>>>({});
   const [shaking, setShaking] = useState<Partial<Record<Field, boolean>>>({});
   const later = useTimeouts();
@@ -137,8 +136,7 @@ export default function SignIn() {
     later(() => setShaking((prev) => ({ ...prev, [field]: false })), 500);
   };
 
-  // Only "is it filled in": the password policy belongs to sign-up, and a
-  // login must accept any password the server knows.
+  // login accepts any password the server knows: no policy check here
   const validateInputs = () => {
     let isValid = true;
     if (!email.trim()) {
@@ -152,7 +150,6 @@ export default function SignIn() {
     return isValid;
   };
 
-  // Maps a server-side field error onto the form.
   const handleErrorField = (field: string, message: string) => {
     if (field === "email" || field === "password") {
       setFieldError(field, message);

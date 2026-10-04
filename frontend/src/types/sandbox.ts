@@ -56,8 +56,8 @@ export interface TechnologyData {
   collisionHitbox?: Hitbox;
   imageSize?: ImageSize;
   interactionRadius?: number;
-  storyChapter?: string; // Story Mode: finishing this chapter unlocks it, and its statue appears on the map
-  learnedText?: string; // Story Mode: shown in the "unlocked" window, how it was learned
+  storyChapter?: string;
+  learnedText?: string;
 }
 
 export interface PathSegment {

@@ -9,9 +9,6 @@ interface GameMenuState {
 
 const GameMenuContext = createContext<GameMenuState>({ isOpen: false, open: () => {}, close: () => {} });
 
-// Whether the game menu is open, for the whole app: the menu button opens it,
-// and every scene reads it to pause (no walking, no dialogues) while it is up.
-// It closes by itself on any page change.
 export const GameMenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();

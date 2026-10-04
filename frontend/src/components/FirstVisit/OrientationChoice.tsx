@@ -9,9 +9,6 @@ interface OrientationChoiceProps {
   onChoose: (orientation: StoryOrientation) => void;
 }
 
-// Shown once on phones, before the first game (Story or Sandbox, see
-// FirstVisitSetup). Landscape is the left button,
-// portrait the right one; the choice can be flipped later from the audio bar.
 const OrientationChoice: React.FC<OrientationChoiceProps> = ({ onChoose }) => (
   <div className="orientation-choice-page fullscreen-page">
     <div className="orientation-choice-box">

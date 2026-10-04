@@ -21,8 +21,8 @@ interface QuizPopupProps {
 
 type Stage = 'intro' | 'categories' | 'questions';
 
-const CORRECT_PAUSE_MS = 700; // "Correct!" stays this long before the next question
-const WRONG_FLASH_MS = 2000; // "Wrong answer" stays this long before the hint
+const CORRECT_PAUSE_MS = 700;
+const WRONG_FLASH_MS = 2000;
 const WRONG_FLASH = 'Wrong answer';
 const DEFAULT_WRONG_MESSAGE = 'Not quite - try again.';
 const RESTART_MESSAGE = 'Too many mistakes - this topic starts over from question 1.';
@@ -45,9 +45,7 @@ const shuffleArray = <T,>(arr: T[]): T[] => {
   return a;
 };
 
-// Randomize both question order and each question's answer order so the
-// quiz can't just be memorized by button position/sequence. Code-fix
-// questions have no options to shuffle.
+// shuffled so answers cannot be memorized by position
 const shuffleQuestion = (q: QuizQuestion): ShuffledQuestion => {
   if (q.codeSnippet !== undefined) {
     return {
@@ -68,18 +66,12 @@ const shuffleQuestion = (q: QuizQuestion): ShuffledQuestion => {
   };
 };
 
-// Only the questions written for the chosen difficulty; falls back to the
-// whole pool for a topic that hasn't been split by level yet.
+// topics not split by level yet use the whole pool
 const questionsForDifficulty = (category: QuizCategory, difficulty: StoryDifficulty): QuizQuestion[] => {
   const matching = category.questions.filter((q) => (q.difficulty ?? DEFAULT_DIFFICULTY) === difficulty);
   return matching.length > 0 ? matching : category.questions;
 };
 
-// Multi-stage quiz: a one-time 2-page intro (StoryIntroDialog), then a
-// category picker, then that category's questions for the chosen difficulty.
-// Finishing a category marks it done; once every category is done, the whole
-// station is complete. Difficulty also sets how many mistakes a topic allows
-// before it restarts from question 1.
 const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFlag, onAllComplete, onClose }) => {
   const [stage, setStage] = useState<Stage>(flags[quiz.introSeenFlag] ? 'categories' : 'intro');
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null);
@@ -126,9 +118,6 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
     setStage('categories');
   };
 
-  // Right answer: a short "Correct!", then the next question - or, after the
-  // topic's last one, the topic is done and so is the station once every
-  // topic is.
   const handleCorrect = (category: QuizCategory) => {
     setFeedback('correct');
     setNotice(null);
@@ -146,8 +135,6 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
     }, CORRECT_PAUSE_MS);
   };
 
-  // Wrong answer: a "Wrong answer" flash, then the question's hint - or, past
-  // the difficulty's mistake limit, the topic starts over from question 1.
   const handleWrong = (category: QuizCategory, hint?: string) => {
     const nextMistakes = mistakes + 1;
     const restarts = exceedsMistakeLimit(nextMistakes, mistakeLimit);
@@ -164,7 +151,6 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
     }, WRONG_FLASH_MS);
   };
 
-  // Shared by option picks and code fixes.
   const applyResult = (isCorrect: boolean, hint?: string) => {
     if (!activeCategory || feedback === 'correct') return;
     if (isCorrect) handleCorrect(activeCategory);
@@ -196,8 +182,6 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
 
   const doneCount = quiz.categories.filter((c) => flags[c.completionFlag]).length;
 
-  // Debug only: marks every topic done and finishes the quiz, to test what
-  // comes after it without answering every question.
   const handleDebugCompleteAll = () => {
     quiz.categories.forEach((c) => {
       if (!flags[c.completionFlag]) onSetFlag(c.completionFlag);

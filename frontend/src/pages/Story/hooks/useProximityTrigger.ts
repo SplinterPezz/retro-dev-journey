@@ -1,20 +1,14 @@
 import { useEffect, useRef } from 'react';
 
 interface ProximityTriggerConfig {
-  nearbyId: string | null; // id of the entity the player stands next to
-  enabled: boolean; // false while something else owns the scene (intro, popups)
+  nearbyId: string | null;
+  enabled: boolean;
   canOpen: (id: string) => boolean;
   onOpen: (id: string) => void;
-  onLeave?: () => void; // the player stepped out of every radius
+  onLeave?: () => void;
 }
 
-// Opens something once per walk-up: when the player enters an entity's radius
-// and it may open, `onOpen` runs; it is not called again for the same entity
-// until the player steps away and comes back. That is what keeps a popup
-// closed with its X from reopening while the player is still standing there.
-//
-// If the entity cannot open yet (another dialogue is up), it keeps checking on
-// every render and opens as soon as it can.
+// Opens once per walk-up, so a popup closed with its X does not reopen while the player stands there.
 export const useProximityTrigger = ({ nearbyId, enabled, canOpen, onOpen, onLeave }: ProximityTriggerConfig) => {
   const firedForRef = useRef<string | null>(null);
   const wasNearRef = useRef(false);

@@ -12,9 +12,7 @@ interface RoomProps {
   flags: StoryFlags;
 }
 
-// Floor, door, furniture and quiz markers: re-rendered only when the flags
-// change (props and markers appear with them), never on a player step.
-// A flag-gated prop (an arrow pointing the way) bobs; the rest stand still.
+// re-renders only when the flags change, never on a player step
 const Room: React.FC<RoomProps> = ({ chapter, flags }) => {
   const door = useMemo(() => ({ image: doorImage, position: chapter.doorPosition }), [chapter.doorPosition]);
   const props = chapter.props.filter((prop) => isPropVisible(prop, flags));

@@ -15,14 +15,10 @@ interface DialogBoxProps {
   messageDuration?: number;
 }
 
-// waiting: the message's delay before it appears; typing: the typewriter;
-// holding: fully shown for messageDuration; fading: the 500ms fade-out.
 type Phase = 'waiting' | 'typing' | 'holding' | 'fading';
 
 const FADE_MS = 500;
 
-// Plays a list of messages one after another, each typed out, held on screen,
-// then faded, with no input from the player.
 const DialogBox: React.FC<DialogBoxProps> = ({ messages, onComplete, typingSpeed = 50, messageDuration = 3000 }) => {
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('waiting');
@@ -32,7 +28,6 @@ const DialogBox: React.FC<DialogBoxProps> = ({ messages, onComplete, typingSpeed
   const { displayedText, isTyping } = useTypedText(phase === 'waiting' ? '' : fullText, typingSpeed);
   const finished = index >= messages.length;
   const delay = message?.delay ?? 0;
-  // The parent may pass a new callback on every render; the timers must not restart for it.
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 

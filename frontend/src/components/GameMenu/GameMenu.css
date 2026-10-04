@@ -1,7 +1,6 @@
-/* The window reuses the chapter intro's backdrop, frame and X
-   (StoryIntroDialog.css); these rules only lay out what is inside. */
+/* Backdrop, frame and X come from StoryIntroDialog.css. */
 
-/* The X: a small square, icon centred. RPGUI buttons have a 140px minimum width. */
+/* RPGUI buttons have a 140px minimum width */
 .game-menu-box .game-menu-close {
   min-width: 0;
   width: 34px;
@@ -11,7 +10,7 @@
   justify-content: center;
 }
 
-/* Above every other layer of a scene: dialogue box, joystick, debug tools. */
+/* above the dialogue box, the joystick and the debug tools */
 .game-menu-layer {
   z-index: 1100;
 }
@@ -26,12 +25,10 @@
   gap: 4px;
 }
 
-/* ---- the two columns: one under the other, side by side on a landscape phone ---- */
-
 .game-menu-columns {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* the same gap as between the entries, so Home and Items read as one list */
+  gap: 8px;
 }
 
 .game-menu-column {
@@ -40,19 +37,14 @@
   gap: 4px;
 }
 
-/* ---- player card: portrait on the left, name and details on the right ---- */
-
 .game-menu-profile {
   display: flex;
   align-items: center;
   gap: 18px;
-  padding-right: 32px; /* clear of the X */
+  padding-right: 32px;
 }
 
-/* A close-up of the face. The idle sprite is a 320x320 frame whose face
-   (hair to beard) is centred at (165, 125): the image is scaled so a 145px
-   square around it (the face plus a little margin) fills the 90px window,
-   and shifted onto it. */
+/* A close-up of the face: the 320px idle frame scaled so a --crop square around the face fills the window. */
 .game-menu-portrait {
   flex: none;
   position: relative;
@@ -62,14 +54,19 @@
   background: #1e1b22;
   border: 3px solid #c8a24a;
   box-sizing: border-box;
+  --window: 90px;
+  --frame: 320;
+  --face-x: 165;
+  --face-y: 125;
+  --crop: 145;
 }
 
 .game-menu-portrait img {
   position: absolute;
-  width: 199px; /* 320 * 90 / 145 */
-  height: 199px;
-  left: -57px; /* centre the face: 45 - 165 * 90 / 145 */
-  top: -33px; /* 45 - 125 * 90 / 145 */
+  width: calc(var(--frame) * var(--window) / var(--crop));
+  height: calc(var(--frame) * var(--window) / var(--crop));
+  left: calc(var(--window) / 2 - var(--face-x) * var(--window) / var(--crop));
+  top: calc(var(--window) / 2 - var(--face-y) * var(--window) / var(--crop));
   max-width: none;
   image-rendering: pixelated;
 }
@@ -91,8 +88,6 @@
   line-height: 1.6;
 }
 
-/* ---- the three entries, one under the other ---- */
-
 .game-menu-entries {
   display: flex;
   flex-direction: column;
@@ -104,8 +99,7 @@
   width: 180px;
 }
 
-/* The icon sits just before the word, both centred together; the label's
-   vertical place on the button comes from the golden button rule (index.css). */
+/* the label's vertical place comes from the golden button rule (index.css) */
 .game-menu-box .game-menu-entry p {
   display: flex;
   align-items: center;
@@ -117,13 +111,10 @@
 
 .game-menu-box .game-menu-entry svg {
   flex: none;
-  /* the pixel font's capitals sit in the top of their line box: lift the
-     icon 1px so its middle matches theirs */
+  /* the pixel font's capitals sit high in their line box */
   position: relative;
   top: -1px;
 }
-
-/* ---- sound rows (music, dialogue): icon, volume bar and mute toggle ---- */
 
 .game-menu-music {
   display: flex;
@@ -174,20 +165,10 @@
   .game-menu-portrait {
     width: 72px;
     height: 72px;
-  }
-
-  /* same close-up for a 66px window */
-  .game-menu-portrait img {
-    width: 146px; /* 320 * 66 / 145 */
-    height: 146px;
-    left: -42px;
-    top: -24px;
+    --window: 66px;
   }
 }
 
-/* Landscape phone (the same breakpoint as the home page menu): profile and
-   Home on the left, Items, Skills and the music on the right, with a golden
-   line between them. Smaller portrait so it all fits the short screen. */
 @media (orientation: landscape) and (max-height: 500px) {
   .game-menu-dialog {
     width: min(680px, 94vw);
@@ -216,12 +197,6 @@
   .game-menu-portrait {
     width: 72px;
     height: 72px;
-  }
-
-  .game-menu-portrait img {
-    width: 146px;
-    height: 146px;
-    left: -42px;
-    top: -24px;
+    --window: 66px;
   }
 }

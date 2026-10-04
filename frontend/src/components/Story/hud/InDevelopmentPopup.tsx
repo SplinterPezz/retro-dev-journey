@@ -4,12 +4,10 @@ import '../dialogue/StoryIntroDialog.css';
 import './InDevelopmentPopup.css';
 
 interface InDevelopmentPopupProps {
-  chapterName?: string; // e.g. "Eikony"; omitted = "this part of the story"
+  chapterName?: string;
   onClose: () => void;
 }
 
-// Shown on the story map when the player reaches a chapter that is not ready
-// yet: thanks for playing, it's being built, back to the story.
 const InDevelopmentPopup: React.FC<InDevelopmentPopupProps> = ({ chapterName, onClose }) => (
   <>
     <div className="story-intro-backdrop" />

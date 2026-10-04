@@ -65,7 +65,7 @@ import './InteriorScene.css';
 interface InteriorSceneProps {
   chapter: StoryChapterConfig;
   nextUnlockIndex: number;
-  introPending?: boolean; // true while an intro cutscene plays on top - freezes movement and proximity triggers
+  introPending?: boolean;
 }
 
 const EMPTY_FLAGS: StoryFlags = {};
@@ -78,15 +78,10 @@ const toCollidable = (id: string, position: Position, interactionRadius?: number
   data: { collisionHitbox },
 });
 
-// A chapter scene: the room the player walks around in, and everything that
-// happens in it. The pieces live in their own hooks; this component decides
-// who may act when (a dialogue, a popup or a cutscene holds the others back)
-// and draws the result.
 const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex, introPending = false }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  // ---- saved progress ----
   const chapterProgress = useSelector((state: RootState) => state.story.chapters[chapter.id]);
   const flags = chapterProgress?.flags ?? EMPTY_FLAGS;
   const completed = !!chapterProgress?.completed;
@@ -100,9 +95,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   );
   const { resetAll, resetCurrentChapter, completeCurrentChapter } = useDebugReset(chapter.id);
 
-  // ---- what is open on screen ----
   const dialogue = useDialogueEngine(chapter.npcs, flags, setChapterFlag);
-  const cueDialogue = dialogue.cue; // stable: safe in dependency lists
+  const cueDialogue = dialogue.cue;
   const [activeQuiz, setActiveQuiz] = useState<QuizData | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<MiniGameMarker | null>(null);
   const collectibles = chapterCollectibles[chapter.id];
@@ -113,10 +107,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const splash = useLoadingSplash(sprites);
 
   const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame || found.isOpen;
-  // The game menu pauses the scene: nobody walks and nothing opens behind it.
   const { isOpen: menuOpen } = useGameMenu();
 
-  // ---- the closing scene (it seats the player, so it gets the teleport through a ref) ----
   const teleportRef = useRef<(position: Position) => void>(undefined);
   const seatPlayer = useCallback((position: Position) => teleportRef.current?.(position), []);
   const goToMap = useCallback(() => void navigate(ROUTES.storyMap), [navigate]);
@@ -131,10 +123,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     seatPlayer,
     onEnd: goToMap,
   });
-  // Nobody walks up to anything during the intro, the closing scene or with the menu open.
   const triggersEnabled = !introPending && !outro.active && !menuOpen;
 
-  // ---- what blocks the player, and what can be walked up to ----
   const npcStates = useNpcPatrol(chapter.npcs, chapter.props, dialogue.active?.npc.id ?? null);
   const npcCollidables = useMemo(
     () =>
@@ -157,7 +147,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   );
   const { worldBounds, walkableAreas } = useMemo(() => walkableWorld(chapter, collectibles?.secretPaths), [chapter, collectibles]);
 
-  // ---- the player ----
   // reloaded in the middle of the closing scene: back at the seat
   const outroSeat = chapter.outro && flags[chapter.outro.startedFlag] ? chapter.outro.playerPosition : undefined;
   const { playerPosition, isMoving, direction, playerHitbox, handleJoystickMove, handleJoystickStop, teleport } = usePlayerMovement({
@@ -173,7 +162,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
   const litRoomId = litSideRoomId(chapter.sideRooms, playerPosition);
 
-  // ---- collectibles ----
   const { onMap: collectiblesOnMap } = useCollectibles({
     collectibles,
     found: foundIds,
@@ -185,7 +173,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onFind: found.onFind,
   });
 
-  // ---- walk-up triggers ----
   const { nearbyStructure: nearbyNpc } = useCollisionDetection({ playerPosition, structures: npcCollidables, interactionRadius: DEFAULT_NPC_REACH });
   const { nearbyStructure: nearbyQuiz } = useCollisionDetection({ playerPosition, structures: quizCollidables, interactionRadius: DEFAULT_STATION_REACH });
   const { nearbyStructure: nearbyMiniGame } = useCollisionDetection({ playerPosition, structures: miniGameCollidables, interactionRadius: DEFAULT_STATION_REACH });
@@ -193,7 +180,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const findQuiz = (id: string) => chapter.quizzes.find((q) => q.id === id);
   const findMiniGame = (id: string) => chapter.miniGames?.find((m) => m.id === id);
 
-  // NPC: opens its dialogue; walking away closes it (a cued dialogue stays).
   useProximityTrigger({
     nearbyId: nearbyNpc?.id ?? null,
     enabled: triggersEnabled,
@@ -207,7 +193,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     },
   });
 
-  // Quiz station: opens until completed; walking away closes it.
   useProximityTrigger({
     nearbyId: nearbyQuiz?.id ?? null,
     enabled: triggersEnabled,
@@ -219,7 +204,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onLeave: () => setActiveQuiz(null),
   });
 
-  // End-of-day mini games at the laptop.
   useProximityTrigger({
     nearbyId: nearbyMiniGame?.id ?? null,
     enabled: triggersEnabled,
@@ -230,7 +214,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onOpen: (id) => setActiveMiniGame(findMiniGame(id) ?? null),
   });
 
-  // The exit door: the way out once the closing scene is over, a quip from Meep before.
   useProximityTrigger({
     nearbyId: chapter.outro && isAtExitDoor(chapter, playerPosition) ? DOOR_TRIGGER_ID : null,
     enabled: triggersEnabled,
@@ -242,7 +225,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     },
   });
 
-  // Objectives, the opening dialogue, NPCs' automatic dialogues, chapter completion.
   useChapterProgress({
     chapter,
     flags,
@@ -253,12 +235,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onCue: cueDialogue,
   });
 
-  // ---- popup callbacks ----
-
-  // Power button: leave the games without finishing; walking up again reopens them.
   const powerOffMiniGames = useCallback(() => setActiveMiniGame(null), []);
 
-  // Save the score, then someone in the room comments on it.
   const finishMiniGames = useCallback(
     (earned: number, max: number) => {
       if (activeMiniGame) {
@@ -280,7 +258,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
   const handleQuizClose = useCallback(() => setActiveQuiz(null), []);
 
-  // Once the closing scene is over, walking out of the door is the last thing left.
   const exitObjective = outro.ended ? chapter.outro?.exitObjective : undefined;
   const objectives = useMemo(() => {
     const list = chapter.objectives?.map((o) => ({ id: o.id, label: o.label, done: !!flags[o.flag] }));

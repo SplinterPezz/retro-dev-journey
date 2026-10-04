@@ -1,8 +1,5 @@
 import { CollidableEntity, EnvironmentData, Hitbox, Position, WorldBounds } from '../types/game';
 
-// Pure geometry shared by the player, the NPC patrols and the proximity
-// triggers. Hitboxes are relative to the entity's position.
-
 export const aabbOverlap = (a: Position, ah: Hitbox, b: Position, bh: Hitbox): boolean =>
   a.x + ah.x < b.x + bh.x + bh.width &&
   a.x + ah.x + ah.width > b.x + bh.x &&
@@ -11,13 +8,10 @@ export const aabbOverlap = (a: Position, ah: Hitbox, b: Position, bh: Hitbox): b
 
 export const distance = (a: Position, b: Position): number => Math.hypot(a.x - b.x, a.y - b.y);
 
-/** `a` is closer than `radius` to `b`. */
 export const isWithin = (a: Position, b: Position, radius: number): boolean => distance(a, b) < radius;
 
-/** The point lies inside the box (edges included). */
 export const isInside = (p: Position, b: WorldBounds): boolean => p.x >= b.minX && p.x <= b.maxX && p.y >= b.minY && p.y <= b.maxY;
 
-// Anything with a position and an optional collision box.
 export interface Blocker {
   position: Position;
   collisionHitbox?: Hitbox;
@@ -35,8 +29,7 @@ export const toBlockers = (
   ...environments,
 ];
 
-// The entity whose interaction radius the player stands in, closest first.
-// An entity with a collision box wins over one matched by radius alone.
+// closest first; a collision box wins over a match by radius alone
 export const findNearest = <T extends CollidableEntity>(
   playerPosition: Position,
   entities: readonly T[],

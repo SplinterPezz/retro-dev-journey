@@ -7,13 +7,9 @@ interface StoryIntroDialogProps {
   title: string;
   pages: IntroPage[];
   onComplete: () => void;
-  onClose?: () => void; // optional - shows a top-right X next to the title when provided (e.g. a quiz intro the player can back out of); omitted for mandatory chapter intros
+  onClose?: () => void;
 }
 
-// Full-screen, attention-grabbing intro - same backdrop + framed-golden modal
-// shell as WelcomeDialog.tsx, paginated by a click instead of auto-advancing.
-// The title is fixed for the whole intro (it names the chapter beat, e.g.
-// "The Beginning"), only the body text changes per page.
 const StoryIntroDialog: React.FC<StoryIntroDialogProps> = ({ title, pages, onComplete, onClose }) => {
   const [pageIndex, setPageIndex] = useState(0);
   const page = pages[pageIndex];

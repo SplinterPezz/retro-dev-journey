@@ -3,8 +3,7 @@
   border: 2px solid #5a3018;
 }
 
-/* RPGUI's `.rpgui-content span` rule would paint every CodeMirror token
-   white with a heavy outline; keep the code plain and readable. */
+/* RPGUI's .rpgui-content span would paint every token white with an outline */
 .code-fix-editor .cm-content span {
   color: #e8e0c8 !important;
   text-shadow: none !important;
@@ -20,10 +19,7 @@
   font-weight: normal;
 }
 
-
-/* Code is shown in a monospace font: the pixel label font makes ( and { look
-   alike. RPGUI sets its font on every element inside .rpgui-content (rule
-   `.rpgui-content *`), so the token spans need the font set directly. */
+/* RPGUI sets its font on every element (.rpgui-content *): the token spans need it directly */
 .code-fix-editor .cm-editor,
 .code-fix-editor .cm-editor * {
   font-family: 'Courier New', monospace !important;
@@ -35,8 +31,6 @@
   line-height: 1.6;
 }
 
-/* Multi-line editor: a minimum height so a short snippet still has room, and
-   a scroll once it grows. Format and Check sit side by side. */
 .code-fix-editor .cm-editor {
   min-height: 180px;
   max-height: 260px;

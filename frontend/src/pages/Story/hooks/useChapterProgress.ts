@@ -11,38 +11,27 @@ interface ChapterProgressConfig {
   completed: boolean;
   nextUnlockIndex: number;
   setFlag: (flag: string) => void;
-  canCue: boolean; // false while the scene is not on screen yet or a dialogue / popup is open
+  canCue: boolean;
   onCue: (npc: StoryNpcData, nodeId: string) => void;
 }
-
-// ---- the rules, one question each ----
 
 const allObjectivesDone = (chapter: StoryChapterConfig, flags: StoryFlags): boolean => {
   const objectives = chapter.objectives ?? [];
   return objectives.length > 0 && objectives.every((o) => flags[o.flag]);
 };
 
-// The opening dialogue, if it should play now: once, right after the intro
-// (or at once for a chapter without one), never in a chapter already finished.
 const pendingOpening = (chapter: StoryChapterConfig, flags: StoryFlags, completed: boolean) => {
   const introDone = !chapter.intro || flags[ENGINE_FLAGS.introSeen];
   if (completed || !introDone || flags[ENGINE_FLAGS.openingCued]) return undefined;
   return chapter.openingDialogue;
 };
 
-// An NPC with an automatic dialogue whose trigger flag is set and that has
-// not played it yet (e.g. the instructor's "take a seat" once the objectives are done).
 const isReadyToAutoStart = (npc: StoryNpcData, flags: StoryFlags): boolean =>
   !!npc.autoStartFlag && !!npc.autoStartNodeId && !!flags[npc.autoStartFlag] && !flags[cuedFlag(npc.id)];
 
 const allRequiredFlagsSet = (chapter: StoryChapterConfig, flags: StoryFlags): boolean =>
   chapter.completion.requiredFlags.every((f) => flags[f]);
 
-// Chapter-level rules driven by the flags:
-// - every objective done -> ENGINE_FLAGS.objectivesDone;
-// - the opening dialogue opens by itself after the intro, once;
-// - an NPC's automatic dialogue opens by itself when its flag is set, once;
-// - every required flag set -> chapter complete, next chapter unlocked.
 export const useChapterProgress = ({
   chapter,
   flags,

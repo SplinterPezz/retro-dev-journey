@@ -1,6 +1,3 @@
-/* The orange pixel-bevel button used by the quiz, the zoom controls and the
-   orientation choice. A component adds only its own size and label font on
-   top of this class. */
 .pixel-button {
   color: #2d1e0f;
   background: #e8a13f;

@@ -5,7 +5,6 @@ interface ResourceLoaderConfig {
   audio?: string[];
   fonts?: string[];
   onProgress?: (loaded: number, total: number) => void;
-  minDuration?: number;
 }
 
 interface LoaderState {
@@ -33,13 +32,7 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
         ...(config.fonts || [])
       ];
 
-      const startTime = Date.now();
-      const minDuration = config.minDuration || 0;
-
       if (allResources.length === 0) {
-        if (minDuration > 0) {
-          await simulateLoadingAnimation(minDuration);
-        }
         setState({ isLoading: false, progress: 100, loaded: 0, total: 0, error: null });
         return;
       }
@@ -47,13 +40,12 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
       let loadedCount = 0;
       const totalCount = allResources.length;
 
-      const updateProgress = (forceProgress?: number) => {
-        const resourceProgress = forceProgress !== undefined ? forceProgress : Math.round((loadedCount / totalCount) * 100);
-        setState(prev => ({ ...prev, progress: resourceProgress, loaded: loadedCount, total: totalCount }));
+      const updateProgress = () => {
+        const progress = Math.round((loadedCount / totalCount) * 100);
+        setState(prev => ({ ...prev, progress, loaded: loadedCount, total: totalCount }));
         config.onProgress?.(loadedCount, totalCount);
       };
 
-      // Load all resources
       const loadPromises = allResources.map(async (resource) => {
         try {
           if (config.images.includes(resource)) {
@@ -67,28 +59,13 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
           console.warn(`Failed to load resource: ${resource}`, error);
         } finally {
           loadedCount++;
-
-          // Only update progress immediately if no minimum duration is set
-          if (minDuration === 0) {
-            updateProgress();
-          }
+          updateProgress();
         }
       });
 
       try {
         await Promise.all(loadPromises);
-        
-        const elapsed = Date.now() - startTime;
-        const remainingTime = Math.max(0, minDuration - elapsed);
-
-        if (remainingTime > 0) {
-          await simulateLoadingAnimation(remainingTime, updateProgress);
-        } else {
-          updateProgress(100);
-        }
-
         setState(prev => ({ ...prev, isLoading: false }));
-        
       } catch {
         setState(prev => ({
           ...prev,
@@ -98,36 +75,9 @@ export const useResourceLoader = (config: ResourceLoaderConfig): LoaderState => 
       }
     };
 
-    const simulateLoadingAnimation = (duration: number, progressCallback?: (progress: number) => void): Promise<void> => {
-      return new Promise(resolve => {
-        const startTime = Date.now();
-        const interval = 30;
-        
-        const animate = () => {
-          const elapsed = Date.now() - startTime;
-          const progress = Math.min((elapsed / duration) * 100, 100);
-          
-          if (progressCallback) {
-            progressCallback(Math.round(progress));
-          } else {
-            setState(prev => ({ ...prev, progress: Math.round(progress) }));
-          }
-          
-          if (progress >= 100) {
-            resolve();
-          } else {
-            setTimeout(animate, interval);
-          }
-        };
-        
-        animate();
-      });
-    };
-
     void loadResources();
-    // Runs per resource list; config comes from the caller on every render.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config.images, config.audio, config.fonts, config.minDuration]);
+  }, [config.images, config.audio, config.fonts]);
 
   return state;
 };

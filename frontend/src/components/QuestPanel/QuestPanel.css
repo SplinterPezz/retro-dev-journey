@@ -135,7 +135,6 @@
   color: #888;
 }
 
-
 @media (max-width: 768px) {
   .daily-quest-container {
     width: 250px;
@@ -207,9 +206,6 @@
     font-size: 0.9rem;
   }
 }
-/* Landscape phone: the height is small, so the portrait sizing (35vh max
-   width and a 100px top margin) made the panel narrow and pushed it down over
-   the scene. It sits under the Home button instead, at a readable width. */
 @media (orientation: landscape) and (max-height: 500px) {
   .daily-quest-container {
     top: 88px;
@@ -224,14 +220,12 @@
   }
 }
 
-/* ---- collapsible body (a transition, not a keyframe animation: a keyframe
-   left at its end state after another popup could keep the list hidden) ---- */
+/* a transition, not a keyframe: a keyframe left at its end state could keep the list hidden */
 .quest-panel-body {
   overflow: hidden;
   transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
-/* ---- toggle ---- */
 .quest-toggle {
   background: rgba(255, 215, 0, 0.2);
   border: 1px solid rgba(255, 215, 0, 0.5);
@@ -285,7 +279,6 @@
   }
 }
 
-/* ---- daily quest list (Sandbox) ---- */
 .quest-list {
   display: flex;
   flex-direction: column;

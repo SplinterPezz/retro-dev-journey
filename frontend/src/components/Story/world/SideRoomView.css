@@ -8,12 +8,12 @@
 
 .side-room-door {
   position: absolute;
-  z-index: 85; /* above the shade, so the way in shows in the dark; the player (100) walks over it */
+  z-index: 85; /* above the shade, below the player (100) */
   pointer-events: none;
   image-rendering: pixelated;
 }
 
-/* Over the room's floor, props and NPCs (up to 60) and below Meep (90) and the player (100). */
+/* over the room's floor, props and NPCs (up to 60), below Meep (90) and the player (100) */
 .side-room-shade {
   position: absolute;
   z-index: 80;
@@ -28,7 +28,6 @@
   animation: side-room-flicker 0.7s steps(1, end);
 }
 
-/* a neon tube catching on */
 @keyframes side-room-flicker {
   0% { opacity: 0.92; }
   15% { opacity: 0.3; }

@@ -1,8 +1,6 @@
 import { Direction, Position, WorldBounds } from '../types/game';
 import { MOVE_KEYS } from '../config/controls';
 
-// Pure movement maths for the player: input -> direction -> next position.
-
 export const getDirectionFromKeys = (keys: ReadonlySet<string>): Direction => {
   const held = (direction: keyof typeof MOVE_KEYS) => MOVE_KEYS[direction].some((k) => keys.has(k));
   const up = held('up');
@@ -55,9 +53,7 @@ const STEP: Record<Exclude<Direction, 'idle'>, Position> = {
 
 const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 
-// Moves `distance` pixels towards `dir`, clamped to the world. When the full
-// step is blocked it slides along one axis; when both are blocked it stays.
-// Returns `current` itself (same reference) when nothing moved.
+// Slides along one axis when the full step is blocked; returns `current` itself when nothing moved.
 export const stepPosition = (
   current: Position,
   dir: Direction,
@@ -75,8 +71,7 @@ export const stepPosition = (
     { x: nx, y: current.y },
     { x: current.x, y: ny },
   ];
-  // Already inside a box (put there by a teleport or a config slip): let any
-  // step through, so the player walks out instead of being stuck for good.
+  // already inside a box (teleport, config slip): let any step through so the player can walk out
   const stuck = isBlocked(current);
   const free = candidates.find(
     (p) => !(p.x === current.x && p.y === current.y) && (stuck || !isBlocked(p))

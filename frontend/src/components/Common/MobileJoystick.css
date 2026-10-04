@@ -51,9 +51,7 @@
   }
 }
 
-/* Landscape phone: the joystick moves to the vertical middle of the right
-   edge, about 100px in from the edge, where a thumb rests naturally. It sits
-   last so it wins over the portrait size rules above on small phones. */
+/* last, so it wins over the portrait size rules on small phones */
 @media (orientation: landscape) and (max-height: 500px) {
   .mobile-joystick {
     top: 50%;

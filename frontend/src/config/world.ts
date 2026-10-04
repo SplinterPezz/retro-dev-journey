@@ -1,12 +1,9 @@
 import { WorldConfig, Position, Hitbox } from '../types/game';
 
-// The overworld shared by the Sandbox and the Story Mode map.
-
 const tileSize: number = 128;
 
-// Feature flags
-export const terrainAutoRotate: boolean = true; // set to false to disable random rotation of terrain tiles
-export const pathGenerationEnabled: boolean = true; // set to false to disable path generation and rendering
+export const terrainAutoRotate: boolean = true;
+export const pathGenerationEnabled: boolean = true;
 
 export const defaultStatue: string = '/sprites/statues/default.png';
 export const defaultBuilding: string = '/sprites/buildings/default.png';
@@ -29,14 +26,12 @@ export const technologyCentering: Position = {
   y: -200,
 }
 
-// World configuration
 export const worldConfig: WorldConfig = {
   width: 2000,
   height: 3024,
   tileSize: tileSize
 };
 
-// Main path configuration
 export const mainPathConfig = {
   startX: worldConfig.width / 2,
   startY: 100,
@@ -44,7 +39,6 @@ export const mainPathConfig = {
   width: tileSize
 };
 
-// Player spawn position (where the character appears when entering the sandbox)
 export const playerSpawnPosition: Position = {
   x: mainPathConfig.startX,
   y: mainPathConfig.startY + 50

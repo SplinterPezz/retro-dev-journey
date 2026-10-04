@@ -5,11 +5,9 @@ import './Collectibles.css';
 
 interface CollectibleItemProps {
   item: CollectibleData;
-  near: boolean; // hidden until the player is close
+  near: boolean;
 }
 
-// A collectible lying in the room: invisible from afar, it fades in with the
-// quiz marker's sparkle when the player gets close, and bobs.
 const CollectibleItem: React.FC<CollectibleItemProps> = ({ item, near }) => {
   if (!item.position) return null;
   return (

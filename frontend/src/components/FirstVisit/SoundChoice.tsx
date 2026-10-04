@@ -8,11 +8,6 @@ interface SoundChoiceProps {
   onChoose: (soundOn: boolean) => void;
 }
 
-// Shown once, on every device, before the first game (Story or Sandbox, see
-// FirstVisitSetup), after the orientation on phones. Sound on is the left
-// button, off the right one. It switches the music and the dialogue sound
-// together; both can be changed later in the game menu. Same look as the
-// orientation choice.
 const SoundChoice: React.FC<SoundChoiceProps> = ({ onChoose }) => (
   <div className="orientation-choice-page fullscreen-page">
     <div className="orientation-choice-box">

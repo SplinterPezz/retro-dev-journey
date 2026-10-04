@@ -1,4 +1,3 @@
-/* ---- a collectible in the room ---- */
 .collectible-item {
   position: absolute;
   width: 48px;
@@ -23,7 +22,7 @@
   animation: collectible-float 2s ease-in-out infinite;
 }
 
-/* the quiz marker's sparkle, set from CollectibleItem.tsx (a public path can't be a url() in a .css file) */
+/* set from CollectibleItem.tsx: a public path cannot be a url() in a .css file */
 .collectible-item::before {
   content: '';
   position: absolute;
@@ -40,8 +39,6 @@
   50% { transform: translateY(-5px); }
 }
 
-/* ---- the counter: top centre, clear of Home (left) and the audio bar (right);
-   under the audio bar on a phone held upright ---- */
 .collectible-counter {
   position: fixed;
   top: 20px;
@@ -71,7 +68,6 @@
   image-rendering: pixelated;
 }
 
-/* Phone held upright: on the right, under the audio buttons (landscape keeps it top centre). */
 @media (orientation: portrait) and (max-width: 768px) {
   .collectible-counter {
     top: 110px;

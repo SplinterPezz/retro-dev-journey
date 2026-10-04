@@ -32,11 +32,7 @@
 }
 
 .quiz-popup-box {
-  /* RPGUI's .rpgui-container base rule is `position: fixed` with no insets,
-     which takes it out of flow entirely - the backdrop's flex centering
-     then has nothing to center, since a fixed child is ignored by flex
-     alignment. Override back to relative (same fix as the portrait dialogue
-     box) so it actually sits inside .quiz-popup-container and gets centred. */
+  /* RPGUI's .rpgui-container is position: fixed, which flex centering ignores */
   position: relative !important;
   background: rgba(20, 14, 10, 0.95);
   padding-bottom: 32px !important;
@@ -130,7 +126,6 @@
   font-size: 0.75rem;
 }
 
-/* Debug-only shortcut (REACT_APP_ENV=development), same red as the other debug buttons. */
 .quiz-debug-complete {
   display: block;
   margin: 12px auto 0;

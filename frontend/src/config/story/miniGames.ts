@@ -1,9 +1,6 @@
 import { ScoreTierId, StoryDifficulty } from '../../types/story';
 
-// End-of-day mini games, played at the laptop. Every question gets one try:
-// a correct answer is worth BASE_POINTS times the difficulty multiplier (the
-// same play on Senior scores more than on Junior), a wrong one is worth
-// nothing and the game moves on.
+// One try per question: right is worth BASE_POINTS times the difficulty multiplier, wrong nothing.
 export const BASE_POINTS = 100;
 
 export const difficultyMultiplier: Record<StoryDifficulty, number> = {
@@ -11,8 +8,6 @@ export const difficultyMultiplier: Record<StoryDifficulty, number> = {
   middle: 1.5,
   senior: 2,
 };
-
-// ---- 1. Fix the build: edit the snippet until it matches the expected code ----
 
 export interface FixSnippet {
   id: string;
@@ -70,14 +65,11 @@ b.setText("Hi");`,
   },
 ];
 
-// Snippets used per difficulty.
 export const fixBuildCountByDifficulty: Record<StoryDifficulty, number> = {
   junior: 3,
   middle: 4,
   senior: 5,
 };
-
-// ---- 2. Which commit broke everything? ----
 
 interface CommitOption {
   hash: string;
@@ -88,7 +80,7 @@ interface CommitOption {
 export interface CommitRound {
   id: string;
   prompt: string;
-  options: CommitOption[]; // the breaking one sits within the first three, so Junior gets it too
+  options: CommitOption[];
 }
 
 export const commitRounds: CommitRound[] = [
@@ -116,7 +108,6 @@ export const commitRounds: CommitRound[] = [
   },
 ];
 
-// Rounds played and commits shown per round.
 export const commitRoundsByDifficulty: Record<StoryDifficulty, number> = {
   junior: 1,
   middle: 2,
@@ -128,8 +119,6 @@ export const commitCountByDifficulty: Record<StoryDifficulty, number> = {
   middle: 4,
   senior: 5,
 };
-
-// ---- 4. Find the error in the log ----
 
 const logInfoLines = [
   'I/Gradle: Configuring project :app',
@@ -161,8 +150,6 @@ const logWarningLines = [
   'W/Sensor: noisy reading, filtering',
 ];
 
-// Each round crashes on its own error, at its own height in the log, with a
-// different stretch of the normal lines around it.
 const logRounds = [
   { error: 'E/AndroidRuntime: FATAL EXCEPTION: main java.lang.NullPointerException', at: 0.5, offset: 0 },
   { error: 'E/AndroidRuntime: FATAL EXCEPTION: main java.lang.IndexOutOfBoundsException: Index: 5, Size: 5', at: 0.75, offset: 7 },
@@ -174,8 +161,7 @@ export const logRoundsByDifficulty: Record<StoryDifficulty, number> = {
   senior: 2,
 };
 
-// Total lines and where the error sits, per difficulty. Middle and Senior add
-// warnings, which look like the error and make it harder to spot.
+// warnings look like the error and make it harder to spot
 const logShapeByDifficulty: Record<StoryDifficulty, { lines: number; warnings: number }> = {
   junior: { lines: 6, warnings: 0 },
   middle: { lines: 12, warnings: 3 },
@@ -195,14 +181,11 @@ export const buildLog = (difficulty: StoryDifficulty, round: number): { lines: s
   return { lines: body, errorIndex };
 };
 
-// ---- Score tiers: the share of points earned picks what the room says ----
-
 export interface ScoreTier {
   id: ScoreTierId;
   title: string;
 }
 
-// From the best band down; "zero" is only nothing at all.
 const scoreTiers: { tier: ScoreTier; reached: (percent: number) => boolean }[] = [
   { tier: { id: 'perfect', title: 'Flawless' }, reached: (p) => p >= 100 },
   { tier: { id: 'great', title: 'Ready for the internship' }, reached: (p) => p >= 75 },

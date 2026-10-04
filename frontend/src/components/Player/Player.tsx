@@ -10,14 +10,11 @@ interface PlayerProps {
   direction: Direction;
 }
 
-// Sprite URLs as CSS variables, read by Player.css. Built once.
 const spriteVariables = Object.fromEntries(
   Object.entries(playerSprites).map(([name, url]) => [name, `url('${url}')`])
 ) as React.CSSProperties;
 
-// At rest the player keeps facing the last direction (usePlayerMovement does
-// not reset it), with a static idle pose per direction. West-facing poses
-// mirror the east-facing ones in Player.css, like the walk cycle.
+// West-facing poses mirror the east ones in Player.css.
 const spriteClass = (isMoving: boolean, direction: Direction): string => {
   const facing = direction === 'idle' ? 'down' : direction;
   return `player-sprite ${isMoving && direction !== 'idle' ? 'walking' : 'idle'}-${facing}`;

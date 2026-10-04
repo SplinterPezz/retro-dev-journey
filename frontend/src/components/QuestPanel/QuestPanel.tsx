@@ -3,19 +3,16 @@ import './QuestPanel.css';
 
 interface QuestPanelProps {
   title: React.ReactNode;
-  headerExtra?: React.ReactNode; // next to the title, e.g. a "(3/12)" counter
-  percentage?: number; // progress bar under the header; omitted = no bar
-  collapsible?: boolean; // false hides the toggle and the body
+  headerExtra?: React.ReactNode;
+  percentage?: number;
+  collapsible?: boolean;
   toggleLabel: { show: string; hide: string };
   bodyMaxHeight: string;
   className?: string;
-  children?: React.ReactNode; // the collapsible body
-  footer?: React.ReactNode; // always visible under the header (e.g. a notice)
+  children?: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-// Collapsible panel in the corner of a scene, shared by the Sandbox daily
-// quests and the Story objectives: title, toggle, progress bar and a body that
-// slides open. Starts collapsed.
 const QuestPanel: React.FC<QuestPanelProps> = ({
   title,
   headerExtra,

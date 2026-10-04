@@ -1,14 +1,10 @@
 import { textTypingSound } from '../config/assets';
 import { TypingVoice } from '../config/typingVoices';
 
-// The classic "text typing" tick of the dialogue box: one short click sample,
-// loaded once and played through Web Audio (an <audio> element is too slow to
-// restart many times a second). Each speaker's voice sets its pitch and
-// dullness (src/config/typingVoices.ts), and each tick is pitched a hair up or
-// down on top so a long line does not sound like a machine gun.
+// An <audio> element is too slow to restart many times a second: Web Audio it is.
 
 const MAX_GAIN = 1.5; // the sample itself is quiet: full volume boosts it a little
-const PITCH_SPREAD = 0.06; // ±6%
+const PITCH_SPREAD = 0.06;
 
 let context: AudioContext | null = null;
 let gain: GainNode | null = null;
@@ -34,25 +30,22 @@ const load = (ctx: AudioContext) => {
       click = buffer;
     })
     .catch(() => {
-      loading = null; // try again on the next line
+      loading = null;
     });
   return loading;
 };
 
-// 0-1, the volume set in the game menu
 export const setTypingVolume = (value: number) => {
   volume = Math.min(1, Math.max(0, value));
   if (gain) gain.gain.value = volume * MAX_GAIN;
 };
 
-// Fetches the click ahead of the first line, so the first tick is not lost.
 export const preloadTypingSound = () => {
   const ctx = getContext();
   if (ctx) void load(ctx);
 };
 
-// Browsers keep sound off until the player has clicked or typed on the page:
-// until then ticks are simply not heard (never queued for later).
+// Before the player's first click or key the browser keeps sound off: ticks are dropped.
 export const playTypingTick = (voice: TypingVoice) => {
   const ctx = getContext();
   if (!ctx || !gain) return;

@@ -1,7 +1,6 @@
-/* Floats up and down, with the quiz marker's sparkle on top. */
 .bobbing-prop {
   position: absolute;
-  z-index: 100; /* above the structure layers (up to 60), e.g. the instructor's desk */
+  z-index: 100; /* above the structure layers (up to 60) */
   pointer-events: none;
   animation: bobbing-prop-float 1.2s ease-in-out infinite;
 }
@@ -18,7 +17,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  /* set from BobbingProp.tsx, like QuizMarker: a public path can't be a url() in a .css file */
+  /* set from BobbingProp.tsx: a public path cannot be a url() in a .css file */
   background-image: var(--sparkle-image);
   background-size: contain;
   background-repeat: no-repeat;

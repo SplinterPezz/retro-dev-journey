@@ -14,10 +14,6 @@ interface ChapterScenePageProps {
   chapter: StoryChapterConfig;
 }
 
-// Shared page for every chapter: redirects back to the map while the chapter
-// is still locked, shows the chapter's one-time intro (if it has one), then
-// hands the world to InteriorScene. Unlocking the next chapter is driven by
-// the chapter's position in storyChapterOrder.
 const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();

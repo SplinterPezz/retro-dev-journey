@@ -10,7 +10,7 @@ interface StructureProps {
   data: StructureData;
   type: 'building' | 'technology';
   isNearby: boolean;
-  locked?: boolean; // story map: a padlock floats above the signpost
+  locked?: boolean;
 }
 
 const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = false }) => {
@@ -34,7 +34,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
     return undefined;
   };
 
-  // Get special classes for the structure
   const getStructureClasses = (): string => {
     let classes = `structure-container ${type}`;
     
@@ -52,7 +51,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
         top: data.position.y + (type === 'building'? structureCentering.y : technologyCentering.y),
       }}
     >
-      {/* Structure sprite/icon */}
       <div className="structure-sprite">
         {type === 'building' ? (
           <>
@@ -106,7 +104,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
           
         )}
         
-        {/* Interaction radius indicator (debug) */}
         {isDev && (
           <div 
             className="interaction-radius"
@@ -120,7 +117,6 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
         )}
       </div>
 
-      {/* Structure label */}
       <div className={`d-none structure-label ${isNearby ? 'visible' : ''}`}>
         <span>{data.name}</span>
         {(isNearby && data.id === COMPANY_IDS.futureOpportunity) && (

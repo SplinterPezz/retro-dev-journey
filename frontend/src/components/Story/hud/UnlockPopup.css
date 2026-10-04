@@ -1,9 +1,7 @@
-/* Layout on top of the chapter intro's window (StoryIntroDialog.css). */
 .unlock-box {
   text-align: center;
 }
 
-/* Sticks out of the top-right corner of the card, over the golden frame. */
 .unlock-corner {
   position: absolute;
   top: -56px;
@@ -67,7 +65,6 @@
   }
 }
 
-/* Landscape phone: little height, so a smaller statue. */
 @media (orientation: landscape) and (max-height: 500px) {
   .unlock-sprite {
     width: 72px;

@@ -18,9 +18,7 @@ interface TerrainTile {
 
 const ROTATIONS = [0, 90, 180, 270];
 
-// Ground of a scene. With random rotation every tile is its own div (rotated
-// tiles break up the grass pattern); without it the floor is one div with a
-// repeating background, which is a single layer instead of hundreds.
+// Rotated tiles each need their own div; unrotated, the floor is one repeating background.
 const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRotate = true, terrainImage = mainTerrainImage }) => {
   const { width, height, tileSize } = worldConfig;
 
