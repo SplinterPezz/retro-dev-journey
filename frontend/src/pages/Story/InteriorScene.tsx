@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
 import { setFlag, recordScore } from '../../store/storySlice';
@@ -30,6 +31,7 @@ import { useProximityTrigger } from './hooks/useProximityTrigger';
 import { useDialogueEngine } from './hooks/useDialogueEngine';
 import { useChapterProgress } from './hooks/useChapterProgress';
 import { useMeepBeats } from './hooks/useMeepBeats';
+import { useChapterOutro } from './hooks/useChapterOutro';
 import { entryNodeId } from './dialogue';
 import { playerSpawnPosition as defaultSpawn } from '../../config/world';
 import { chapterAssets, doorImage } from '../../config/story/assets';
@@ -82,7 +84,7 @@ const Room: React.FC<RoomProps> = React.memo(({ chapter, flags }) => {
       </div>
       <div className="structure-container">
         {chapter.props
-          .filter((prop) => !prop.visibleWhenFlag || flags[prop.visibleWhenFlag])
+          .filter((prop) => (!prop.visibleWhenFlag || flags[prop.visibleWhenFlag]) && !(prop.hiddenWhenFlag && flags[prop.hiddenWhenFlag]))
           .map((prop) =>
             prop.visibleWhenFlag ? (
               <BobbingProp key={prop.id} prop={prop} />
@@ -202,13 +204,34 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     [chapter.worldConfig]
   );
 
-  const { playerPosition, isMoving, direction, playerHitbox, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
-    initialPosition: chapter.playerSpawn || defaultSpawn,
+  // ---- closing scene: seats the player, so it hands over the teleport through a ref ----
+  const navigate = useNavigate();
+  const teleportRef = useRef<(position: Position) => void>(undefined);
+  const seatPlayer = useCallback((position: Position) => teleportRef.current?.(position), []);
+  const goToMap = useCallback(() => void navigate('/story'), [navigate]);
+  const outro = useChapterOutro({
+    outro: chapter.outro,
+    flags,
+    setFlag: setChapterFlag,
+    ready: !splashVisible && !introPending,
+    busy: !!dialogue.active || !!activeQuiz || !!activeMiniGame,
+    npcs: chapter.npcs,
+    cue: cueDialogue,
+    seatPlayer,
+    onEnd: goToMap,
+  });
+  // reloaded in the middle of the closing scene: back at the seat
+  const outroSeat = chapter.outro && flags[chapter.outro.startedFlag] ? chapter.outro.playerPosition : undefined;
+
+  const { playerPosition, isMoving, direction, playerHitbox, handleJoystickMove, handleJoystickStop, teleport } = usePlayerMovement({
+    initialPosition: outroSeat ?? chapter.playerSpawn ?? defaultSpawn,
     speed: 220,
     worldBounds,
     structures: allBlocking,
-    canMove: !introPending && !activeQuiz && !activeMiniGame,
+    canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active,
   });
+
+  teleportRef.current = teleport;
 
   const meepPosition = useLaggedPosition(playerPosition, 450);
 
@@ -224,7 +247,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   // NPC: opens its dialogue; walking away closes it (a cued dialogue stays).
   useProximityTrigger({
     nearbyId: nearbyNpc?.id ?? null,
-    enabled: !introPending,
+    enabled: !introPending && !outro.active,
     canOpen: (id) => !dialogue.active && !activeQuiz && isUnlocked(chapter.npcs.find((n) => n.id === id)?.requiredFlag),
     onOpen: (id) => {
       const npc = chapter.npcs.find((n) => n.id === id);
@@ -238,7 +261,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   // Quiz station: opens until completed; walking away closes it.
   useProximityTrigger({
     nearbyId: nearbyQuiz?.id ?? null,
-    enabled: !introPending,
+    enabled: !introPending && !outro.active,
     canOpen: (id) => {
       const quiz = chapter.quizzes.find((q) => q.id === id);
       return !popupOpen && !!quiz && !flags[quiz.completionFlag] && isUnlocked(quiz.requiredFlag);
@@ -250,7 +273,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   // End-of-day mini games at the laptop.
   useProximityTrigger({
     nearbyId: nearbyMiniGame?.id ?? null,
-    enabled: !introPending,
+    enabled: !introPending && !outro.active,
     canOpen: (id) => {
       const marker = chapter.miniGames?.find((m) => m.id === id);
       return !popupOpen && !!marker && !flags[marker.completionFlag] && isUnlocked(marker.requiredFlag);
@@ -311,13 +334,23 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           </div>
         </div>
       )}
+      {outro.curtain && (
+        <div className={`chapter-splash chapter-splash--entering${outro.curtain.leaving ? ' chapter-splash--leaving' : ''}`}>
+          {outro.curtain.subtitle && (
+            <div className="chapter-splash-heading">
+              <h1 className="chapter-splash-title">{chapter.splashTitle ?? chapter.title}</h1>
+              <p className="chapter-splash-subtitle">{outro.curtain.subtitle}</p>
+            </div>
+          )}
+        </div>
+      )}
       <div className="interior-scene-container">
         {objectives && <StoryProgress objectives={objectives} />}
         <GameScene
           name="interior-scene"
           world={chapter.worldConfig}
           playerPosition={playerPosition}
-          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !introPending }}
+          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !introPending && !outro.active }}
           audio={chapter.audioTrack ? { src: chapter.audioTrack, volume: 30 } : undefined}
           overlay={
             <div className="home-fixed-top-left">
@@ -350,8 +383,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
         {dialogue.active && dialogue.node && (
           <PortraitDialogueBox
-            speakerName={dialogue.active.npc.name}
-            portraitImage={`${dialogue.active.npc.spriteBase}_idle.gif`}
+            speakerName={dialogue.node.portrait ? dialogue.node.speaker : dialogue.active.npc.name}
+            portraitImage={`${dialogue.node.portrait ?? dialogue.active.npc.spriteBase}_idle.gif`}
             text={dialogue.node.text}
             choices={dialogue.choices}
             onAdvance={dialogue.advance}

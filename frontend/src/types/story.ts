@@ -46,6 +46,7 @@ export interface DialogueNode {
   choices?: DialogueChoiceOption[]; // when present, waits for a pick instead of auto-advancing
   next?: string; // used when there are no choices (linear line)
   nextNpcId?: string; // `next` is a node of this NPC's script: another character speaks next (a scene where several people talk in turn)
+  portrait?: string; // sprite base of a speaker who is not an NPC of the scene (e.g. Meep): the box shows `speaker` and `${portrait}_idle.gif`
   setFlag?: string; // set as soon as this line is shown
 }
 
@@ -128,6 +129,7 @@ export interface StoryPropData {
   imageSize?: ImageSize;
   collisionHitbox?: Hitbox;
   visibleWhenFlag?: string; // hidden until this flag is set (e.g. the arrow at the laptop)
+  hiddenWhenFlag?: string; // hidden again once this flag is set (e.g. the arrow, after the mini games)
 }
 
 // ---- Meep companion commentary ----
@@ -153,6 +155,19 @@ export interface MiniGameMarker {
   resultsDialogue?: { npcId: string; nodes: Record<ScoreTierId, string> };
 }
 
+// The chapter's closing scene: once afterFlag is set and nothing is open, the
+// screen fades to black ("<splash title> / subtitle"), the player is seated,
+// an NPC opens the scene's dialogue, and when the line that sets endFlag
+// closes the screen goes black again and the story moves on.
+export interface ChapterOutro {
+  afterFlag: string;
+  subtitle: string; // e.g. "Some days later"
+  playerPosition: Position;
+  dialogue: { npcId: string; nodeId: string };
+  startedFlag: string; // set when the scene starts: a reload resumes it from the player's seat
+  endFlag: string;
+}
+
 export interface IntroPage {
   text: string;
 }
@@ -173,5 +188,6 @@ export interface StoryChapterConfig {
   meepBeats: MeepBeat[];
   completion: { requiredFlags: string[] };
   miniGames?: MiniGameMarker[];
+  outro?: ChapterOutro;
   objectives?: { id: string; label: string; flag: string }[]; // shown in the Sandbox-style progress panel, in order
 }

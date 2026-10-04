@@ -20,6 +20,10 @@
   border-color: rgba(76, 175, 80, 0.3);
 }
 
+.story-progress-item.locked {
+  opacity: 0.55;
+}
+
 .story-progress-item .quest-name {
   white-space: normal;
 }

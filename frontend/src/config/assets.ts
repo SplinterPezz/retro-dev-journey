@@ -32,3 +32,6 @@ export const pathSprites: Record<PathSegment['type'], string> = {
 
 export const preloadPlayerSprites: string[] = Object.values(playerSprites);
 export const preloadPathSprites: string[] = Object.values(pathSprites);
+
+// Floats over the buildings of the story map whose chapter is still locked.
+export const lockSprite = '/sprites/story/ui/lock.png';

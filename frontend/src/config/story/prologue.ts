@@ -65,8 +65,8 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'laptop-3', image: '/sprites/story/props/laptop_3.png', position: { x: 847, y: 486 }, imageSize: { width: 64, height: 40 } },
     { id: 'laptop-4', image: '/sprites/story/props/laptop_1.png', position: { x: 517, y: 646 }, imageSize: { width: 64, height: 40 } },
     { id: 'laptop-5', image: '/sprites/story/props/laptop_2.png', position: { x: 847, y: 646 }, imageSize: { width: 64, height: 40 } },
-    // arrow above the student laptop: shown once the four objectives are done
-    { id: 'laptop-arrow', image: '/sprites/story/props/arrow_down.png', position: { x: 690, y: 282 }, imageSize: { width: 48, height: 48 }, visibleWhenFlag: 'objectivesDone' },
+    // arrow above the student laptop: shown once the four objectives are done, until the games are played
+    { id: 'laptop-arrow', image: '/sprites/story/props/arrow_down.png', position: { x: 690, y: 282 }, imageSize: { width: 48, height: 48 }, visibleWhenFlag: 'objectivesDone', hiddenWhenFlag: 'miniGamesDone' },
     // chalkboard + bin flank the cattedra symmetrically
     { id: 'chalkboard', image: '/sprites/story/props/chalkboard_wheels.png', position: { x: 400, y: 150 }, imageSize: { width: 110, height: 110 } },
     { id: 'trash-bin', image: '/sprites/story/props/trash_bin.png', position: { x: 900, y: 150 }, imageSize: { width: 72, height: 72 } },
@@ -115,6 +115,32 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // closing scene, some days later (outro below)
+          internshipIntro: {
+            id: 'internshipIntro',
+            speaker: 'Instructor',
+            text: "Alright, everyone, eyes up here. A thousand hours ago you walked in here barely knowing what a variable was. Now look at you - we're almost at the end of the course.",
+            next: 'internshipGroups',
+          },
+          internshipGroups: {
+            id: 'internshipGroups',
+            speaker: 'Instructor',
+            text: "The last 300 hours are the internship. I'm splitting you into groups, and each group will work at an app development company - some of you on site, some of you remotely.",
+            next: 'internshipEikony',
+          },
+          internshipEikony: {
+            id: 'internshipEikony',
+            speaker: 'Instructor',
+            text: "First group: Dude, Francesco, Manuel and the two of you in the second row. You're going to Eikony, an app development company right here in Palermo. On site - so yes, real shoes.",
+            next: 'internshipComment',
+            nextNpcId: 'francesco',
+          },
+          goodbye: {
+            id: 'goodbye',
+            speaker: 'Instructor',
+            text: "Alright, guys - it's time to say goodbye. It's been a thousand hours: go out there and build something you're proud of. And please... comment your code.",
+            setFlag: 'prologueEnded',
+          },
           // after the mini games: one line per score band
           resultsPerfect: {
             id: 'resultsPerfect',
@@ -210,6 +236,59 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // closing scene: the player's answer is kept as an internshipExpectation_* flag
+          internshipComment: {
+            id: 'internshipComment',
+            speaker: 'Manuel',
+            text: 'Same group as you two? Perfect. Someone has to fix my code, and someone has to explain to me why it was broken.',
+            next: 'internshipMeep',
+          },
+          internshipMeep: {
+            id: 'internshipMeep',
+            speaker: 'Meep',
+            portrait: '/sprites/story/companion/meep/meep',
+            text: "A real company. With real servers. Please don't push to production on your first day, I'm begging you.",
+            next: 'internshipQuestion',
+          },
+          internshipQuestion: {
+            id: 'internshipQuestion',
+            speaker: 'Manuel',
+            text: 'So, be honest - is this what you were expecting from the internship?',
+            choices: [
+              { text: 'Honestly? I was hoping for Google. Palermo will do.', next: 'expectBigTech', setFlag: 'internshipExpectation_bigTech' },
+              { text: 'Even better than I expected. A real company, real projects!', next: 'expectBetter', setFlag: 'internshipExpectation_better' },
+              { text: 'I just hope they have a decent coffee machine.', next: 'expectCoffee', setFlag: 'internshipExpectation_coffee' },
+              { text: "I'm terrified. Don't tell anyone.", next: 'expectScared', setFlag: 'internshipExpectation_scared' },
+            ],
+          },
+          expectBigTech: {
+            id: 'expectBigTech',
+            speaker: 'Manuel',
+            text: "Google can wait. They'll come knocking once they see what we break - I mean, build - at Eikony.",
+            next: 'goodbye',
+            nextNpcId: 'teacher',
+          },
+          expectBetter: {
+            id: 'expectBetter',
+            speaker: 'Manuel',
+            text: "That's the spirit! Real projects, real bugs, real excuses.",
+            next: 'goodbye',
+            nextNpcId: 'teacher',
+          },
+          expectCoffee: {
+            id: 'expectCoffee',
+            speaker: 'Manuel',
+            text: "Priorities. I like it. If they don't, I'm bringing the moka pot from home.",
+            next: 'goodbye',
+            nextNpcId: 'teacher',
+          },
+          expectScared: {
+            id: 'expectScared',
+            speaker: 'Manuel',
+            text: "Your secret's safe with me. I've been terrified since chapter one.",
+            next: 'goodbye',
+            nextNpcId: 'teacher',
+          },
           // after the mini games: one line per score band
           resultsPerfect: {
             id: 'resultsPerfect',
@@ -393,6 +472,14 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // closing scene
+          internshipComment: {
+            id: 'internshipComment',
+            speaker: 'Francesco',
+            text: "Eikony! I've seen their apps. Real clients, real deadlines... I'm writing a checklist tonight. Maybe two.",
+            next: 'internshipComment',
+            nextNpcId: 'manuel',
+          },
           // after the mini games: one line per score band
           resultsPerfect: {
             id: 'resultsPerfect',
@@ -1083,10 +1170,20 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'francesco', trigger: 'onFlag', flag: 'talkedFrancesco', text: "Teacher's-pet energy, but he's not wrong about practicing daily." },
     { id: 'instructor', trigger: 'onFlag', flag: 'talkedInstructor', text: "Chapter four. Riveting stuff." },
     { id: 'quiz', trigger: 'onFlag', flag: 'quizPassed', text: 'Did... did you actually get all of that right? I\'m almost impressed.' },
-    { id: 'complete', trigger: 'onComplete', text: 'Confusing, huh? I think it\'s time for a real school. University, here we come!' },
   ],
 
-  completion: { requiredFlags: ['talkedManuel', 'talkedFrancesco', 'talkedInstructor', 'quizPassed'] },
+  // After the mini games and their comments: the internship announcement, then off to Eikony.
+  outro: {
+    afterFlag: 'miniGamesDone',
+    subtitle: 'Some days later',
+    playerPosition: { x: 714, y: 402 }, // at the desk with the laptop, in the row of Manuel and Francesco
+    dialogue: { npcId: 'teacher', nodeId: 'internshipIntro' },
+    startedFlag: 'outroStarted',
+    endFlag: 'prologueEnded',
+  },
+
+  // the chapter (and the map) opens only once the closing scene is over
+  completion: { requiredFlags: ['talkedManuel', 'talkedFrancesco', 'talkedInstructor', 'quizPassed', 'prologueEnded'] },
 
   objectives: [
     { id: 'obj-manuel', label: 'Meet Manuel', flag: 'talkedManuel' },

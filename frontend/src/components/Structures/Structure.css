@@ -83,6 +83,24 @@
   image-rendering: crisp-edges;
 }
 
+/* Same anchoring as the signpost (centred, then pulled left by the same
+   margin), just above it, bobbing like the quiz marker. */
+.structure-lock-image {
+  width: 72px;
+  height: 72px;
+  position: absolute;
+  top: 340px;
+  margin-left: -120px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  animation: structure-lock-float 2.4s ease-in-out infinite;
+}
+
+@keyframes structure-lock-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
 .structure-signpost-image {
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
