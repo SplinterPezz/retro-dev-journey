@@ -9,6 +9,8 @@ export default defineConfig({
     // the backend allows this origin (ALLOW_ORIGIN)
     port: 3000,
     strictPort: true,
+    // let the dev server answer through an ngrok tunnel
+    allowedHosts: ['.ngrok-free.app'],
   },
   optimizeDeps: {
     // Only imported lazily (code questions, mini games): pre-bundle them at startup,

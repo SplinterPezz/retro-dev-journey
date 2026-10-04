@@ -6,7 +6,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Interactive Portfolio & CV built with React featuring a unique pixel-art timeline design. Tracks user interactions with a simple Go backend and MongoDB storage. Includes a basic admin dashboard to monitor site usage and engagement metrics.**
+**Interactive Portfolio & CV built with React featuring a unique pixel-art timeline design, to explore freely (Sandbox) or chapter by chapter (Story Mode). Tracks user interactions with a simple Go backend and MongoDB storage. Includes a basic admin dashboard to monitor site usage and engagement metrics.**
 
 **Live version [Here](https://retrojourney.dev/)** at https://retrojourney.dev/
 
@@ -148,6 +148,7 @@ The environment files could be optimized by using a single env file for both the
 ## ✨ Key Features
 
 - 🎮 **Interactive World** - Navigate through a pixel-art world representing career progression
+- 📖 **Story Mode** - The career chapter by chapter: dialogues, quizzes and mini games on three difficulty levels, hidden collectibles, technologies unlocked along the way
 - 📊 **Real-time Analytics** - Track user interactions with MongoDB storage and admin dashboard
 - 📱 **Responsive Design** - Optimized for both desktop and mobile with touch controls
 - 🛤️ **Dynamic Path Generation** - Automatically generated paths connecting career milestones
@@ -193,7 +194,7 @@ golang.org/x/crypto v0.36.0              // Cryptographic functions
 ### Prerequisites
 ```bash
 # Verify installations
-node --version    # Should be 22.16.0+
+node --version    # Should be 22.13.0+
 npm --version     # Should be 10.9.2+
 go version        # Should be 1.24.3+
 docker --version  # Should be 28.1.1+
@@ -265,6 +266,10 @@ docker --version  # Should be 28.1.1+
 - **Movement:** Virtual joystick (bottom right)
 - **Interaction:** Tap and move near structures
 
+### Story Mode
+- **Same movement** as above; walk up to people, quizzes and doors to interact
+- **Dialogues:** tap or click the box to continue, pick an answer when asked
+
 ---
 
 ## 📁 Project Structure
@@ -294,7 +299,7 @@ retro-dev-journey/
 │ 
 ├── frontend/              # React frontend application
 │   ├── public/            # Static assets
-│   │   ├── sprites/       # Game sprites and images
+│   │   ├── sprites/       # Game sprites and images (story/ for Story Mode)
 │   │   ├── backgrounds/   # Background images
 │   │   ├── audio/         # Music files
 │   │   ├── rpgui/         # RPGUI framework files
@@ -310,6 +315,7 @@ retro-dev-journey/
 │   │   ├── services/      # API services
 │   │   ├── store/         # Redux store and persisted-state migrations
 │   │   ├── config/        # World, career, story and environment settings
+│   │   │   └── story/     # Story Mode: chapters, dialogues, quizzes, mini games, collectibles
 │   │   ├── hooks/         # Hooks TS folder
 │   │   └── types/         # TypeScript definitions
 │   │ 
@@ -362,7 +368,14 @@ public/sprites/
 │ 
 ├── trees/                 # Environmental decorations
 ├── details/               # Small decorative elements
-└── signpost/              # Company signposts
+├── signpost/              # Company signposts
+│
+└── story/                 # Story Mode
+    ├── npc/               # Characters: idle, walk and turn gifs + the spec they were made from
+    ├── companion/meep/    # Meep, in 8 directions
+    ├── props/             # Classroom furniture, door, arrows, quiz marker
+    ├── collectibles/      # Hidden objects and the collectible icon
+    └── ui/                # Padlock, Meep at work, PC monitor
 ```
 # Player sprites by [@marguels](https://github.com/marguels)
 
@@ -424,7 +437,16 @@ The game world is configured in plain TypeScript files:
 - `career.ts`: companies (buildings) and technologies (statues)
 - `environments.ts`: trees and small decorations
 - `sandbox.ts`: Sandbox-only settings (music, background, Download CV button)
-- `story/`: Story Mode chapters, quizzes and mini games
+- `story/`: Story Mode, one file per concern:
+
+| File | What it holds |
+|------|---------------|
+| `story/chapters.ts` | Chapter order, the building of each chapter, chapters still in development |
+| `story/<chapter>.ts` | One chapter: room, props, NPCs and dialogues, quizzes, objectives, closing scene |
+| `story/miniGames.ts`, `story/difficulty.ts` | Mini games and difficulty rules |
+| `story/collectibles.ts` | Hidden collectibles per chapter |
+
+Technologies in `career.ts` also name the chapter that unlocks them in Story Mode (`storyChapter`).
 
 ```typescript
 // world.ts
@@ -592,7 +614,7 @@ The application implements comprehensive user tracking:
 - **Download Tracking:** CV download statistics
 - **Quest Completion:** User engagement metrics
 
-The analytics system employs a sophisticated event-driven architecture that captures user interactions without impacting performance. Each interaction is immediately queued and batch-processed to MongoDB using optimized aggregation pipelines for dashboard analytics. The system uses anonymous UUID generation based on device fingerprinting (screen resolution, timezone, user agent) to track unique users while maintaining complete privacy.
+The analytics system employs a sophisticated event-driven architecture that captures user interactions without impacting performance. Each interaction is immediately queued and batch-processed to MongoDB using optimized aggregation pipelines for dashboard analytics. The system uses a random anonymous id (`crypto.randomUUID`) kept in the browser to tell unique visitors apart, with nothing derived from the device.
 
 The tracking implements smart deduplication - rapid-fire interactions from the same user are filtered to prevent spam and ensure accurate metrics. Time tracking uses a progressive system that records milestones at 30 seconds, 1 minute, 2 minutes, 5 minutes, and 10 minutes, providing insights into engagement depth without overwhelming the database with constant updates.
 
@@ -615,12 +637,12 @@ The tracking implements smart deduplication - rapid-fire interactions from the s
 User privacy is prioritized throughout the application:
 
 - **Anonymous Tracking:** No personal information collected or stored
-- **Hash-based IDs:** User identification through device fingerprinting, not personal data
+- **Random IDs:** A random id stored in the browser, not derived from the device or from personal data
 - **Data Minimization:** Only essential analytics data is captured
 - **Automatic Cleanup:** Old interaction data is automatically purged
 - **Transparent Tracking:** Users can see exactly what data is being collected
 
-The privacy implementation includes automatic data retention policies that purge interaction data older than the current day, ensuring no long-term user tracking. The hashing algorithm creates consistent user IDs that reset with browser cache clearing, giving users control over their tracking footprint.
+The privacy implementation includes automatic data retention policies that purge interaction data older than the current day, ensuring no long-term user tracking. The id is random and lives in the browser storage, so clearing the site data resets it, giving users control over their tracking footprint. (Before release 1.0 it was a hash of the device's details, shared by identical devices; a persisted-state migration drops the old one.)
 
 ### Quest System
 
@@ -638,6 +660,44 @@ Quest progress is calculated in real-time using interaction data from the Redux 
 <div align="left">
   <img src="./screenshots/desktop/quest_list.png" width="300">
   <img src="./screenshots/desktop/quest_list_2.png" width="400">
+</div>
+
+---
+
+## 📖 Story Mode
+
+Story Mode tells the same career as the Sandbox, one chapter at a time. Each chapter is a room to explore; between chapters the player crosses the story map to the next building.
+
+- **Chapters** are plain config files (`config/story/<chapter>.ts`) with the room, props, NPCs, dialogues, quizzes, objectives and closing scene; `chapters.ts` sets their order. A chapter opens when the previous one is finished, and one still in development shows a "work in progress" window instead.
+- **Difficulty** (Junior, Middle, Senior) is chosen once per story and changes the number of questions, the mistakes allowed and the points.
+- **Dialogues** branch, remember the player's answers as flags and can pass from one character to another.
+- **Quizzes and mini games** mix multiple choice with "fix the code" questions (CodeMirror).
+- **The story map** lists every chapter (done, current, locked) and shows the technologies of the finished ones as statues.
+- **Collectibles** are hidden in every chapter (`config/story/collectibles.ts`), with a counter of the ones found.
+- **Meep**, a small companion, follows the player and comments along the way.
+- **Progress** is saved in the browser per chapter (flags, scores, collectibles) with Redux Persist.
+
+### Desktop
+
+<div align="left">
+  <img src="./screenshots/story/desktop_difficulty.jpg" width="400">
+  <img src="./screenshots/story/desktop_intro.jpg" width="400">
+</div>
+
+<div align="left">
+  <img src="./screenshots/story/desktop_prologue_debug.jpg" width="400">
+  <img src="./screenshots/story/desktop_collectible.jpg" width="400">
+</div>
+
+<div align="left">
+  <img src="./screenshots/story/desktop_map.jpg" width="400">
+</div>
+
+### Mobile
+
+<div align="left">
+  <img src="./screenshots/story/portrait_prologue.jpg" width="250">
+  <img src="./screenshots/story/landscape_prologue.jpg" width="520">
 </div>
 
 ---
@@ -677,7 +737,7 @@ Quest progress is calculated in real-time using interaction data from the Redux 
 
 ### Privacy Protection
 - **Anonymous Tracking:** No personal data collection
-- **Hash-based UUIDs:** User identification without personal information
+- **Random UUIDs:** User identification without personal or device information
 - **Data Retention:** Automatic cleanup of old interaction data
 - **Minimal Data Collection:** Only essential analytics data captured
 
@@ -720,7 +780,7 @@ The game implements precise hitbox-based collision detection for both player mov
 - **Player Movement Blocking:** Prevents the character from walking through buildings and large structures
 - **Interaction Zones:** Defines specific areas around structures where information dialogs appear
 - **Smooth Movement:** Implements sliding along collision boundaries for natural movement feel
-- **Debug Visualization:** Development mode shows hitboxes for easy debugging and adjustment
+- **Debug Visualization:** Development mode shows hitboxes and interaction zones (in Story Mode also the collectibles) for easy debugging and adjustment
 
 <div align="left">
   <img src="./screenshots/desktop/sandbox_debug.png" width="800">
@@ -731,17 +791,7 @@ Each structure can define custom collision boundaries separate from their visual
 
 ### Resource Loading and Optimization
 
-The application implements a comprehensive resource loading system:
-
-- **Progressive Loading:** Essential game assets are loaded first, followed by environmental decorations
-- **Loading Progress:** Visual progress bars keep users informed during asset loading
-- **Error Handling:** Graceful degradation when assets fail to load
-- **Mobile Optimization:** Smaller asset variants and optimized loading for mobile devices
-- **Caching Strategy:** Intelligent caching reduces repeated downloads for returning users
-
-The resource loader uses a priority-based system where critical game elements (player sprites, terrain textures, core UI elements) load first, followed by secondary assets (environmental decorations, background music). This ensures the core game experience is available quickly while additional content loads in the background.
-
-The system implements intelligent preloading based on user behavior - as players approach different areas of the game world, nearby assets are preloaded to prevent loading delays during exploration. Failed asset loads are handled gracefully with fallback sprites and automatic retry mechanisms.
+Before a scene starts, its images (and the Sandbox music) are loaded with a visual progress bar, so the world appears complete instead of popping in; a file that fails to load is skipped instead of blocking the scene. Story chapters do the same behind their title screen, with an `X/Y Loading` counter. Each page is its own chunk (lazy routes), so a first visit downloads only the home page, and the code editor used by the quizzes loads only when a quiz needs it.
 
 The loading page doesnt have a background for obvious reasons.
 
@@ -754,17 +804,12 @@ The loading page doesnt have a background for obvious reasons.
 ## 📱 Responsive Design
 
 ### Mobile Optimizations
-- Touch-based joystick controls
-- Responsive UI scaling
+- Touch-based joystick controls (pushed further to run)
+- Responsive UI scaling, with dedicated layouts for portrait and landscape
 - Mobile-specific welcome dialog
-- Optimized asset loading for mobile networks
-- Gesture-friendly interface elements
+- Orientation choice for Story Mode and a fullscreen button
 
-Mobile optimization focuses heavily on touch interaction design and performance considerations. The virtual joystick implementation uses touch event handling with dead zones and sensitivity scaling to provide precise movement control. The joystick visual feedback includes real-time response indicators and haptic-style visual cues to compensate for the lack of physical feedback.
-
-UI scaling employs CSS viewport units and responsive breakpoints to ensure consistent appearance across device sizes. The mobile welcome dialog presents condensed control instructions optimized for touch interaction, while desktop versions include comprehensive keyboard shortcuts.
-
-Asset loading on mobile implements progressive enhancement - critical game sprites load first in compressed formats, followed by environmental details based on network speed detection. The system monitors connection quality and adapts loading strategies accordingly.
+The virtual joystick uses a dead zone and its distance from the centre as speed, so a light touch walks and a full push runs. UI scaling relies on viewport units and breakpoints; landscape phones get compact layouts for dialogs, panels and popups so they fit the short screen.
 
 ### Desktop Features
 - Keyboard navigation (WASD/Arrows + Shift for running)
@@ -845,9 +890,12 @@ Multiple deployment environments support the development lifecycle:
 
 ## 🔮 Future Development
 
+### In Progress
+- **Story Mode chapters:** the Prologue is complete; Eikony and the following chapters are being written (the map shows a "work in progress" window for them)
+- **Collectibles menu:** one place for every collectible found, points and scores per chapter
+
 ### Planned Features
 - **Easter Eggs:** Tons of Easter Eggs.
-- **Story Mode:** Guided narrative experience with scripted career journey
 - **Multilingual Support:** Internationalization for global accessibility
 - **Enhanced Analytics:** Machine learning insights and predictive analytics
 - **Social Features:** Career milestone sharing and visitor interaction
