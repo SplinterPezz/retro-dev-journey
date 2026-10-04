@@ -40,7 +40,8 @@
   50% { transform: translateY(-5px); }
 }
 
-/* ---- the counter: top centre, clear of Home (left) and the audio bar (right) ---- */
+/* ---- the counter: top centre, clear of Home (left) and the audio bar (right);
+   under the audio bar on a phone held upright ---- */
 .collectible-counter {
   position: fixed;
   top: 20px;
@@ -70,9 +71,13 @@
   image-rendering: pixelated;
 }
 
-@media (max-width: 480px) {
+/* Phone held upright: on the right, under the audio buttons (landscape keeps it top centre). */
+@media (orientation: portrait) and (max-width: 768px) {
   .collectible-counter {
-    top: 70px; /* below Home and the audio bar on a narrow screen */
+    top: 110px;
+    left: auto;
+    right: 20px;
+    transform: none;
     font-size: 0.95rem;
   }
 
