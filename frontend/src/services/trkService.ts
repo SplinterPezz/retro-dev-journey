@@ -1,6 +1,7 @@
 import { TrkData } from '../types/tracking';
 import { fetchFromApi } from './api';
 import { devLog, devError } from '../config/env';
+import { API_ENDPOINTS } from '../config/apiEndpoints';
 
 export const sendTrackingData = async (data: TrkData): Promise<void> => {
   try {
@@ -10,8 +11,7 @@ export const sendTrackingData = async (data: TrkData): Promise<void> => {
       date: data.date.toISOString()
     };
     
-    // Avoid to use /track or /trk etc for adblock
-    await fetchFromApi('/info', {
+    await fetchFromApi(API_ENDPOINTS.trackingInfo, {
       method: 'POST',
       body: JSON.stringify(payload),
     });

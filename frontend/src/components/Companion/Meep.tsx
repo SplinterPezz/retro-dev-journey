@@ -1,18 +1,20 @@
 import React, { useRef } from 'react';
 import { Position } from '../../types/sandbox';
+import { MeepDirection, meepSprite } from '../../config/story/sprites';
 import './Meep.css';
 
 interface MeepProps {
   position: Position; // already-lagged position, e.g. from useLaggedPosition - so anything else anchored to Meep (its speech bubble) can share the exact same point
 }
 
-type MeepDirection = 'N' | 'NE' | 'E' | 'SE' | 'S' | 'SW' | 'W' | 'NW';
+// The facings clockwise from east, one per 45° sector of the screen angle.
+const FACING_BY_SECTOR: MeepDirection[] = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'];
 
 // Eight-way facing from a movement vector in screen space (y grows downwards).
 const directionFromStep = (dx: number, dy: number): MeepDirection => {
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI; // 0 = east, 90 = south
   const sector = Math.round(((angle + 360) % 360) / 45) % 8;
-  return (['E', 'SE', 'S', 'SW', 'W', 'NW', 'N', 'NE'] as MeepDirection[])[sector];
+  return FACING_BY_SECTOR[sector];
 };
 
 // Renders Meep at a caller-supplied (lag-followed) position and faces the way
@@ -38,7 +40,7 @@ const Meep: React.FC<MeepProps> = ({ position }) => {
     >
       <div
         className="meep-sprite"
-        style={{ backgroundImage: `url(/sprites/story/companion/meep/meep_${direction}.gif)` }}
+        style={{ backgroundImage: `url(${meepSprite(direction)})` }}
       />
     </div>
   );

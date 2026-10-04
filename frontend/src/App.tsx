@@ -9,6 +9,7 @@ import { useFallbackToPortrait, useScreenRotation } from './hooks/screenOrientat
 import HomePage from './pages/Home/HomePage';
 import PrivacyRedirect, { privacyRedirects } from './components/PrivacyRedirect/PrivacyRedirect';
 import PrivateRoute from './components/Routing/PrivateRoute';
+import { ROUTES } from './config/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Only the home page is in the main bundle; every other page is its own chunk,
@@ -46,19 +47,19 @@ function App() {
           <BrowserRouter>
             <Suspense fallback={<PageLoading />}>
               <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/story" element={<StoryMapPage />} />
-                <Route path="/story/difficulty" element={<StoryDifficultyPage />} />
-                <Route path="/story/:chapterId" element={<ChapterRoute />} />
-                <Route path="/sandbox" element={<SandboxPage />} />
-                <Route path="/login" element={<SignIn />} />
+                <Route path={ROUTES.home} element={<HomePage />} />
+                <Route path={ROUTES.storyMap} element={<StoryMapPage />} />
+                <Route path={ROUTES.storyDifficulty} element={<StoryDifficultyPage />} />
+                <Route path={ROUTES.chapter} element={<ChapterRoute />} />
+                <Route path={ROUTES.sandbox} element={<SandboxPage />} />
+                <Route path={ROUTES.login} element={<SignIn />} />
 
                 {privacyRedirects.map(({ path, urlPath }) => (
                   <Route key={path} path={path} element={<PrivacyRedirect urlPath={urlPath} />} />
                 ))}
 
-                <Route path="/admin" element={<PrivateRoute />}>
-                  <Route path="/admin" element={<AdminPage />} />
+                <Route path={ROUTES.admin} element={<PrivateRoute />}>
+                  <Route path={ROUTES.admin} element={<AdminPage />} />
                 </Route>
               </Routes>
             </Suspense>

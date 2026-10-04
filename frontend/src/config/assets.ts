@@ -1,5 +1,6 @@
 import { PathSegment } from '../types/sandbox';
 import { playerSpritePrefix } from './player';
+import { storyUi } from './story/sprites';
 
 // Single list of the sprites that more than one place needs: the components
 // that draw them and the loading screens that preload them.
@@ -34,4 +35,7 @@ export const preloadPlayerSprites: string[] = Object.values(playerSprites);
 export const preloadPathSprites: string[] = Object.values(pathSprites);
 
 // Floats over the buildings of the story map whose chapter is still locked.
-export const lockSprite = '/sprites/story/ui/lock.png';
+export const lockSprite = storyUi('lock');
+
+// Spins in the corner of the loading screens.
+export const loadingIcon = '/favicon.ico';

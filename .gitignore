@@ -19,3 +19,6 @@ backend/pre_cmd.txt
 # Python bytecode from the asset scripts
 __pycache__/
 *.pyc
+backend/.air.toml
+backend/.air.toml
+backend/.air.toml

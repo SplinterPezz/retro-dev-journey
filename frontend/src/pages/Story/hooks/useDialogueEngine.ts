@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { StoryNpcData } from '../../../types/story';
-import { buildChoiceItems, getNode, pickNextNode, seenFlag } from '../dialogue';
+import { StoryNpcData, StoryFlags } from '../../../types/story';
+import { buildChoiceItems, getNode, pickNextNode } from '../dialogue';
+import { seenFlag } from '../../../config/story/flags';
 
 interface ActiveDialogue {
   npc: StoryNpcData;
@@ -13,7 +14,7 @@ interface ActiveDialogue {
 // the scene's NPCs, for lines that hand over to another character.
 export const useDialogueEngine = (
   npcs: StoryNpcData[],
-  flags: Record<string, boolean>,
+  flags: StoryFlags,
   setFlag: (flag: string) => void
 ) => {
   const [active, setActive] = useState<ActiveDialogue | null>(null);

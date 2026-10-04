@@ -1,12 +1,14 @@
 import { Direction, Position, WorldBounds } from '../types/game';
+import { MOVE_KEYS } from '../config/controls';
 
 // Pure movement maths for the player: input -> direction -> next position.
 
 export const getDirectionFromKeys = (keys: ReadonlySet<string>): Direction => {
-  const up = keys.has('w') || keys.has('arrowup');
-  const down = keys.has('s') || keys.has('arrowdown');
-  const left = keys.has('a') || keys.has('arrowleft');
-  const right = keys.has('d') || keys.has('arrowright');
+  const held = (direction: keyof typeof MOVE_KEYS) => MOVE_KEYS[direction].some((k) => keys.has(k));
+  const up = held('up');
+  const down = held('down');
+  const left = held('left');
+  const right = held('right');
 
   if (up && left) return 'up-left';
   if (up && right) return 'up-right';

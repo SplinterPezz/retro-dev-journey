@@ -31,18 +31,23 @@ interface MiniGamesPopupProps {
 const FEEDBACK_MS = 1400;
 
 // Every question of the three games, in the order they are played.
+type GameId = 'fixBuild' | 'pickCommit' | 'readLog';
 type Step =
-  | { game: 0; round: number; snippet: FixSnippet }
-  | { game: 1; round: number; commit: CommitRound }
-  | { game: 2; round: number; log: { lines: string[]; errorIndex: number } };
+  | { game: 'fixBuild'; round: number; snippet: FixSnippet }
+  | { game: 'pickCommit'; round: number; commit: CommitRound }
+  | { game: 'readLog'; round: number; log: { lines: string[]; errorIndex: number } };
 
 const buildSteps = (difficulty: StoryDifficulty): Step[] => [
-  ...fixBuildSnippets.slice(0, fixBuildCountByDifficulty[difficulty]).map((snippet, round) => ({ game: 0 as const, round, snippet })),
-  ...commitRounds.slice(0, commitRoundsByDifficulty[difficulty]).map((commit, round) => ({ game: 1 as const, round, commit })),
-  ...Array.from({ length: logRoundsByDifficulty[difficulty] }, (_, round) => ({ game: 2 as const, round, log: buildLog(difficulty, round) })),
+  ...fixBuildSnippets.slice(0, fixBuildCountByDifficulty[difficulty]).map((snippet, round) => ({ game: 'fixBuild' as const, round, snippet })),
+  ...commitRounds.slice(0, commitRoundsByDifficulty[difficulty]).map((commit, round) => ({ game: 'pickCommit' as const, round, commit })),
+  ...Array.from({ length: logRoundsByDifficulty[difficulty] }, (_, round) => ({ game: 'readLog' as const, round, log: buildLog(difficulty, round) })),
 ];
 
-const gameTitles = ['1 / 3  Fix the Java build', '2 / 3  Which commit?', '3 / 3  Read the log'];
+const gameTitles: Record<GameId, string> = {
+  fixBuild: '1 / 3  Fix the Java build',
+  pickCommit: '2 / 3  Which commit?',
+  readLog: '3 / 3  Read the log',
+};
 
 interface QuestionProps {
   locked: boolean; // the answer is in: inputs stay disabled until the next question
@@ -184,7 +189,7 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
         {/* above the question, so it is seen without scrolling the monitor */}
         {feedback === true && <p className="minigame-feedback minigame-right">Correct! +{worth} pts</p>}
         {feedback === false && <p className="minigame-feedback minigame-wrong">Wrong - no points for this one. On to the next.</p>}
-        {step.game === 0 && (
+        {step.game === 'fixBuild' && (
           <FixBuildQuestion
             key={step.snippet.id}
             snippet={step.snippet}
@@ -194,7 +199,7 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
             onAnswer={answer}
           />
         )}
-        {step.game === 1 && (
+        {step.game === 'pickCommit' && (
           <PickCommitQuestion
             key={step.commit.id}
             commit={step.commit}
@@ -204,7 +209,7 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
             onAnswer={answer}
           />
         )}
-        {step.game === 2 && <ReadLogQuestion key={`log-${step.round}`} log={step.log} counter={counter} locked={locked} onAnswer={answer} />}
+        {step.game === 'readLog' && <ReadLogQuestion key={`log-${step.round}`} log={step.log} counter={counter} locked={locked} onAnswer={answer} />}
       </div>
     </PcMonitor>
   );

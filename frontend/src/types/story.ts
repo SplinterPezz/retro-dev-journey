@@ -1,5 +1,8 @@
 import { Position, Hitbox, WorldConfig, ImageSize, WorldBounds } from './game';
 
+// A chapter's progress: flag name -> set. Names live in config/story/flags.ts.
+export type StoryFlags = Record<string, boolean>;
+
 // ---- persisted progress ----
 
 export interface MiniGameScore {

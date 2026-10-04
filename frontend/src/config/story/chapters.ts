@@ -1,4 +1,7 @@
 import { ChapterProgress } from '../../types/story';
+import { CHAPTER_IDS, COMPANY_IDS } from '../ids';
+import { PROLOGUE_FLAGS } from './flags';
+import { storyUi } from './sprites';
 
 // Chapter order for Story Mode. `companyId` maps a chapter onto a building
 // already positioned in config/career.ts's `companies` array, so it shows
@@ -7,6 +10,7 @@ import { ChapterProgress } from '../../types/story';
 // no building for it in the world).
 export interface ChapterMeta {
   id: string;
+  name?: string; // shown in the map's chapter list; a chapter with a company uses the company's name
   companyId?: string;
   // Flag set when the chapter's last scene is over. Until then the map sends
   // the player back to it, even if a save made under older rules already
@@ -18,15 +22,21 @@ export interface ChapterMeta {
 }
 
 export const storyChapterOrder: ChapterMeta[] = [
-  { id: 'prologue', endFlag: 'prologueEnded' }, // the outro's endFlag in prologue.ts
-  { id: 'eikony', companyId: 'eikony', inDevelopment: true },
+  { id: CHAPTER_IDS.prologue, name: 'Prologue', endFlag: PROLOGUE_FLAGS.prologueEnded }, // the outro's endFlag in prologue.ts
+  { id: CHAPTER_IDS.eikony, companyId: COMPANY_IDS.eikony, inDevelopment: true },
 ];
 
 // Meep coding at a laptop, in the "still in development" window.
-export const inDevelopmentSprite = '/sprites/story/ui/meep_working.png';
+export const inDevelopmentSprite = storyUi('meep_working');
 
 // Background music of the story map, between chapters (placeholder until the real track).
 export const storyMapAudioTrack = '/audio/story_map_placeholder.wav';
+
+// Navigation state of a redirect to the map from a chapter that is not ready:
+// the map opens its "still in development" window.
+export interface InDevelopmentRedirect {
+  inDevelopment: string; // the chapter id
+}
 
 export const getChapterIndex = (chapterId: string): number =>
   storyChapterOrder.findIndex((c) => c.id === chapterId);

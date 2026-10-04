@@ -1,15 +1,12 @@
 # .air.toml
 root = "."
 tmp_dir = "tmp"
-log = "stdout"
 
 [build]
-  # Array of commands to run before each build (if needed)
-  pre_cmd = ["echo 'Air is starting...' > pre_cmd.txt"]
-
-  # Command to build your Go application
-  cmd = "go build -o ./tmp/main ."
-  bin = "tmp/main"
+  # Command to build your Go application. The .exe name is what Windows needs
+  # to run it, and works the same everywhere else.
+  cmd = "go build -o ./tmp/main.exe ."
+  entrypoint = ["tmp/main.exe"]
   include_dir = ["."]
   exclude_dir = ["tmp", "vendor"]
   watch_ext = [".go"]

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { resetStory } from '../../store/storySlice';
+import { ROUTES } from '../../config/routes';
 import './GameModeSelector.css';
 import {
   gameModeTitlePrefix,
@@ -43,21 +44,21 @@ const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) 
     if (hasStory) {
       setAskingStory(true);
     } else {
-      void navigate('/story/difficulty');
+      void navigate(ROUTES.storyDifficulty);
     }
   };
 
   const handleContinueStory = () => {
-    void navigate('/story');
+    void navigate(ROUTES.storyMap);
   };
 
   const handleNewStory = () => {
     dispatch(resetStory());
-    void navigate('/story/difficulty');
+    void navigate(ROUTES.storyDifficulty);
   };
 
   const handleSandboxMode = () => {
-    void navigate('/sandbox');
+    void navigate(ROUTES.sandbox);
   };
 
   const toggleBackground = () => {

@@ -4,6 +4,7 @@ import React, {useEffect} from 'react'
 import { checkAuthentication } from '../../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { RootState } from '../../store/store';
+import { ROUTES } from '../../config/routes';
 
 
 const PrivateRoute = () => {
@@ -14,6 +15,6 @@ const PrivateRoute = () => {
     dispatch(checkAuthentication());
   }, [dispatch]);
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to={ROUTES.login} replace />;
 };
 export default PrivateRoute;

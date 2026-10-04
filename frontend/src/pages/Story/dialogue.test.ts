@@ -1,4 +1,5 @@
-import { buildChoiceItems, entryNodeId, pickNextNode, seenFlag } from './dialogue';
+import { buildChoiceItems, entryNodeId, pickNextNode } from './dialogue';
+import { seenFlag } from '../../config/story/flags';
 import { StoryNpcData } from '../../types/story';
 
 const npc: StoryNpcData = {

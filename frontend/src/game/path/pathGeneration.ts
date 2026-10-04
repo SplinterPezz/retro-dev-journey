@@ -1,4 +1,5 @@
 import { Position, PathGenerationConfig, PathSegment, IntersectionInfo } from '../../types/sandbox';
+import { COMPANY_IDS } from '../../config/ids';
 
 export class PathGenerator {
   private config: PathGenerationConfig;
@@ -30,8 +31,8 @@ export class PathGenerator {
   private generateMainPath(): void {
     const { startPosition, endPosition, tileSize } = this.config;
 
-    // Find the ??? company to extend path to it
-    const futureCompany = this.config.structures.find(s => s.name === '???');
+    // Find the "???" company to extend path to it
+    const futureCompany = this.config.structures.find(s => s.id === COMPANY_IDS.futureOpportunity);
     const actualEndY = futureCompany ? futureCompany.position.y : endPosition.y;
 
     // Start segment

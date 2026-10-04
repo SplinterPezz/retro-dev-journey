@@ -22,36 +22,55 @@ import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
-import { isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import { ChapterMeta, InDevelopmentRedirect, isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import { MEEP_LAG_MS } from './sceneRules';
 import { collectibleCount } from '../../config/story/collectibles';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
 import { isDev } from '../../config/env';
+import { chapterPath } from '../../config/routes';
+import { COMPANY_IDS } from '../../config/ids';
 import '../../game/DebugOverlay.css';
 import './StoryMapPage.css';
 
-// A company with no story yet ("???") is a teaser, not a chapter.
-const HIDDEN_COMPANY_ID = '???';
+const MAP_PLAYER_SPEED = 270; // a little faster than in the chapters: the map is big
+const BUILDING_REACH = 90; // walking this close to the current chapter's building enters it
+const ENTER_DELAY_MS = 500; // a beat between reaching the building and the chapter loading
 
+// "Eikony (IT)" -> "Eikony"
 const chapterName = (companyName: string) => companyName.replace(/ \(IT\)$/, '');
 
+const companyOf = (chapter: ChapterMeta) => companies.find((co) => co.id === chapter.companyId);
+
+// A company building that has no chapter yet (the "???" teaser is never one).
+const isChapterToWrite = (company: StructureData) =>
+  company.id !== COMPANY_IDS.futureOpportunity && !storyChapterOrder.some((c) => c.companyId === company.id);
+
+// "Eikony ★ 3/5" for a chapter with collectibles, just the name otherwise.
+const withCollectibleCount = (name: string, chapterId: string, progress: Record<string, ChapterProgress>) => {
+  const total = collectibleCount(chapterId);
+  const found = progress[chapterId]?.collectibles?.length ?? 0;
+  return total > 0 ? `${name} ★ ${found}/${total}` : name;
+};
+
 // Every chapter of the story, in order: the playable ones, then the companies
-// still to be written. Done before the current one, locked after it. A chapter
-// with collectibles shows how many were found ("★ 3/5").
+// still to be written. Done before the current one, locked after it.
 const chapterQuests = (unlockedIndex: number, progress: Record<string, ChapterProgress>): StoryObjective[] => {
-  const written = storyChapterOrder.map((c) => {
-    const company = companies.find((co) => co.id === c.companyId);
-    const name = company ? chapterName(company.name) : 'Prologue';
-    const total = collectibleCount(c.id);
-    const found = progress[c.id]?.collectibles?.length ?? 0;
-    return { id: company?.id ?? c.id, name: total > 0 ? `${name} ★ ${found}/${total}` : name };
+  const written = storyChapterOrder.map((chapter) => {
+    const company = companyOf(chapter);
+    const name = company ? chapterName(company.name) : chapter.name ?? chapter.id;
+    return { id: company?.id ?? chapter.id, name: withCollectibleCount(name, chapter.id, progress) };
   });
-  const toWrite = companies
-    .filter((co) => co.id !== HIDDEN_COMPANY_ID && !storyChapterOrder.some((c) => c.companyId === co.id))
-    .map((co) => ({ id: co.id, name: chapterName(co.name) }));
-  return [...written, ...toWrite].map((c, i) => {
-    const current = i === unlockedIndex && i < written.length;
-    return { id: c.id, label: current ? `Walk to ${c.name}` : c.name, done: i < unlockedIndex, locked: !current && i >= unlockedIndex };
+  const toWrite = companies.filter(isChapterToWrite).map((co) => ({ id: co.id, name: chapterName(co.name) }));
+
+  return [...written, ...toWrite].map((quest, i) => {
+    const isCurrent = i === unlockedIndex && i < written.length;
+    return {
+      id: quest.id,
+      label: isCurrent ? `Walk to ${quest.name}` : quest.name,
+      done: i < unlockedIndex,
+      locked: !isCurrent && i >= unlockedIndex,
+    };
   });
 };
 
@@ -139,7 +158,7 @@ const StoryMapPage: React.FC = () => {
   // or when its URL sent the player back here
   const location = useLocation();
   const [inDevelopmentOpen, setInDevelopmentOpen] = useState(
-    () => !!(location.state as { inDevelopment?: string } | null)?.inDevelopment
+    () => !!(location.state as InDevelopmentRedirect | null)?.inDevelopment
   );
   // read once: drop it from the history entry, so a reload doesn't open it again
   useEffect(() => {
@@ -158,12 +177,15 @@ const StoryMapPage: React.FC = () => {
   // A chapter without a building on the overworld (the Prologue) is played on
   // its own map: go straight there while it is the current one, or while its
   // last scene has not been seen yet.
-  const unfinishedStandalone = storyChapterOrder.find(
-    (c, i) => !c.companyId && (i === unlockedChapterIndex || (c.endFlag && !chapters[c.id]?.flags[c.endFlag]))
-  );
+  const unfinishedStandalone = storyChapterOrder.find((chapter, i) => {
+    if (chapter.companyId) return false; // it has a building: entered from the map
+    const isCurrent = i === unlockedChapterIndex;
+    const lastSceneUnseen = !!chapter.endFlag && !chapters[chapter.id]?.flags[chapter.endFlag];
+    return isCurrent || lastSceneUnseen;
+  });
   useEffect(() => {
     if (unfinishedStandalone) {
-      void navigate(`/story/${unfinishedStandalone.id}`, { replace: true });
+      void navigate(chapterPath(unfinishedStandalone.id), { replace: true });
     }
   }, [unfinishedStandalone, navigate]);
 
@@ -176,8 +198,9 @@ const StoryMapPage: React.FC = () => {
   // until each "unlocked" window has been confirmed.
   const statues = useMemo(() => unlockedTechnologies(chapters), [chapters]);
   const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
-  const discovery = statues.find((t) => !(discoveriesSeen ?? []).includes(t.id));
-  const discoveriesLeft = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id)).length - 1;
+  const newDiscoveries = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id));
+  const discovery = newDiscoveries[0];
+  const discoveriesLeft = newDiscoveries.length - 1;
   const discoveryTech = discovery?.data as TechnologyData | undefined;
   const discoveryPopup = discovery && discoveryTech && (
     <UnlockPopup
@@ -194,7 +217,7 @@ const StoryMapPage: React.FC = () => {
 
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
-    speed: 270,
+    speed: MAP_PLAYER_SPEED,
     worldBounds,
     structures: solidStructures,
     environments,
@@ -203,14 +226,14 @@ const StoryMapPage: React.FC = () => {
   });
 
   // Meep, the mascot, follows the player on the map too, as in the chapters.
-  const meepPosition = useLaggedPosition(playerPosition, 450);
+  const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
 
   const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
 
   const { nearbyStructure: nearbyDoor } = useCollisionDetection({
     playerPosition,
     structures: doorCollidable,
-    interactionRadius: 90,
+    interactionRadius: BUILDING_REACH,
   });
 
   // A chapter that isn't ready opens the window once per walk-up instead.
@@ -229,7 +252,7 @@ const StoryMapPage: React.FC = () => {
       return;
     }
     setExiting(true);
-    const timer = setTimeout(() => navigate(`/story/${activeChapter.id}`), 500);
+    const timer = setTimeout(() => navigate(chapterPath(activeChapter.id)), ENTER_DELAY_MS);
     return () => clearTimeout(timer);
   }, [nearbyDoor, activeChapter, exiting, shownAtDoor, navigate]);
 

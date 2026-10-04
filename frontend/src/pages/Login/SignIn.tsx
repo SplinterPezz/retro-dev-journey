@@ -22,6 +22,7 @@ import { playerTurnSprite } from "../../config/assets";
 import { useTimeouts } from "../../hooks/useTimeouts";
 import { LoginModel } from "../../types/api";
 import { loginBackgroundImage } from "../../config/login";
+import { ROUTES } from '../../config/routes';
 
 type Field = "email" | "password";
 
@@ -90,7 +91,7 @@ export default function SignIn() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      void navigate('/admin');
+      void navigate(ROUTES.admin);
     }
   }, [isAuthenticated, navigate]);
 
