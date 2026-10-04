@@ -39,6 +39,7 @@ import {
   sandboxBackgroundImage,
 } from '../../config/sandbox';
 import { questPrefix } from '../../config/tracking';
+import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
 import { isDev, devLog } from '../../config/env';
 import { StructureData } from '../../types/sandbox';
@@ -153,7 +154,7 @@ const Minimap: React.FC = React.memo(() => (
     {careerStructures.map((structure) => (
       <div
         key={structure.id}
-        className={`minimap-structure ${structure.type} ${structure.name === '???' ? 'future' : ''}`}
+        className={`minimap-structure ${structure.type} ${structure.id === COMPANY_IDS.futureOpportunity ? 'future' : ''}`}
         style={{
           left: `${(structure.position.x / worldConfig.width) * 100}%`,
           top: `${(structure.position.y / worldConfig.height) * 100}%`,

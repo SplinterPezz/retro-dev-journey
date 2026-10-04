@@ -5,6 +5,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ThemeProvider } from '@mui/material/styles';
 import ReactApexChart from 'react-apexcharts';
+import { COMPANY_IDS } from '../../config/ids';
 import './AdminPage.css';
 import { StyledTextField, blackCalendarTheme } from './adminTheme';
 import {
@@ -135,7 +136,7 @@ export default function AdminPage() {
       series: [{ name: 'Interactions', data: topInteractions.map((i) => i.count) }],
       options: withCategories(
         apexInteractionsDaily,
-        topInteractions.map((i) => (i.info === '???' ? 'Future Opportunity' : capitalize(i.info)))
+        topInteractions.map((i) => (i.info === COMPANY_IDS.futureOpportunity ? 'Future Opportunity' : capitalize(i.info)))
       ),
     };
 

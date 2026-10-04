@@ -1,11 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Position, Direction, CollidableEntity, EnvironmentData, Hitbox, WorldBounds } from '../../types/game';
 import { playerHitbox as defaultPlayerHitbox } from '../../config/world';
-import { Blocker, hitsAny, toBlockers } from '../collision';
+import { Blocker, hitsAny, isInside, toBlockers } from '../collision';
 import { getDirectionFromJoystick, getDirectionFromKeys, getJoystickIntensity, stepPosition } from '../movement';
 import type { JoystickMoveEvent } from '../../components/Common/MobileJoystick';
-
-const validKeys = ['w', 'a', 's', 'd', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright', 'shift', ' '];
+import { GAME_KEYS, RUN_KEYS } from '../../config/controls';
 
 export interface PlayerMovementConfig {
   initialPosition: Position;
@@ -35,8 +34,13 @@ const isTextTarget = (target: EventTarget | null): boolean => {
   return !!el && (el.isContentEditable || !!el.closest?.('input, textarea, .cm-editor'));
 };
 
-const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean =>
-  areas.some((a) => p.x >= a.minX && p.x <= a.maxX && p.y >= a.minY && p.y <= a.maxY);
+const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean => areas.some((a) => isInside(p, a));
+
+// Running: Shift / Space on the keyboard, or pushing the joystick past this
+// far; either way 1.5x speed. The joystick also scales with how far it is
+// pushed, and its walking pace is the base speed / RUN_SPEED_FACTOR.
+const RUN_SPEED_FACTOR = 1.5;
+const JOYSTICK_RUN_INTENSITY = 0.7;
 
 // Moves the player with the keyboard or the touch joystick.
 //
@@ -105,7 +109,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isTextTarget(e.target)) return;
       const k = e.key.toLowerCase();
-      if (!validKeys.includes(k)) return;
+      if (!GAME_KEYS.includes(k)) return;
       e.preventDefault();
       if (configRef.current.canMove === false) return;
       if (!isWindowFocusedRef.current || e.ctrlKey || e.altKey || e.metaKey) {
@@ -213,9 +217,9 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
       setMoving(moving);
       if (!moving) return;
 
-      const run = useJoystick ? js.intensity > 0.7 : keys.has('shift') || keys.has(' ');
-      let speed = run ? cfg.speed * 1.5 : cfg.speed;
-      if (useJoystick) speed /= 1.5;
+      const run = useJoystick ? js.intensity > JOYSTICK_RUN_INTENSITY : RUN_KEYS.some((k) => keys.has(k));
+      let speed = run ? cfg.speed * RUN_SPEED_FACTOR : cfg.speed;
+      if (useJoystick) speed /= RUN_SPEED_FACTOR;
       const intensity = useJoystick ? js.intensity : 1;
 
       const hitbox = cfg.playerHitbox || defaultPlayerHitbox;

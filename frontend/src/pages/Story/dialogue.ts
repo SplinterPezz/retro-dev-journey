@@ -1,13 +1,8 @@
-import { DialogueChoiceOption, DialogueNode, StoryNpcData } from '../../types/story';
+import { DialogueChoiceOption, DialogueNode, StoryNpcData, StoryFlags } from '../../types/story';
 import type { ChoiceButtonItem } from '../../components/Story/dialogue/DialogueChoices';
+import { seenFlag } from '../../config/story/flags';
 
-type Flags = Record<string, boolean>;
-
-// Every dialogue node gets an implicit "seen" flag the first time it is shown,
-// with no content authoring needed.
-export const seenFlag = (npcId: string, nodeId: string) => `__seen_${npcId}_${nodeId}`;
-
-export const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: Flags): boolean =>
+export const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: StoryFlags): boolean =>
   !!flags[seenFlag(npc.id, nodeId)];
 
 export const getNode = (npc: StoryNpcData, nodeId: string): DialogueNode | undefined => npc.dialogue.nodes[nodeId];
@@ -17,7 +12,7 @@ export const getNode = (npc: StoryNpcData, nodeId: string): DialogueNode | undef
 export const pickNextNode = (
   choice: DialogueChoiceOption,
   npc: StoryNpcData,
-  flags: Flags,
+  flags: StoryFlags,
   random: () => number = Math.random
 ): string | undefined => {
   if (!Array.isArray(choice.next)) return choice.next;
@@ -28,8 +23,15 @@ export const pickNextNode = (
 
 // The node a walk-up opens: the after-answer node once the NPC's question has
 // been answered, otherwise the start of its script.
-export const entryNodeId = (npc: StoryNpcData, flags: Flags): string =>
+export const entryNodeId = (npc: StoryNpcData, flags: StoryFlags): string =>
   npc.answeredFlag && flags[npc.answeredFlag] && npc.afterAnswerNodeId ? npc.afterAnswerNodeId : npc.dialogue.startNodeId;
+
+// Every node a choice can lead to: none (it closes the dialogue), one, or a
+// random pick among several variants.
+const targetsOf = (choice: DialogueChoiceOption): string[] => {
+  if (choice.next === undefined) return [];
+  return Array.isArray(choice.next) ? choice.next : [choice.next];
+};
 
 // Buttons for a node's choices.
 //
@@ -37,11 +39,17 @@ export const entryNodeId = (npc: StoryNpcData, flags: Flags): string =>
 // on the player) lock once every node they can lead to has been seen; ordinary
 // small-talk topics stay open. A multi-variant isAnswer choice shows
 // filled/empty dots, so answering one variant does not read as a dead end.
-export const buildChoiceItems = (npc: StoryNpcData, node: DialogueNode, flags: Flags): ChoiceButtonItem[] | undefined =>
-  node.choices?.map((c, i) => {
-    const targets = c.next === undefined ? [] : Array.isArray(c.next) ? c.next : [c.next];
-    const seen = targets.filter((id) => isNodeSeen(npc, id, flags)).length;
-    const exhausted = !!c.isAnswer && targets.length > 0 && seen === targets.length;
-    const progress = c.isAnswer && targets.length > 1 && Array.isArray(c.next) ? { done: seen, total: targets.length } : undefined;
-    return { id: String(i), label: c.text, isAnswer: c.isAnswer, disabled: exhausted, progress };
+export const buildChoiceItems = (npc: StoryNpcData, node: DialogueNode, flags: StoryFlags): ChoiceButtonItem[] | undefined =>
+  node.choices?.map((choice, i) => {
+    const targets = targetsOf(choice);
+    const seenCount = targets.filter((id) => isNodeSeen(npc, id, flags)).length;
+    const allSeen = targets.length > 0 && seenCount === targets.length;
+    const hasVariants = targets.length > 1;
+    return {
+      id: String(i),
+      label: choice.text,
+      isAnswer: choice.isAnswer,
+      disabled: !!choice.isAnswer && allSeen,
+      progress: choice.isAnswer && hasVariants ? { done: seenCount, total: targets.length } : undefined,
+    };
   });

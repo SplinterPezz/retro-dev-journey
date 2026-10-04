@@ -1,5 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { revealFlag, useCollectibles } from './useCollectibles';
+import { useCollectibles } from './useCollectibles';
+import { revealFlag } from '../../../config/story/flags';
 import { ChapterCollectibles, CollectibleData } from '../../../types/story';
 
 const base = { name: 'x', description: 'x', image: 'x.png' };

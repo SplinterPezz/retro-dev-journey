@@ -5,8 +5,10 @@ import { RootState, AppDispatch } from '../../store/store';
 import { setFlag } from '../../store/storySlice';
 import { StoryChapterConfig } from '../../types/story';
 import { getChapterIndex } from '../../config/story/chapters';
+import { ENGINE_FLAGS } from '../../config/story/flags';
 import InteriorScene from './InteriorScene';
 import StoryIntroDialog from '../../components/Story/dialogue/StoryIntroDialog';
+import { ROUTES } from '../../config/routes';
 
 interface ChapterScenePageProps {
   chapter: StoryChapterConfig;
@@ -21,19 +23,19 @@ const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
   const dispatch = useDispatch<AppDispatch>();
   const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
   const introSeen = useSelector(
-    (state: RootState) => !!state.story.chapters[chapter.id]?.flags.introSeen
+    (state: RootState) => !!state.story.chapters[chapter.id]?.flags[ENGINE_FLAGS.introSeen]
   );
   const chapterIndex = getChapterIndex(chapter.id);
   const isLocked = unlockedChapterIndex < chapterIndex;
 
   useEffect(() => {
     if (isLocked) {
-      void navigate('/story', { replace: true });
+      void navigate(ROUTES.storyMap, { replace: true });
     }
   }, [isLocked, navigate]);
 
   const handleIntroComplete = useCallback(() => {
-    dispatch(setFlag({ chapterId: chapter.id, flag: 'introSeen' }));
+    dispatch(setFlag({ chapterId: chapter.id, flag: ENGINE_FLAGS.introSeen }));
   }, [dispatch, chapter.id]);
 
   if (isLocked) {

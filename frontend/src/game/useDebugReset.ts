@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store/store';
 import { resetChapter, resetStory } from '../store/storySlice';
+import { ROUTES } from '../config/routes';
 
 // Debug buttons of the Story scenes: wipe the progress and reload.
 export const useDebugReset = (chapterId?: string) => {
@@ -9,7 +10,7 @@ export const useDebugReset = (chapterId?: string) => {
 
   const resetAll = useCallback(() => {
     dispatch(resetStory());
-    window.location.href = '/story/difficulty';
+    window.location.href = ROUTES.storyDifficulty;
   }, [dispatch]);
 
   const resetCurrentChapter = useCallback(() => {

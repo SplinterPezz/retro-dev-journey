@@ -9,6 +9,7 @@ import HomeButton from '../../components/Common/HomeButton';
 import { isMobileDevice } from '../../hooks/useIsMobile';
 import { enterLandscape, isLandscape } from '../../hooks/screenOrientation';
 import OrientationChoice from './OrientationChoice';
+import { ROUTES } from '../../config/routes';
 import '../../components/Common/fullscreen-page.css';
 import './StoryDifficultyPage.css';
 
@@ -36,7 +37,7 @@ const StoryDifficultyPage: React.FC = () => {
 
   // Asked once per story: only a new story (or Reset story) clears it.
   if (difficulty) {
-    return <Navigate to="/story" replace />;
+    return <Navigate to={ROUTES.storyMap} replace />;
   }
 
   // `!orientation` also catches saves made before the field existed (undefined).

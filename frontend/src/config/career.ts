@@ -1,12 +1,13 @@
 import { StructureData, CompanyData, TechnologyData } from '../types/sandbox';
 import { mainPathConfig } from './world';
+import { CHAPTER_IDS, COMPANY_IDS } from './ids';
 
 // Career milestones shown as buildings (companies) and statues (technologies)
 // in the Sandbox; the companies are also the chapter buildings of Story Mode.
 
 const companiesData: CompanyData[] = [
   {
-    id: "eikony",
+    id: COMPANY_IDS.eikony,
     name: "Eikony (IT)",
     shortName: "Eikony",
     role: "IT Intern",
@@ -26,7 +27,7 @@ const companiesData: CompanyData[] = [
     }
   },
   {
-    id: "unipa",
+    id: COMPANY_IDS.unipa,
     name: "University - Computer Science",
     shortName: "Uni",
     role: "Student",
@@ -46,7 +47,7 @@ const companiesData: CompanyData[] = [
     }
   },
   {
-    id: "foryouviaggi",
+    id: COMPANY_IDS.foryouviaggi,
     name: "ForYou Viaggi (IT)",
     shortName: "ForYou",
     role: "Software Developer",
@@ -67,7 +68,7 @@ const companiesData: CompanyData[] = [
     }
   },
   {
-    id: "alessi",
+    id: COMPANY_IDS.alessi,
     name: "Alessi S.p.a (IT)",
     shortName: "Alessi",
     role: "Software Developer",
@@ -87,7 +88,7 @@ const companiesData: CompanyData[] = [
     }
   },
   {
-    id: "codesour",
+    id: COMPANY_IDS.codesour,
     name: "CodeSour (IT)",
     shortName: "CodeSour",
     role: "Software Developer",
@@ -110,7 +111,7 @@ const companiesData: CompanyData[] = [
     }
   },
   {
-    id:"???",
+    id: COMPANY_IDS.futureOpportunity,
     name: "???",
     shortName: "???",
     role: "Your Next Great Hire",
@@ -133,7 +134,7 @@ const companiesData: CompanyData[] = [
 const technologiesData: TechnologyData[] = [
   {
     id: "java",
-    storyChapter: "prologue",
+    storyChapter: CHAPTER_IDS.prologue,
     learnedText: "The first real language of the course: classes, objects and more semicolons than you can count. Everything else will be built on top of it.",
     name: "Java",
     category: "Programming Language",
@@ -156,7 +157,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "python",
-    storyChapter: "unipa",
+    storyChapter: CHAPTER_IDS.unipa,
     learnedText: "At university Python was everywhere: algorithms, data and quick scripts for every exam project. Short, readable, and somehow always the right tool.",
     name: "Python",
     category: "Programming Language",
@@ -178,7 +179,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "golang",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "A new language for the side projects: REST APIs, a real-time chat and the backend of this very website.",
     name: "Golang",
     shortName: "Go",
@@ -199,7 +200,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "javascript",
-    storyChapter: "unipa",
+    storyChapter: CHAPTER_IDS.unipa,
     learnedText: "Not on the syllabus: you learned it on your own during university, building little web pages between one exam and the next. The browser became part of your playground.",
     name: "JavaScript",
     shortName: "JS",
@@ -221,7 +222,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "kafka",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Millions of advertising events a day: with Kafka and PubSub the services talk through messages instead of waiting on each other.",
     name: "Kafka & Google PubSub",
     shortName: "PubSub",
@@ -242,7 +243,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "mongodb",
-    storyChapter: "unipa",
+    storyChapter: CHAPTER_IDS.unipa,
     learnedText: "Another one learned on your own during university: no more rigid tables, just documents and collections for your side projects.",
     name: "MongoDB",
     shortName:"Mongo",
@@ -269,7 +270,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "cassandradb",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Billions of rows of real-time tracking data: Cassandra is built to write fast and never slow down.",
     name: "CassandraDB",
     shortName:"Cassandra",
@@ -291,7 +292,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "elastic",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Logs from every service in one place: when something breaks, ElasticSearch tells you where.",
     name: "ElasticSearch",
     shortName: "ELK",
@@ -309,7 +310,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "sql",
-    storyChapter: "prologue",
+    storyChapter: CHAPTER_IDS.prologue,
     learnedText: "SELECT, JOIN, WHERE: the database lessons taught you that data lives in tables - and that a forgotten WHERE can ruin your whole day.",
     name: "MySQL & SQL",
     shortName: "MySQL",
@@ -330,7 +331,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "docker",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Every service in its own container: \"it works on my machine\" is finally true on every machine.",
     name: "Docker",
     category: "Dev/Ops",
@@ -359,7 +360,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "aws",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Buckets, the CLI and cloud services for the ETL workflows - the other big cloud, right next to GCP.",
     name: "Amazon AWS",
     shortName: "AWS",
@@ -376,7 +377,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "gcp",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "The advertising platform moved to Google Cloud: VMs, PubSub and Terraform to scale on demand.",
     name: "Google Cloud Platform",
     shortName: "GCP",
@@ -398,7 +399,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "pipelines",
-    storyChapter: "alessi",
+    storyChapter: CHAPTER_IDS.alessi,
     learnedText: "Scheduled jobs and automated flows: at Alessi you stopped running things by hand and let the pipelines do it.",
     name: "Pipelines",
     shortName: "CI/CD",
@@ -422,7 +423,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "etl",
-    storyChapter: "alessi",
+    storyChapter: CHAPTER_IDS.alessi,
     learnedText: "Talend and Pentaho at Alessi: moving, cleaning and reshaping data until the advertising reports finally made sense.",
     name: "ETL & OLAP",
     shortName: "ETL",
@@ -445,7 +446,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "git",
-    storyChapter: "prologue",
+    storyChapter: CHAPTER_IDS.prologue,
     learnedText: "Commits, branches and the odd merge conflict. Now you know which commit broke the build, and how to undo it.",
     name: "Git",
     category: "Dev/Ops",
@@ -474,7 +475,7 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "ai",
-    storyChapter: "codesour",
+    storyChapter: CHAPTER_IDS.codesour,
     learnedText: "Computer vision, NLP and forecasting: the platform learned to read audiences and predict revenue.",
     name: "Artificial Intelligence",
     shortName: "AI",

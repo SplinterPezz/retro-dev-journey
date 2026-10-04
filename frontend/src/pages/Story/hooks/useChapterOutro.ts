@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ChapterOutro, StoryNpcData } from '../../../types/story';
+import { ChapterOutro, StoryNpcData, StoryFlags } from '../../../types/story';
 import { Position } from '../../../types/game';
 
 // Timings of the closing scene, in ms.
@@ -14,7 +14,7 @@ type Phase = 'idle' | 'toBlack' | 'title' | 'fromBlack' | 'scene' | 'free' | 'en
 
 interface ChapterOutroConfig {
   outro?: ChapterOutro;
-  flags: Record<string, boolean>;
+  flags: StoryFlags;
   setFlag: (flag: string) => void;
   ready: boolean; // the chapter splash and intro are gone
   busy: boolean; // a dialogue or a popup is open
@@ -49,26 +49,40 @@ export const useChapterOutro = ({ outro, flags, setFlag, ready, busy, npcs, cue,
     cue(npc, outro.dialogue.nodeId);
   }, [outro, phase, cued, ended, ready, busy, npcs, cue]);
 
-  // Step through the phases. Each effect only arms the timer of its own phase.
+  // Step through the phases. Each phase arms only its own timer (or waits
+  // for its condition); the cleanup cancels it if the phase changes first.
   useEffect(() => {
     if (!outro) return;
     let timer: ReturnType<typeof setTimeout> | undefined;
-    if (phase === 'idle' && ready && !busy && !started && flags[outro.afterFlag]) {
-      timer = setTimeout(() => setPhase('toBlack'), START_DELAY);
-    } else if (phase === 'toBlack') {
-      timer = setTimeout(() => {
-        setFlag(outro.startedFlag);
-        seatPlayer(outro.playerPosition);
-        setPhase('title');
-      }, FADE);
-    } else if (phase === 'title') {
-      timer = setTimeout(() => setPhase('fromBlack'), TITLE_HOLD);
-    } else if (phase === 'fromBlack') {
-      timer = setTimeout(() => setPhase('scene'), FADE);
-    } else if (phase === 'scene' && ended && !busy) {
-      setPhase('free');
-    } else if (phase === 'ending') {
-      timer = setTimeout(onEnd, FADE + END_HOLD);
+    const after = (ms: number, then: () => void) => {
+      timer = setTimeout(then, ms);
+    };
+
+    switch (phase) {
+      case 'idle': // waiting for the trigger flag, with the scene free
+        if (ready && !busy && !started && flags[outro.afterFlag]) after(START_DELAY, () => setPhase('toBlack'));
+        break;
+      case 'toBlack': // fading out; once black, the scene starts and the player sits down
+        after(FADE, () => {
+          setFlag(outro.startedFlag);
+          seatPlayer(outro.playerPosition);
+          setPhase('title');
+        });
+        break;
+      case 'title': // "<chapter> / Some days later" on black
+        after(TITLE_HOLD, () => setPhase('fromBlack'));
+        break;
+      case 'fromBlack': // fading back into the room
+        after(FADE, () => setPhase('scene'));
+        break;
+      case 'scene': // the scene's dialogue runs (see the effect above) until its end flag
+        if (ended && !busy) setPhase('free');
+        break;
+      case 'free': // the player walks to the exit door, which calls leave()
+        break;
+      case 'ending': // final fade to black, then out of the chapter
+        after(FADE + END_HOLD, onEnd);
+        break;
     }
     return () => clearTimeout(timer);
   }, [outro, phase, ready, busy, started, ended, flags, setFlag, seatPlayer, onEnd]);

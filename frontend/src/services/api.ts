@@ -2,9 +2,7 @@ import { store } from "../store/store";
 import { checkAuthentication, logout } from "../store/authSlice";
 import { ApiError } from "../types/api";
 import { apiBaseUrl } from "../config/env";
-
-// Endpoints that work without a login.
-const publicEndpoints = ["/login", "/info", "/cv/download"];
+import { PUBLIC_ENDPOINTS } from "../config/apiEndpoints";
 
 const authExpired: ApiError = { success: false, error: 'Authentication expired' };
 
@@ -17,7 +15,7 @@ export async function fetchFromApi<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T | ApiError> {
-  const isPublic = publicEndpoints.includes(endpoint);
+  const isPublic = PUBLIC_ENDPOINTS.includes(endpoint);
 
   store.dispatch(checkAuthentication());
   const { token, isAuthenticated } = store.getState().auth;

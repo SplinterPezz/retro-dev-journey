@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { MeepBeat } from '../../../types/story';
+import { MeepBeat, StoryFlags } from '../../../types/story';
 
 // Meep's one-off lines: onEnter once when the scene opens, onFlag the first
 // time its flag is set, onComplete once the chapter is done. Returns the line
 // to show, a stable dismiss callback (MeepBubble keys its timer on it) and
 // `say` for a line the scene triggers itself.
-export const useMeepBeats = (beats: MeepBeat[], flags: Record<string, boolean>, completed: boolean) => {
+export const useMeepBeats = (beats: MeepBeat[], flags: StoryFlags, completed: boolean) => {
   const [bubble, setBubble] = useState<string | null>(null);
   const triggeredRef = useRef<Set<string>>(new Set());
 

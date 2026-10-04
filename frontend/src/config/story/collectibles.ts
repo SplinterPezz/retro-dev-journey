@@ -1,4 +1,7 @@
 import { ChapterCollectibles } from '../../types/story';
+import { CHAPTER_IDS } from '../ids';
+import { PROLOGUE_FLAGS } from './flags';
+import { meepSprite, storyCollectible } from './sprites';
 
 // Hidden collectibles per chapter. Kept apart from the chapter configs so the
 // story map can show the counts without loading every dialogue.
@@ -8,14 +11,12 @@ import { ChapterCollectibles } from '../../types/story';
 // secret path outside the walls, made by doing things in the right order, or
 // waiting long enough in the right spot.
 
-const SPRITES = '/sprites/story/collectibles';
-
-export const collectibleIcon = `${SPRITES}/collectible_icon.png`;
+export const collectibleIcon = storyCollectible('collectible_icon');
 // Meep cheers from the corner of the "found" window.
-export const collectibleCheer = '/sprites/story/companion/meep/meep_idle.gif';
+export const collectibleCheer = meepSprite('idle');
 
 export const chapterCollectibles: Record<string, ChapterCollectibles> = {
-  prologue: {
+  [CHAPTER_IDS.prologue]: {
     items: [
       {
         // dialogue: tell Manuel you play an instrument too
@@ -23,8 +24,8 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         name: "Manuel's spare drumstick",
         description:
           "Slightly chewed, definitely used. Manuel swears it has played every dive bar in Palermo. Now it's yours - the band is only one drummer short of a reunion.",
-        image: `${SPRITES}/collectible_drumstick.png`,
-        unlock: { kind: 'flag', flag: 'gotDrumstick' },
+        image: storyCollectible('collectible_drumstick'),
+        unlock: { kind: 'flag', flag: PROLOGUE_FLAGS.gotDrumstick },
       },
       {
         // hidden: on the bathroom floor, in front of the last stall, visible only from a few steps
@@ -32,7 +33,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         name: 'A phone with Flappy Bird',
         description:
           'Flappy Bird was pulled from the stores in February 2014. This phone, left on the bathroom floor, still has it installed, which makes it priceless. High score: 3.',
-        image: `${SPRITES}/collectible_flappy_phone.png`,
+        image: storyCollectible('collectible_flappy_phone'),
         position: { x: 430, y: -290 },
         revealRadius: 90,
       },
@@ -42,7 +43,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         name: 'Floppy disk',
         description:
           "1.44 MB of pure history, found outside the classroom where nobody ever looks. The label says 'tesina_finale'. It won't fit in any computer in here.",
-        image: `${SPRITES}/collectible_floppy.png`,
+        image: storyCollectible('collectible_floppy'),
         position: { x: 1400, y: 500 },
         revealRadius: 180,
       },
@@ -52,7 +53,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         name: 'Coffee-stained Java manual',
         description:
           'You made the perfect coffee and spilled half of it on chapter four. The stain covers exactly the part about interfaces, which explains a lot.',
-        image: `${SPRITES}/collectible_java_manual.png`,
+        image: storyCollectible('collectible_java_manual'),
         position: { x: 290, y: 1050 },
         revealRadius: 180,
         unlock: {
@@ -70,7 +71,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         name: 'Sticky note: password123',
         description:
           "It fell off the corkboard while you stood there staring. Someone's Wi-Fi password, probably. Security has come a long way since 2014. Hopefully.",
-        image: `${SPRITES}/collectible_sticky_note.png`,
+        image: storyCollectible('collectible_sticky_note'),
         position: { x: 1165, y: 540 },
         revealRadius: 180,
         // left of the board: clear of classmate-7, who stands below it until the class sits down

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useTypedText } from '../../../hooks/useTypedText';
 import DialogueChoices, { ChoiceButtonItem } from './DialogueChoices';
+import { DIALOGUE_ADVANCE_KEYS } from '../../../config/controls';
 import './PortraitDialogueBox.css';
 
 interface PortraitDialogueBoxProps {
@@ -44,7 +45,7 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
   const hasChoices = !!choices && choices.length > 0;
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (!DIALOGUE_ADVANCE_KEYS.includes(e.key)) return;
       const target = e.target as HTMLElement | null;
       if (target?.closest('button, input, textarea, .cm-editor')) return;
       if (hasChoices && !isTyping) return;

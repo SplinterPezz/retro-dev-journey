@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { QuizData, QuizCategory, QuizQuestion, StoryDifficulty } from '../../../types/story';
-import { exceedsMistakeLimit, maxMistakesByDifficulty } from '../../../config/story/difficulty';
+import { QuizData, QuizCategory, QuizQuestion, StoryDifficulty, StoryFlags } from '../../../types/story';
+import { DEFAULT_DIFFICULTY, exceedsMistakeLimit, maxMistakesByDifficulty } from '../../../config/story/difficulty';
 import { sameCode } from '../code/sameCode';
 import { isDev } from '../../../config/env';
 import { useTimeouts } from '../../../hooks/useTimeouts';
@@ -12,7 +12,7 @@ import './QuizPopup.css';
 
 interface QuizPopupProps {
   quiz: QuizData;
-  flags: Record<string, boolean>;
+  flags: StoryFlags;
   difficulty: StoryDifficulty;
   onSetFlag: (flag: string) => void;
   onAllComplete: () => void;
@@ -20,6 +20,12 @@ interface QuizPopupProps {
 }
 
 type Stage = 'intro' | 'categories' | 'questions';
+
+const CORRECT_PAUSE_MS = 700; // "Correct!" stays this long before the next question
+const WRONG_FLASH_MS = 2000; // "Wrong answer" stays this long before the hint
+const WRONG_FLASH = 'Wrong answer';
+const DEFAULT_WRONG_MESSAGE = 'Not quite - try again.';
+const RESTART_MESSAGE = 'Too many mistakes - this topic starts over from question 1.';
 
 interface ShuffledQuestion {
   question: string;
@@ -65,7 +71,7 @@ const shuffleQuestion = (q: QuizQuestion): ShuffledQuestion => {
 // Only the questions written for the chosen difficulty; falls back to the
 // whole pool for a topic that hasn't been split by level yet.
 const questionsForDifficulty = (category: QuizCategory, difficulty: StoryDifficulty): QuizQuestion[] => {
-  const matching = category.questions.filter((q) => (q.difficulty ?? 'junior') === difficulty);
+  const matching = category.questions.filter((q) => (q.difficulty ?? DEFAULT_DIFFICULTY) === difficulty);
   return matching.length > 0 ? matching : category.questions;
 };
 
@@ -120,53 +126,49 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
     setStage('categories');
   };
 
-  // Shared outcome handler for both option picks and code fixes.
-  const applyResult = (isCorrect: boolean, wrongText?: string) => {
-    if (!activeCategory || feedback === 'correct') return;
+  // Right answer: a short "Correct!", then the next question - or, after the
+  // topic's last one, the topic is done and so is the station once every
+  // topic is.
+  const handleCorrect = (category: QuizCategory) => {
+    setFeedback('correct');
+    setNotice(null);
+    const isLastQuestion = questionIndex === shuffledQuestions.length - 1;
+    later(() => {
+      if (!isLastQuestion) {
+        setQuestionIndex((i) => i + 1);
+        setFeedback(null);
+        return;
+      }
+      onSetFlag(category.completionFlag);
+      const everyTopicDone = quiz.categories.every((c) => c.id === category.id || flags[c.completionFlag]);
+      if (everyTopicDone) onAllComplete();
+      else handleBackToCategories();
+    }, CORRECT_PAUSE_MS);
+  };
 
-    if (isCorrect) {
-      setFeedback('correct');
-      setNotice(null);
-      const isLastQuestion = questionIndex === shuffledQuestions.length - 1;
-      later(() => {
-        if (isLastQuestion) {
-          onSetFlag(activeCategory.completionFlag);
-          const allDone = quiz.categories.every(
-            (c) => c.id === activeCategory.id || flags[c.completionFlag]
-          );
-          if (allDone) {
-            onAllComplete();
-          } else {
-            handleBackToCategories();
-          }
-        } else {
-          setQuestionIndex((i) => i + 1);
-          setFeedback(null);
-        }
-      }, 700);
-      return;
-    }
-
-    // Brief "Wrong answer" flash, then the usual hint / restart message.
+  // Wrong answer: a "Wrong answer" flash, then the question's hint - or, past
+  // the difficulty's mistake limit, the topic starts over from question 1.
+  const handleWrong = (category: QuizCategory, hint?: string) => {
     const nextMistakes = mistakes + 1;
     const restarts = exceedsMistakeLimit(nextMistakes, mistakeLimit);
-    const afterFlash = restarts
-      ? 'Too many mistakes - this topic starts over from question 1.'
-      : wrongText || 'Not quite - try again.';
+    const message = restarts ? RESTART_MESSAGE : hint || DEFAULT_WRONG_MESSAGE;
     setFeedback('wrong');
-    setNotice('Wrong answer');
+    setNotice(WRONG_FLASH);
     setLocked(true);
     later(() => {
       setLocked(false);
-      setNotice(afterFlash);
-      if (restarts) {
-        startTopic(activeCategory);
-        setFeedback('wrong');
-        setNotice(afterFlash);
-      } else {
-        setMistakes(nextMistakes);
-      }
-    }, 2000);
+      if (restarts) startTopic(category);
+      else setMistakes(nextMistakes);
+      setFeedback('wrong');
+      setNotice(message);
+    }, WRONG_FLASH_MS);
+  };
+
+  // Shared by option picks and code fixes.
+  const applyResult = (isCorrect: boolean, hint?: string) => {
+    if (!activeCategory || feedback === 'correct') return;
+    if (isCorrect) handleCorrect(activeCategory);
+    else handleWrong(activeCategory, hint);
   };
 
   const handleSelect = (optionId: string) => {

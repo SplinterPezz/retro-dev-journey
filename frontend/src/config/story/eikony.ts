@@ -1,32 +1,43 @@
 import { StoryChapterConfig } from '../../types/story';
+import { CHAPTER_IDS } from '../ids';
+import { EIKONY_FLAGS as FLAG } from './flags';
+import { npcSpriteBase, storyProp } from './sprites';
+
+// NPC ids: dialogue hand-overs (nextNpcId) and cued scenes (npcId) refer to them.
+const NPC = {
+  giancarlo: 'giancarlo',
+  designer: 'designer',
+  colleague1: 'colleague-1',
+  colleague2: 'colleague-2',
+} as const;
 
 const SPRITE = {
-  giancarlo: '/sprites/story/npc/giancarlo/giancarlo',
-  designer: '/sprites/story/npc/designer/designer',
-  generic: '/sprites/story/npc/generic/generic',
+  giancarlo: npcSpriteBase('giancarlo'),
+  designer: npcSpriteBase('designer'),
+  generic: npcSpriteBase('generic'),
 };
 
 export const eikonyChapter: StoryChapterConfig = {
-  id: 'eikony',
+  id: CHAPTER_IDS.eikony,
   title: 'Eikony - Internship, 2014',
   audioTrack: '/audio/eikony_placeholder.wav',
   worldConfig: { width: 900, height: 700, tileSize: 128 },
-  floorImage: '/sprites/story/props/floor_office.png',
+  floorImage: storyProp('floor_office'),
   playerSpawn: { x: 450, y: 540 },
   doorPosition: { x: 450, y: 670 },
 
   props: [
-    { id: 'desk-giancarlo', image: '/sprites/story/props/desk_office.png', position: { x: 300, y: 300 }, imageSize: { width: 144, height: 144 } },
-    { id: 'desk-designer', image: '/sprites/story/props/desk_office.png', position: { x: 600, y: 300 }, imageSize: { width: 144, height: 144 } },
-    { id: 'desk-colleague-1', image: '/sprites/story/props/desk_office.png', position: { x: 180, y: 480 }, imageSize: { width: 144, height: 144 } },
-    { id: 'desk-colleague-2', image: '/sprites/story/props/desk_office.png', position: { x: 720, y: 480 }, imageSize: { width: 144, height: 144 } },
-    { id: 'desk-layout', image: '/sprites/story/props/desk_office.png', position: { x: 450, y: 180 }, imageSize: { width: 144, height: 144 } },
-    { id: 'desk-debug', image: '/sprites/story/props/desk_office.png', position: { x: 450, y: 450 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-giancarlo', image: storyProp('desk_office'), position: { x: 300, y: 300 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-designer', image: storyProp('desk_office'), position: { x: 600, y: 300 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-colleague-1', image: storyProp('desk_office'), position: { x: 180, y: 480 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-colleague-2', image: storyProp('desk_office'), position: { x: 720, y: 480 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-layout', image: storyProp('desk_office'), position: { x: 450, y: 180 }, imageSize: { width: 144, height: 144 } },
+    { id: 'desk-debug', image: storyProp('desk_office'), position: { x: 450, y: 450 }, imageSize: { width: 144, height: 144 } },
   ],
 
   npcs: [
     {
-      id: 'giancarlo',
+      id: NPC.giancarlo,
       name: 'Giancarlo',
       spriteBase: SPRITE.giancarlo,
       position: { x: 300, y: 260 },
@@ -46,19 +57,19 @@ export const eikonyChapter: StoryChapterConfig = {
             id: 'task',
             speaker: 'Giancarlo',
             text: "Head over to that workstation - there's a bug in the app that's been bothering us for days. See what you can find.",
-            setFlag: 'talkedGiancarlo',
+            setFlag: FLAG.talkedGiancarlo,
           },
           tiny: {
             id: 'tiny',
             speaker: 'Giancarlo',
             text: "Tiny but mighty. Good for learning, though - you'll touch a bit of everything here.",
-            setFlag: 'talkedGiancarlo',
+            setFlag: FLAG.talkedGiancarlo,
           },
         },
       },
     },
     {
-      id: 'designer',
+      id: NPC.designer,
       name: 'Designer',
       spriteBase: SPRITE.designer,
       position: { x: 600, y: 260 },
@@ -78,19 +89,19 @@ export const eikonyChapter: StoryChapterConfig = {
             id: 'mockup',
             speaker: 'Designer',
             text: 'Nothing fancy - just match the spacing and alignment. Come find the layout station when you\'re ready.',
-            setFlag: 'talkedDesigner',
+            setFlag: FLAG.talkedDesigner,
           },
           reassure: {
             id: 'reassure',
             speaker: 'Designer',
             text: "Nobody's born knowing how CSS boxes work. You'll be fine - just try it.",
-            setFlag: 'talkedDesigner',
+            setFlag: FLAG.talkedDesigner,
           },
         },
       },
     },
     {
-      id: 'colleague-1',
+      id: NPC.colleague1,
       name: 'Colleague',
       spriteBase: SPRITE.generic,
       position: { x: 180, y: 480 },
@@ -106,7 +117,7 @@ export const eikonyChapter: StoryChapterConfig = {
       },
     },
     {
-      id: 'colleague-2',
+      id: NPC.colleague2,
       name: 'Colleague',
       spriteBase: SPRITE.generic,
       position: { x: 720, y: 480 },
@@ -128,18 +139,18 @@ export const eikonyChapter: StoryChapterConfig = {
       id: 'layout-station',
       title: 'Layout mockup',
       introTitle: 'The Mockup',
-      introSeenFlag: 'layoutIntroSeen',
+      introSeenFlag: FLAG.layoutIntroSeen,
       introPages: [
         "The Designer's mockup is open on the screen - a simple layout, nothing fancy, but it has to match exactly.",
       ],
       position: { x: 450, y: 180 },
-      requiredFlag: 'talkedDesigner',
-      completionFlag: 'layoutDone',
+      requiredFlag: FLAG.talkedDesigner,
+      completionFlag: FLAG.layoutDone,
       categories: [
         {
           id: 'layout',
           label: 'Layout',
-          completionFlag: 'layoutCategoryDone',
+          completionFlag: FLAG.layoutCategoryDone,
           questions: [
             {
               id: 'l1',
@@ -163,18 +174,18 @@ export const eikonyChapter: StoryChapterConfig = {
       id: 'debug-station',
       title: 'Bug hunt',
       introTitle: 'The Bug',
-      introSeenFlag: 'debugIntroSeen',
+      introSeenFlag: FLAG.debugIntroSeen,
       introPages: [
         "Giancarlo's bug has been sitting in the tracker for days. Time to actually look at the code.",
       ],
       position: { x: 450, y: 450 },
-      requiredFlag: 'talkedGiancarlo',
-      completionFlag: 'debugDone',
+      requiredFlag: FLAG.talkedGiancarlo,
+      completionFlag: FLAG.debugDone,
       categories: [
         {
           id: 'debug',
           label: 'Debugging',
-          completionFlag: 'debugCategoryDone',
+          completionFlag: FLAG.debugCategoryDone,
           questions: [
             {
               id: 'd1',
@@ -203,12 +214,12 @@ export const eikonyChapter: StoryChapterConfig = {
 
   meepBeats: [
     { id: 'enter', trigger: 'onEnter', text: "Ooh, real office energy. Try not to touch anything that beeps." },
-    { id: 'giancarlo', trigger: 'onFlag', flag: 'talkedGiancarlo', text: 'He seems chill. I like him already.' },
-    { id: 'designer', trigger: 'onFlag', flag: 'talkedDesigner', text: "A mockup! Fancy. Don't mess up the margins or they WILL notice." },
-    { id: 'layout', trigger: 'onFlag', flag: 'layoutDone', text: 'Pixel-perfect! Well... pixel-ish.' },
-    { id: 'debug', trigger: 'onFlag', flag: 'debugDone', text: "You actually found it! I'm genuinely surprised." },
+    { id: 'giancarlo', trigger: 'onFlag', flag: FLAG.talkedGiancarlo, text: 'He seems chill. I like him already.' },
+    { id: 'designer', trigger: 'onFlag', flag: FLAG.talkedDesigner, text: "A mockup! Fancy. Don't mess up the margins or they WILL notice." },
+    { id: 'layout', trigger: 'onFlag', flag: FLAG.layoutDone, text: 'Pixel-perfect! Well... pixel-ish.' },
+    { id: 'debug', trigger: 'onFlag', flag: FLAG.debugDone, text: "You actually found it! I'm genuinely surprised." },
     { id: 'complete', trigger: 'onComplete', text: 'Not bad for an intern. But some of this still went over your head, huh? Definitely university material.' },
   ],
 
-  completion: { requiredFlags: ['talkedGiancarlo', 'talkedDesigner', 'layoutDone', 'debugDone'] },
+  completion: { requiredFlags: [FLAG.talkedGiancarlo, FLAG.talkedDesigner, FLAG.layoutDone, FLAG.debugDone] },
 };

@@ -1,5 +1,8 @@
 import { StoryDifficulty } from '../../types/story';
 
+// Used until the player picks one, and for questions written without a level.
+export const DEFAULT_DIFFICULTY: StoryDifficulty = 'junior';
+
 export const storyDifficultyLabels: Record<StoryDifficulty, string> = {
   junior: 'Junior',
   middle: 'Middle',

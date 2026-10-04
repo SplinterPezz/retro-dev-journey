@@ -4,6 +4,7 @@ import './Structure.css';
 import { isDev } from '../../config/env';
 import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
 import { lockSprite } from '../../config/assets';
+import { COMPANY_IDS } from '../../config/ids';
 
 interface StructureProps {
   data: StructureData;
@@ -122,7 +123,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
       {/* Structure label */}
       <div className={`d-none structure-label ${isNearby ? 'visible' : ''}`}>
         <span>{data.name}</span>
-        {(isNearby && data.name === '???') && (
+        {(isNearby && data.id === COMPANY_IDS.futureOpportunity) && (
           <div className="interaction-hint">
             {'Your next opportunity awaits!'}
           </div>

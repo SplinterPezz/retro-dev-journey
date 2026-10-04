@@ -1,20 +1,21 @@
 import { StoryChapterConfig, StoryNpcData } from '../../types/story';
 import { playerTurnSprite, preloadPlayerSprites } from '../assets';
 import { chapterCollectibles, collectibleIcon } from './collectibles';
+import { MEEP_DIRECTIONS, NpcPose, meepSprite, npcSprite, storyProp } from './sprites';
 
 // Sprites a chapter scene draws, preloaded behind the chapter splash.
 
-export const doorImage = '/sprites/story/props/door.png';
-export const quizMarkerImage = '/sprites/story/props/quiz_question_mark_v5.png';
+export const doorImage = storyProp('door');
+export const quizMarkerImage = storyProp('quiz_question_mark_v5');
 export const quizSparkleImage = '/sprites/others/sparkling.gif';
 
-const meepDirections = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-const meepSprites = meepDirections.map((d) => `/sprites/story/companion/meep/meep_${d}.gif`);
+const meepSprites = MEEP_DIRECTIONS.map(meepSprite);
 
 // The sprites InteriorNpc picks from (W is E mirrored). Only a patrolling NPC
 // walks, and the ones that never move have no walk sprites at all.
+const WALKING_POSES: NpcPose[] = ['idle', 'walk_E', 'walk_N', 'walk_S'];
 const npcSprites = (npc: StoryNpcData) =>
-  (npc.patrol ? ['idle', 'walk_E', 'walk_N', 'walk_S'] : ['idle']).map((s) => `${npc.spriteBase}_${s}.gif`);
+  (npc.patrol ? WALKING_POSES : (['idle'] as NpcPose[])).map((pose) => npcSprite(npc.spriteBase, pose));
 
 export const chapterAssets = (chapter: StoryChapterConfig): string[] => [
   ...new Set([

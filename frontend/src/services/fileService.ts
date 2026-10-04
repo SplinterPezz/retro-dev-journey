@@ -2,11 +2,12 @@ import { fetchFromApi } from './api';
 import { ApiError, UploadResponse } from '../types/api';
 import { maxSizeFileCV } from '../config/admin';
 import { apiBaseUrl } from '../config/env';
+import { API_ENDPOINTS } from '../config/apiEndpoints';
 
 // Custom fetch for download CV as Blob
 export const downloadCV = async (): Promise<void> => {
   try {
-    const response = await fetch(`${apiBaseUrl}/cv/download`);
+    const response = await fetch(`${apiBaseUrl}${API_ENDPOINTS.cvDownload}`);
     
     if (!response.ok) {
       throw new Error('Failed to download CV');
@@ -52,7 +53,7 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     const formData = new FormData();
     formData.append('cv', file);
     
-    const response = await fetchFromApi<UploadResponse>('/cv/upload', {
+    const response = await fetchFromApi<UploadResponse>(API_ENDPOINTS.cvUpload, {
       method: 'POST',
       body: formData,
     });
