@@ -12,12 +12,18 @@ export interface ChapterMeta {
   // the player back to it, even if a save made under older rules already
   // unlocked the next chapter. Kept here so the map does not load the chapter config.
   endFlag?: string;
+  // Not playable yet: reaching it shows the "still in development" window on
+  // the map instead of entering. Remove it once the chapter is ready.
+  inDevelopment?: boolean;
 }
 
 export const storyChapterOrder: ChapterMeta[] = [
   { id: 'prologue', endFlag: 'prologueEnded' }, // the outro's endFlag in prologue.ts
-  { id: 'eikony', companyId: 'eikony' },
+  { id: 'eikony', companyId: 'eikony', inDevelopment: true },
 ];
+
+// Meep coding at a laptop, in the "still in development" window.
+export const inDevelopmentSprite = '/sprites/story/ui/meep_working.png';
 
 // Background music of the story map, between chapters (placeholder until the real track).
 export const storyMapAudioTrack = '/audio/story_map_placeholder.wav';
