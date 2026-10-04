@@ -8,6 +8,7 @@ import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useDebugReset } from '../../game/useDebugReset';
 import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
+import DebugToolbar, { DebugAction } from '../../game/DebugToolbar';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import PathRenderer from '../../components/Path/PathRenderer';
 import Structure from '../../components/Structures/Structure';
@@ -27,10 +28,8 @@ import { MEEP_LAG_MS } from './sceneRules';
 import { collectibleCount } from '../../config/story/collectibles';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
-import { isDev } from '../../config/env';
 import { chapterPath } from '../../config/routes';
 import { COMPANY_IDS } from '../../config/ids';
-import '../../game/DebugOverlay.css';
 import './StoryMapPage.css';
 
 const MAP_PLAYER_SPEED = 270; // a little faster than in the chapters: the map is big
@@ -260,11 +259,7 @@ const StoryMapPage: React.FC = () => {
     <InDevelopmentPopup chapterName={activeCompany ? chapterName(activeCompany.name) : undefined} onClose={() => setInDevelopmentOpen(false)} />
   );
 
-  const debugResetButton = isDev && (
-    <button type="button" className="story-debug-reset" onClick={resetAll}>
-      Reset story
-    </button>
-  );
+  const debugActions: DebugAction[] = [{ label: 'Reset story', tone: 'danger', onClick: resetAll }];
 
   if (unfinishedStandalone) {
     return null; // redirecting to that chapter
@@ -281,7 +276,7 @@ const StoryMapPage: React.FC = () => {
           </div>
         </div>
         {discoveryPopup}
-        {debugResetButton}
+        <DebugToolbar actions={debugActions} />
       </div>
     );
   }
@@ -296,6 +291,8 @@ const StoryMapPage: React.FC = () => {
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery }}
           audio={{ src: storyMapAudioTrack, volume: 30 }}
+          playerHitbox={playerHitbox}
+          debugActions={debugActions}
           overlay={
             <div className="home-fixed-top-left">
               <HomeButton />
@@ -308,7 +305,6 @@ const StoryMapPage: React.FC = () => {
         </GameScene>
         {discoveryPopup}
         {!discovery && inDevelopmentPopup}
-        {debugResetButton}
       </div>
     </div>
   );

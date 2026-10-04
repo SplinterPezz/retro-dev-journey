@@ -8,6 +8,7 @@ import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useNpcPatrol } from '../../game/hooks/useNpcPatrol';
 import { useDebugReset } from '../../game/useDebugReset';
 import GameScene from '../../game/GameScene';
+import type { DebugAction } from '../../game/DebugToolbar';
 import { CollidableEntity, Hitbox, Position } from '../../types/game';
 import { StoryChapterConfig, QuizData, MiniGameMarker, StoryFlags } from '../../types/story';
 import { tierFor } from '../../config/story/miniGames';
@@ -97,7 +98,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     },
     [dispatch, chapter.id]
   );
-  const { resetAll, resetCurrentChapter } = useDebugReset(chapter.id);
+  const { resetAll, resetCurrentChapter, completeCurrentChapter } = useDebugReset(chapter.id);
 
   // ---- what is open on screen ----
   const dialogue = useDialogueEngine(chapter.npcs, flags, setChapterFlag);
@@ -286,6 +287,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
   const chapterTitle = chapter.splashTitle ?? chapter.title;
 
+  const debugActions: DebugAction[] = [
+    { label: 'Complete Chapter', tone: 'success', onClick: () => completeCurrentChapter(chapter.completion.requiredFlags, nextUnlockIndex) },
+    { label: 'Reset story', tone: 'danger', onClick: resetAll },
+    { label: 'Reset Chapter', tone: 'warning', onClick: resetCurrentChapter },
+  ];
+
   return (
     <div className="rpgui-content">
       {splash.visible && (
@@ -316,6 +323,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: triggersEnabled }}
           audio={chapter.audioTrack ? { src: chapter.audioTrack, volume: CHAPTER_MUSIC_VOLUME } : undefined}
+          playerHitbox={playerHitbox}
+          debugActions={debugActions}
           overlay={
             <div className="home-fixed-top-left">
               <HomeButton />
@@ -347,7 +356,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
 
           {isDev && (
-            <SceneDebug chapter={chapter} collectibles={collectibles} foundIds={foundIds} flags={flags} npcStates={npcStates} playerPosition={playerPosition} playerHitbox={playerHitbox} />
+            <SceneDebug chapter={chapter} collectibles={collectibles} foundIds={foundIds} flags={flags} npcStates={npcStates} />
           )}
         </GameScene>
 
@@ -397,20 +406,6 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             onAllComplete={handleQuizAllComplete}
             onClose={handleQuizClose}
           />
-        )}
-
-        {isDev && (
-          <>
-            <button type="button" className="story-debug-reset" onClick={resetAll}>
-              Reset story
-            </button>
-            <button type="button" className="story-debug-reset story-debug-reset-chapter" onClick={resetCurrentChapter}>
-              Reset Chapter
-            </button>
-            <div className="debug-coords">
-              x: {Math.round(playerPosition.x)} y: {Math.round(playerPosition.y)}
-            </div>
-          </>
         )}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Position, WorldConfig } from '../types/game';
+import { Hitbox, Position, WorldConfig } from '../types/game';
 import { cameraStyle } from './camera';
 import { useZoomScale } from './zoom';
 import { useLogicalViewport } from '../hooks/screenOrientation';
@@ -7,6 +7,9 @@ import { useIsMobile } from '../hooks/useIsMobile';
 import ZoomSlider from '../components/Common/ZoomSlider';
 import MobileJoystick, { JoystickMoveEvent } from '../components/Common/MobileJoystick';
 import AudioControls from '../components/AudioControls/AudioControls';
+import DebugOverlay from './DebugOverlay';
+import DebugToolbar, { DebugAction } from './DebugToolbar';
+import { isDev } from '../config/env';
 import '../components/Common/scene-layout.css';
 // Stylesheets of the pieces every scene draws, in one fixed order: the scenes
 // are separate chunks that share them, and importing them here first keeps
@@ -26,12 +29,20 @@ interface GameSceneProps {
   overlay?: React.ReactNode; // fixed UI drawn above the world
   joystick?: { onMove: (e: JoystickMoveEvent) => void; onStop: () => void; enabled?: boolean };
   audio?: { src: string; volume?: number };
+  // Development builds only: the player's collision box and position readout
+  // (when its hitbox is given), and the debug buttons of the page.
+  playerHitbox?: Hitbox;
+  debugActions?: DebugAction[];
 }
+
+const PLAYER_DEBUG_ID = 'player';
 
 // Shell shared by the Sandbox, the story map and the chapter interiors: a
 // full-screen viewport with the world under a camera that follows the player,
 // plus the zoom slider, the touch joystick on phones and the audio controls.
-const GameScene: React.FC<GameSceneProps> = ({ name, world, playerPosition, children, overlay, joystick, audio }) => {
+// In development it also draws the player's debug box, its coordinates and
+// the page's debug buttons, the same in every scene.
+const GameScene: React.FC<GameSceneProps> = ({ name, world, playerPosition, children, overlay, joystick, audio, playerHitbox, debugActions = [] }) => {
   const isMobile = useIsMobile();
   const viewport = useLogicalViewport();
   const zoomScale = useZoomScale();
@@ -44,9 +55,16 @@ const GameScene: React.FC<GameSceneProps> = ({ name, world, playerPosition, chil
           style={{ width: world.width, height: world.height, ...cameraStyle(playerPosition, viewport, zoomScale) }}
         >
           {children}
+          {isDev && playerHitbox && <DebugOverlay player={{ id: PLAYER_DEBUG_ID, position: playerPosition, hitbox: playerHitbox }} />}
         </div>
       </div>
       {overlay}
+      {isDev && playerHitbox && (
+        <div className="debug-coords">
+          x: {Math.round(playerPosition.x)} y: {Math.round(playerPosition.y)}
+        </div>
+      )}
+      <DebugToolbar actions={debugActions} />
       <ZoomSlider />
       {isMobile && joystick && joystick.enabled !== false && (
         <MobileJoystick onMove={joystick.onMove} onStop={joystick.onStop} />

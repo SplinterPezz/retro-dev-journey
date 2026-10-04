@@ -64,15 +64,22 @@
   white-space: nowrap;
 }
 
-/* Development-only buttons and readouts of the Story scenes. */
-.story-debug-reset {
+/* Development-only buttons (DebugToolbar), stacked in the bottom-left
+   corner, right of the zoom slider. */
+.debug-toolbar {
   position: fixed;
-  bottom: 40px;
+  bottom: 8px;
   left: 84px;
   z-index: 999;
-  background: #b71c1c;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.debug-toolbar-button {
   color: #fff;
-  border: 1px solid #ff8a80;
+  border: 1px solid;
   border-radius: 3px;
   padding: 4px 10px;
   font-size: 0.75rem;
@@ -80,21 +87,34 @@
   cursor: pointer;
 }
 
-.story-debug-reset:hover {
+.debug-toolbar-danger {
+  background: #b71c1c;
+  border-color: #ff8a80;
+}
+
+.debug-toolbar-danger:hover {
   background: #d32f2f;
 }
 
-.story-debug-reset-chapter {
-  bottom: 8px;
-  left: 84px;
+.debug-toolbar-warning {
   background: #e8801a;
   border-color: #ffb347;
 }
 
-.story-debug-reset-chapter:hover {
+.debug-toolbar-warning:hover {
   background: #f59520;
 }
 
+.debug-toolbar-success {
+  background: #2e7d32;
+  border-color: #81c784;
+}
+
+.debug-toolbar-success:hover {
+  background: #388e3c;
+}
+
+/* The player's world position, drawn by GameScene in every scene. */
 .debug-coords {
   position: fixed;
   bottom: 8px;
