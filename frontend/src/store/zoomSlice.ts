@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export const ZOOM_LEVEL_COUNT = 5;
 const DEFAULT_LEVEL = 3;
 
-export interface ZoomState {
+interface ZoomState {
   level: number;
 }
 

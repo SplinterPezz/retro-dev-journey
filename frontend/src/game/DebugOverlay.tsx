@@ -3,19 +3,19 @@ import { Hitbox, Position } from '../types/game';
 import { isDev } from '../config/env';
 import './DebugOverlay.css';
 
-export interface DebugHitbox {
+interface DebugHitbox {
   id: string;
   position: Position;
   hitbox: Hitbox;
 }
 
-export interface DebugZone {
+interface DebugZone {
   id: string;
   position: Position;
   radius: number;
 }
 
-export interface DebugRect {
+interface DebugRect {
   id: string;
   position: Position;
   width: number;

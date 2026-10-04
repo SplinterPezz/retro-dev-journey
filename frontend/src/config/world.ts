@@ -2,7 +2,7 @@ import { WorldConfig, Position, Hitbox } from '../types/game';
 
 // The overworld shared by the Sandbox and the Story Mode map.
 
-export const tileSize: number = 128;
+const tileSize: number = 128;
 
 // Feature flags
 export const terrainAutoRotate: boolean = true; // set to false to disable random rotation of terrain tiles

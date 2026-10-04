@@ -13,7 +13,7 @@ export const isPortraitViewport = (): boolean => window.matchMedia('(orientation
 
 // Asks the browser to lock the screen. Only works in fullscreen on Android
 // Chrome, and not at all on iOS Safari - callers fall back to CSS rotation.
-export const lockOrientation = async (orientation: StoryOrientation): Promise<boolean> => {
+const lockOrientation = async (orientation: StoryOrientation): Promise<boolean> => {
   if (orientation === 'portrait') return false;
   try {
     await window.screen.orientation.lock(orientation);
@@ -52,7 +52,7 @@ export const enterLandscape = async (orientation: StoryOrientation): Promise<voi
 // True when the picture has to be turned with CSS: a phone that chose a
 // landscape layout but is still held upright. Once the phone is physically
 // landscape (or the lock worked) this turns false and nothing is rotated.
-export const useCssRotation = (orientation: StoryOrientation | null): boolean => {
+const useCssRotation = (orientation: StoryOrientation | null): boolean => {
   const [rotated, setRotated] = useState(false);
 
   useEffect(() => {

@@ -79,7 +79,7 @@ export const fixBuildCountByDifficulty: Record<StoryDifficulty, number> = {
 
 // ---- 2. Which commit broke everything? ----
 
-export interface CommitOption {
+interface CommitOption {
   hash: string;
   message: string;
   breaks: boolean;
@@ -176,7 +176,7 @@ export const logRoundsByDifficulty: Record<StoryDifficulty, number> = {
 
 // Total lines and where the error sits, per difficulty. Middle and Senior add
 // warnings, which look like the error and make it harder to spot.
-export const logShapeByDifficulty: Record<StoryDifficulty, { lines: number; warnings: number }> = {
+const logShapeByDifficulty: Record<StoryDifficulty, { lines: number; warnings: number }> = {
   junior: { lines: 6, warnings: 0 },
   middle: { lines: 12, warnings: 3 },
   senior: { lines: 20, warnings: 4 },

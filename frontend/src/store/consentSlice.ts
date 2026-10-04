@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-export interface ConsentState {
+interface ConsentState {
   consentGiven: boolean | null;
   isLoading: boolean;
   lastUpdated: string | null;

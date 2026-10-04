@@ -24,7 +24,7 @@ interface ChapterOutroConfig {
   onEnd: () => void;
 }
 
-export interface OutroCurtain {
+interface OutroCurtain {
   subtitle?: string; // shown under the chapter title; none on the closing black screen
   leaving: boolean;
 }

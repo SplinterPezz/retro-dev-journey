@@ -7,7 +7,7 @@ import { isWithin } from '../../../game/collision';
 /** Walking this close to a collectible picks it up. */
 export const PICKUP_RADIUS = 40;
 /** A collectible shows (with a sparkle) only within this distance, unless it sets its own revealRadius. */
-export const DEFAULT_REVEAL_RADIUS = 180;
+const DEFAULT_REVEAL_RADIUS = 180;
 
 const isInSpot = (p: Position, spot: CollectibleSpot) => isWithin(p, spot, spot.radius);
 
@@ -49,7 +49,7 @@ interface CollectiblesConfig {
   onFind: (item: CollectibleData) => void;
 }
 
-export interface CollectibleOnMap {
+interface CollectibleOnMap {
   item: CollectibleData;
   near: boolean; // close enough to see it
 }

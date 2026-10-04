@@ -7,10 +7,10 @@ export interface TypingVoice {
   muffle?: number; // Hz of a low-pass for a duller, softer click (none: the plain click)
 }
 
-export const DEFAULT_TYPING_VOICE: TypingVoice = { pitch: 1, lettersPerTick: 2 };
+const DEFAULT_TYPING_VOICE: TypingVoice = { pitch: 1, lettersPerTick: 2 };
 
 // Keyed by the dialogue line's `speaker`; anyone not listed uses the default.
-export const TYPING_VOICES: Record<string, TypingVoice> = {
+const TYPING_VOICES: Record<string, TypingVoice> = {
   Meep: { pitch: 1.25, lettersPerTick: 1.6 }, // high and quick
   Manuel: { pitch: 1, lettersPerTick: 2 }, // the plain one
   Francesco: { pitch: 0.92, lettersPerTick: 2.2, muffle: 3500 }, // calm, a bit soft

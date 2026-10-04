@@ -29,7 +29,7 @@ const isInteractionOlderThanToday = (key: string): boolean => {
   return interactionDate < today;
 };
 
-export const cleanOldInteractionsFunction = (interactions: string[]): string[] => {
+const cleanOldInteractionsFunction = (interactions: string[]): string[] => {
   return interactions.filter(key => !isInteractionOlderThanToday(key));
 };
 

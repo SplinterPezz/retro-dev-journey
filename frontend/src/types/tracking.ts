@@ -3,7 +3,6 @@ export type ViewType = 'view' | 'interaction';
 export type DeviceType = 'desktop' | 'mobile';
 
 export const timeTrackingIntervals = [0, 30, 60, 120, 300, 600] as const;
-export type TimeTrackingIntervals = typeof timeTrackingIntervals[number];
 
 export interface TrkData {
   date: Date;

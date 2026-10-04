@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppDispatch } from './store';
 
-export interface AuthState {
+interface AuthState {
   id: string | null;
   user: string | null;
   token: string | null;
@@ -47,7 +47,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, logoutSuccess, checkAuthentication } = authSlice.actions;
+export const { loginSuccess, checkAuthentication } = authSlice.actions;
+const { logoutSuccess } = authSlice.actions;
 export const logout = () => (dispatch: AppDispatch) => {
   dispatch(logoutSuccess());
 };

@@ -87,5 +87,3 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
     ],
   },
 };
-
-export const collectibleCount = (chapterId: string): number => chapterCollectibles[chapterId]?.items.length ?? 0;

@@ -1,6 +1,6 @@
 import { StructureData } from '../types/sandbox';
 
-export const downloadButtonId: string = 'download-button';
+const downloadButtonId: string = 'download-button';
 export const downloadCVCooldown: number = 60;
 
 export const sandboxAudioTrack: string = '/audio/sandbox_compressed.mp3';

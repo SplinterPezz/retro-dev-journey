@@ -55,7 +55,7 @@ export interface DialogueNode {
   setFlag?: string; // set as soon as this line is shown
 }
 
-export interface DialogueScript {
+interface DialogueScript {
   startNodeId: string;
   nodes: Record<string, DialogueNode>;
 }
@@ -156,7 +156,7 @@ export interface CollectibleSpot {
 
 // How a collectible becomes available. Without one it lies at its position
 // from the start, hidden until the player is close.
-export type CollectibleUnlock =
+type CollectibleUnlock =
   | { kind: 'flag'; flag: string } // given at once when the flag is set (e.g. a dialogue answer)
   | { kind: 'sequence'; spots: Record<string, CollectibleSpot>; order: string[] } // walk to these spots in this order; a wrong one starts over
   | { kind: 'idle'; spot: CollectibleSpot; seconds: number }; // stand still in the spot
@@ -212,7 +212,7 @@ export interface IntroPage {
 }
 
 // A tiled area of a side room: its floor, its back wall, the doorway.
-export interface SideRoomSurface {
+interface SideRoomSurface {
   bounds: WorldBounds;
   image: string;
   tile: ImageSize; // drawn size of one tile; it repeats across the bounds

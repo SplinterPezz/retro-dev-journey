@@ -2,7 +2,7 @@ import { DialogueChoiceOption, DialogueNode, StoryNpcData, StoryFlags } from '..
 import type { ChoiceButtonItem } from '../../components/Story/dialogue/DialogueChoices';
 import { seenFlag } from '../../config/story/flags';
 
-export const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: StoryFlags): boolean =>
+const isNodeSeen = (npc: StoryNpcData, nodeId: string, flags: StoryFlags): boolean =>
   !!flags[seenFlag(npc.id, nodeId)];
 
 export const getNode = (npc: StoryNpcData, nodeId: string): DialogueNode | undefined => npc.dialogue.nodes[nodeId];

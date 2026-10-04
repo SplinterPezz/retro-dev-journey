@@ -1,7 +1,7 @@
 import { Position, ShadowInfo, Hitbox, ImageSize } from './game';
 
 // Shared engine types live in ./game; re-exported here for existing imports.
-export type { Position, WorldBounds, Hitbox, CollidableEntity, ShadowInfo, ImageSize, EnvironmentData, WorldConfig, Direction } from './game';
+export type { Position, EnvironmentData } from './game';
 
 export interface StructureData {
   id: string;

@@ -2,7 +2,7 @@ import React from 'react';
 import '../dialogue/StoryIntroDialog.css';
 import './UnlockPopup.css';
 
-export interface UnlockPopupProps {
+interface UnlockPopupProps {
   kicker: string; // e.g. "New technology unlocked!"
   image: string;
   title: string;
