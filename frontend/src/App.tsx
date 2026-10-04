@@ -9,6 +9,7 @@ import { useFallbackToPortrait, useScreenRotation } from './hooks/screenOrientat
 import HomePage from './pages/Home/HomePage';
 import PrivacyRedirect, { privacyRedirects } from './components/PrivacyRedirect/PrivacyRedirect';
 import PrivateRoute from './components/Routing/PrivateRoute';
+import RequireDifficulty from './pages/Story/RequireDifficulty';
 import { GameMenuProvider } from './components/GameMenu/GameMenuContext';
 import { ROUTES } from './config/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -50,9 +51,11 @@ function App() {
               <Suspense fallback={<PageLoading />}>
                 <Routes>
                   <Route path={ROUTES.home} element={<HomePage />} />
-                  <Route path={ROUTES.storyMap} element={<StoryMapPage />} />
                   <Route path={ROUTES.storyDifficulty} element={<StoryDifficultyPage />} />
-                  <Route path={ROUTES.chapter} element={<ChapterRoute />} />
+                  <Route element={<RequireDifficulty />}>
+                    <Route path={ROUTES.storyMap} element={<StoryMapPage />} />
+                    <Route path={ROUTES.chapter} element={<ChapterRoute />} />
+                  </Route>
                   <Route path={ROUTES.sandbox} element={<SandboxPage />} />
                   <Route path={ROUTES.login} element={<SignIn />} />
 

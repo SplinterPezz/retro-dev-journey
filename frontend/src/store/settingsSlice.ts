@@ -8,13 +8,15 @@ export interface SettingsState {
   musicMuted: boolean;
   dialogueVolume: number; // 0-100, the typing sound of the dialogue box
   dialogueMuted: boolean;
+  soundAsked: boolean; // the one-time "Do you want sound?" screen has been answered
 }
 
 const initialState: SettingsState = {
   musicVolume: DEFAULT_MUSIC_VOLUME,
   musicMuted: true,
   dialogueVolume: DEFAULT_DIALOGUE_VOLUME,
-  dialogueMuted: false,
+  dialogueMuted: true,
+  soundAsked: false,
 };
 
 const clampVolume = (volume: number) => Math.min(100, Math.max(0, volume));
@@ -35,6 +37,12 @@ const settingsSlice = createSlice({
     setDialogueMuted(state, action: PayloadAction<boolean>) {
       state.dialogueMuted = action.payload;
     },
+    // the answer to "Do you want sound?": music and dialogue sound together
+    chooseSound(state, action: PayloadAction<boolean>) {
+      state.musicMuted = !action.payload;
+      state.dialogueMuted = !action.payload;
+      state.soundAsked = true;
+    },
   },
 });
 
@@ -42,8 +50,8 @@ const settingsSlice = createSlice({
 // fields (redux-persist restores the saved slice as it was): read them here.
 export const selectDialogueSound = (settings: Partial<SettingsState>) => ({
   dialogueVolume: settings.dialogueVolume ?? DEFAULT_DIALOGUE_VOLUME,
-  dialogueMuted: settings.dialogueMuted ?? false,
+  dialogueMuted: settings.dialogueMuted ?? true,
 });
 
-export const { setMusicVolume, setMusicMuted, setDialogueVolume, setDialogueMuted } = settingsSlice.actions;
+export const { setMusicVolume, setMusicMuted, setDialogueVolume, setDialogueMuted, chooseSound } = settingsSlice.actions;
 export default settingsSlice.reducer;

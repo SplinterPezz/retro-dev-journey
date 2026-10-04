@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { useResourceLoader } from '../../hooks/useResourceLoader';
+import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { useTracking } from '../../hooks/useTracking';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
@@ -15,8 +15,9 @@ import PathRenderer from '../../components/Path/PathRenderer';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import Environment from '../../components/Structures/Environment';
 import DownloadCV from '../../components/Structures/DownloadCV';
-import PixelProgressBar from '../../components/Common/PixelProgressBar';
+import LoadingSplash from '../../components/Common/LoadingSplash';
 import MenuButton from '../../components/GameMenu/MenuButton';
+import FirstVisitSetup from '../../components/FirstVisit/FirstVisitSetup';
 import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import DailyQuest from '../../components/DailyQuest/DailyQuest';
 import WelcomeDialog from '../../components/WelcomeDialog/WelcomeDialog';
@@ -41,7 +42,6 @@ import {
 import { questPrefix } from '../../config/tracking';
 import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
-import { isDev, devLog } from '../../config/env';
 import { StructureData } from '../../types/sandbox';
 import './SandboxPage.css';
 
@@ -87,8 +87,6 @@ const debugHitboxes = [
     e.collisionHitbox ? [{ id: `env-${i}`, position: e.position, hitbox: e.collisionHitbox }] : []
   ),
 ];
-
-const onLoadProgress = (loaded: number, total: number) => devLog(`Loading resources: ${loaded}/${total}`);
 
 interface StaticWorldProps {
   nearbyId: string | null;
@@ -170,16 +168,14 @@ const SandboxPage: React.FC = () => {
   const isMobile = useIsMobile();
   const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
   const { isOpen: menuOpen } = useGameMenu();
-  const canPlayerMove = (tipsAcceptedDesktop || tipsAcceptedMobile) && !menuOpen;
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });
 
-  const { isLoading, progress, error } = useResourceLoader({
-    images: requiredImages,
-    audio: requiredAudio,
-    onProgress: onLoadProgress,
-    minDuration: 1000,
-  });
+  // the black "A new journey begins!" screen while the sprites and music load
+  const splash = useLoadingSplash(requiredImages, requiredAudio);
+  // still while the loading screen covers the world (free once it fades out)
+  const splashCovering = splash.visible && !splash.leaving;
+  const canPlayerMove = (tipsAcceptedDesktop || tipsAcceptedMobile) && !menuOpen && !splashCovering;
 
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
@@ -216,42 +212,11 @@ const SandboxPage: React.FC = () => {
     }
   }, [nearbyStructure, trackInteraction]);
 
-  if (isLoading) {
-    return (
-      <div className="sandbox-loading">
-        <div className="sandbox-load rpgui-content">
-          <div className="rpgui-container framed">
-            <h2>Loading Sandbox</h2>
-            <p>Preparing your journey through my career path...</p>
-
-            {error && isDev && (
-              <p style={{ color: '#ff6b6b', fontSize: '0.9rem' }}>{error} (continuing anyway...)</p>
-            )}
-
-            <div className="loading-bar-container mb-3">
-              <PixelProgressBar
-                progress={progress}
-                width={85}
-                minWidth={280}
-                height={24}
-                variant="golden"
-                animated={true}
-                showPercentage={false}
-              />
-            </div>
-
-            <p className="loading-percentage">{progress}%</p>
-            <p className="loading-details">
-              Loading {requiredImages.length + requiredAudio.length} resources...
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="rpgui-content">
+      {splash.visible && (
+        <LoadingSplash title="A new journey begins!" leaving={splash.leaving} loaded={splash.loaded} total={splash.total} />
+      )}
       <div className="sandbox-container" style={sandboxContainerStyle}>
         <GameScene
           name="sandbox"
@@ -266,20 +231,23 @@ const SandboxPage: React.FC = () => {
               <div className="back-button ms-3">
                 <MenuButton />
               </div>
-              <div className="minimap">
-                <div className="rpgui-container framed-grey">
-                  <div className="minimap-content">
-                    <Minimap />
-                    <div
-                      className="minimap-player"
-                      style={{
-                        left: `${(playerPosition.x / worldConfig.width) * 100}%`,
-                        top: `${(playerPosition.y / worldConfig.height) * 100}%`,
-                      }}
-                    />
+              {/* only once the loading screen has gone: it would sit on top of it */}
+              {!splash.visible && (
+                <div className="minimap">
+                  <div className="rpgui-container framed-grey">
+                    <div className="minimap-content">
+                      <Minimap />
+                      <div
+                        className="minimap-player"
+                        style={{
+                          left: `${(playerPosition.x / worldConfig.width) * 100}%`,
+                          top: `${(playerPosition.y / worldConfig.height) * 100}%`,
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           }
         >
@@ -295,4 +263,12 @@ const SandboxPage: React.FC = () => {
   );
 };
 
-export default SandboxPage;
+// The first visit asks the one-time questions (orientation on phones, sound)
+// before the sandbox loads and starts its music.
+const SandboxRoute: React.FC = () => (
+  <FirstVisitSetup>
+    <SandboxPage />
+  </FirstVisitSetup>
+);
+
+export default SandboxRoute;

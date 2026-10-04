@@ -12,5 +12,6 @@ export const menuProfile = {
 export const DEFAULT_MUSIC_VOLUME = 30;
 
 // Volume (0-100) of the dialogue box's typing sound until the player sets one.
-// On by default: a line only starts typing after a click or a key.
+// Like the music, the sound starts muted: it plays only once the player turns
+// it on in the game menu, and that choice is saved.
 export const DEFAULT_DIALOGUE_VOLUME = 60;

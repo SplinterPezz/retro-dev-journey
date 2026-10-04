@@ -2,14 +2,15 @@ import React from 'react';
 import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import { StoryOrientation } from '../../types/story';
 import './OrientationChoice.css';
-import '../../components/Common/pixel-button.css';
-import '../../components/Common/fullscreen-page.css';
+import '../Common/pixel-button.css';
+import '../Common/fullscreen-page.css';
 
 interface OrientationChoiceProps {
   onChoose: (orientation: StoryOrientation) => void;
 }
 
-// Shown once on phones, before the difficulty. Landscape is the left button,
+// Shown once on phones, before the first game (Story or Sandbox, see
+// FirstVisitSetup). Landscape is the left button,
 // portrait the right one; the choice can be flipped later from the audio bar.
 const OrientationChoice: React.FC<OrientationChoiceProps> = ({ onChoose }) => (
   <div className="orientation-choice-page fullscreen-page">

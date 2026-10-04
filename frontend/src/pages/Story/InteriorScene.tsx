@@ -32,7 +32,7 @@ import { useDialogueEngine } from './hooks/useDialogueEngine';
 import { useChapterProgress } from './hooks/useChapterProgress';
 import { useMeepBeats } from './hooks/useMeepBeats';
 import { useChapterOutro } from './hooks/useChapterOutro';
-import { useChapterSplash } from './hooks/useChapterSplash';
+import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { useCollectibles } from './hooks/useCollectibles';
 import { useCollectiblePopups } from './hooks/useCollectiblePopups';
 import { entryNodeId } from './dialogue';
@@ -53,7 +53,7 @@ import {
   walkableWorld,
 } from './sceneRules';
 import { playerSpawnPosition as defaultSpawn } from '../../config/world';
-import { loadingIcon } from '../../config/assets';
+import LoadingSplash from '../../components/Common/LoadingSplash';
 import { chapterAssets } from '../../config/story/assets';
 import { chapterCollectibles, collectibleCheer, collectibleIcon } from '../../config/story/collectibles';
 import { DEFAULT_DIFFICULTY } from '../../config/story/difficulty';
@@ -110,7 +110,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const found = useCollectiblePopups({ chapterId: chapter.id, flags, setFlag: setChapterFlag, foundCount: foundIds.length, total: collectiblesTotal });
   const meep = useMeepBeats(chapter.meepBeats, flags, completed);
   const sprites = useMemo(() => chapterAssets(chapter), [chapter]);
-  const splash = useChapterSplash(sprites);
+  const splash = useLoadingSplash(sprites);
 
   const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame || found.isOpen;
   // The game menu pauses the scene: nobody walks and nothing opens behind it.
@@ -298,13 +298,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   return (
     <div className="rpgui-content">
       {splash.visible && (
-        <div className={`chapter-splash${splash.leaving ? ' chapter-splash--leaving' : ''}`}>
-          <h1 className="chapter-splash-title">{chapterTitle}</h1>
-          <div className="chapter-splash-loading" role="status">
-            <span>{splash.loaded}/{splash.total} Loading</span>
-            <img src={loadingIcon} alt="" className="chapter-splash-loading-icon" />
-          </div>
-        </div>
+        <LoadingSplash title={chapterTitle} leaving={splash.leaving} loaded={splash.loaded} total={splash.total} />
       )}
       {outro.curtain && (
         <div className={`chapter-splash chapter-splash--entering${outro.curtain.leaving ? ' chapter-splash--leaving' : ''}`}>
