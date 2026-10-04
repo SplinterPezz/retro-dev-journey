@@ -28,6 +28,7 @@ export interface StoryState {
   chapters: Record<string, ChapterProgress>;
   difficulty: StoryDifficulty | null;
   orientation: StoryOrientation | null; // chosen once on mobile, before the difficulty
+  discoveriesSeen?: string[]; // technologies whose "unlocked" window was confirmed (missing in older saves)
 }
 
 // ---- dialogue ----
@@ -156,9 +157,10 @@ export interface MiniGameMarker {
 }
 
 // The chapter's closing scene: once afterFlag is set and nothing is open, the
-// screen fades to black ("<splash title> / subtitle"), the player is seated,
-// an NPC opens the scene's dialogue, and when the line that sets endFlag
-// closes the screen goes black again and the story moves on.
+// screen fades to black ("<splash title> / subtitle"), the player is seated
+// and an NPC opens the scene's dialogue. When the line that sets endFlag
+// closes, the player is free again with one objective left: walk out of the
+// door, which fades to black and moves the story on.
 export interface ChapterOutro {
   afterFlag: string;
   subtitle: string; // e.g. "Some days later"
@@ -166,6 +168,8 @@ export interface ChapterOutro {
   dialogue: { npcId: string; nodeId: string };
   startedFlag: string; // set when the scene starts: a reload resumes it from the player's seat
   endFlag: string;
+  exitObjective: string; // added to the objectives once the scene is over, e.g. "Leave the classroom"
+  exitBlockedLine: string; // Meep, when the player walks to the door before the end
 }
 
 export interface IntroPage {

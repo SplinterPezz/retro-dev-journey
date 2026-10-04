@@ -6,6 +6,7 @@ const initialState: StoryState = {
   chapters: {},
   difficulty: null,
   orientation: null,
+  discoveriesSeen: [],
 };
 
 const ensureChapter = (state: StoryState, chapterId: string) => {
@@ -45,6 +46,10 @@ const storySlice = createSlice({
     setOrientation(state, action: PayloadAction<StoryOrientation>) {
       state.orientation = action.payload;
     },
+    markDiscoverySeen(state, action: PayloadAction<string>) {
+      const seen = state.discoveriesSeen ?? [];
+      if (!seen.includes(action.payload)) state.discoveriesSeen = [...seen, action.payload];
+    },
     resetChapter(state, action: PayloadAction<{ chapterId: string }>) {
       delete state.chapters[action.payload.chapterId];
     },
@@ -55,5 +60,14 @@ const storySlice = createSlice({
   },
 });
 
-export const { setFlag, recordScore, completeChapter, setDifficulty, setOrientation, resetChapter, resetStory } = storySlice.actions;
+export const {
+  setFlag,
+  recordScore,
+  completeChapter,
+  setDifficulty,
+  setOrientation,
+  markDiscoverySeen,
+  resetChapter,
+  resetStory,
+} = storySlice.actions;
 export default storySlice.reducer;

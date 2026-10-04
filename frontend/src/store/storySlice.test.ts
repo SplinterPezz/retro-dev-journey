@@ -1,4 +1,4 @@
-import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty } from './storySlice';
+import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty, markDiscoverySeen } from './storySlice';
 
 const initial = reducer(undefined, { type: '@@init' });
 
@@ -31,5 +31,13 @@ describe('storySlice', () => {
     const reset = reducer(state, resetStory());
     expect(reset.chapters).toEqual({});
     expect(reset.difficulty).toBeNull();
+  });
+
+  it('remembers each discovery once and forgets them on a new story', () => {
+    let state = reducer(initial, markDiscoverySeen('java'));
+    state = reducer(state, markDiscoverySeen('java'));
+    state = reducer(state, markDiscoverySeen('git'));
+    expect(state.discoveriesSeen).toEqual(['java', 'git']);
+    expect(reducer(state, resetStory()).discoveriesSeen).toEqual([]);
   });
 });

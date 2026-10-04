@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../store/store';
+import { markDiscoverySeen } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useDebugReset } from '../../game/useDebugReset';
@@ -10,12 +11,17 @@ import GameScene from '../../game/GameScene';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import PathRenderer from '../../components/Path/PathRenderer';
 import Structure from '../../components/Structures/Structure';
+import Environment from '../../components/Structures/Environment';
 import Player from '../../components/Player/Player';
 import HomeButton from '../../components/Common/HomeButton';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
+import DiscoveryPopup from '../../components/Story/hud/DiscoveryPopup';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
-import { companies } from '../../config/career';
-import { storyChapterOrder } from '../../config/story/chapters';
+import { companies, technologies } from '../../config/career';
+import { treesEnvironments, detailsEnvironments } from '../../config/environments';
+import { isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import { ChapterProgress } from '../../types/story';
+import { StructureData, TechnologyData } from '../../types/sandbox';
 import { isDev } from '../../config/env';
 import '../../game/DebugOverlay.css';
 import './StoryMapPage.css';
@@ -41,6 +47,17 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   });
 };
 
+// The Sandbox decoration, all of it; the technologies come with the chapters.
+const environments = [...treesEnvironments, ...detailsEnvironments];
+
+// Statues whose chapter is finished, in the order of the Sandbox config.
+const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
+  technologies.filter((t) => {
+    const chapterId = (t.data as TechnologyData).storyChapter;
+    if (!chapterId) return false;
+    return isChapterFinished(storyChapterOrder.find((c) => c.id === chapterId) ?? { id: chapterId }, progress);
+  });
+
 const worldBounds = {
   minX: 50,
   minY: 50,
@@ -51,19 +68,22 @@ const worldBounds = {
 interface MapWorldProps {
   nearbyId: string | null;
   lockedIds: string[]; // buildings whose chapter is not open yet
+  statues: StructureData[]; // the technologies unlocked so far
+  pathTargets: StructureData[]; // what the paths lead to: the buildings and those statues
 }
 
-// Terrain, path and buildings: re-rendered only when the nearby door changes.
-const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds }) => {
+// Terrain, paths, buildings, statues and decoration: re-rendered only when the
+// nearby door or the unlocked statues change.
+const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds, statues, pathTargets }) => {
   const pathSegments = useMemo(
     () =>
       createPathGenerator({
         startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
         endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
-        structures: companies,
+        structures: pathTargets,
         tileSize: worldConfig.tileSize,
       }).generatePath(),
-    []
+    [pathTargets]
   );
 
   return (
@@ -81,6 +101,21 @@ const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds }) =
           />
         ))}
       </div>
+      <div className="structure-container">
+        {statues.map((tech) => (
+          <Structure key={tech.id} data={tech} type="technology" isNearby={false} />
+        ))}
+      </div>
+      <div className="structure-container">
+        {treesEnvironments.map((environment, index) => (
+          <Environment key={index} environment={environment} size={256} />
+        ))}
+      </div>
+      <div className="structure-container">
+        {detailsEnvironments.map((environment, index) => (
+          <Environment key={index} environment={environment} size={128} />
+        ))}
+      </div>
     </>
   );
 });
@@ -89,6 +124,8 @@ const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
   const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
   const chapters = useSelector((state: RootState) => state.story.chapters);
+  const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
+  const dispatch = useDispatch<AppDispatch>();
   const [exiting, setExiting] = useState(false);
   const { resetAll } = useDebugReset();
 
@@ -117,13 +154,28 @@ const StoryMapPage: React.FC = () => {
     [activeChapter]
   );
 
+  // Technologies of the finished chapters: on the map, and announced one by one
+  // until each "unlocked" window has been confirmed.
+  const statues = useMemo(() => unlockedTechnologies(chapters), [chapters]);
+  const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
+  const discovery = statues.find((t) => !(discoveriesSeen ?? []).includes(t.id));
+  const discoveriesLeft = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id)).length - 1;
+  const discoveryPopup = discovery && (
+    <DiscoveryPopup
+      technology={discovery.data as TechnologyData}
+      remaining={discoveriesLeft}
+      onConfirm={() => dispatch(markDiscoverySeen(discovery.id))}
+    />
+  );
+
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
     speed: 270,
     worldBounds,
-    structures: companies,
+    structures: solidStructures,
+    environments,
     playerHitbox,
-    canMove: !exiting,
+    canMove: !exiting && !discovery,
   });
 
   const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
@@ -162,6 +214,7 @@ const StoryMapPage: React.FC = () => {
             <HomeButton />
           </div>
         </div>
+        {discoveryPopup}
         {debugResetButton}
       </div>
     );
@@ -175,16 +228,18 @@ const StoryMapPage: React.FC = () => {
           name="story-map"
           world={worldConfig}
           playerPosition={playerPosition}
-          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop }}
+          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery }}
+          audio={{ src: storyMapAudioTrack, volume: 30 }}
           overlay={
             <div className="home-fixed-top-left">
               <HomeButton />
             </div>
           }
         >
-          <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} />
+          <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} statues={statues} pathTargets={solidStructures} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>
+        {discoveryPopup}
         {debugResetButton}
       </div>
     </div>

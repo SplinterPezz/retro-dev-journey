@@ -1,0 +1,60 @@
+/* Layout on top of the chapter intro's window (StoryIntroDialog.css). */
+.discovery-box {
+  text-align: center;
+}
+
+.discovery-kicker {
+  margin: 0 0 8px 0;
+  color: #7fdc8a;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.discovery-sprite {
+  display: block;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 8px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  animation: discovery-float 2.4s ease-in-out infinite;
+}
+
+@keyframes discovery-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.discovery-category {
+  margin: -4px 0 0 0;
+  color: #c8c8c8;
+  font-size: 0.85rem;
+}
+
+.discovery-map-note {
+  margin: 12px 0 0 0;
+  color: #ffd700;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .discovery-sprite {
+    width: 112px;
+    height: 112px;
+  }
+}
+
+/* Landscape phone: little height, so a smaller statue. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .discovery-sprite {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 4px;
+  }
+
+  .discovery-map-note {
+    margin-top: 6px;
+  }
+}
