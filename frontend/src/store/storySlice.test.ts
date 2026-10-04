@@ -1,4 +1,5 @@
 import { timelineKey } from '../config/story/timeline';
+import { seenFlag } from '../config/story/flags';
 import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty, markDiscoverySeen, collect } from './storySlice';
 
 const initial = reducer(undefined, { type: '@@init' });
@@ -63,6 +64,26 @@ describe('storySlice', () => {
 
       state = reducer(state, completeChapter({ chapterId: 'p', unlockIndex: 1 }));
       expect(state.timeline?.[timelineKey.chapterCompleted('p')]).toEqual(expect.any(Number));
+    });
+
+    it('records story flags, but not the dialogue-seen ones', () => {
+      let state = reducer(initial, setFlag({ chapterId: 'p', flag: 'quizPassed' }));
+      state = reducer(state, setFlag({ chapterId: 'p', flag: seenFlag('manuel', 'hello') }));
+      expect(Object.keys(state.timeline ?? {})).toEqual([timelineKey.flag('p', 'quizPassed')]);
+    });
+
+    it('records the first time a mini game is finished', () => {
+      const score = { earned: 100, max: 300 };
+      const state = reducer(initial, recordScore({ chapterId: 'p', gameId: 'fixBuild', score }));
+      expect(state.timeline?.[timelineKey.miniGame('p', 'fixBuild')]).toEqual(expect.any(Number));
+    });
+
+    it('forgets every event of a reset chapter, and only of that chapter', () => {
+      let state = reducer(initial, setFlag({ chapterId: 'p', flag: 'seated' }));
+      state = reducer(state, recordScore({ chapterId: 'p', gameId: 'readLog', score: { earned: 1, max: 1 } }));
+      state = reducer(state, setFlag({ chapterId: 'other', flag: 'seated' }));
+      state = reducer(state, resetChapter({ chapterId: 'p' }));
+      expect(Object.keys(state.timeline ?? {})).toEqual([timelineKey.flag('other', 'seated')]);
     });
 
     it('forgets the times of a reset chapter', () => {

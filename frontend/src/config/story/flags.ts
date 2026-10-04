@@ -8,7 +8,11 @@ export const ENGINE_FLAGS = {
   collectiblesAllFound: 'collectiblesAllFound',
 } as const;
 
-export const seenFlag = (npcId: string, nodeId: string): string => `__seen_${npcId}_${nodeId}`;
+const SEEN_PREFIX = '__seen_';
+
+export const seenFlag = (npcId: string, nodeId: string): string => `${SEEN_PREFIX}${npcId}_${nodeId}`;
+
+export const isSeenFlag = (flag: string): boolean => flag.startsWith(SEEN_PREFIX);
 
 export const cuedFlag = (npcId: string): string => `${npcId}_cued`;
 

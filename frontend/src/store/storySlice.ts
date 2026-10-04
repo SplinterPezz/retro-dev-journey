@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MiniGameScore, StoryDifficulty, StoryOrientation, StoryState } from '../types/story';
-import { timelineKey } from '../config/story/timeline';
+import { isChapterEvent, timelineKey } from '../config/story/timeline';
+import { isSeenFlag } from '../config/story/flags';
 
 const initialState: StoryState = {
   unlockedChapterIndex: 0,
@@ -28,17 +29,27 @@ const storySlice = createSlice({
   name: 'story',
   initialState,
   reducers: {
-    setFlag(state, action: PayloadAction<{ chapterId: string; flag: string }>) {
-      const chapter = ensureChapter(state, action.payload.chapterId);
-      chapter.flags[action.payload.flag] = true;
+    setFlag: {
+      reducer(state, action: PayloadAction<{ chapterId: string; flag: string; at: number }>) {
+        const { chapterId, flag, at } = action.payload;
+        const chapter = ensureChapter(state, chapterId);
+        chapter.flags[flag] = true;
+        // every dialogue line sets a "seen" flag: too many and meaningless for the stats
+        if (!isSeenFlag(flag)) recordOnce(state, timelineKey.flag(chapterId, flag), at);
+      },
+      prepare: (payload: { chapterId: string; flag: string }) => withTime(payload),
     },
-    recordScore(state, action: PayloadAction<{ chapterId: string; gameId: string; score: MiniGameScore }>) {
-      const chapter = ensureChapter(state, action.payload.chapterId);
-      const { gameId, score } = action.payload;
-      const best = chapter.scores?.[gameId];
-      if (!best || score.earned > best.earned) {
-        chapter.scores = { ...chapter.scores, [gameId]: score };
-      }
+    recordScore: {
+      reducer(state, action: PayloadAction<{ chapterId: string; gameId: string; score: MiniGameScore; at: number }>) {
+        const { chapterId, gameId, score, at } = action.payload;
+        const chapter = ensureChapter(state, chapterId);
+        const best = chapter.scores?.[gameId];
+        if (!best || score.earned > best.earned) {
+          chapter.scores = { ...chapter.scores, [gameId]: score };
+        }
+        recordOnce(state, timelineKey.miniGame(chapterId, gameId), at);
+      },
+      prepare: (payload: { chapterId: string; gameId: string; score: MiniGameScore }) => withTime(payload),
     },
     collect: {
       reducer(state, action: PayloadAction<{ chapterId: string; id: string; at: number }>) {
@@ -77,11 +88,10 @@ const storySlice = createSlice({
     },
     resetChapter(state, action: PayloadAction<{ chapterId: string }>) {
       const { chapterId } = action.payload;
-      const dropped = [
-        timelineKey.chapterCompleted(chapterId),
-        ...(state.chapters[chapterId]?.collectibles ?? []).map(timelineKey.collectible),
-      ];
-      dropped.forEach((key) => delete state.timeline?.[key]);
+      const collectibles = (state.chapters[chapterId]?.collectibles ?? []).map(timelineKey.collectible);
+      Object.keys(state.timeline ?? {})
+        .filter((key) => isChapterEvent(key, chapterId) || collectibles.includes(key))
+        .forEach((key) => delete state.timeline?.[key]);
       delete state.chapters[chapterId];
     },
     resetStory(state) {
