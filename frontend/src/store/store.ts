@@ -20,7 +20,7 @@ import storySlice from './storySlice'
 import zoomSlice from './zoomSlice'
 import settingsSlice from './settingsSlice'
 import { migrations, PERSIST_VERSION } from './migrations';
-import { devLog } from '../config/env';
+import { devLog, isProdBuild } from '../config/env';
 
 const persistConfig = {
   key: 'root',
@@ -50,7 +50,7 @@ export const store = configureStore({
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
       }
     }),
-  devTools: !import.meta.env.PROD,
+  devTools: !isProdBuild,
 });
 
 export const persistor = persistStore(store, {}, () => {
