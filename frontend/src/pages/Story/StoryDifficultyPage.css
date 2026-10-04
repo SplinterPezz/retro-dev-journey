@@ -52,22 +52,17 @@
   margin-top: 32px;
 }
 
-/* Every difficulty button shares one size; the label is centred both ways. */
+/* Every difficulty button shares one size. The label is centred on the
+   plank by the golden button rule (index.css); the button keeps RPGUI's own
+   display and padding, which its end caps are laid out from. */
 .story-difficulty-button {
   width: 160px !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
   font-size: 0.8rem;
   color: #fff !important;
 }
 
 .story-difficulty-button p {
-  margin: 0 !important;
-  width: 100%;
   color: #fff !important;
-  text-align: center;
 }
 
 /* Landscape phone: a tighter box, scaled down (the RPGUI buttons have a fixed

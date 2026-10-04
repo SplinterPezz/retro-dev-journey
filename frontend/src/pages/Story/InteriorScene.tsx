@@ -13,7 +13,8 @@ import { CollidableEntity, Hitbox, Position } from '../../types/game';
 import { StoryChapterConfig, QuizData, MiniGameMarker, StoryFlags } from '../../types/story';
 import { tierFor } from '../../config/story/miniGames';
 import Player from '../../components/Player/Player';
-import HomeButton from '../../components/Common/HomeButton';
+import MenuButton from '../../components/GameMenu/MenuButton';
+import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import InteriorNpc from '../../components/Story/world/InteriorNpc';
 import SideRoomView from '../../components/Story/world/SideRoomView';
 import PortraitDialogueBox from '../../components/Story/dialogue/PortraitDialogueBox';
@@ -69,7 +70,6 @@ interface InteriorSceneProps {
 
 const EMPTY_FLAGS: StoryFlags = {};
 const EMPTY_LIST: string[] = [];
-const CHAPTER_MUSIC_VOLUME = 30;
 
 const toCollidable = (id: string, position: Position, interactionRadius?: number, collisionHitbox?: Hitbox): CollidableEntity => ({
   id,
@@ -113,6 +113,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const splash = useChapterSplash(sprites);
 
   const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame || found.isOpen;
+  // The game menu pauses the scene: nobody walks and nothing opens behind it.
+  const { isOpen: menuOpen } = useGameMenu();
 
   // ---- the closing scene (it seats the player, so it gets the teleport through a ref) ----
   const teleportRef = useRef<(position: Position) => void>(undefined);
@@ -123,14 +125,14 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     flags,
     setFlag: setChapterFlag,
     ready: !splash.visible && !introPending,
-    busy: popupOpen,
+    busy: popupOpen || menuOpen,
     npcs: chapter.npcs,
     cue: cueDialogue,
     seatPlayer,
     onEnd: goToMap,
   });
-  // Nobody walks up to anything during the intro or the closing scene.
-  const triggersEnabled = !introPending && !outro.active;
+  // Nobody walks up to anything during the intro, the closing scene or with the menu open.
+  const triggersEnabled = !introPending && !outro.active && !menuOpen;
 
   // ---- what blocks the player, and what can be walked up to ----
   const npcStates = useNpcPatrol(chapter.npcs, chapter.props, dialogue.active?.npc.id ?? null);
@@ -163,7 +165,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     speed: PLAYER_SPEED,
     worldBounds,
     structures: blockers,
-    canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active && !found.isOpen,
+    canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active && !found.isOpen && !menuOpen,
     areas: walkableAreas,
   });
   teleportRef.current = teleport;
@@ -179,7 +181,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     setFlag: setChapterFlag,
     playerPosition,
     isMoving,
-    enabled: !popupOpen && !introPending && !splash.visible && !outro.active,
+    enabled: !popupOpen && !introPending && !splash.visible && !outro.active && !menuOpen,
     onFind: found.onFind,
   });
 
@@ -247,7 +249,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     completed,
     nextUnlockIndex,
     setFlag: setChapterFlag,
-    canCue: !introPending && !popupOpen && !splash.visible,
+    canCue: !introPending && !popupOpen && !splash.visible && !menuOpen,
     onCue: cueDialogue,
   });
 
@@ -322,12 +324,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           world={chapter.worldConfig}
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: triggersEnabled }}
-          audio={chapter.audioTrack ? { src: chapter.audioTrack, volume: CHAPTER_MUSIC_VOLUME } : undefined}
+          music={chapter.audioTrack}
           playerHitbox={playerHitbox}
           debugActions={debugActions}
           overlay={
-            <div className="home-fixed-top-left">
-              <HomeButton />
+            <div className="menu-fixed-top-left">
+              <MenuButton />
             </div>
           }
         >

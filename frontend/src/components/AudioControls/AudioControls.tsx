@@ -1,128 +1,59 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { VolumeX, Volume2, ChevronUp, ChevronDown, Headphones } from 'lucide-react';
 import FullscreenButton from '../Common/FullscreenButton';
 import OrientationToggleButton from '../Common/OrientationToggleButton';
+import { AppDispatch, RootState } from '../../store/store';
+import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
+import { useBackgroundMusic } from '../../hooks/useBackgroundMusic';
 import './AudioControls.css'
 
 interface AudioControlsProps {
   audioSrc: string;
   className?: string;
-  defaultVolume?: number;
-  defaultMuted?: boolean;
-  loop?: boolean;
-  autoPlay?: boolean;
   showVolumePercentage?: boolean;
   containerStyle?: 'framed' | 'framed-golden' | 'framed-grey';
   buttonStyle?: 'normal' | 'golden';
   volumeStep?: number;
 }
 
+// The home page's music controls: volume up / down and mute. Volume and mute
+// are the same saved setting the game menu changes (state.settings), so a
+// choice made here holds on every page, and the other way round.
 const AudioControls: React.FC<AudioControlsProps> = ({
   audioSrc,
   className = '',
-  defaultVolume = 30,
-  defaultMuted = true,
-  loop = true,
-  autoPlay = false,
   showVolumePercentage = true,
   containerStyle = 'framed-grey',
   buttonStyle = 'normal',
   volumeStep = 10
 }) => {
-  const [isMuted, setIsMuted] = useState(defaultMuted);
-  const [volume, setVolume] = useState(defaultVolume);
+  const dispatch = useDispatch<AppDispatch>();
+  const { musicVolume: volume, musicMuted: isMuted } = useSelector((state: RootState) => state.settings);
   const [showVolumeControls, setShowVolumeControls] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  useBackgroundMusic(audioSrc);
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-      audioRef.current.muted = isMuted;
-      audioRef.current.loop = loop;
-
-      if (autoPlay && !isMuted) {
-        audioRef.current.play().catch(console.error);
-      }
-    }
-
-    setIsLoaded(true);
-    // Reads the initial settings once, when the audio element is created.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
-    }
-  }, [volume]);
-
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isMuted;
-    }
-  }, [isMuted]);
-
-  const toggleMute = () => {
-    if (isMuted) {
-      setIsMuted(false);
-      if (audioRef.current) {
-        audioRef.current.play().catch(console.error);
-      }
-    } else {
-      setIsMuted(true);
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    }
-  };
+  const toggleMute = () => dispatch(setMusicMuted(!isMuted));
 
   const toggleVolumeControls = () => {
     setShowVolumeControls(!showVolumeControls);
   };
 
+  // Raising the volume turns muted music back on; lowering it to 0 mutes it.
   const increaseVolume = () => {
     const newVolume = Math.min(volume + volumeStep, 100);
-    setVolume(newVolume);
-
-    if (newVolume > 0 && isMuted) {
-      setIsMuted(false);
-      if (audioRef.current) {
-        audioRef.current.play().catch(console.error);
-      }
-    }
+    dispatch(setMusicVolume(newVolume));
+    if (newVolume > 0 && isMuted) dispatch(setMusicMuted(false));
   };
 
   const decreaseVolume = () => {
     const newVolume = Math.max(volume - volumeStep, 0);
-    setVolume(newVolume);
-
-    if (newVolume === 0 && !isMuted) {
-      setIsMuted(true);
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    }
-  };
-
-  const handleAudioLoad = () => {
-    setIsLoaded(true);
-  };
-
-  const handleAudioError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
-    console.error('Audio failed to load:', audioSrc, e);
+    dispatch(setMusicVolume(newVolume));
+    if (newVolume === 0 && !isMuted) dispatch(setMusicMuted(true));
   };
 
   return (
     <div className={`rpgui-content`}>
-      <audio
-        ref={audioRef}
-        src={audioSrc}
-        preload="auto"
-        onLoadedData={handleAudioLoad}
-        onError={handleAudioError}
-      />
-
       <div className={`volume-position ${className}`}>
         <div className='audio-container'>
           {/* Mobile only: sit to the left of the volume controls */}
@@ -135,12 +66,11 @@ const AudioControls: React.FC<AudioControlsProps> = ({
             type="button"
             onClick={toggleVolumeControls}
             title="Volume Controls"
-            disabled={!isLoaded}
           >
             <Headphones
               size={24}
               color="white"
-              className={`volume-filter ${isLoaded ? '' : 'opacity-not-loaded'}`}
+              className="volume-filter"
             />
           </button>
 
@@ -150,19 +80,18 @@ const AudioControls: React.FC<AudioControlsProps> = ({
             type="button"
             onClick={toggleMute}
             title={isMuted ? 'Unmute Audio' : 'Mute Audio'}
-            disabled={!isLoaded}
           >
             {isMuted ? (
               <VolumeX
                 size={24}
                 color="white"
-                className={`volume-filter ${isLoaded ? '':'opacity-not-loaded'}`}
+                className="volume-filter"
               />
             ) : (
               <Volume2
                 size={24}
                 color="white"
-                className={`volume-filter ${isLoaded ? '':'opacity-not-loaded'}`}
+                className="volume-filter"
               />
             )}
           </button>
@@ -185,12 +114,12 @@ const AudioControls: React.FC<AudioControlsProps> = ({
               type="button"
               onClick={increaseVolume}
               title={`Increase Volume (+${volumeStep}%)`}
-              disabled={!isLoaded || volume >= 100}
+              disabled={volume >= 100}
             >
               <ChevronUp
                 size={18}
                 color="white"
-                className={`volume-filter ${(isLoaded && volume < 100) ? '':'opacity-not-loaded'}`}
+                className={`volume-filter ${volume < 100 ? '' : 'opacity-not-loaded'}`}
               />
             </button>
 
@@ -200,12 +129,12 @@ const AudioControls: React.FC<AudioControlsProps> = ({
               type="button"
               onClick={decreaseVolume}
               title={`Decrease Volume (-${volumeStep}%)`}
-              disabled={!isLoaded || volume <= 0}
+              disabled={volume <= 0}
             >
               <ChevronDown
                 size={18}
                 color="white"
-                className={`volume-filter ${(isLoaded && volume > 0)? '' : 'opacity-not-loaded'}`}
+                className={`volume-filter ${volume > 0 ? '' : 'opacity-not-loaded'}`}
               />
             </button>
 

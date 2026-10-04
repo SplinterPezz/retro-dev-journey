@@ -22,6 +22,8 @@ export const playerSprites = {
 } as const;
 
 export const playerTurnSprite = playerSprite('turn');
+// Standing still, facing the screen (the game menu's player card).
+export const playerIdleSprite = playerSprite('idle');
 
 export const pathSprites: Record<PathSegment['type'], string> = {
   core: '/sprites/terrain/path_core.png',

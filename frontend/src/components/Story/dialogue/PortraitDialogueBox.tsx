@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useTypedText } from '../../../hooks/useTypedText';
 import DialogueChoices, { ChoiceButtonItem } from './DialogueChoices';
 import { DIALOGUE_ADVANCE_KEYS } from '../../../config/controls';
+import { useGameMenu } from '../../GameMenu/GameMenuContext';
 import './PortraitDialogueBox.css';
 
 interface PortraitDialogueBoxProps {
@@ -43,9 +44,13 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
   const handleBoxClickRef = useRef(handleBoxClick);
   handleBoxClickRef.current = handleBoxClick;
   const hasChoices = !!choices && choices.length > 0;
+  // the game menu covers the box: its keys must not advance the line behind it
+  const { isOpen: menuOpen } = useGameMenu();
+  const menuOpenRef = useRef(menuOpen);
+  menuOpenRef.current = menuOpen;
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (!DIALOGUE_ADVANCE_KEYS.includes(e.key)) return;
+      if (!DIALOGUE_ADVANCE_KEYS.includes(e.key) || menuOpenRef.current) return;
       const target = e.target as HTMLElement | null;
       if (target?.closest('button, input, textarea, .cm-editor')) return;
       if (hasChoices && !isTyping) return;

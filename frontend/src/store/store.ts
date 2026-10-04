@@ -18,6 +18,7 @@ import welcomeSlice from './welcomeSlice'
 import contentSlice from './consentSlice'
 import storySlice from './storySlice'
 import zoomSlice from './zoomSlice'
+import settingsSlice from './settingsSlice'
 import { migrations, PERSIST_VERSION } from './migrations';
 import { devLog } from '../config/env';
 
@@ -25,7 +26,7 @@ const persistConfig = {
   key: 'root',
   version: PERSIST_VERSION,
   storage,
-  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom'],
+  whitelist: ['auth', 'tracking', 'welcome', 'consent', 'story', 'zoom', 'settings'],
   migrate: createMigrate(migrations, { debug: false }),
 };
 
@@ -35,7 +36,8 @@ const rootReducer = combineReducers({
   welcome: welcomeSlice,
   consent: contentSlice,
   story: storySlice,
-  zoom: zoomSlice
+  zoom: zoomSlice,
+  settings: settingsSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

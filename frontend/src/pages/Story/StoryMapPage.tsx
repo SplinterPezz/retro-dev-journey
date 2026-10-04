@@ -16,7 +16,8 @@ import Environment from '../../components/Structures/Environment';
 import Player from '../../components/Player/Player';
 import Meep from '../../components/Companion/Meep';
 import { useLaggedPosition } from '../../components/Companion/useLaggedPosition';
-import HomeButton from '../../components/Common/HomeButton';
+import MenuButton from '../../components/GameMenu/MenuButton';
+import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
 import UnlockPopup from '../../components/Story/hud/UnlockPopup';
 import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
@@ -25,7 +26,6 @@ import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
 import { ChapterMeta, InDevelopmentRedirect, isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
 import { MEEP_LAG_MS } from './sceneRules';
-import { collectibleCount } from '../../config/story/collectibles';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
 import { chapterPath } from '../../config/routes';
@@ -45,20 +45,12 @@ const companyOf = (chapter: ChapterMeta) => companies.find((co) => co.id === cha
 const isChapterToWrite = (company: StructureData) =>
   company.id !== COMPANY_IDS.futureOpportunity && !storyChapterOrder.some((c) => c.companyId === company.id);
 
-// "Eikony ★ 3/5" for a chapter with collectibles, just the name otherwise.
-const withCollectibleCount = (name: string, chapterId: string, progress: Record<string, ChapterProgress>) => {
-  const total = collectibleCount(chapterId);
-  const found = progress[chapterId]?.collectibles?.length ?? 0;
-  return total > 0 ? `${name} ★ ${found}/${total}` : name;
-};
-
 // Every chapter of the story, in order: the playable ones, then the companies
 // still to be written. Done before the current one, locked after it.
-const chapterQuests = (unlockedIndex: number, progress: Record<string, ChapterProgress>): StoryObjective[] => {
+const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   const written = storyChapterOrder.map((chapter) => {
     const company = companyOf(chapter);
-    const name = company ? chapterName(company.name) : chapter.name ?? chapter.id;
-    return { id: company?.id ?? chapter.id, name: withCollectibleCount(name, chapter.id, progress) };
+    return { id: company?.id ?? chapter.id, name: company ? chapterName(company.name) : chapter.name ?? chapter.id };
   });
   const toWrite = companies.filter(isChapterToWrite).map((co) => ({ id: co.id, name: chapterName(co.name) }));
 
@@ -164,9 +156,10 @@ const StoryMapPage: React.FC = () => {
     if (location.state) void navigate(location.pathname, { replace: true, state: null });
   }, [location.state, location.pathname, navigate]);
   const { resetAll } = useDebugReset();
+  const { isOpen: menuOpen } = useGameMenu();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
-  const quests = useMemo(() => chapterQuests(unlockedChapterIndex, chapters), [unlockedChapterIndex, chapters]);
+  const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
   // every building that is neither done nor the current chapter (the "???" teaser too)
   const lockedIds = useMemo(() => {
     const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
@@ -221,7 +214,7 @@ const StoryMapPage: React.FC = () => {
     structures: solidStructures,
     environments,
     playerHitbox,
-    canMove: !exiting && !discovery && !inDevelopmentOpen,
+    canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen,
   });
 
   // Meep, the mascot, follows the player on the map too, as in the chapters.
@@ -272,7 +265,7 @@ const StoryMapPage: React.FC = () => {
           <div className="rpgui-container framed-golden story-map-stub-box">
             <h2>To be continued...</h2>
             <p>The next chapter of this journey is still being written.</p>
-            <HomeButton />
+            <MenuButton withMusic={false} />
           </div>
         </div>
         {discoveryPopup}
@@ -289,13 +282,13 @@ const StoryMapPage: React.FC = () => {
           name="story-map"
           world={worldConfig}
           playerPosition={playerPosition}
-          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery }}
-          audio={{ src: storyMapAudioTrack, volume: 30 }}
+          joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop, enabled: !discovery && !menuOpen }}
+          music={storyMapAudioTrack}
           playerHitbox={playerHitbox}
           debugActions={debugActions}
           overlay={
-            <div className="home-fixed-top-left">
-              <HomeButton />
+            <div className="menu-fixed-top-left">
+              <MenuButton />
             </div>
           }
         >

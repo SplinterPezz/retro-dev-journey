@@ -27,6 +27,27 @@ code {
   text-shadow: -2px 0 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000;
 }
 
+/* Golden buttons: the label sits on the middle of the orange plank, whatever
+   the button's height. button-golden.png is drawn at 80% of the height,
+   centred, and its plank's middle is row 12.5 of 24: 10% + 80% * 12.5 / 24
+   = 51.7% from the top (plus 1px: Press Start 2P draws its capitals a little
+   high in their box). The label is taken out of the flow, so it can never
+   push RPGUI's floated end caps out of line. */
+.rpgui-button.golden {
+  position: relative;
+}
+
+.rpgui-button.golden > p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(51.7% + 1px);
+  transform: translateY(-50%);
+  margin: 0 !important;
+  text-align: center;
+  white-space: nowrap;
+}
+
 /* Undo RPGUI's top margin on a button label. */
 .revert-top {
   margin-top: revert;

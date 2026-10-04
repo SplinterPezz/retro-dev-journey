@@ -9,6 +9,7 @@ import { useFallbackToPortrait, useScreenRotation } from './hooks/screenOrientat
 import HomePage from './pages/Home/HomePage';
 import PrivacyRedirect, { privacyRedirects } from './components/PrivacyRedirect/PrivacyRedirect';
 import PrivateRoute from './components/Routing/PrivateRoute';
+import { GameMenuProvider } from './components/GameMenu/GameMenuContext';
 import { ROUTES } from './config/routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -45,24 +46,26 @@ function App() {
       <PersistGate loading={<PageLoading />} persistor={persistor}>
         <AppInitializer>
           <BrowserRouter>
-            <Suspense fallback={<PageLoading />}>
-              <Routes>
-                <Route path={ROUTES.home} element={<HomePage />} />
-                <Route path={ROUTES.storyMap} element={<StoryMapPage />} />
-                <Route path={ROUTES.storyDifficulty} element={<StoryDifficultyPage />} />
-                <Route path={ROUTES.chapter} element={<ChapterRoute />} />
-                <Route path={ROUTES.sandbox} element={<SandboxPage />} />
-                <Route path={ROUTES.login} element={<SignIn />} />
+            <GameMenuProvider>
+              <Suspense fallback={<PageLoading />}>
+                <Routes>
+                  <Route path={ROUTES.home} element={<HomePage />} />
+                  <Route path={ROUTES.storyMap} element={<StoryMapPage />} />
+                  <Route path={ROUTES.storyDifficulty} element={<StoryDifficultyPage />} />
+                  <Route path={ROUTES.chapter} element={<ChapterRoute />} />
+                  <Route path={ROUTES.sandbox} element={<SandboxPage />} />
+                  <Route path={ROUTES.login} element={<SignIn />} />
 
-                {privacyRedirects.map(({ path, urlPath }) => (
-                  <Route key={path} path={path} element={<PrivacyRedirect urlPath={urlPath} />} />
-                ))}
+                  {privacyRedirects.map(({ path, urlPath }) => (
+                    <Route key={path} path={path} element={<PrivacyRedirect urlPath={urlPath} />} />
+                  ))}
 
-                <Route path={ROUTES.admin} element={<PrivateRoute />}>
-                  <Route path={ROUTES.admin} element={<AdminPage />} />
-                </Route>
-              </Routes>
-            </Suspense>
+                  <Route path={ROUTES.admin} element={<PrivateRoute />}>
+                    <Route path={ROUTES.admin} element={<AdminPage />} />
+                  </Route>
+                </Routes>
+              </Suspense>
+            </GameMenuProvider>
           </BrowserRouter>
         </AppInitializer>
       </PersistGate>

@@ -8,7 +8,7 @@ import { downloadCV } from '../../services/fileService';
 import { useNavigate } from 'react-router';
 import { playerTurnSprite } from "../../config/assets";
 import { isDev, devLog, devError } from "../../config/env";
-import { homeAudioTrack, homeDefaultVolume, homeBackgroundImage, homeSocialLinks } from "../../config/home";
+import { homeAudioTrack, homeBackgroundImage, homeSocialLinks } from "../../config/home";
 import { ROUTES } from "../../config/routes";
 
 export default function HomePage() {
@@ -73,7 +73,7 @@ export default function HomePage() {
             <div>
               
 
-              <AudioControls audioSrc={homeAudioTrack} defaultVolume={homeDefaultVolume} className="home-page" />
+              <AudioControls audioSrc={homeAudioTrack} className="home-page" />
 
             </div>
             <div className="social-container">

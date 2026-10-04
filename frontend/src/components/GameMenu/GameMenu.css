@@ -1,0 +1,219 @@
+/* The window reuses the chapter intro's backdrop, frame and X
+   (StoryIntroDialog.css); these rules only lay out what is inside. */
+
+/* The X: a small square, icon centred. RPGUI buttons have a 140px minimum width. */
+.game-menu-box .game-menu-close {
+  min-width: 0;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Above every other layer of a scene: dialogue box, joystick, debug tools. */
+.game-menu-layer {
+  z-index: 1100;
+}
+
+.game-menu-dialog {
+  width: 420px;
+}
+
+.game-menu-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---- the two columns: one under the other, side by side on a landscape phone ---- */
+
+.game-menu-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* the same gap as between the entries, so Home and Items read as one list */
+}
+
+.game-menu-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ---- player card: portrait on the left, name and details on the right ---- */
+
+.game-menu-profile {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-right: 32px; /* clear of the X */
+}
+
+/* A close-up of the face. The idle sprite is a 320x320 frame whose face
+   (hair to beard) is centred at (165, 125): the image is scaled so a 145px
+   square around it (the face plus a little margin) fills the 90px window,
+   and shifted onto it. */
+.game-menu-portrait {
+  flex: none;
+  position: relative;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+  background: #1e1b22;
+  border: 3px solid #c8a24a;
+  box-sizing: border-box;
+}
+
+.game-menu-portrait img {
+  position: absolute;
+  width: 199px; /* 320 * 90 / 145 */
+  height: 199px;
+  left: -57px; /* centre the face: 45 - 165 * 90 / 145 */
+  top: -33px; /* 45 - 125 * 90 / 145 */
+  max-width: none;
+  image-rendering: pixelated;
+}
+
+.game-menu-identity p {
+  margin: 0;
+  color: #fff;
+  text-align: left;
+}
+
+.game-menu-name {
+  font-size: 1rem;
+  color: #ffd700 !important;
+  margin-bottom: 8px !important;
+}
+
+.game-menu-detail {
+  font-size: 0.7rem;
+  line-height: 1.6;
+}
+
+/* ---- the three entries, one under the other ---- */
+
+.game-menu-entries {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-menu-entry {
+  width: 180px;
+}
+
+/* The icon sits just before the word, both centred together; the label's
+   vertical place on the button comes from the golden button rule (index.css). */
+.game-menu-box .game-menu-entry p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #fff !important;
+}
+
+.game-menu-box .game-menu-entry svg {
+  flex: none;
+  /* the pixel font's capitals sit in the top of their line box: lift the
+     icon 1px so its middle matches theirs */
+  position: relative;
+  top: -1px;
+}
+
+/* ---- music: volume bar and mute toggle ---- */
+
+.game-menu-music {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 4px 0;
+}
+
+.game-menu-volume {
+  flex: 1;
+  height: 10px;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: #4a3a1c;
+  border: 2px solid #c8a24a;
+}
+
+.game-menu-volume::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 22px;
+  background: #ffd700;
+  border: 2px solid #1e1b22;
+}
+
+.game-menu-volume::-moz-range-thumb {
+  width: 14px;
+  height: 22px;
+  border-radius: 0;
+  background: #ffd700;
+  border: 2px solid #1e1b22;
+}
+
+.game-menu-mute {
+  flex: none;
+}
+
+@media (max-width: 480px) {
+  .game-menu-portrait {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* same close-up for a 66px window */
+  .game-menu-portrait img {
+    width: 146px; /* 320 * 66 / 145 */
+    height: 146px;
+    left: -42px;
+    top: -24px;
+  }
+}
+
+/* Landscape phone (the same breakpoint as the home page menu): profile and
+   Home on the left, Items, Skills and the music on the right, with a golden
+   line between them. Smaller portrait so it all fits the short screen. */
+@media (orientation: landscape) and (max-height: 500px) {
+  .game-menu-dialog {
+    width: min(680px, 94vw);
+  }
+
+  .game-menu-box {
+    padding: 14px 18px 22px !important;
+  }
+
+  .game-menu-columns {
+    flex-direction: row;
+    align-items: center;
+    gap: 0;
+  }
+
+  .game-menu-column {
+    flex: 1;
+    min-width: 0;
+    padding: 0 16px;
+  }
+
+  .game-menu-column-right {
+    border-left: 2px solid #c8a24a;
+  }
+
+  .game-menu-portrait {
+    width: 72px;
+    height: 72px;
+  }
+
+  .game-menu-portrait img {
+    width: 146px;
+    height: 146px;
+    left: -42px;
+    top: -24px;
+  }
+}

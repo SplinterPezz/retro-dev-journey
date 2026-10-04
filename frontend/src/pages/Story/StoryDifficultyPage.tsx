@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from '../../store/store';
 import { setDifficulty, setOrientation } from '../../store/storySlice';
 import { StoryDifficulty, StoryOrientation } from '../../types/story';
 import { storyDifficultyLabels } from '../../config/story/difficulty';
-import HomeButton from '../../components/Common/HomeButton';
+import MenuButton from '../../components/GameMenu/MenuButton';
 import { isMobileDevice } from '../../hooks/useIsMobile';
 import { enterLandscape, isLandscape } from '../../hooks/screenOrientation';
 import OrientationChoice from './OrientationChoice';
@@ -44,8 +44,8 @@ const StoryDifficultyPage: React.FC = () => {
   if (isPhoneOnOpen && !orientation) {
     return (
       <>
-        <div className="home-fixed-top-left">
-          <HomeButton />
+        <div className="menu-fixed-top-left">
+          <MenuButton withMusic={false} />
         </div>
         <OrientationChoice onChoose={handleOrientation} />
       </>
@@ -54,8 +54,8 @@ const StoryDifficultyPage: React.FC = () => {
 
   return (
     <div className="story-difficulty-page fullscreen-page">
-      <div className="home-fixed-top-left">
-        <HomeButton />
+      <div className="menu-fixed-top-left">
+        <MenuButton withMusic={false} />
       </div>
       <div className="rpgui-container framed-golden story-difficulty-box">
         <h2 className="story-difficulty-title">Are you a developer?</h2>

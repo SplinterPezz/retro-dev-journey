@@ -16,7 +16,8 @@ import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import Environment from '../../components/Structures/Environment';
 import DownloadCV from '../../components/Structures/DownloadCV';
 import PixelProgressBar from '../../components/Common/PixelProgressBar';
-import HomeButton from '../../components/Common/HomeButton';
+import MenuButton from '../../components/GameMenu/MenuButton';
+import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import DailyQuest from '../../components/DailyQuest/DailyQuest';
 import WelcomeDialog from '../../components/WelcomeDialog/WelcomeDialog';
 import { useIsMobile } from '../../hooks/useIsMobile';
@@ -35,7 +36,6 @@ import {
   downloadButton,
   hideDownloadButtonInSandbox,
   sandboxAudioTrack,
-  sandboxDefaultVolume,
   sandboxBackgroundImage,
 } from '../../config/sandbox';
 import { questPrefix } from '../../config/tracking';
@@ -169,7 +169,8 @@ const SandboxPage: React.FC = () => {
   const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
   const isMobile = useIsMobile();
   const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
-  const canPlayerMove = tipsAcceptedDesktop || tipsAcceptedMobile;
+  const { isOpen: menuOpen } = useGameMenu();
+  const canPlayerMove = (tipsAcceptedDesktop || tipsAcceptedMobile) && !menuOpen;
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });
 
@@ -257,13 +258,13 @@ const SandboxPage: React.FC = () => {
           world={worldConfig}
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop }}
-          audio={{ src: sandboxAudioTrack, volume: sandboxDefaultVolume }}
+          music={sandboxAudioTrack}
           playerHitbox={playerHitbox}
           overlay={
             <div className="sandbox-ui">
               <WelcomeDialog isMobile={isMobile} />
               <div className="back-button ms-3">
-                <HomeButton />
+                <MenuButton />
               </div>
               <div className="minimap">
                 <div className="rpgui-container framed-grey">
