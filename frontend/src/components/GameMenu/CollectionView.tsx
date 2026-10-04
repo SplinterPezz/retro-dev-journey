@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { collectionTexts } from '../../config/menu';
+import ElapsedTime from '../Common/ElapsedTime';
 import { CollectionEntry } from './useCollections';
 import '../Common/rarity.css';
 import './CollectionView.css';
@@ -27,6 +28,7 @@ const CollectionCell: React.FC<{ entry: CollectionEntry; onInspect: (entry: Coll
   return (
     <li>
       <button type="button" className={`collection-cell rarity--${entry.rarity}`} onClick={() => onInspect(entry)}>
+        <ElapsedTime ms={entry.elapsedMs} className="collection-cell-time" />
         <div className="collection-cell-art">
           <img src={entry.image} alt="" />
         </div>

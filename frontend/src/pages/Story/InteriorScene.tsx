@@ -54,6 +54,7 @@ import {
 } from './sceneRules';
 import { playerSpawnPosition as defaultSpawn } from '../../config/world';
 import LoadingSplash from '../../components/Common/LoadingSplash';
+import { elapsedFor, timelineKey } from '../../config/story/timeline';
 import { chapterAssets } from '../../config/story/assets';
 import { chapterCollectibles, collectibleCheer, collectibleIcon } from '../../config/story/collectibles';
 import { DEFAULT_DIFFICULTY } from '../../config/story/difficulty';
@@ -87,6 +88,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const completed = !!chapterProgress?.completed;
   const foundIds = chapterProgress?.collectibles ?? EMPTY_LIST;
   const difficulty = useSelector((state: RootState) => state.story.difficulty) ?? DEFAULT_DIFFICULTY;
+  const startedAt = useSelector((state: RootState) => state.story.startedAt);
+  const timeline = useSelector((state: RootState) => state.story.timeline);
   const setChapterFlag = useCallback(
     (flag: string) => {
       dispatch(setFlag({ chapterId: chapter.id, flag }));
@@ -357,6 +360,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             text={found.current.description}
             cornerImage={collectibleCheer}
             rarity={found.current.rarity}
+            elapsedMs={elapsedFor({ startedAt, timeline }, timelineKey.collectible(found.current.id))}
             remaining={found.remaining}
             onConfirm={found.confirmFound}
           />

@@ -25,15 +25,15 @@ describe('isTechnologyUnlocked', () => {
 
 describe('collection entries', () => {
   it('lists every collectible, found or not', () => {
-    const items = itemEntries(prologueDone);
+    const items = itemEntries({ chapters: prologueDone });
     expect(items).toHaveLength(chapterCollectibles[CHAPTER_IDS.prologue].items.length);
     expect(items.filter((i) => i.found).map((i) => i.id)).toEqual(['floppy']);
   });
 
   it('marks the skills of the finished chapters as found', () => {
-    const skills = skillEntries(prologueDone);
+    const skills = skillEntries({ chapters: prologueDone });
     expect(skills.some((s) => s.found)).toBe(true);
     expect(skills.some((s) => !s.found)).toBe(true);
-    expect(skillEntries({}).every((s) => !s.found)).toBe(true);
+    expect(skillEntries({ chapters: {} }).every((s) => !s.found)).toBe(true);
   });
 });

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Binoculars, Search, SquareDashedMousePointer } from 'lucide-react';
+import { SquareDashedMousePointer } from 'lucide-react';
 import { collectionTexts } from '../../../config/menu';
 import RarityBadge from '../../Common/RarityBadge';
+import ElapsedTime from '../../Common/ElapsedTime';
 import { CollectionEntry } from '../../GameMenu/useCollections';
 import '../../AudioControls/AudioControls.css';
 import './SkillWindow.css';
@@ -27,7 +28,10 @@ const SkillWindow: React.FC<SkillWindowProps> = ({ entry, chapterName, onInspect
           <p className="skill-window-chapter">
             {collectionTexts.unlockedIn} {chapterName}
           </p>
-          <RarityBadge rarity={entry.rarity} />
+          <div className="skill-window-tags">
+            <RarityBadge rarity={entry.rarity} />
+            <ElapsedTime ms={entry.elapsedMs} />
+          </div>
         </div>
       </div>
 

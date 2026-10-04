@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { MiniGameScore, StoryDifficulty, StoryOrientation, StoryState } from '../types/story';
+import { timelineKey } from '../config/story/timeline';
 
 const initialState: StoryState = {
   unlockedChapterIndex: 0,
@@ -15,6 +16,13 @@ const ensureChapter = (state: StoryState, chapterId: string) => {
   }
   return state.chapters[chapterId];
 };
+
+// the first time only: a found-again collectible or a replayed chapter keeps its original time
+const recordOnce = (state: StoryState, key: string, at: number) => {
+  if (state.timeline?.[key] === undefined) state.timeline = { ...state.timeline, [key]: at };
+};
+
+const withTime = <T>(payload: T) => ({ payload: { ...payload, at: Date.now() } });
 
 const storySlice = createSlice({
   name: 'story',
@@ -32,20 +40,33 @@ const storySlice = createSlice({
         chapter.scores = { ...chapter.scores, [gameId]: score };
       }
     },
-    collect(state, action: PayloadAction<{ chapterId: string; id: string }>) {
-      const chapter = ensureChapter(state, action.payload.chapterId);
-      const found = chapter.collectibles ?? [];
-      if (!found.includes(action.payload.id)) chapter.collectibles = [...found, action.payload.id];
+    collect: {
+      reducer(state, action: PayloadAction<{ chapterId: string; id: string; at: number }>) {
+        const chapter = ensureChapter(state, action.payload.chapterId);
+        const found = chapter.collectibles ?? [];
+        if (!found.includes(action.payload.id)) chapter.collectibles = [...found, action.payload.id];
+        recordOnce(state, timelineKey.collectible(action.payload.id), action.payload.at);
+      },
+      prepare: (payload: { chapterId: string; id: string }) => withTime(payload),
     },
-    completeChapter(state, action: PayloadAction<{ chapterId: string; unlockIndex: number }>) {
-      const chapter = ensureChapter(state, action.payload.chapterId);
-      chapter.completed = true;
-      if (action.payload.unlockIndex > state.unlockedChapterIndex) {
-        state.unlockedChapterIndex = action.payload.unlockIndex;
-      }
+    completeChapter: {
+      reducer(state, action: PayloadAction<{ chapterId: string; unlockIndex: number; at: number }>) {
+        const chapter = ensureChapter(state, action.payload.chapterId);
+        chapter.completed = true;
+        if (action.payload.unlockIndex > state.unlockedChapterIndex) {
+          state.unlockedChapterIndex = action.payload.unlockIndex;
+        }
+        recordOnce(state, timelineKey.chapterCompleted(action.payload.chapterId), action.payload.at);
+      },
+      prepare: (payload: { chapterId: string; unlockIndex: number }) => withTime(payload),
     },
-    setDifficulty(state, action: PayloadAction<StoryDifficulty>) {
-      state.difficulty = action.payload;
+    // choosing the difficulty is what starts a new story
+    setDifficulty: {
+      reducer(state, action: PayloadAction<{ difficulty: StoryDifficulty; at: number }>) {
+        state.difficulty = action.payload.difficulty;
+        state.startedAt = action.payload.at;
+      },
+      prepare: (difficulty: StoryDifficulty) => withTime({ difficulty }),
     },
     setOrientation(state, action: PayloadAction<StoryOrientation>) {
       state.orientation = action.payload;
@@ -55,7 +76,13 @@ const storySlice = createSlice({
       if (!seen.includes(action.payload)) state.discoveriesSeen = [...seen, action.payload];
     },
     resetChapter(state, action: PayloadAction<{ chapterId: string }>) {
-      delete state.chapters[action.payload.chapterId];
+      const { chapterId } = action.payload;
+      const dropped = [
+        timelineKey.chapterCompleted(chapterId),
+        ...(state.chapters[chapterId]?.collectibles ?? []).map(timelineKey.collectible),
+      ];
+      dropped.forEach((key) => delete state.timeline?.[key]);
+      delete state.chapters[chapterId];
     },
     resetStory(state) {
       // a new story asks for the difficulty again; the screen orientation is kept

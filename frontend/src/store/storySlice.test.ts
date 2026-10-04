@@ -1,3 +1,4 @@
+import { timelineKey } from '../config/story/timeline';
 import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty, markDiscoverySeen, collect } from './storySlice';
 
 const initial = reducer(undefined, { type: '@@init' });
@@ -46,5 +47,29 @@ describe('storySlice', () => {
     state = reducer(state, collect({ chapterId: 'p', id: 'floppy' }));
     state = reducer(state, collect({ chapterId: 'p', id: 'phone' }));
     expect(state.chapters.p.collectibles).toEqual(['floppy', 'phone']);
+  });
+
+  describe('timeline', () => {
+    it('starts the clock when the difficulty is chosen', () => {
+      const state = reducer(initial, setDifficulty('junior'));
+      expect(typeof state.startedAt).toBe('number');
+    });
+
+    it('records a find and a finished chapter only the first time', () => {
+      let state = reducer(initial, collect({ chapterId: 'p', id: 'floppy' }));
+      const first = state.timeline?.[timelineKey.collectible('floppy')];
+      state = reducer(state, { ...collect({ chapterId: 'p', id: 'floppy' }), payload: { chapterId: 'p', id: 'floppy', at: (first ?? 0) + 5000 } });
+      expect(state.timeline?.[timelineKey.collectible('floppy')]).toBe(first);
+
+      state = reducer(state, completeChapter({ chapterId: 'p', unlockIndex: 1 }));
+      expect(state.timeline?.[timelineKey.chapterCompleted('p')]).toEqual(expect.any(Number));
+    });
+
+    it('forgets the times of a reset chapter', () => {
+      let state = reducer(initial, collect({ chapterId: 'p', id: 'floppy' }));
+      state = reducer(state, completeChapter({ chapterId: 'p', unlockIndex: 1 }));
+      state = reducer(state, resetChapter({ chapterId: 'p' }));
+      expect(state.timeline).toEqual({});
+    });
   });
 });

@@ -33,6 +33,13 @@
   animation: unlock-float 2.4s ease-in-out infinite;
 }
 
+.unlock-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
 .unlock-sprite--rarity {
   margin-top: 10px;
   filter: drop-shadow(0 0 6px var(--rarity)) drop-shadow(0 0 14px var(--rarity));

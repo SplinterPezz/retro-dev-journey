@@ -76,6 +76,13 @@
   font-size: 0.85rem;
 }
 
+.skill-window-tags {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .skill-window-actions {
   display: flex;
   justify-content: center;

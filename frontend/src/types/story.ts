@@ -28,6 +28,8 @@ export interface StoryState {
   difficulty: StoryDifficulty | null;
   orientation: StoryOrientation | null;
   discoveriesSeen?: string[];
+  startedAt?: number;
+  timeline?: Record<string, number>;
 }
 
 export interface DialogueChoiceOption {

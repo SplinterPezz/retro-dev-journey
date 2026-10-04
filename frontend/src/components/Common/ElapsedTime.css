@@ -1,0 +1,11 @@
+.rpgui-content .elapsed-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffd700;
+  text-shadow: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1;
+  white-space: nowrap;
+}

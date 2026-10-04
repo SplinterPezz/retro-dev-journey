@@ -87,6 +87,7 @@
 }
 
 .collection-cell {
+  position: relative;
   width: 100%;
   aspect-ratio: 1;
   display: flex;
@@ -103,6 +104,14 @@
 .collection-cell:focus-visible {
   outline: none;
   background: color-mix(in srgb, var(--rarity, var(--collection-border)) 7%, transparent);
+}
+
+.collection-cell .collection-cell-time {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.45rem;
+  color: var(--collection-text);
 }
 
 .collection-cell-art {

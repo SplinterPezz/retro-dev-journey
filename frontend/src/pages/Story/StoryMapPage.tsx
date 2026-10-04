@@ -23,7 +23,7 @@ import UnlockPopup from '../../components/Story/hud/UnlockPopup';
 import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
 import SkillWindow from '../../components/Story/hud/SkillWindow';
 import ItemInspector from '../../components/GameMenu/ItemInspector';
-import { skillEntry } from '../../components/GameMenu/useCollections';
+import { skillElapsed, skillEntry } from '../../components/GameMenu/useCollections';
 import LoadingSplash from '../../components/Common/LoadingSplash';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { storyMapAssets } from '../../config/story/assets';
@@ -143,6 +143,8 @@ const StoryMapPage: React.FC = () => {
   const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
   const chapters = useSelector((state: RootState) => state.story.chapters);
   const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
+  const startedAt = useSelector((state: RootState) => state.story.startedAt);
+  const timeline = useSelector((state: RootState) => state.story.timeline);
   const dispatch = useDispatch<AppDispatch>();
   const [exiting, setExiting] = useState(false);
   const location = useLocation();
@@ -201,6 +203,7 @@ const StoryMapPage: React.FC = () => {
       text={discoveryTech.learnedText ?? discoveryTech.description ?? ''}
       note="Its statue now stands on the map."
       rarity={discoveryTech.rarity}
+      elapsedMs={skillElapsed(discoveryTech, { startedAt, timeline })}
       remaining={discoveriesLeft}
       onConfirm={() => dispatch(markDiscoverySeen(discovery.id))}
     />
@@ -263,14 +266,15 @@ const StoryMapPage: React.FC = () => {
 
   const shownSkill = shownStatue?.data as TechnologyData | undefined;
   const skillVisible = !!shownSkill && !splash.visible && !menuOpen && !discovery && !inDevelopmentOpen;
-  const skillWindow = skillVisible && shownSkill && (
+  const shownEntry = shownSkill && skillEntry(shownSkill, true, skillElapsed(shownSkill, { startedAt, timeline }));
+  const skillWindow = skillVisible && shownEntry && (
     <>
       <SkillWindow
-        entry={skillEntry(shownSkill, true)}
-        chapterName={chapterDisplayName(shownSkill.storyChapter ?? '')}
+        entry={shownEntry}
+        chapterName={chapterDisplayName(shownSkill?.storyChapter ?? '')}
         onInspect={() => setInspecting(true)}
       />
-      {inspecting && <ItemInspector entry={skillEntry(shownSkill, true)} onClose={() => setInspecting(false)} />}
+      {inspecting && <ItemInspector entry={shownEntry} onClose={() => setInspecting(false)} />}
     </>
   );
 
