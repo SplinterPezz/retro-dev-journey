@@ -1,9 +1,23 @@
 /* Layout on top of the chapter intro's window (StoryIntroDialog.css). */
-.discovery-box {
+.unlock-box {
   text-align: center;
 }
 
-.discovery-kicker {
+/* Sticks out of the top-right corner of the card, over the golden frame. */
+.unlock-corner {
+  position: absolute;
+  top: -56px;
+  right: -36px;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  transform: rotate(12deg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.unlock-kicker {
   margin: 0 0 8px 0;
   color: #7fdc8a;
   font-family: 'Press Start 2P', cursive;
@@ -11,28 +25,28 @@
   text-transform: uppercase;
 }
 
-.discovery-sprite {
+.unlock-sprite {
   display: block;
   width: 160px;
   height: 160px;
   margin: 0 auto 8px;
   object-fit: contain;
   image-rendering: pixelated;
-  animation: discovery-float 2.4s ease-in-out infinite;
+  animation: unlock-float 2.4s ease-in-out infinite;
 }
 
-@keyframes discovery-float {
+@keyframes unlock-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
 }
 
-.discovery-category {
+.unlock-subtitle {
   margin: -4px 0 0 0;
   color: #c8c8c8;
   font-size: 0.85rem;
 }
 
-.discovery-map-note {
+.unlock-note {
   margin: 12px 0 0 0;
   color: #ffd700;
   font-size: 0.85rem;
@@ -40,21 +54,28 @@
 }
 
 @media (max-width: 480px) {
-  .discovery-sprite {
+  .unlock-sprite {
     width: 112px;
     height: 112px;
+  }
+
+  .unlock-corner {
+    top: -40px;
+    right: -14px;
+    width: 80px;
+    height: 80px;
   }
 }
 
 /* Landscape phone: little height, so a smaller statue. */
 @media (orientation: landscape) and (max-height: 500px) {
-  .discovery-sprite {
+  .unlock-sprite {
     width: 72px;
     height: 72px;
     margin-bottom: 4px;
   }
 
-  .discovery-map-note {
+  .unlock-note {
     margin-top: 6px;
   }
 }

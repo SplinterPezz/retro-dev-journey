@@ -22,11 +22,20 @@ export interface DebugRect {
   height: number;
 }
 
+// Collectibles, in their own colour: where one is picked up, or the spot its
+// sequence or wait needs.
+export interface DebugCollectibleZone extends DebugZone {
+  variant: 'pickup' | 'trigger';
+  label?: string;
+}
+
 interface DebugOverlayProps {
   player?: DebugHitbox;
   hitboxes?: DebugHitbox[]; // collision boxes, relative to their position
   zones?: DebugZone[]; // walk-up radius of interactive things
   rects?: DebugRect[]; // picture boxes of visual-only things
+  collectibleZones?: DebugCollectibleZone[];
+  secretPaths?: DebugRect[]; // walkable strips outside the room
 }
 
 const box = (left: number, top: number, width: number, height: number): React.CSSProperties => ({
@@ -37,10 +46,29 @@ const box = (left: number, top: number, width: number, height: number): React.CS
 });
 
 // Hitboxes and interaction zones of a scene, drawn in development builds only.
-const DebugOverlay: React.FC<DebugOverlayProps> = ({ player, hitboxes = [], zones = [], rects = [] }) => {
+const DebugOverlay: React.FC<DebugOverlayProps> = ({
+  player,
+  hitboxes = [],
+  zones = [],
+  rects = [],
+  collectibleZones = [],
+  secretPaths = [],
+}) => {
   if (!isDev) return null;
   return (
     <>
+      {secretPaths.map((r) => (
+        <div key={`secret-${r.id}`} className="debug-box secret-path" style={box(r.position.x, r.position.y, r.width, r.height)} />
+      ))}
+      {collectibleZones.map((z) => (
+        <div
+          key={`collectible-${z.id}`}
+          className={`debug-box collectible ${z.variant}`}
+          style={box(z.position.x - z.radius, z.position.y - z.radius, z.radius * 2, z.radius * 2)}
+        >
+          {z.label && <span className="debug-label">{z.label}</span>}
+        </div>
+      ))}
       {zones.map((z) => (
         <div
           key={`zone-${z.id}`}

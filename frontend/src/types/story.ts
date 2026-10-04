@@ -1,4 +1,4 @@
-import { Position, Hitbox, WorldConfig, ImageSize } from './game';
+import { Position, Hitbox, WorldConfig, ImageSize, WorldBounds } from './game';
 
 // ---- persisted progress ----
 
@@ -11,6 +11,7 @@ export interface ChapterProgress {
   completed: boolean;
   flags: Record<string, boolean>;
   scores?: Record<string, MiniGameScore>; // best mini-game result per marker id
+  collectibles?: string[]; // ids of the collectibles found in this chapter
 }
 
 export type StoryDifficulty = 'junior' | 'middle' | 'senior';
@@ -140,6 +141,37 @@ export interface MeepBeat {
   trigger: 'onEnter' | 'onFlag' | 'onComplete';
   flag?: string; // required when trigger === 'onFlag'
   text: string;
+}
+
+// ---- collectibles ----
+
+export interface CollectibleSpot {
+  x: number;
+  y: number;
+  radius: number;
+}
+
+// How a collectible becomes available. Without one it lies at its position
+// from the start, hidden until the player is close.
+export type CollectibleUnlock =
+  | { kind: 'flag'; flag: string } // given at once when the flag is set (e.g. a dialogue answer)
+  | { kind: 'sequence'; spots: Record<string, CollectibleSpot>; order: string[] } // walk to these spots in this order; a wrong one starts over
+  | { kind: 'idle'; spot: CollectibleSpot; seconds: number }; // stand still in the spot
+
+export interface CollectibleData {
+  id: string;
+  name: string;
+  description: string; // shown in the "found" window
+  image: string;
+  position?: Position; // where it lies once available; not needed for a 'flag' one
+  revealRadius?: number; // it shows (with a sparkle) only within this distance; small = practically invisible
+  unlock?: CollectibleUnlock;
+}
+
+export interface ChapterCollectibles {
+  items: CollectibleData[];
+  allFoundText: string; // the extra bit of lore once every one is found
+  secretPaths?: WorldBounds[]; // walkable strips outside the room (the room itself is always walkable)
 }
 
 // ---- chapter ----

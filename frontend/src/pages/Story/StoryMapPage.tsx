@@ -15,11 +15,12 @@ import Environment from '../../components/Structures/Environment';
 import Player from '../../components/Player/Player';
 import HomeButton from '../../components/Common/HomeButton';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
-import DiscoveryPopup from '../../components/Story/hud/DiscoveryPopup';
+import UnlockPopup from '../../components/Story/hud/UnlockPopup';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
 import { isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import { collectibleCount } from '../../config/story/collectibles';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
 import { isDev } from '../../config/env';
@@ -32,11 +33,15 @@ const HIDDEN_COMPANY_ID = '???';
 const chapterName = (companyName: string) => companyName.replace(/ \(IT\)$/, '');
 
 // Every chapter of the story, in order: the playable ones, then the companies
-// still to be written. Done before the current one, locked after it.
-const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
+// still to be written. Done before the current one, locked after it. A chapter
+// with collectibles shows how many were found ("★ 3/5").
+const chapterQuests = (unlockedIndex: number, progress: Record<string, ChapterProgress>): StoryObjective[] => {
   const written = storyChapterOrder.map((c) => {
     const company = companies.find((co) => co.id === c.companyId);
-    return { id: company?.id ?? c.id, name: company ? chapterName(company.name) : 'Prologue' };
+    const name = company ? chapterName(company.name) : 'Prologue';
+    const total = collectibleCount(c.id);
+    const found = progress[c.id]?.collectibles?.length ?? 0;
+    return { id: company?.id ?? c.id, name: total > 0 ? `${name} ★ ${found}/${total}` : name };
   });
   const toWrite = companies
     .filter((co) => co.id !== HIDDEN_COMPANY_ID && !storyChapterOrder.some((c) => c.companyId === co.id))
@@ -130,7 +135,7 @@ const StoryMapPage: React.FC = () => {
   const { resetAll } = useDebugReset();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
-  const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
+  const quests = useMemo(() => chapterQuests(unlockedChapterIndex, chapters), [unlockedChapterIndex, chapters]);
   // every building that is neither done nor the current chapter (the "???" teaser too)
   const lockedIds = useMemo(() => {
     const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
@@ -160,9 +165,15 @@ const StoryMapPage: React.FC = () => {
   const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
   const discovery = statues.find((t) => !(discoveriesSeen ?? []).includes(t.id));
   const discoveriesLeft = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id)).length - 1;
-  const discoveryPopup = discovery && (
-    <DiscoveryPopup
-      technology={discovery.data as TechnologyData}
+  const discoveryTech = discovery?.data as TechnologyData | undefined;
+  const discoveryPopup = discovery && discoveryTech && (
+    <UnlockPopup
+      kicker="New technology unlocked!"
+      image={discoveryTech.image}
+      title={discoveryTech.name}
+      subtitle={discoveryTech.category}
+      text={discoveryTech.learnedText ?? discoveryTech.description ?? ''}
+      note="Its statue now stands on the map."
       remaining={discoveriesLeft}
       onConfirm={() => dispatch(markDiscoverySeen(discovery.id))}
     />

@@ -1,4 +1,4 @@
-import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty, markDiscoverySeen } from './storySlice';
+import reducer, { setFlag, completeChapter, recordScore, resetChapter, resetStory, setDifficulty, markDiscoverySeen, collect } from './storySlice';
 
 const initial = reducer(undefined, { type: '@@init' });
 
@@ -39,5 +39,12 @@ describe('storySlice', () => {
     state = reducer(state, markDiscoverySeen('git'));
     expect(state.discoveriesSeen).toEqual(['java', 'git']);
     expect(reducer(state, resetStory()).discoveriesSeen).toEqual([]);
+  });
+
+  it('keeps each collectible once per chapter', () => {
+    let state = reducer(initial, collect({ chapterId: 'p', id: 'floppy' }));
+    state = reducer(state, collect({ chapterId: 'p', id: 'floppy' }));
+    state = reducer(state, collect({ chapterId: 'p', id: 'phone' }));
+    expect(state.chapters.p.collectibles).toEqual(['floppy', 'phone']);
   });
 });

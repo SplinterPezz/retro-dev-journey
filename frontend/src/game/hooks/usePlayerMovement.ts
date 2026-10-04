@@ -15,6 +15,10 @@ export interface PlayerMovementConfig {
   environments?: readonly EnvironmentData[];
   playerHitbox?: Hitbox;
   canMove?: boolean;
+  // Optional walkable areas: the player's position must stay inside one of
+  // them (e.g. the room plus a secret path outside its walls). worldBounds
+  // still clamps, so it should cover them all.
+  areas?: readonly WorldBounds[];
 }
 
 interface JoystickState {
@@ -30,6 +34,9 @@ const isTextTarget = (target: EventTarget | null): boolean => {
   const el = target as HTMLElement | null;
   return !!el && (el.isContentEditable || !!el.closest?.('input, textarea, .cm-editor'));
 };
+
+const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean =>
+  areas.some((a) => p.x >= a.minX && p.x <= a.maxX && p.y >= a.minY && p.y <= a.maxY);
 
 // Moves the player with the keyboard or the touch joystick.
 //
@@ -218,7 +225,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
         dir,
         speed * intensity * deltaTime,
         cfg.worldBounds,
-        (p) => hitsAny(p, hitbox, blockers)
+        (p) => hitsAny(p, hitbox, blockers) || (!!cfg.areas && !insideAny(p, cfg.areas))
       );
       if (next !== positionRef.current) {
         positionRef.current = next;

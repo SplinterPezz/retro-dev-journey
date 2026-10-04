@@ -2,16 +2,16 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
-import { setFlag, recordScore } from '../../store/storySlice';
+import { setFlag, recordScore, collect } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useNpcPatrol, NpcPatrolState } from '../../game/hooks/useNpcPatrol';
 import { useDebugReset } from '../../game/useDebugReset';
 import { useResourceLoader } from '../../hooks/useResourceLoader';
 import GameScene from '../../game/GameScene';
-import DebugOverlay from '../../game/DebugOverlay';
+import DebugOverlay, { DebugCollectibleZone } from '../../game/DebugOverlay';
 import { CollidableEntity, Hitbox, Position } from '../../types/game';
-import { StoryChapterConfig, StoryNpcData, QuizData, MiniGameMarker } from '../../types/story';
+import { StoryChapterConfig, StoryNpcData, QuizData, MiniGameMarker, CollectibleData, ChapterCollectibles } from '../../types/story';
 import { tierFor } from '../../config/story/miniGames';
 import Player from '../../components/Player/Player';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
@@ -24,6 +24,9 @@ import QuizPopup from '../../components/Story/quiz/QuizPopup';
 import QuizMarker from '../../components/Story/quiz/QuizMarker';
 import MiniGamesPopup from '../../components/Story/minigames/MiniGamesPopup';
 import StoryProgress from '../../components/Story/hud/StoryProgress';
+import UnlockPopup from '../../components/Story/hud/UnlockPopup';
+import CollectibleItem from '../../components/Story/collectibles/CollectibleItem';
+import CollectibleCounter from '../../components/Story/collectibles/CollectibleCounter';
 import Meep from '../../components/Companion/Meep';
 import MeepBubble from '../../components/Companion/MeepBubble';
 import { useLaggedPosition } from '../../components/Companion/useLaggedPosition';
@@ -32,9 +35,11 @@ import { useDialogueEngine } from './hooks/useDialogueEngine';
 import { useChapterProgress } from './hooks/useChapterProgress';
 import { useMeepBeats } from './hooks/useMeepBeats';
 import { useChapterOutro } from './hooks/useChapterOutro';
+import { PICKUP_RADIUS, useCollectibles } from './hooks/useCollectibles';
 import { entryNodeId } from './dialogue';
 import { playerSpawnPosition as defaultSpawn } from '../../config/world';
 import { chapterAssets, doorImage } from '../../config/story/assets';
+import { chapterCollectibles, collectibleCheer, collectibleIcon } from '../../config/story/collectibles';
 import { isDev } from '../../config/env';
 import './InteriorScene.css';
 
@@ -47,6 +52,7 @@ interface InteriorSceneProps {
 type Flags = Record<string, boolean>;
 
 const EMPTY_FLAGS: Flags = {};
+const EMPTY_LIST: string[] = [];
 
 // The splash stays up at least this long, then until the sprites are loaded
 // (or the cap runs out, so a broken network never hides the scene for good).
@@ -107,8 +113,30 @@ const Room: React.FC<RoomProps> = React.memo(({ chapter, flags }) => {
   );
 });
 
+// One circle per collectible not found yet: the spot to wait in, or else where
+// it is picked up. A sequence shows one circle per spot instead, labelled with
+// the steps that happen there.
+const debugCollectibleZones = (collectibles: ChapterCollectibles | undefined, foundIds: string[]): DebugCollectibleZone[] =>
+  (collectibles?.items ?? [])
+    .filter((item) => !foundIds.includes(item.id))
+    .flatMap((item): DebugCollectibleZone[] => {
+      const unlock = item.unlock;
+      if (unlock?.kind === 'sequence') {
+        return Object.entries(unlock.spots).map(([spotId, spot]) => {
+          const steps = unlock.order.flatMap((id, i) => (id === spotId ? [i + 1] : [])).join('·');
+          return { id: `${item.id}-${spotId}`, position: spot, radius: spot.radius, variant: 'trigger', label: `${item.id} ${steps} ${spotId}` };
+        });
+      }
+      if (unlock?.kind === 'idle') {
+        return [{ id: item.id, position: unlock.spot, radius: unlock.spot.radius, variant: 'trigger', label: `${item.id} wait ${unlock.seconds}s` }];
+      }
+      return item.position ? [{ id: item.id, position: item.position, radius: PICKUP_RADIUS, variant: 'pickup', label: item.id }] : [];
+    });
+
 interface SceneDebugProps {
   chapter: StoryChapterConfig;
+  collectibles?: ChapterCollectibles;
+  foundIds: string[];
   flags: Flags;
   npcStates: Record<string, NpcPatrolState>;
   playerPosition: Position;
@@ -117,8 +145,15 @@ interface SceneDebugProps {
 
 // Walk-up zones (dashed circles), collision boxes and the picture box of
 // flag-gated visual props. Development builds only.
-const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, flags, npcStates, playerPosition, playerHitbox }) => (
+const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds, flags, npcStates, playerPosition, playerHitbox }) => (
   <DebugOverlay
+    collectibleZones={debugCollectibleZones(collectibles, foundIds)}
+    secretPaths={(collectibles?.secretPaths ?? []).map((a, i) => ({
+      id: String(i),
+      position: { x: a.minX, y: a.minY },
+      width: a.maxX - a.minX,
+      height: a.maxY - a.minY,
+    }))}
     player={{ id: 'player', position: playerPosition, hitbox: playerHitbox }}
     zones={[
       ...chapter.quizzes.map((q) => ({ id: q.id, position: q.position, radius: q.interactionRadius ?? 70 })),
@@ -157,6 +192,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const cueDialogue = dialogue.cue;
   const [activeQuiz, setActiveQuiz] = useState<QuizData | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<MiniGameMarker | null>(null);
+  // collectibles: the ones just found, shown one by one, then the extra lore once all are found
+  const collectibles = chapterCollectibles[chapter.id];
+  const foundIds = chapterProgress?.collectibles ?? EMPTY_LIST;
+  const [findQueue, setFindQueue] = useState<CollectibleData[]>([]);
+  const [loreOpen, setLoreOpen] = useState(false);
+  const collectiblePopup = findQueue.length > 0 || loreOpen;
   const meep = useMeepBeats(chapter.meepBeats, flags, completed);
 
   const assets = useMemo(() => chapterAssets(chapter), [chapter]);
@@ -204,10 +245,22 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   );
   const allBlocking = useMemo(() => [...npcCollidables, ...blockingProps], [npcCollidables, blockingProps]);
 
-  const worldBounds = useMemo(
-    () => ({ minX: 40, minY: 40, maxX: chapter.worldConfig.width - 40, maxY: chapter.worldConfig.height - 40 }),
-    [chapter.worldConfig]
-  );
+  // The room, plus the chapter's secret paths outside its walls if it has any.
+  const secretPaths = collectibles?.secretPaths;
+  const { worldBounds, walkableAreas } = useMemo(() => {
+    const room = { minX: 40, minY: 40, maxX: chapter.worldConfig.width - 40, maxY: chapter.worldConfig.height - 40 };
+    if (!secretPaths?.length) return { worldBounds: room, walkableAreas: undefined };
+    const areas = [room, ...secretPaths];
+    return {
+      worldBounds: {
+        minX: Math.min(...areas.map((a) => a.minX)),
+        minY: Math.min(...areas.map((a) => a.minY)),
+        maxX: Math.max(...areas.map((a) => a.maxX)),
+        maxY: Math.max(...areas.map((a) => a.maxY)),
+      },
+      walkableAreas: areas,
+    };
+  }, [chapter.worldConfig, secretPaths]);
 
   // ---- closing scene: seats the player, so it hands over the teleport through a ref ----
   const navigate = useNavigate();
@@ -219,7 +272,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     flags,
     setFlag: setChapterFlag,
     ready: !splashVisible && !introPending,
-    busy: !!dialogue.active || !!activeQuiz || !!activeMiniGame,
+    busy: !!dialogue.active || !!activeQuiz || !!activeMiniGame || collectiblePopup,
     npcs: chapter.npcs,
     cue: cueDialogue,
     seatPlayer,
@@ -233,7 +286,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     speed: 220,
     worldBounds,
     structures: allBlocking,
-    canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active,
+    canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active && !collectiblePopup,
+    areas: walkableAreas,
   });
 
   teleportRef.current = teleport;
@@ -244,7 +298,36 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const { nearbyStructure: nearbyQuiz } = useCollisionDetection({ playerPosition, structures: quizCollidables, interactionRadius: 70 });
   const { nearbyStructure: nearbyMiniGame } = useCollisionDetection({ playerPosition, structures: miniGameCollidables, interactionRadius: 70 });
 
-  const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame;
+  const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame || collectiblePopup;
+
+  const findCollectible = useCallback(
+    (item: CollectibleData) => {
+      dispatch(collect({ chapterId: chapter.id, id: item.id }));
+      setFindQueue((queue) => [...queue, item]);
+    },
+    [dispatch, chapter.id]
+  );
+  const { onMap: collectiblesOnMap, total: collectiblesTotal } = useCollectibles({
+    collectibles,
+    found: foundIds,
+    flags,
+    setFlag: setChapterFlag,
+    playerPosition,
+    isMoving,
+    enabled: !popupOpen && !introPending && !splashVisible && !outro.active,
+    onFind: findCollectible,
+  });
+  const confirmFound = () => {
+    const rest = findQueue.slice(1);
+    setFindQueue(rest);
+    if (rest.length === 0 && collectiblesTotal > 0 && foundIds.length >= collectiblesTotal && !flags.collectiblesAllFound) {
+      setLoreOpen(true);
+    }
+  };
+  const confirmLore = () => {
+    setChapterFlag('collectiblesAllFound');
+    setLoreOpen(false);
+  };
   const isUnlocked = (requiredFlag?: string) => !requiredFlag || !!flags[requiredFlag];
 
   // ---- walk-up triggers ----
@@ -370,6 +453,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
       )}
       <div className="interior-scene-container">
         {objectives && <StoryProgress objectives={objectives} />}
+        {collectiblesTotal > 0 && <CollectibleCounter found={foundIds.length} total={collectiblesTotal} />}
         <GameScene
           name="interior-scene"
           world={chapter.worldConfig}
@@ -383,6 +467,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           }
         >
           <Room chapter={chapter} flags={flags} />
+          {collectiblesOnMap.map(({ item, near }) => (
+            <CollectibleItem key={item.id} item={item} near={near} />
+          ))}
 
           {chapter.npcs.map((npc) => (
             <InteriorNpc
@@ -401,7 +488,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
 
           {isDev && (
-            <SceneDebug chapter={chapter} flags={flags} npcStates={npcStates} playerPosition={playerPosition} playerHitbox={playerHitbox} />
+            <SceneDebug chapter={chapter} collectibles={collectibles} foundIds={foundIds} flags={flags} npcStates={npcStates} playerPosition={playerPosition} playerHitbox={playerHitbox} />
           )}
         </GameScene>
 
@@ -418,6 +505,29 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
         {activeMiniGame && (
           <MiniGamesPopup difficulty={difficulty} onFinish={finishMiniGames} onPowerOff={powerOffMiniGames} />
+        )}
+        {findQueue.length > 0 && (
+          <UnlockPopup
+            kicker="Collectible found!"
+            image={findQueue[0].image}
+            title={findQueue[0].name}
+            subtitle={`${foundIds.length - findQueue.length + 1} / ${collectiblesTotal}`}
+            text={findQueue[0].description}
+            cornerImage={collectibleCheer}
+            remaining={findQueue.length - 1}
+            onConfirm={confirmFound}
+          />
+        )}
+        {loreOpen && collectibles && (
+          <UnlockPopup
+            kicker="All collectibles found!"
+            image={collectibleIcon}
+            title={`${collectiblesTotal} / ${collectiblesTotal}`}
+            text={collectibles.allFoundText}
+            cornerImage={collectibleCheer}
+            remaining={0}
+            onConfirm={confirmLore}
+          />
         )}
         {activeQuiz && (
           <QuizPopup

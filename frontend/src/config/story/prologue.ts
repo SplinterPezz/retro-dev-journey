@@ -387,6 +387,13 @@ export const prologueChapter: StoryChapterConfig = {
             speaker: 'Manuel',
             text: "Wait, really? We could use someone who actually practices. I'm mostly self-taught and it shows.",
             setFlag: 'manuelQ_music_plays',
+            next: 'musicDrumstick',
+          },
+          musicDrumstick: {
+            id: 'musicDrumstick',
+            speaker: 'Manuel',
+            text: "Here, take one of my spare drumsticks. If you ever join the band, you already have half the kit.",
+            setFlag: 'gotDrumstick', // the drumstick collectible
             next: 'hub',
           },
           askbackWhy: {

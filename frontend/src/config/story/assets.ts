@@ -1,5 +1,6 @@
 import { StoryChapterConfig, StoryNpcData } from '../../types/story';
 import { playerTurnSprite, preloadPlayerSprites } from '../assets';
+import { chapterCollectibles, collectibleIcon } from './collectibles';
 
 // Sprites a chapter scene draws, preloaded behind the chapter splash.
 
@@ -25,5 +26,6 @@ export const chapterAssets = (chapter: StoryChapterConfig): string[] => [
     ...meepSprites,
     ...preloadPlayerSprites,
     playerTurnSprite,
+    ...(chapterCollectibles[chapter.id] ? [collectibleIcon, ...chapterCollectibles[chapter.id].items.map((c) => c.image)] : []),
   ]),
 ];

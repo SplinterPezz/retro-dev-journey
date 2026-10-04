@@ -33,6 +33,11 @@ const storySlice = createSlice({
         chapter.scores = { ...chapter.scores, [gameId]: score };
       }
     },
+    collect(state, action: PayloadAction<{ chapterId: string; id: string }>) {
+      const chapter = ensureChapter(state, action.payload.chapterId);
+      const found = chapter.collectibles ?? [];
+      if (!found.includes(action.payload.id)) chapter.collectibles = [...found, action.payload.id];
+    },
     completeChapter(state, action: PayloadAction<{ chapterId: string; unlockIndex: number }>) {
       const chapter = ensureChapter(state, action.payload.chapterId);
       chapter.completed = true;
@@ -63,6 +68,7 @@ const storySlice = createSlice({
 export const {
   setFlag,
   recordScore,
+  collect,
   completeChapter,
   setDifficulty,
   setOrientation,
