@@ -258,6 +258,7 @@ const SandboxPage: React.FC = () => {
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop }}
           audio={{ src: sandboxAudioTrack, volume: sandboxDefaultVolume }}
+          playerHitbox={playerHitbox}
           overlay={
             <div className="sandbox-ui">
               <WelcomeDialog isMobile={isMobile} />
@@ -283,10 +284,7 @@ const SandboxPage: React.FC = () => {
         >
           <StaticWorld nearbyId={nearbyStructure?.id ?? null} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
-          <DebugOverlay
-            player={{ id: 'player', position: playerPosition, hitbox: playerHitbox }}
-            hitboxes={debugHitboxes}
-          />
+          <DebugOverlay hitboxes={debugHitboxes} />
         </GameScene>
 
         {selectedStructure && <StructureDialog structure={selectedStructure} />}

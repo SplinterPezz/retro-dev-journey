@@ -1,12 +1,10 @@
 import React from 'react';
 import DebugOverlay, { DebugCollectibleZone } from '../../game/DebugOverlay';
 import { NpcPatrolState } from '../../game/hooks/useNpcPatrol';
-import { Hitbox, Position, WorldBounds } from '../../types/game';
+import { WorldBounds } from '../../types/game';
 import { ChapterCollectibles, CollectibleData, StoryChapterConfig, StoryFlags } from '../../types/story';
 import { PICKUP_RADIUS } from './hooks/useCollectibles';
 import { DEFAULT_NPC_REACH, DEFAULT_STATION_REACH, npcStandingPosition } from './sceneRules';
-
-const PLAYER_DEBUG_ID = 'player';
 
 // Circles of one collectible: the spot to wait in, one per spot of a sequence
 // (labelled with the steps that happen there), or else where it is picked up.
@@ -37,14 +35,12 @@ interface SceneDebugProps {
   foundIds: string[];
   flags: StoryFlags;
   npcStates: Record<string, NpcPatrolState>;
-  playerPosition: Position;
-  playerHitbox: Hitbox;
 }
 
 // Development builds only: walk-up zones (dashed circles), collision boxes,
 // the picture box of flag-gated props, collectible spots and the walkable
-// strips outside the room.
-const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds, flags, npcStates, playerPosition, playerHitbox }) => {
+// strips outside the room. The player's own box is drawn by GameScene.
+const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds, flags, npcStates }) => {
   const notFound = (collectibles?.items ?? []).filter((item) => !foundIds.includes(item.id));
   const outsideTheRoom = [...(collectibles?.secretPaths ?? []), ...(chapter.sideRooms ?? []).flatMap((r) => r.walkable)];
 
@@ -52,7 +48,6 @@ const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds
     <DebugOverlay
       collectibleZones={notFound.flatMap(collectibleZones)}
       secretPaths={outsideTheRoom.map(toRect)}
-      player={{ id: PLAYER_DEBUG_ID, position: playerPosition, hitbox: playerHitbox }}
       zones={[
         ...chapter.quizzes.map((q) => ({ id: q.id, position: q.position, radius: q.interactionRadius ?? DEFAULT_STATION_REACH })),
         ...(chapter.miniGames ?? []).map((m) => ({ id: m.id, position: m.position, radius: m.interactionRadius ?? DEFAULT_STATION_REACH })),
