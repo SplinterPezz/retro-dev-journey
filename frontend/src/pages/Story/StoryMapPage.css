@@ -21,33 +21,10 @@
   image-rendering: crisp-edges;
 }
 
-.story-map-ui {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px;
-  pointer-events: none;
-  box-sizing: border-box;
-}
 
-.story-map-ui .back-button {
-  pointer-events: auto;
-  display: inline-block;
-}
-
-.story-map-hint {
-  position: fixed;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 16px !important;
-}
-
-.story-map-hint p {
-  color: #fff;
-  font-size: 0.9rem;
-  margin: 0;
+/* The chapter list sits above the world, like the objectives in a chapter. */
+.story-map-container .daily-quest-container {
+  z-index: 150;
 }
 
 .story-map-stub {

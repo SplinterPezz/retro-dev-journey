@@ -12,12 +12,34 @@ import PathRenderer from '../../components/Path/PathRenderer';
 import Structure from '../../components/Structures/Structure';
 import Player from '../../components/Player/Player';
 import HomeButton from '../../components/Common/HomeButton';
+import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies } from '../../config/career';
 import { storyChapterOrder } from '../../config/story/chapters';
 import { isDev } from '../../config/env';
 import '../../game/DebugOverlay.css';
 import './StoryMapPage.css';
+
+// A company with no story yet ("???") is a teaser, not a chapter.
+const HIDDEN_COMPANY_ID = '???';
+
+const chapterName = (companyName: string) => companyName.replace(/ \(IT\)$/, '');
+
+// Every chapter of the story, in order: the playable ones, then the companies
+// still to be written. Done before the current one, locked after it.
+const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
+  const written = storyChapterOrder.map((c) => {
+    const company = companies.find((co) => co.id === c.companyId);
+    return { id: company?.id ?? c.id, name: company ? chapterName(company.name) : 'Prologue' };
+  });
+  const toWrite = companies
+    .filter((co) => co.id !== HIDDEN_COMPANY_ID && !storyChapterOrder.some((c) => c.companyId === co.id))
+    .map((co) => ({ id: co.id, name: chapterName(co.name) }));
+  return [...written, ...toWrite].map((c, i) => {
+    const current = i === unlockedIndex && i < written.length;
+    return { id: c.id, label: current ? `Walk to ${c.name}` : c.name, done: i < unlockedIndex, locked: !current && i >= unlockedIndex };
+  });
+};
 
 const worldBounds = {
   minX: 50,
@@ -28,10 +50,11 @@ const worldBounds = {
 
 interface MapWorldProps {
   nearbyId: string | null;
+  lockedIds: string[]; // buildings whose chapter is not open yet
 }
 
 // Terrain, path and buildings: re-rendered only when the nearby door changes.
-const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId }) => {
+const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds }) => {
   const pathSegments = useMemo(
     () =>
       createPathGenerator({
@@ -49,7 +72,13 @@ const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId }) => {
       <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
       <div className="structure-container">
         {companies.map((company) => (
-          <Structure key={company.id} data={company} type="building" isNearby={nearbyId === company.id} />
+          <Structure
+            key={company.id}
+            data={company}
+            type="building"
+            isNearby={nearbyId === company.id}
+            locked={lockedIds.includes(company.id)}
+          />
         ))}
       </div>
     </>
@@ -59,17 +88,29 @@ const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId }) => {
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
   const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
+  const chapters = useSelector((state: RootState) => state.story.chapters);
   const [exiting, setExiting] = useState(false);
   const { resetAll } = useDebugReset();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
+  const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
+  // every building that is neither done nor the current chapter (the "???" teaser too)
+  const lockedIds = useMemo(() => {
+    const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
+    return companies.filter((c) => !open.has(c.id)).map((c) => c.id);
+  }, [quests]);
 
-  // Chapter 0 (Prologue) has no building on the overworld - go straight there.
+  // A chapter without a building on the overworld (the Prologue) is played on
+  // its own map: go straight there while it is the current one, or while its
+  // last scene has not been seen yet.
+  const unfinishedStandalone = storyChapterOrder.find(
+    (c, i) => !c.companyId && (i === unlockedChapterIndex || (c.endFlag && !chapters[c.id]?.flags[c.endFlag]))
+  );
   useEffect(() => {
-    if (unlockedChapterIndex === 0) {
-      void navigate('/story/prologue', { replace: true });
+    if (unfinishedStandalone) {
+      void navigate(`/story/${unfinishedStandalone.id}`, { replace: true });
     }
-  }, [unlockedChapterIndex, navigate]);
+  }, [unfinishedStandalone, navigate]);
 
   const activeCompany = useMemo(
     () => (activeChapter?.companyId ? companies.find((c) => c.id === activeChapter.companyId) : undefined),
@@ -107,8 +148,8 @@ const StoryMapPage: React.FC = () => {
     </button>
   );
 
-  if (unlockedChapterIndex === 0) {
-    return null; // redirecting to /story/prologue
+  if (unfinishedStandalone) {
+    return null; // redirecting to that chapter
   }
 
   if (!activeChapter) {
@@ -129,23 +170,19 @@ const StoryMapPage: React.FC = () => {
   return (
     <div className="rpgui-content">
       <div className={`story-map-container${exiting ? ' exiting' : ''}`}>
+        <StoryProgress objectives={quests} name="Chapters" />
         <GameScene
           name="story-map"
           world={worldConfig}
           playerPosition={playerPosition}
           joystick={{ onMove: handleJoystickMove, onStop: handleJoystickStop }}
           overlay={
-            <div className="story-map-ui">
-              <div className="back-button ms-3">
-                <HomeButton />
-              </div>
-              <div className="story-map-hint rpgui-container framed-grey">
-                <p className="mb-0">Walk to {activeCompany?.name || 'the next building'} to continue the story</p>
-              </div>
+            <div className="home-fixed-top-left">
+              <HomeButton />
             </div>
           }
         >
-          <MapWorld nearbyId={nearbyDoor?.id ?? null} />
+          <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>
         {debugResetButton}

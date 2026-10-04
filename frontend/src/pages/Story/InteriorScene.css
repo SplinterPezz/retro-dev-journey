@@ -25,9 +25,34 @@
   pointer-events: none;
 }
 
+/* The closing scene fades to black first (FADE in useChapterOutro). */
+.chapter-splash--entering {
+  animation: chapter-splash-fade-in 0.9s linear forwards;
+}
+
 /* the fade length matches SPLASH_FADE_MS in InteriorScene */
 .chapter-splash--leaving {
   animation: chapter-splash-fade 0.9s linear forwards;
+}
+
+.chapter-splash-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.chapter-splash-subtitle {
+  margin: 0;
+  color: #c8c8c8;
+  font-family: 'Press Start 2P', cursive;
+  font-size: clamp(0.8rem, 2.4vw, 1.2rem);
+  text-align: center;
+}
+
+@keyframes chapter-splash-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .chapter-splash-title {

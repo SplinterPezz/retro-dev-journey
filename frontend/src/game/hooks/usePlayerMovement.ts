@@ -76,6 +76,18 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     }
   }, []);
 
+  // Puts the player somewhere else at once (a cutscene seat), standing still.
+  const teleport = useCallback((to: Position) => {
+    keysRef.current.clear();
+    joystickRef.current = IDLE_JOYSTICK;
+    positionRef.current = to;
+    setPosition(to);
+    directionRef.current = 'idle';
+    setDirection('idle');
+    isMovingRef.current = false;
+    setIsMoving(false);
+  }, []);
+
   const handleJoystickStop = useCallback(() => {
     joystickRef.current = IDLE_JOYSTICK;
   }, []);
@@ -225,5 +237,6 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     playerHitbox: config.playerHitbox || defaultPlayerHitbox,
     handleJoystickMove,
     handleJoystickStop,
+    teleport,
   };
 };

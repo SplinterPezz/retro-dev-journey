@@ -3,14 +3,16 @@ import { StructureData, CompanyData, TechnologyData } from '../../types/sandbox'
 import './Structure.css';
 import { isDev } from '../../config/env';
 import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
+import { lockSprite } from '../../config/assets';
 
 interface StructureProps {
   data: StructureData;
   type: 'building' | 'technology';
   isNearby: boolean;
+  locked?: boolean; // story map: a padlock floats above the signpost
 }
 
-const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
+const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = false }) => {
 
   const getStructureIcon = (): string => {
     if (type === 'building') {
@@ -74,6 +76,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby }) => {
                 <div className="signpost-shadow"></div>
               </>
             )}
+
+            {locked && <img src={lockSprite} alt="Locked" className="structure-lock-image" />}
           </>
 
         ) : (
