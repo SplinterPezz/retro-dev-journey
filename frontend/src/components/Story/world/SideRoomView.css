@@ -1,0 +1,45 @@
+.side-room-surface {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+}
+
+.side-room-door {
+  position: absolute;
+  z-index: 85; /* above the shade, so the way in shows in the dark; the player (100) walks over it */
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* Over the room's floor, props and NPCs (up to 60) and below Meep (90) and the player (100). */
+.side-room-shade {
+  position: absolute;
+  z-index: 80;
+  pointer-events: none;
+  background: #0b0705;
+  opacity: 0.92;
+  transition: opacity 0.35s linear;
+}
+
+.side-room-shade--lit {
+  opacity: 0;
+  animation: side-room-flicker 0.7s steps(1, end);
+}
+
+/* a neon tube catching on */
+@keyframes side-room-flicker {
+  0% { opacity: 0.92; }
+  15% { opacity: 0.3; }
+  25% { opacity: 0.92; }
+  40% { opacity: 0.15; }
+  50% { opacity: 0.7; }
+  65% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side-room-shade--lit {
+    animation: none;
+  }
+}

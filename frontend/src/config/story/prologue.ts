@@ -34,6 +34,28 @@ export const prologueChapter: StoryChapterConfig = {
   playerSpawn: { x: 650, y: 780 },
   doorPosition: { x: 586, y: 1022 }, // centred on the bottom wall, inside the room
 
+  // Through an open door in the north wall, between the plant and the
+  // chalkboard: a bathroom, dark until someone walks in. Stalls on the left,
+  // a row of sinks on the right.
+  sideRooms: [
+    {
+      id: 'bathroom',
+      surfaces: [
+        { bounds: { minX: 130, minY: -516, maxX: 790, maxY: -420 }, image: '/sprites/story/props/wall_bathroom.png', tile: { width: 128, height: 96 } },
+        { bounds: { minX: 130, minY: -420, maxX: 790, maxY: -100 }, image: '/sprites/story/props/floor_bathroom.png', tile: { width: 128, height: 128 } },
+        // the doorway through the wall, seen through the open door
+        { bounds: { minX: 240, minY: -100, maxX: 300, maxY: 0 }, image: '/sprites/story/props/floor_bathroom.png', tile: { width: 128, height: 128 } },
+      ],
+      walkable: [
+        { minX: 160, minY: -310, maxX: 480, maxY: -140 }, // in front of the stalls
+        { minX: 480, minY: -365, maxX: 770, maxY: -140 }, // up to the sinks' counter
+        { minX: 258, minY: -150, maxX: 282, maxY: 60 }, // the doorway
+      ],
+      door: { image: '/sprites/story/props/door_open.png', position: { x: 238, y: -110 }, imageSize: { width: 64, height: 128 } },
+      dark: true,
+    },
+  ],
+
   props: [
     { id: 'cattedra', image: '/sprites/story/props/desk_cattedra.png', position: { x: 650, y: 150 }, imageSize: { width: 192, height: 144 }, collisionHitbox: { x: 10, y: 8, width: 172, height: 88 } },
     // 5 columns x 3 rows, evenly spaced (165px apart, 160px row depth) -
@@ -82,6 +104,16 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'projector-cart', image: '/sprites/story/props/projector_cart.png', position: { x: 975, y: 893 }, imageSize: { width: 130, height: 130 }, collisionHitbox: { x: 28, y: 29, width: 73, height: 73 } },
     { id: 'server-rack', image: '/sprites/story/props/server_rack.png', position: { x: 1172, y: 984 }, imageSize: { width: 160, height: 160 }, collisionHitbox: { x: 45, y: 0, width: 69, height: 108 } },
     { id: 'anfe-sign', image: '/sprites/story/props/anfe_sign.png', position: { x: 690, y: 1054 }, imageSize: { width: 96, height: 96 } },
+    // the bathroom: three stalls (the middle one occupied), a hand dryer and three sinks along the back wall
+    { id: 'stall-1', image: '/sprites/story/props/bathroom_stall.png', position: { x: 140, y: -516 }, imageSize: { width: 112, height: 192 } },
+    { id: 'stall-2', image: '/sprites/story/props/bathroom_stall_closed.png', position: { x: 252, y: -516 }, imageSize: { width: 112, height: 192 } },
+    { id: 'stall-3', image: '/sprites/story/props/bathroom_stall.png', position: { x: 364, y: -516 }, imageSize: { width: 112, height: 192 } },
+    { id: 'hand-dryer', image: '/sprites/story/props/hand_dryer.png', position: { x: 482, y: -480 }, imageSize: { width: 28, height: 24 } },
+    { id: 'sink-1', image: '/sprites/story/props/bathroom_sink.png', position: { x: 512, y: -516 }, imageSize: { width: 90, height: 128 } },
+    { id: 'sink-2', image: '/sprites/story/props/bathroom_sink.png', position: { x: 602, y: -516 }, imageSize: { width: 90, height: 128 } },
+    { id: 'sink-3', image: '/sprites/story/props/bathroom_sink.png', position: { x: 692, y: -516 }, imageSize: { width: 90, height: 128 } },
+    { id: 'bathroom-bin', image: '/sprites/story/props/bathroom_bin.png', position: { x: 740, y: -360 }, imageSize: { width: 36, height: 48 }, collisionHitbox: { x: 2, y: 10, width: 32, height: 32 } },
+    { id: 'wet-floor-sign', image: '/sprites/story/props/wet_floor_sign.png', position: { x: 560, y: -250 }, imageSize: { width: 40, height: 56 }, collisionHitbox: { x: 2, y: 22, width: 36, height: 28 } },
     // small personal-item flavour, offset from their nearest desk/NPC
     { id: 'backpack', image: '/sprites/story/props/backpack.png', position: { x: 110, y: 230 }, imageSize: { width: 80, height: 80 } },
   ],
@@ -226,6 +258,7 @@ export const prologueChapter: StoryChapterConfig = {
             id: 'seat',
             speaker: 'Instructor',
             text: "Anyway - take your seat. Chapter four's starting in a few minutes, and yes, it'll be on the final project.",
+            setFlag: 'lessonAnnounced', // Meep's "Chapter four" quip answers this line
           },
         },
       },
@@ -238,6 +271,21 @@ export const prologueChapter: StoryChapterConfig = {
       dialogue: {
         startNodeId: 'start',
         nodes: {
+          // opening, right after the intro: Meep says hello (Meep isn't an NPC
+          // of the scene, so Meep's lines live in a script that is, like internshipMeep)
+          meepHello: {
+            id: 'meepHello',
+            speaker: 'Meep',
+            portrait: '/sprites/story/companion/meep/meep',
+            text: "Psst! Down here. I'm Meep, your spirit guide. No, you don't know where I came from yet - don't worry, it'll all make sense soon.",
+            next: 'meepJourney',
+          },
+          meepJourney: {
+            id: 'meepJourney',
+            speaker: 'Meep',
+            portrait: '/sprites/story/companion/meep/meep',
+            text: "Until then, we do this journey together: you write the code, I make the comments. And when you're ready... we'll say goodbye. Now go - class is about to start!",
+          },
           // closing scene: the player's answer is kept as an internshipExpectation_* flag
           internshipComment: {
             id: 'internshipComment',
@@ -781,7 +829,7 @@ export const prologueChapter: StoryChapterConfig = {
       id: 'classmate-6',
       name: 'Classmate',
       spriteBase: SPRITE.classmate6,
-      position: { x: 1230, y: 330 },
+      position: { x: 647, y: -330 }, // in the bathroom, at the middle sink
       seatedFlag: 'seated',
       seatedPosition: { x: 1044, y: 562 },
       dialogue: {
@@ -790,13 +838,13 @@ export const prologueChapter: StoryChapterConfig = {
           start: {
             id: 'start',
             speaker: 'Classmate',
-            text: "Pretty sure I've worn this beanie every day since this course started. It's basically part of my identity now.",
+            text: "Oh, hi. Don't mind me, I'm debugging. I explain my code to the mirror - it listens better than the instructor and never asks to see it.",
             next: 'more',
           },
           more: {
             id: 'more',
             speaker: 'Classmate',
-            text: "Also I may or may not have slept through half of yesterday's lesson. Don't tell the instructor.",
+            text: "Also, the light only comes on when someone walks in. I've been standing here in the dark for twenty minutes. Didn't want to move and break the build.",
           },
         },
       },
@@ -1177,9 +1225,12 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'enter', trigger: 'onEnter', text: 'Ooh, a classroom! Smells like chalk and regret. Let\'s see what you remember - if anything.' },
     { id: 'manuel', trigger: 'onFlag', flag: 'talkedManuel', text: 'He seems like a good egg. Loud, but good.' },
     { id: 'francesco', trigger: 'onFlag', flag: 'talkedFrancesco', text: "Teacher's-pet energy, but he's not wrong about practicing daily." },
-    { id: 'instructor', trigger: 'onFlag', flag: 'talkedInstructor', text: "Chapter four. Riveting stuff." },
+    { id: 'instructor', trigger: 'onFlag', flag: 'lessonAnnounced', text: "Chapter four. Riveting stuff." },
     { id: 'quiz', trigger: 'onFlag', flag: 'quizPassed', text: 'Did... did you actually get all of that right? I\'m almost impressed.' },
   ],
+
+  // right after "No Real Plan": Meep says hello
+  openingDialogue: { npcId: 'manuel', nodeId: 'meepHello' },
 
   // After the mini games and their comments: the internship announcement, then out of the door and off to Eikony.
   outro: {
@@ -1194,12 +1245,12 @@ export const prologueChapter: StoryChapterConfig = {
   },
 
   // the chapter (and the map) opens only once the closing scene is over
-  completion: { requiredFlags: ['talkedManuel', 'talkedFrancesco', 'talkedInstructor', 'quizPassed', 'prologueEnded'] },
+  completion: { requiredFlags: ['talkedManuel', 'talkedFrancesco', 'instructorAnswered', 'quizPassed', 'prologueEnded'] },
 
   objectives: [
     { id: 'obj-manuel', label: 'Meet Manuel', flag: 'talkedManuel' },
     { id: 'obj-francesco', label: 'Meet Francesco', flag: 'talkedFrancesco' },
-    { id: 'obj-instructor', label: 'Meet the instructor', flag: 'talkedInstructor' },
+    { id: 'obj-instructor', label: 'Meet the instructor', flag: 'instructorAnswered' }, // set by answering his question, not by opening the dialogue
     { id: 'obj-quiz', label: 'Pass the pop quiz', flag: 'quizPassed' },
   ],
 };

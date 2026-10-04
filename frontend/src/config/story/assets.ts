@@ -20,6 +20,7 @@ export const chapterAssets = (chapter: StoryChapterConfig): string[] => [
   ...new Set([
     ...(chapter.floorImage ? [chapter.floorImage] : []),
     doorImage,
+    ...(chapter.sideRooms ?? []).flatMap((r) => [...r.surfaces.map((s) => s.image), r.door.image]),
     ...chapter.props.map((p) => p.image),
     ...(chapter.quizzes.length ? [quizMarkerImage, quizSparkleImage] : []),
     ...chapter.npcs.flatMap(npcSprites),

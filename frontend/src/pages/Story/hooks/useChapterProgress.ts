@@ -16,6 +16,7 @@ interface ChapterProgressConfig {
 
 // Chapter-level rules driven by the flags:
 // - every objective done -> `objectivesDone` (shows the arrow at the laptop);
+// - the chapter's opening dialogue opens by itself once the intro is closed, once;
 // - an NPC whose autoStartFlag is set opens its cued dialogue by itself, once;
 // - every required flag set -> chapter complete, next chapter unlocked.
 export const useChapterProgress = ({
@@ -34,6 +35,15 @@ export const useChapterProgress = ({
     if (objectives.length === 0 || flags.objectivesDone) return;
     if (objectives.every((o) => flags[o.flag])) setFlag('objectivesDone');
   }, [flags, chapter.objectives, setFlag]);
+
+  useEffect(() => {
+    const opening = chapter.openingDialogue;
+    if (!canCue || !opening || completed || flags.openingCued || (chapter.intro && !flags.introSeen)) return;
+    const npc = chapter.npcs.find((n) => n.id === opening.npcId);
+    if (!npc) return;
+    setFlag('openingCued');
+    onCue(npc, opening.nodeId);
+  }, [flags, canCue, completed, chapter.openingDialogue, chapter.intro, chapter.npcs, setFlag, onCue]);
 
   useEffect(() => {
     if (!canCue) return;
