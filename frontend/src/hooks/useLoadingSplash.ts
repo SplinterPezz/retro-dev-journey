@@ -6,8 +6,8 @@ import { useResourceLoader } from './useResourceLoader';
 const SPLASH_MAX_MS = 15000;
 const SPLASH_FADE_MS = 900; // same length as .chapter-splash--leaving in LoadingSplash.css
 
-export const useLoadingSplash = (images: string[], audio?: string[]) => {
-  const { isLoading, loaded, total } = useResourceLoader({ images, audio });
+export const useLoadingSplash = (images: string[]) => {
+  const { isLoading, loaded, total } = useResourceLoader(images);
   const [timedOut, setTimedOut] = useState(false);
   const [visible, setVisible] = useState(true);
   const leaving = !isLoading || timedOut;

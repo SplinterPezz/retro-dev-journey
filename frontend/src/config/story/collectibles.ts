@@ -17,6 +17,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         description:
           "Slightly chewed, definitely used. Manuel swears it has played every dive bar in Palermo. Now it's yours - the band is only one drummer short of a reunion.",
         image: storyCollectible('collectible_drumstick'),
+        rarity: 'common',
         unlock: { kind: 'flag', flag: PROLOGUE_FLAGS.gotDrumstick },
       },
       {
@@ -25,6 +26,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         description:
           'Flappy Bird was pulled from the stores in February 2014. This phone, left on the bathroom floor, still has it installed, which makes it priceless. High score: 3.',
         image: storyCollectible('collectible_flappy_phone'),
+        rarity: 'rare',
         position: { x: 430, y: -290 },
         revealRadius: 90,
       },
@@ -34,6 +36,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         description:
           "1.44 MB of pure history, found outside the classroom where nobody ever looks. The label says 'tesina_finale'. It won't fit in any computer in here.",
         image: storyCollectible('collectible_floppy'),
+        rarity: 'legendary',
         position: { x: 1400, y: 500 },
         revealRadius: 180,
       },
@@ -43,6 +46,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         description:
           'You made the perfect coffee and spilled half of it on chapter four. The stain covers exactly the part about interfaces, which explains a lot.',
         image: storyCollectible('collectible_java_manual'),
+        rarity: 'epic',
         position: { x: 290, y: 1050 },
         revealRadius: 180,
         unlock: {
@@ -60,6 +64,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         description:
           "It fell off the corkboard while you stood there staring. Someone's Wi-Fi password, probably. Security has come a long way since 2014. Hopefully.",
         image: storyCollectible('collectible_sticky_note'),
+        rarity: 'rare',
         position: { x: 1165, y: 540 },
         revealRadius: 180,
         // clear of classmate-7, who stands below the board until the class sits down

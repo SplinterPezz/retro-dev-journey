@@ -3,7 +3,7 @@ import { useCollectibles } from './useCollectibles';
 import { revealFlag } from '../../../config/story/flags';
 import { ChapterCollectibles, CollectibleData } from '../../../types/story';
 
-const base = { name: 'x', description: 'x', image: 'x.png' };
+const base = { name: 'x', description: 'x', image: 'x.png', rarity: 'common' as const };
 const collectibles: ChapterCollectibles = {
   allFoundText: 'all',
   items: [

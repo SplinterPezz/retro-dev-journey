@@ -1,3 +1,5 @@
+export type Rarity = 'common' | 'rare' | 'epic' | 'legendary';
+
 
 export interface Position {
   x: number;

@@ -33,6 +33,11 @@
   animation: unlock-float 2.4s ease-in-out infinite;
 }
 
+.unlock-sprite--rarity {
+  margin-top: 10px;
+  filter: drop-shadow(0 0 6px var(--rarity)) drop-shadow(0 0 14px var(--rarity));
+}
+
 @keyframes unlock-float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }

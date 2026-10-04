@@ -1,0 +1,28 @@
+.rarity--common {
+  --rarity: #4caf50;
+}
+
+.rarity--rare {
+  --rarity: #3d8bfd;
+}
+
+.rarity--epic {
+  --rarity: #a855f7;
+}
+
+.rarity--legendary {
+  --rarity: #f5a623;
+}
+
+.rpgui-content .rarity-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--rarity);
+  border: 2px solid #1e1b22;
+  color: #1e1b22;
+  text-shadow: none;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.6rem;
+  line-height: 1;
+  text-transform: uppercase;
+}

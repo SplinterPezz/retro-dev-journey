@@ -1,4 +1,4 @@
-import { Position, Hitbox, WorldConfig, ImageSize, WorldBounds } from './game';
+import { Position, Hitbox, WorldConfig, ImageSize, WorldBounds, Rarity } from './game';
 
 // Flag names live in config/story/flags.ts.
 export type StoryFlags = Record<string, boolean>;
@@ -148,6 +148,7 @@ export interface CollectibleData {
   name: string;
   description: string;
   image: string;
+  rarity: Rarity;
   position?: Position;
   revealRadius?: number;
   unlock?: CollectibleUnlock;

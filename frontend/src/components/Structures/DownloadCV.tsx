@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { StructureData } from '../../types/sandbox';
+import { DownloadButtonStructure } from '../../types/sandbox';
 import { downloadCV } from '../../services/fileService';
 import { downloadCVCooldown } from '../../config/sandbox';
 import { isDev } from '../../config/env';
@@ -8,7 +8,7 @@ import './Structure.css';
 
 interface DownloadCVProps {
     isNearby: boolean;
-    structure: StructureData;
+    structure: DownloadButtonStructure;
 }
 
 const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {

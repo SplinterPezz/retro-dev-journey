@@ -21,6 +21,9 @@ Run the checks and the browser once, **at the end of the development**, not afte
 is done when `typecheck`, `lint`, `test` and `knip` pass and the screens were looked at in the three layouts (see "Desktop, phone portrait, phone landscape").
 Say plainly what was verified in the browser and what was not.
 
+CI (`.github/workflows/frontend.yml`) runs `typecheck`, `lint`, `test`, `knip` and the Vite build on every PR
+and push to `main` that touches `frontend/`.
+
 ## Code structure
 
 ```
@@ -190,6 +193,8 @@ Then play it through with the debug buttons, in the three layouts.
 - Golden buttons: their end caps stick out of the box and are laid out from RPGUI's own padding and display -
   don't override those. RPGUI buttons have a 140px minimum width. The label's vertical place comes from the
   golden button rule in `index.css`.
+- RPGUI gives every `li` a 20px left margin: a grid or list built on `ul`/`li` must reset it, or it drifts
+  right and overflows.
 - Images from `public/` are not written as `url()` in a `.css` file: pass them from the TSX as a CSS variable
   (`--sparkle-image` in `QuizMarker` / `BobbingProp` / `CollectibleItem`).
 

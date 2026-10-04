@@ -42,7 +42,7 @@ import {
 import { questSuffix } from '../../config/tracking';
 import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
-import { StructureData } from '../../types/sandbox';
+import { DownloadButtonStructure, StructureData } from '../../types/sandbox';
 import './SandboxPage.css';
 
 interface SandboxContainerCSSProperties extends React.CSSProperties {
@@ -54,10 +54,13 @@ const sandboxContainerStyle: SandboxContainerCSSProperties = {
 };
 
 const careerStructures: StructureData[] = [...companies, ...technologies];
-const interactiveStructures: StructureData[] = hideDownloadButtonInSandbox
+const interactiveStructures: (StructureData | DownloadButtonStructure)[] = hideDownloadButtonInSandbox
   ? careerStructures
   : [...careerStructures, downloadButton];
 const environments = [...treesEnvironments, ...detailsEnvironments];
+
+const isDownloadButton = (s: StructureData | DownloadButtonStructure): s is DownloadButtonStructure =>
+  s.id === downloadButton.id;
 
 const worldBounds = {
   minX: 50,
@@ -76,7 +79,6 @@ const requiredImages: string[] = [
   ...environments.map((e) => e.image),
   ...(hideDownloadButtonInSandbox ? [] : [downloadButton.data.image]),
 ].filter((src): src is string => !!src);
-const requiredAudio: string[] = [sandboxAudioTrack];
 
 const debugHitboxes = [
   ...careerStructures.flatMap((s) =>
@@ -169,7 +171,7 @@ const SandboxPage: React.FC = () => {
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });
 
-  const splash = useLoadingSplash(requiredImages, requiredAudio);
+  const splash = useLoadingSplash(requiredImages);
   const splashCovering = splash.visible && !splash.leaving;
   const canPlayerMove = (tipsAcceptedDesktop || tipsAcceptedMobile) && !menuOpen && !splashCovering;
 
@@ -191,7 +193,7 @@ const SandboxPage: React.FC = () => {
 
   // closing waits a beat so walking along a radius edge does not flicker it
   useEffect(() => {
-    if (nearbyStructure && nearbyStructure.id !== downloadButton.id) {
+    if (nearbyStructure && !isDownloadButton(nearbyStructure)) {
       setSelectedStructure(nearbyStructure);
       return;
     }

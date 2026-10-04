@@ -1,0 +1,109 @@
+.item-inspector {
+  --inspect-size: min(62vw, 280px);
+  position: fixed;
+  inset: 0;
+  z-index: 1200; /* above the game menu layer (1100) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.88);
+}
+
+.item-inspector .item-inspector-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  min-width: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item-inspector-stage {
+  width: var(--inspect-size);
+  height: var(--inspect-size);
+  perspective: 900px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.item-inspector-stage:active {
+  cursor: grabbing;
+}
+
+.item-inspector-object {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.item-inspector-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* on the two faces only: a filter on the 3D container would flatten it */
+.item-inspector-layer--face {
+  filter: drop-shadow(0 0 6px var(--rarity)) drop-shadow(0 0 14px var(--rarity));
+}
+
+.item-inspector-info {
+  max-width: 440px;
+  text-align: center;
+}
+
+.item-inspector .item-inspector-name {
+  margin: 0 0 10px;
+  color: #ffd700;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.item-inspector .item-inspector-description {
+  color: #f2f2f2;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.item-inspector .item-inspector-hint {
+  margin-top: 12px;
+  color: #9a9a9a;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 0.55rem;
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .item-inspector {
+    --inspect-size: min(55vh, 220px);
+    flex-direction: row;
+    gap: 28px;
+  }
+
+  .item-inspector-info {
+    max-width: 45vw;
+    text-align: left;
+  }
+
+  .item-inspector .rarity-badge {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

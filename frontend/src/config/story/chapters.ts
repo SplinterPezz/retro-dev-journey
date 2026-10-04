@@ -1,4 +1,5 @@
 import { ChapterProgress } from '../../types/story';
+import { TechnologyData } from '../../types/sandbox';
 import { CHAPTER_IDS, COMPANY_IDS } from '../ids';
 import { PROLOGUE_FLAGS } from './flags';
 import { storyUi } from './sprites';
@@ -29,7 +30,13 @@ export const getChapterIndex = (chapterId: string): number =>
   storyChapterOrder.findIndex((c) => c.id === chapterId);
 
 // Older saves can be completed without having seen the closing scene.
-export const isChapterFinished = (chapter: ChapterMeta, progress: Record<string, ChapterProgress>): boolean => {
+const isChapterFinished = (chapter: ChapterMeta, progress: Record<string, ChapterProgress>): boolean => {
   const own = progress[chapter.id];
   return !!own?.completed && (!chapter.endFlag || !!own.flags[chapter.endFlag]);
+};
+
+export const isTechnologyUnlocked = (tech: TechnologyData, progress: Record<string, ChapterProgress>): boolean => {
+  if (!tech.storyChapter) return false;
+  const chapter = storyChapterOrder.find((c) => c.id === tech.storyChapter) ?? { id: tech.storyChapter };
+  return isChapterFinished(chapter, progress);
 };

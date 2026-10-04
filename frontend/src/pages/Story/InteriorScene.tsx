@@ -356,6 +356,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             subtitle={`${found.currentNumber} / ${collectiblesTotal}`}
             text={found.current.description}
             cornerImage={collectibleCheer}
+            rarity={found.current.rarity}
             remaining={found.remaining}
             onConfirm={found.confirmFound}
           />

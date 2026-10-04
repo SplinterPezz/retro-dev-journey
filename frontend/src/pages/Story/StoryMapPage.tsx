@@ -27,7 +27,7 @@ import { storyMapAssets } from '../../config/story/assets';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
-import { ChapterMeta, InDevelopmentRedirect, isChapterFinished, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
+import { ChapterMeta, InDevelopmentRedirect, isTechnologyUnlocked, storyChapterOrder, storyMapAudioTrack } from '../../config/story/chapters';
 import { MEEP_LAG_MS } from './sceneRules';
 import { ChapterProgress } from '../../types/story';
 import { StructureData, TechnologyData } from '../../types/sandbox';
@@ -68,11 +68,7 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
 const environments = [...treesEnvironments, ...detailsEnvironments];
 
 const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
-  technologies.filter((t) => {
-    const chapterId = (t.data as TechnologyData).storyChapter;
-    if (!chapterId) return false;
-    return isChapterFinished(storyChapterOrder.find((c) => c.id === chapterId) ?? { id: chapterId }, progress);
-  });
+  technologies.filter((t) => isTechnologyUnlocked(t.data as TechnologyData, progress));
 
 const worldBounds = {
   minX: 50,
@@ -195,6 +191,7 @@ const StoryMapPage: React.FC = () => {
       subtitle={discoveryTech.category}
       text={discoveryTech.learnedText ?? discoveryTech.description ?? ''}
       note="Its statue now stands on the map."
+      rarity={discoveryTech.rarity}
       remaining={discoveriesLeft}
       onConfirm={() => dispatch(markDiscoverySeen(discovery.id))}
     />

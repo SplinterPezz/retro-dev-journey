@@ -1,4 +1,6 @@
 import React from 'react';
+import { Rarity } from '../../../types/game';
+import RarityBadge from '../../Common/RarityBadge';
 import '../dialogue/StoryIntroDialog.css';
 import './UnlockPopup.css';
 
@@ -10,18 +12,20 @@ interface UnlockPopupProps {
   text: string;
   note?: string;
   cornerImage?: string;
+  rarity?: Rarity;
   remaining: number;
   onConfirm: () => void;
 }
 
-const UnlockPopup: React.FC<UnlockPopupProps> = ({ kicker, image, title, subtitle, text, note, cornerImage, remaining, onConfirm }) => (
+const UnlockPopup: React.FC<UnlockPopupProps> = ({ kicker, image, title, subtitle, text, note, cornerImage, rarity, remaining, onConfirm }) => (
   <>
     <div className="story-intro-backdrop" />
     <div className="story-intro-dialog" role="dialog" aria-labelledby="unlock-title">
-      <div className="rpgui-container framed-golden story-intro-box unlock-box">
+      <div className={`rpgui-container framed-golden story-intro-box unlock-box${rarity ? ` rarity--${rarity}` : ''}`}>
         {cornerImage && <img src={cornerImage} alt="" className="unlock-corner" />}
         <p className="unlock-kicker">{kicker}</p>
-        <img src={image} alt="" className="unlock-sprite" />
+        {rarity && <RarityBadge rarity={rarity} />}
+        <img src={image} alt="" className={`unlock-sprite${rarity ? ' unlock-sprite--rarity' : ''}`} />
         <h2 id="unlock-title" className="story-intro-title">{title}</h2>
         {subtitle && <p className="unlock-subtitle">{subtitle}</p>}
         <div className="dialog-separator">

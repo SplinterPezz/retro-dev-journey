@@ -1,4 +1,4 @@
-import { StructureData } from '../types/sandbox';
+import { DownloadButtonStructure } from '../types/sandbox';
 
 const downloadButtonId: string = 'download-button';
 export const downloadCVCooldown: number = 60;
@@ -8,7 +8,7 @@ export const sandboxBackgroundImage: string = '/backgrounds/sky_sandbox.png';
 
 export const hideDownloadButtonInSandbox: boolean = false;
 
-export const downloadButton : StructureData = {
+export const downloadButton: DownloadButtonStructure = {
   id: downloadButtonId,
   name: 'download',
   type: 'statue',

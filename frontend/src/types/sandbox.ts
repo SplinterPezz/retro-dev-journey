@@ -1,4 +1,4 @@
-import { Position, ShadowInfo, Hitbox, ImageSize } from './game';
+import { Position, ShadowInfo, Hitbox, ImageSize, Rarity } from './game';
 
 // Shared engine types live in ./game; re-exported here for existing imports.
 export type { Position, EnvironmentData } from './game';
@@ -11,6 +11,21 @@ export interface StructureData {
   description: string;
   data: CompanyData | TechnologyData;
   interactionRadius: number;
+}
+
+interface DownloadButtonData {
+  id: string;
+  name: string;
+  position: Position;
+  image: string;
+  animatedImage?: string;
+  cooldownImage?: string;
+  centering?: Position;
+  collisionHitbox?: Hitbox;
+}
+
+export interface DownloadButtonStructure extends Omit<StructureData, 'data'> {
+  data: DownloadButtonData;
 }
 
 export interface CompanyData {
@@ -58,6 +73,7 @@ export interface TechnologyData {
   interactionRadius?: number;
   storyChapter?: string;
   learnedText?: string;
+  rarity: Rarity;
 }
 
 export interface PathSegment {
