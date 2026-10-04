@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useTypedText } from '../../../hooks/useTypedText';
+import { useTypingSound } from '../../../hooks/useTypingSound';
 import DialogueChoices, { ChoiceButtonItem } from './DialogueChoices';
 import { DIALOGUE_ADVANCE_KEYS } from '../../../config/controls';
 import { useGameMenu } from '../../GameMenu/GameMenuContext';
@@ -13,6 +14,7 @@ interface PortraitDialogueBoxProps {
   onAdvance?: () => void; // called when there are no choices and the player continues
   onChoiceSelect?: (id: string) => void;
   typingSpeed?: number;
+  voiceKey?: string; // whose typing sound the line has (src/config/typingVoices.ts)
 }
 
 // Bottom-anchored visual-novel style box: NPC portrait (cropped from its own
@@ -26,8 +28,10 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
   onAdvance,
   onChoiceSelect,
   typingSpeed = 28,
+  voiceKey,
 }) => {
   const { displayedText, isTyping, skip } = useTypedText(text, typingSpeed);
+  useTypingSound(text, displayedText.length, isTyping, voiceKey);
 
   const handleBoxClick = () => {
     if (isTyping) {

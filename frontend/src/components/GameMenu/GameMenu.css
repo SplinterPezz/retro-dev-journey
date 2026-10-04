@@ -123,13 +123,21 @@
   top: -1px;
 }
 
-/* ---- music: volume bar and mute toggle ---- */
+/* ---- sound rows (music, dialogue): icon, volume bar and mute toggle ---- */
 
 .game-menu-music {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 4px 4px 0;
+}
+
+.game-menu-music + .game-menu-music {
+  margin-top: 10px;
+}
+
+.game-menu-sound-icon {
+  flex-shrink: 0;
 }
 
 .game-menu-volume {

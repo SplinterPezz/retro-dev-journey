@@ -7,13 +7,14 @@ import { ROUTES } from '../../config/routes';
 import { menuProfile } from '../../config/menu';
 import { storyDifficultyLabels } from '../../config/story/difficulty';
 import MusicControl from './MusicControl';
+import DialogueSoundControl from './DialogueSoundControl';
 import { useGameMenu } from './GameMenuContext';
 import '../Story/dialogue/StoryIntroDialog.css';
 import '../AudioControls/AudioControls.css';
 import './GameMenu.css';
 
 interface GameMenuProps {
-  withMusic: boolean; // the music row, on pages that play music
+  withMusic: boolean; // the music row, on pages that play music (the dialogue sound row is always there)
 }
 
 const GoldenSeparator = () => (
@@ -22,8 +23,8 @@ const GoldenSeparator = () => (
   </div>
 );
 
-// The game menu window: the player card, the menu entries and the music
-// controls. Closed with its X only.
+// The game menu window: the player card, the menu entries and the sound
+// controls (music, dialogue). Closed with its X only.
 const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
   const navigate = useNavigate();
   const { close } = useGameMenu();
@@ -39,7 +40,7 @@ const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
           </button>
 
           {/* Two columns: stacked in portrait (so the order reads profile, Home,
-              Items, Skills, music), side by side on a landscape phone. */}
+              Items, Skills, sound), side by side on a landscape phone. */}
           <div className="game-menu-columns">
             <div className="game-menu-column">
               <div className="game-menu-profile">
@@ -82,12 +83,9 @@ const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
                 </button>
               </div>
 
-              {withMusic && (
-                <>
-                  <GoldenSeparator />
-                  <MusicControl />
-                </>
-              )}
+              <GoldenSeparator />
+              {withMusic && <MusicControl />}
+              <DialogueSoundControl />
             </div>
           </div>
         </div>

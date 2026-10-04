@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Music, Volume2, VolumeX } from 'lucide-react';
 import { AppDispatch, RootState } from '../../store/store';
 import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
 import '../AudioControls/AudioControls.css';
@@ -21,6 +21,7 @@ const MusicControl: React.FC = () => {
 
   return (
     <div className="game-menu-music">
+      <Music size={20} color="white" className="volume-filter game-menu-sound-icon" aria-hidden="true" />
       <input
         type="range"
         className="game-menu-volume"

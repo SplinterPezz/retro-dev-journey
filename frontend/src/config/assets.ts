@@ -41,3 +41,6 @@ export const lockSprite = storyUi('lock');
 
 // Spins in the corner of the loading screens.
 export const loadingIcon = '/favicon.ico';
+
+// The tick of the dialogue box while a line is typed (src/audio/typingSound.ts).
+export const textTypingSound = '/audio/text_typing_click.wav';

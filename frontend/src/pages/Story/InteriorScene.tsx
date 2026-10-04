@@ -367,6 +367,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
             speakerName={dialogue.node.portrait ? dialogue.node.speaker : dialogue.active.npc.name}
             portraitImage={npcSprite(dialogue.node.portrait ?? dialogue.active.npc.spriteBase, 'idle')}
             text={dialogue.node.text}
+            voiceKey={dialogue.node.speaker}
             choices={dialogue.choices}
             onAdvance={dialogue.advance}
             onChoiceSelect={dialogue.selectChoice}
