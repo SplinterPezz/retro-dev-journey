@@ -3,7 +3,7 @@ import { ChapterCollectibles, CollectibleData, CollectibleSpot } from '../../../
 import { Position } from '../../../types/game';
 
 export const PICKUP_RADIUS = 40;
-export const DEFAULT_REVEAL_RADIUS = 120;
+export const DEFAULT_REVEAL_RADIUS = 180;
 
 // Flag that keeps a collectible available once its sequence or wait is done.
 export const revealFlag = (id: string) => `collectible_${id}_revealed`;

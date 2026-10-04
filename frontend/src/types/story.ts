@@ -208,6 +208,24 @@ export interface IntroPage {
   text: string;
 }
 
+// A tiled area of a side room: its floor, its back wall, the doorway.
+export interface SideRoomSurface {
+  bounds: WorldBounds;
+  image: string;
+  tile: ImageSize; // drawn size of one tile; it repeats across the bounds
+}
+
+// A small room beyond the walls (e.g. a bathroom), reached through an open
+// door. Its props and NPCs are listed with the chapter's own; this only adds
+// the surfaces, the way in and the light.
+export interface SideRoom {
+  id: string;
+  surfaces: SideRoomSurface[]; // the shade covers them all, and standing on any of them turns the light on
+  walkable: WorldBounds[]; // where the player can stand (their position, not the sprite)
+  door: { image: string; position: Position; imageSize: ImageSize }; // drawn over the doorway, see-through
+  dark?: boolean; // dark until the player steps onto its floor, dark again once they leave
+}
+
 export interface StoryChapterConfig {
   id: string;
   title: string;
@@ -221,9 +239,12 @@ export interface StoryChapterConfig {
   npcs: StoryNpcData[];
   quizzes: QuizData[];
   doorPosition: Position; // where the door sprite is drawn (top-left); decorative, the room is left with the Home button
+  sideRooms?: SideRoom[];
   meepBeats: MeepBeat[];
   completion: { requiredFlags: string[] };
   miniGames?: MiniGameMarker[];
   outro?: ChapterOutro;
+  // Opened by itself once, as soon as the intro is closed (e.g. Meep saying hello).
+  openingDialogue?: { npcId: string; nodeId: string };
   objectives?: { id: string; label: string; flag: string }[]; // shown in the Sandbox-style progress panel, in order
 }

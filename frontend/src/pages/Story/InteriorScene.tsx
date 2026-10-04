@@ -10,7 +10,7 @@ import { useDebugReset } from '../../game/useDebugReset';
 import { useResourceLoader } from '../../hooks/useResourceLoader';
 import GameScene from '../../game/GameScene';
 import DebugOverlay, { DebugCollectibleZone } from '../../game/DebugOverlay';
-import { CollidableEntity, Hitbox, Position } from '../../types/game';
+import { CollidableEntity, Hitbox, Position, WorldBounds } from '../../types/game';
 import { StoryChapterConfig, StoryNpcData, QuizData, MiniGameMarker, CollectibleData, ChapterCollectibles } from '../../types/story';
 import { tierFor } from '../../config/story/miniGames';
 import Player from '../../components/Player/Player';
@@ -19,6 +19,7 @@ import Environment from '../../components/Structures/Environment';
 import HomeButton from '../../components/Common/HomeButton';
 import InteriorNpc from '../../components/Story/world/InteriorNpc';
 import BobbingProp from '../../components/Story/world/BobbingProp';
+import SideRoomView from '../../components/Story/world/SideRoomView';
 import PortraitDialogueBox from '../../components/Story/dialogue/PortraitDialogueBox';
 import QuizPopup from '../../components/Story/quiz/QuizPopup';
 import QuizMarker from '../../components/Story/quiz/QuizMarker';
@@ -77,6 +78,8 @@ const isSeatedNpc = (npc: StoryNpcData, flags: Flags): boolean => !!npc.seatedFl
 
 const npcStandingPosition = (npc: StoryNpcData, flags: Flags, live?: Position): Position =>
   isSeatedNpc(npc, flags) && npc.seatedPosition ? npc.seatedPosition : live ?? npc.position;
+
+const inside = (p: Position, b: WorldBounds): boolean => p.x >= b.minX && p.x <= b.maxX && p.y >= b.minY && p.y <= b.maxY;
 
 interface RoomProps {
   chapter: StoryChapterConfig;
@@ -148,7 +151,7 @@ interface SceneDebugProps {
 const SceneDebug: React.FC<SceneDebugProps> = ({ chapter, collectibles, foundIds, flags, npcStates, playerPosition, playerHitbox }) => (
   <DebugOverlay
     collectibleZones={debugCollectibleZones(collectibles, foundIds)}
-    secretPaths={(collectibles?.secretPaths ?? []).map((a, i) => ({
+    secretPaths={[...(collectibles?.secretPaths ?? []), ...(chapter.sideRooms ?? []).flatMap((r) => r.walkable)].map((a, i) => ({
       id: String(i),
       position: { x: a.minX, y: a.minY },
       width: a.maxX - a.minX,
@@ -245,12 +248,14 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   );
   const allBlocking = useMemo(() => [...npcCollidables, ...blockingProps], [npcCollidables, blockingProps]);
 
-  // The room, plus the chapter's secret paths outside its walls if it has any.
+  // The room, plus the chapter's secret paths and side rooms outside its walls if it has any.
   const secretPaths = collectibles?.secretPaths;
+  const sideRooms = chapter.sideRooms;
   const { worldBounds, walkableAreas } = useMemo(() => {
     const room = { minX: 40, minY: 40, maxX: chapter.worldConfig.width - 40, maxY: chapter.worldConfig.height - 40 };
-    if (!secretPaths?.length) return { worldBounds: room, walkableAreas: undefined };
-    const areas = [room, ...secretPaths];
+    const outside = [...(secretPaths ?? []), ...(sideRooms ?? []).flatMap((r) => r.walkable)];
+    if (!outside.length) return { worldBounds: room, walkableAreas: undefined };
+    const areas = [room, ...outside];
     return {
       worldBounds: {
         minX: Math.min(...areas.map((a) => a.minX)),
@@ -260,7 +265,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
       },
       walkableAreas: areas,
     };
-  }, [chapter.worldConfig, secretPaths]);
+  }, [chapter.worldConfig, secretPaths, sideRooms]);
 
   // ---- closing scene: seats the player, so it hands over the teleport through a ref ----
   const navigate = useNavigate();
@@ -291,6 +296,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   });
 
   teleportRef.current = teleport;
+
+  // the dark side room the player is standing in, lit while they are there
+  const litRoomId = sideRooms?.find((r) => r.dark && r.surfaces.some((s) => inside(playerPosition, s.bounds)))?.id;
 
   const meepPosition = useLaggedPosition(playerPosition, 450);
 
@@ -392,7 +400,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     completed,
     nextUnlockIndex,
     setFlag: setChapterFlag,
-    canCue: !introPending && !popupOpen,
+    canCue: !introPending && !popupOpen && !splashVisible,
     onCue: dialogue.cue,
   });
 
@@ -467,6 +475,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
           }
         >
           <Room chapter={chapter} flags={flags} />
+          {sideRooms?.map((room) => (
+            <SideRoomView key={room.id} room={room} lit={litRoomId === room.id} />
+          ))}
           {collectiblesOnMap.map(({ item, near }) => (
             <CollectibleItem key={item.id} item={item} near={near} />
           ))}

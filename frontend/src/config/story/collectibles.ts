@@ -27,14 +27,14 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
         unlock: { kind: 'flag', flag: 'gotDrumstick' },
       },
       {
-        // hidden: in the corner by the instructor's desk, visible only from a few steps
+        // hidden: on the bathroom floor, in front of the last stall, visible only from a few steps
         id: 'flappyPhone',
         name: 'A phone with Flappy Bird',
         description:
-          'Flappy Bird was pulled from the stores in February 2014. This phone still has it installed, which makes it priceless. High score: 3.',
+          'Flappy Bird was pulled from the stores in February 2014. This phone, left on the bathroom floor, still has it installed, which makes it priceless. High score: 3.',
         image: `${SPRITES}/collectible_flappy_phone.png`,
-        position: { x: 858, y: 230 },
-        revealRadius: 45,
+        position: { x: 430, y: -290 },
+        revealRadius: 90,
       },
       {
         // off the map: through the gap in the right wall, behind the globe
@@ -44,7 +44,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
           "1.44 MB of pure history, found outside the classroom where nobody ever looks. The label says 'tesina_finale'. It won't fit in any computer in here.",
         image: `${SPRITES}/collectible_floppy.png`,
         position: { x: 1400, y: 500 },
-        revealRadius: 120,
+        revealRadius: 180,
       },
       {
         // sequence: coffee machine, water dispenser, coffee machine again
@@ -54,7 +54,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
           'You made the perfect coffee and spilled half of it on chapter four. The stain covers exactly the part about interfaces, which explains a lot.',
         image: `${SPRITES}/collectible_java_manual.png`,
         position: { x: 290, y: 1050 },
-        revealRadius: 120,
+        revealRadius: 180,
         unlock: {
           kind: 'sequence',
           spots: {
@@ -72,7 +72,7 @@ export const chapterCollectibles: Record<string, ChapterCollectibles> = {
           "It fell off the corkboard while you stood there staring. Someone's Wi-Fi password, probably. Security has come a long way since 2014. Hopefully.",
         image: `${SPRITES}/collectible_sticky_note.png`,
         position: { x: 1165, y: 540 },
-        revealRadius: 120,
+        revealRadius: 180,
         // left of the board: clear of classmate-7, who stands below it until the class sits down
         unlock: { kind: 'idle', spot: { x: 1150, y: 515, radius: 45 }, seconds: 5 },
       },
