@@ -57,6 +57,13 @@ describe('stepPosition', () => {
 
   it('stays put when every move is blocked', () => {
     const at = { x: 50, y: 50 };
-    expect(stepPosition(at, 'up-left', 10, bounds, () => true)).toBe(at);
+    const everywhereElse = (p: { x: number; y: number }) => p.x !== at.x || p.y !== at.y;
+    expect(stepPosition(at, 'up-left', 10, bounds, everywhereElse)).toBe(at);
+  });
+
+  it('walks out of a box it is already inside', () => {
+    // box around x 40..60: the player starts inside it
+    const box = (p: { x: number }) => p.x > 40 && p.x < 60;
+    expect(stepPosition({ x: 50, y: 50 }, 'right', 5, bounds, box)).toEqual({ x: 55, y: 50 });
   });
 });

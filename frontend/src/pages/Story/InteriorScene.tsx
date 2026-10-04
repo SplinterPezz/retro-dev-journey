@@ -54,6 +54,11 @@ const SPLASH_MIN_MS = 2600;
 const SPLASH_MAX_MS = 15000;
 const SPLASH_FADE_MS = 900;
 
+// The door sprite is drawn 128x128 from doorPosition; the player reaches it at
+// its threshold, the bottom centre.
+const DOOR_THRESHOLD = { x: 64, y: 100 };
+const DOOR_REACH = 70;
+
 const toCollidable = (id: string, position: Position, interactionRadius?: number, collisionHitbox?: Hitbox): CollidableEntity => ({
   id,
   position,
@@ -281,6 +286,23 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onOpen: (id) => setActiveMiniGame(chapter.miniGames?.find((m) => m.id === id) ?? null),
   });
 
+  // The door: the way out once the closing scene is over, a quip from Meep before.
+  const nearDoor =
+    Math.hypot(
+      playerPosition.x - (chapter.doorPosition.x + DOOR_THRESHOLD.x),
+      playerPosition.y - (chapter.doorPosition.y + DOOR_THRESHOLD.y)
+    ) < DOOR_REACH;
+  useProximityTrigger({
+    nearbyId: nearDoor && chapter.outro ? 'door' : null,
+    enabled: !introPending && !outro.active,
+    canOpen: () => !popupOpen,
+    onOpen: () => {
+      if (!chapter.outro) return;
+      if (outro.ended) outro.leave();
+      else meep.say(chapter.outro.exitBlockedLine);
+    },
+  });
+
   useChapterProgress({
     chapter,
     flags,
@@ -318,10 +340,12 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
 
   const handleQuizClose = useCallback(() => setActiveQuiz(null), []);
 
-  const objectives = useMemo(
-    () => chapter.objectives?.map((o) => ({ id: o.id, label: o.label, done: !!flags[o.flag] })),
-    [chapter.objectives, flags]
-  );
+  // Once the closing scene is over, walking out of the door is the last thing left.
+  const exitObjective = outro.ended ? chapter.outro?.exitObjective : undefined;
+  const objectives = useMemo(() => {
+    const list = chapter.objectives?.map((o) => ({ id: o.id, label: o.label, done: !!flags[o.flag] }));
+    return list && exitObjective ? [...list, { id: 'exit', label: exitObjective, done: false }] : list;
+  }, [chapter.objectives, flags, exitObjective]);
 
   return (
     <div className="rpgui-content">

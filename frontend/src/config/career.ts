@@ -133,6 +133,8 @@ const companiesData: CompanyData[] = [
 const technologiesData: TechnologyData[] = [
   {
     id: "java",
+    storyChapter: "prologue",
+    learnedText: "The first real language of the course: classes, objects and more semicolons than you can count. Everything else will be built on top of it.",
     name: "Java",
     category: "Programming Language",
     level: "Expert",
@@ -154,6 +156,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "python",
+    storyChapter: "unipa",
+    learnedText: "At university Python was everywhere: algorithms, data and quick scripts for every exam project. Short, readable, and somehow always the right tool.",
     name: "Python",
     category: "Programming Language",
     level: "Expert",
@@ -174,6 +178,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "golang",
+    storyChapter: "codesour",
+    learnedText: "A new language for the side projects: REST APIs, a real-time chat and the backend of this very website.",
     name: "Golang",
     shortName: "Go",
     category: "Programming Language",
@@ -193,6 +199,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "javascript",
+    storyChapter: "unipa",
+    learnedText: "Not on the syllabus: you learned it on your own during university, building little web pages between one exam and the next. The browser became part of your playground.",
     name: "JavaScript",
     shortName: "JS",
     category: "Programming Language",
@@ -213,6 +221,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "kafka",
+    storyChapter: "codesour",
+    learnedText: "Millions of advertising events a day: with Kafka and PubSub the services talk through messages instead of waiting on each other.",
     name: "Kafka & Google PubSub",
     shortName: "PubSub",
     category: "Messaging and Queue",
@@ -232,6 +242,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "mongodb",
+    storyChapter: "unipa",
+    learnedText: "Another one learned on your own during university: no more rigid tables, just documents and collections for your side projects.",
     name: "MongoDB",
     shortName:"Mongo",
     category: "Database",
@@ -257,6 +269,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "cassandradb",
+    storyChapter: "codesour",
+    learnedText: "Billions of rows of real-time tracking data: Cassandra is built to write fast and never slow down.",
     name: "CassandraDB",
     shortName:"Cassandra",
     category: "Database",
@@ -277,6 +291,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "elastic",
+    storyChapter: "codesour",
+    learnedText: "Logs from every service in one place: when something breaks, ElasticSearch tells you where.",
     name: "ElasticSearch",
     shortName: "ELK",
     category: "Other",
@@ -293,6 +309,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "sql",
+    storyChapter: "prologue",
+    learnedText: "SELECT, JOIN, WHERE: the database lessons taught you that data lives in tables - and that a forgotten WHERE can ruin your whole day.",
     name: "MySQL & SQL",
     shortName: "MySQL",
     category: "Database",
@@ -312,6 +330,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "docker",
+    storyChapter: "codesour",
+    learnedText: "Every service in its own container: \"it works on my machine\" is finally true on every machine.",
     name: "Docker",
     category: "Dev/Ops",
     level: "Expert",
@@ -339,6 +359,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "aws",
+    storyChapter: "codesour",
+    learnedText: "Buckets, the CLI and cloud services for the ETL workflows - the other big cloud, right next to GCP.",
     name: "Amazon AWS",
     shortName: "AWS",
     category: "Cloud",
@@ -354,6 +376,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "gcp",
+    storyChapter: "codesour",
+    learnedText: "The advertising platform moved to Google Cloud: VMs, PubSub and Terraform to scale on demand.",
     name: "Google Cloud Platform",
     shortName: "GCP",
     category: "Cloud",
@@ -374,6 +398,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "pipelines",
+    storyChapter: "alessi",
+    learnedText: "Scheduled jobs and automated flows: at Alessi you stopped running things by hand and let the pipelines do it.",
     name: "Pipelines",
     shortName: "CI/CD",
     category: "Other",
@@ -396,6 +422,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "etl",
+    storyChapter: "alessi",
+    learnedText: "Talend and Pentaho at Alessi: moving, cleaning and reshaping data until the advertising reports finally made sense.",
     name: "ETL & OLAP",
     shortName: "ETL",
     category: "Other",
@@ -417,6 +445,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "git",
+    storyChapter: "prologue",
+    learnedText: "Commits, branches and the odd merge conflict. Now you know which commit broke the build, and how to undo it.",
     name: "Git",
     category: "Dev/Ops",
     level: "Expert",
@@ -444,6 +474,8 @@ const technologiesData: TechnologyData[] = [
   },
   {
     id: "ai",
+    storyChapter: "codesour",
+    learnedText: "Computer vision, NLP and forecasting: the platform learned to read audiences and predict revenue.",
     name: "Artificial Intelligence",
     shortName: "AI",
     category: "Other",

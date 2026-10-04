@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ChapterOutro, StoryNpcData } from '../../../types/story';
 import { Position } from '../../../types/game';
 
@@ -8,8 +8,9 @@ const FADE = 900; // same length as the splash fades in InteriorScene.css
 const TITLE_HOLD = 2500;
 const END_HOLD = 1500;
 
-// before -> fading to black -> title on black -> back to the room -> scene -> fading out at the end
-type Phase = 'idle' | 'toBlack' | 'title' | 'fromBlack' | 'scene' | 'ending';
+// before -> fading to black -> title on black -> back to the room -> scene ->
+// free to walk to the exit -> fading out at the end
+type Phase = 'idle' | 'toBlack' | 'title' | 'fromBlack' | 'scene' | 'free' | 'ending';
 
 interface ChapterOutroConfig {
   outro?: ChapterOutro;
@@ -29,12 +30,14 @@ export interface OutroCurtain {
 }
 
 // Plays the chapter's closing scene (see ChapterOutro). `active` freezes the
-// player and the walk-up triggers from the first fade to the end.
+// player and the walk-up triggers from the first fade until the scene's last
+// line; then the player is free again and `leave` (the exit door) ends it.
 export const useChapterOutro = ({ outro, flags, setFlag, ready, busy, npcs, cue, seatPlayer, onEnd }: ChapterOutroConfig) => {
   const started = !!outro && !!flags[outro.startedFlag];
   const ended = !!outro && !!flags[outro.endFlag];
-  // A reload in the middle of the scene goes straight back to it.
-  const [phase, setPhase] = useState<Phase>(started ? 'scene' : 'idle');
+  // A reload in the middle of the scene goes straight back to it; once the
+  // chapter is over the room cannot be entered again.
+  const [phase, setPhase] = useState<Phase>(ended ? 'ending' : started ? 'scene' : 'idle');
 
   // The scene's dialogue: opened once the room is back, and again after a reload.
   const [cued, setCued] = useState(false);
@@ -63,7 +66,7 @@ export const useChapterOutro = ({ outro, flags, setFlag, ready, busy, npcs, cue,
     } else if (phase === 'fromBlack') {
       timer = setTimeout(() => setPhase('scene'), FADE);
     } else if (phase === 'scene' && ended && !busy) {
-      setPhase('ending');
+      setPhase('free');
     } else if (phase === 'ending') {
       timer = setTimeout(onEnd, FADE + END_HOLD);
     }
@@ -75,5 +78,8 @@ export const useChapterOutro = ({ outro, flags, setFlag, ready, busy, npcs, cue,
   if (phase === 'fromBlack') curtain = { subtitle: outro?.subtitle, leaving: true };
   if (phase === 'ending') curtain = { leaving: false };
 
-  return { active: phase !== 'idle', curtain };
+  // The exit, once the scene is over.
+  const leave = useCallback(() => setPhase((p) => (p === 'free' ? 'ending' : p)), []);
+
+  return { active: phase !== 'idle' && phase !== 'free', ended, curtain, leave };
 };

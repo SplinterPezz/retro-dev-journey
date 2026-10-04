@@ -9,6 +9,8 @@ const outro: ChapterOutro = {
   dialogue: { npcId: 'teacher', nodeId: 'speech' },
   startedFlag: 'outroStarted',
   endFlag: 'ended',
+  exitObjective: 'Leave',
+  exitBlockedLine: 'Not yet',
 };
 const teacher = { id: 'teacher' } as StoryNpcData;
 
@@ -60,8 +62,15 @@ describe('useChapterOutro', () => {
     expect(hook.result.current.curtain).toBeNull();
     expect(calls.cue).toEqual(['speech']);
 
-    // the last line sets the end flag and closes: black again, then the map
+    // the last line sets the end flag and closes: free to walk to the door
     hook.rerender({ ...props, flags: { gamesDone: true, outroStarted: true, ended: true } });
+    expect(hook.result.current.active).toBe(false);
+    expect(hook.result.current.curtain).toBeNull();
+
+    // through the door: black again, then the map
+    act(() => {
+      hook.result.current.leave();
+    });
     expect(hook.result.current.curtain).toEqual({ leaving: false });
     act(() => {
       vi.advanceTimersByTime(2400);
@@ -76,6 +85,23 @@ describe('useChapterOutro', () => {
       vi.advanceTimersByTime(5000);
     });
     expect(hook.result.current.curtain).toBeNull();
+  });
+
+  it('the door does nothing before the scene is over', () => {
+    const { hook } = setup({});
+    act(() => {
+      hook.result.current.leave();
+    });
+    expect(hook.result.current.curtain).toBeNull();
+  });
+
+  it('sends back to the map when the chapter is already over', () => {
+    const { hook, calls } = setup({ gamesDone: true, outroStarted: true, ended: true });
+    expect(hook.result.current.curtain).toEqual({ leaving: false });
+    act(() => {
+      vi.advanceTimersByTime(2400);
+    });
+    expect(calls.end).toBe(1);
   });
 
   it('resumes the scene after a reload', () => {

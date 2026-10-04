@@ -67,6 +67,8 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'laptop-5', image: '/sprites/story/props/laptop_2.png', position: { x: 847, y: 646 }, imageSize: { width: 64, height: 40 } },
     // arrow above the student laptop: shown once the four objectives are done, until the games are played
     { id: 'laptop-arrow', image: '/sprites/story/props/arrow_down.png', position: { x: 690, y: 282 }, imageSize: { width: 48, height: 48 }, visibleWhenFlag: 'objectivesDone', hiddenWhenFlag: 'miniGamesDone' },
+    // arrow above the door: shown once the closing scene is over, to point the way out
+    { id: 'door-arrow', image: '/sprites/story/props/arrow_down.png', position: { x: 626, y: 966 }, imageSize: { width: 48, height: 48 }, visibleWhenFlag: 'prologueEnded' },
     // chalkboard + bin flank the cattedra symmetrically
     { id: 'chalkboard', image: '/sprites/story/props/chalkboard_wheels.png', position: { x: 400, y: 150 }, imageSize: { width: 110, height: 110 } },
     { id: 'trash-bin', image: '/sprites/story/props/trash_bin.png', position: { x: 900, y: 150 }, imageSize: { width: 72, height: 72 } },
@@ -1172,14 +1174,16 @@ export const prologueChapter: StoryChapterConfig = {
     { id: 'quiz', trigger: 'onFlag', flag: 'quizPassed', text: 'Did... did you actually get all of that right? I\'m almost impressed.' },
   ],
 
-  // After the mini games and their comments: the internship announcement, then off to Eikony.
+  // After the mini games and their comments: the internship announcement, then out of the door and off to Eikony.
   outro: {
     afterFlag: 'miniGamesDone',
     subtitle: 'Some days later',
-    playerPosition: { x: 714, y: 402 }, // at the desk with the laptop, in the row of Manuel and Francesco
+    playerPosition: { x: 714, y: 410 }, // at the desk with the laptop, just below its hitbox (it ends at y 390, the player's starts 16 above)
     dialogue: { npcId: 'teacher', nodeId: 'internshipIntro' },
     startedFlag: 'outroStarted',
     endFlag: 'prologueEnded',
+    exitObjective: 'Leave the classroom',
+    exitBlockedLine: "Not so fast - the lesson isn't over yet. Sit tight.",
   },
 
   // the chapter (and the map) opens only once the closing scene is over

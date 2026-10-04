@@ -73,8 +73,11 @@ export const stepPosition = (
     { x: nx, y: current.y },
     { x: current.x, y: ny },
   ];
+  // Already inside a box (put there by a teleport or a config slip): let any
+  // step through, so the player walks out instead of being stuck for good.
+  const stuck = isBlocked(current);
   const free = candidates.find(
-    (p) => !(p.x === current.x && p.y === current.y) && !isBlocked(p)
+    (p) => !(p.x === current.x && p.y === current.y) && (stuck || !isBlocked(p))
   );
   return free ?? current;
 };
