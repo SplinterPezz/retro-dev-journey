@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../store/store';
 import { markDiscoverySeen } from '../../store/storySlice';
@@ -13,9 +13,12 @@ import PathRenderer from '../../components/Path/PathRenderer';
 import Structure from '../../components/Structures/Structure';
 import Environment from '../../components/Structures/Environment';
 import Player from '../../components/Player/Player';
+import Meep from '../../components/Companion/Meep';
+import { useLaggedPosition } from '../../components/Companion/useLaggedPosition';
 import HomeButton from '../../components/Common/HomeButton';
 import StoryProgress, { StoryObjective } from '../../components/Story/hud/StoryProgress';
 import UnlockPopup from '../../components/Story/hud/UnlockPopup';
+import InDevelopmentPopup from '../../components/Story/hud/InDevelopmentPopup';
 import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
 import { companies, technologies } from '../../config/career';
 import { treesEnvironments, detailsEnvironments } from '../../config/environments';
@@ -132,6 +135,16 @@ const StoryMapPage: React.FC = () => {
   const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
   const dispatch = useDispatch<AppDispatch>();
   const [exiting, setExiting] = useState(false);
+  // "still in development": opened by walking into a chapter that isn't ready,
+  // or when its URL sent the player back here
+  const location = useLocation();
+  const [inDevelopmentOpen, setInDevelopmentOpen] = useState(
+    () => !!(location.state as { inDevelopment?: string } | null)?.inDevelopment
+  );
+  // read once: drop it from the history entry, so a reload doesn't open it again
+  useEffect(() => {
+    if (location.state) void navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
   const { resetAll } = useDebugReset();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
@@ -186,8 +199,11 @@ const StoryMapPage: React.FC = () => {
     structures: solidStructures,
     environments,
     playerHitbox,
-    canMove: !exiting && !discovery,
+    canMove: !exiting && !discovery && !inDevelopmentOpen,
   });
+
+  // Meep, the mascot, follows the player on the map too, as in the chapters.
+  const meepPosition = useLaggedPosition(playerPosition, 450);
 
   const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
 
@@ -197,13 +213,29 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: 90,
   });
 
+  // A chapter that isn't ready opens the window once per walk-up instead.
+  const [shownAtDoor, setShownAtDoor] = useState(false);
   useEffect(() => {
-    if (nearbyDoor && activeChapter && !exiting) {
-      setExiting(true);
-      const timer = setTimeout(() => navigate(`/story/${activeChapter.id}`), 500);
-      return () => clearTimeout(timer);
+    if (!nearbyDoor) {
+      setShownAtDoor(false);
+      return;
     }
-  }, [nearbyDoor, activeChapter, exiting, navigate]);
+    if (!activeChapter || exiting) return;
+    if (activeChapter.inDevelopment) {
+      if (!shownAtDoor) {
+        setShownAtDoor(true);
+        setInDevelopmentOpen(true);
+      }
+      return;
+    }
+    setExiting(true);
+    const timer = setTimeout(() => navigate(`/story/${activeChapter.id}`), 500);
+    return () => clearTimeout(timer);
+  }, [nearbyDoor, activeChapter, exiting, shownAtDoor, navigate]);
+
+  const inDevelopmentPopup = inDevelopmentOpen && (
+    <InDevelopmentPopup chapterName={activeCompany ? chapterName(activeCompany.name) : undefined} onClose={() => setInDevelopmentOpen(false)} />
+  );
 
   const debugResetButton = isDev && (
     <button type="button" className="story-debug-reset" onClick={resetAll}>
@@ -248,9 +280,11 @@ const StoryMapPage: React.FC = () => {
           }
         >
           <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} statues={statues} pathTargets={solidStructures} />
+          <Meep position={meepPosition} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>
         {discoveryPopup}
+        {!discovery && inDevelopmentPopup}
         {debugResetButton}
       </div>
     </div>
