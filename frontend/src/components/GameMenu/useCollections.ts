@@ -59,6 +59,11 @@ export const skillEntries = (story: StoryProgress): CollectionEntry[] =>
   });
 
 export const useCollection = (kind: 'items' | 'skills'): CollectionEntry[] => {
-  const story = useSelector((state: RootState) => state.story);
-  return useMemo(() => (kind === 'items' ? itemEntries(story) : skillEntries(story)), [kind, story]);
+  const chapters = useSelector((state: RootState) => state.story.chapters);
+  const startedAt = useSelector((state: RootState) => state.story.startedAt);
+  const timeline = useSelector((state: RootState) => state.story.timeline);
+  return useMemo(() => {
+    const story = { chapters, startedAt, timeline };
+    return kind === 'items' ? itemEntries(story) : skillEntries(story);
+  }, [kind, chapters, startedAt, timeline]);
 };
