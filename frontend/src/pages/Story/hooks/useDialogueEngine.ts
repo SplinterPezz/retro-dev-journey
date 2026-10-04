@@ -5,14 +5,21 @@ import { buildChoiceItems, getNode, pickNextNode, seenFlag } from '../dialogue';
 interface ActiveDialogue {
   npc: StoryNpcData;
   nodeId: string;
+  cued: boolean; // opened by the story, not by walking up: runs to its end even if the player walks away
 }
 
 // The NPC conversation currently on screen: which node is shown, what its
-// choices look like, and how a pick or a "continue" moves it on.
-export const useDialogueEngine = (flags: Record<string, boolean>, setFlag: (flag: string) => void) => {
+// choices look like, and how a pick or a "continue" moves it on. `npcs` are
+// the scene's NPCs, for lines that hand over to another character.
+export const useDialogueEngine = (
+  npcs: StoryNpcData[],
+  flags: Record<string, boolean>,
+  setFlag: (flag: string) => void
+) => {
   const [active, setActive] = useState<ActiveDialogue | null>(null);
 
-  const open = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId }), []);
+  const open = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: false }), []);
+  const cue = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: true }), []);
   const close = useCallback(() => setActive(null), []);
 
   // A node's own flag is set as soon as it is shown, plus its implicit "seen"
@@ -35,16 +42,17 @@ export const useDialogueEngine = (flags: Record<string, boolean>, setFlag: (flag
       if (!choice) return;
       if (choice.setFlag) setFlag(choice.setFlag);
       const next = pickNextNode(choice, active.npc, flags);
-      setActive(next ? { npc: active.npc, nodeId: next } : null);
+      setActive(next ? { ...active, nodeId: next } : null);
     },
     [active, flags, setFlag]
   );
 
   const advance = useCallback(() => {
     if (!active) return;
-    const next = getNode(active.npc, active.nodeId)?.next;
-    setActive(next ? { npc: active.npc, nodeId: next } : null);
-  }, [active]);
+    const node = getNode(active.npc, active.nodeId);
+    const npc = node?.nextNpcId ? npcs.find((n) => n.id === node.nextNpcId) : active.npc;
+    setActive(node?.next && npc ? { ...active, npc, nodeId: node.next } : null);
+  }, [active, npcs]);
 
   const node = active ? getNode(active.npc, active.nodeId) ?? null : null;
   const choices = useMemo(
@@ -52,9 +60,9 @@ export const useDialogueEngine = (flags: Record<string, boolean>, setFlag: (flag
     [active, node, flags]
   );
 
-  // A cued dialogue (autoStartNodeId, e.g. the instructor after the
-  // objectives) runs to its end even if the player walks away.
-  const isCued = !!active && active.npc.autoStartNodeId === active.nodeId;
+  // A cued dialogue (e.g. the instructor after the objectives, or the comments
+  // on the mini games) runs to its end even if the player walks away.
+  const isCued = !!active?.cued;
 
-  return { active, node, choices, isCued, open, close, selectChoice, advance };
+  return { active, node, choices, isCued, open, cue, close, selectChoice, advance };
 };

@@ -11,6 +11,7 @@ import GameScene from '../../game/GameScene';
 import DebugOverlay from '../../game/DebugOverlay';
 import { CollidableEntity, Hitbox, Position } from '../../types/game';
 import { StoryChapterConfig, StoryNpcData, QuizData, MiniGameMarker } from '../../types/story';
+import { tierFor } from '../../config/story/miniGames';
 import Player from '../../components/Player/Player';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import Environment from '../../components/Structures/Environment';
@@ -145,7 +146,8 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     [dispatch, chapter.id]
   );
 
-  const dialogue = useDialogueEngine(flags, setChapterFlag);
+  const dialogue = useDialogueEngine(chapter.npcs, flags, setChapterFlag);
+  const cueDialogue = dialogue.cue;
   const [activeQuiz, setActiveQuiz] = useState<QuizData | null>(null);
   const [activeMiniGame, setActiveMiniGame] = useState<MiniGameMarker | null>(null);
   const meep = useMeepBeats(chapter.meepBeats, flags, completed);
@@ -263,7 +265,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     nextUnlockIndex,
     setFlag: setChapterFlag,
     canCue: !introPending && !popupOpen,
-    onCue: dialogue.open,
+    onCue: dialogue.cue,
   });
 
   // ---- popup callbacks ----
@@ -276,10 +278,14 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
       if (activeMiniGame) {
         dispatch(recordScore({ chapterId: chapter.id, gameId: activeMiniGame.id, score: { earned, max } }));
         setChapterFlag(activeMiniGame.completionFlag);
+        // someone in the room comments on the result
+        const results = activeMiniGame.resultsDialogue;
+        const npc = results && chapter.npcs.find((n) => n.id === results.npcId);
+        if (results && npc) cueDialogue(npc, results.nodes[tierFor(earned, max).id]);
       }
       setActiveMiniGame(null);
     },
-    [activeMiniGame, chapter.id, dispatch, setChapterFlag]
+    [activeMiniGame, chapter.id, chapter.npcs, dispatch, setChapterFlag, cueDialogue]
   );
 
   const handleQuizAllComplete = useCallback(() => {
