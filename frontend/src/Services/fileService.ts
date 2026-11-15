@@ -13,7 +13,7 @@ export const downloadCV = async (): Promise<void> => {
     }
     
     const contentDisposition = response.headers.get('Content-Disposition');
-    let filename = 'pezzati mauro cv.pdf';
+    let filename = 'rotolo davide cv.pdf';
     
     if (contentDisposition) {
       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
