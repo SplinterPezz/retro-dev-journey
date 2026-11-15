@@ -8,3 +8,10 @@
 # Optionally, ignore tmp directories and their content
 tmp/
 .DS_Store
+
+# Local Claude Code workspace (skills, memory) - not project code
+.claude/
+
+# Private reference photos for character design - keep out of git
+reference/
+backend/pre_cmd.txt

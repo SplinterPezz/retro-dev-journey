@@ -89,7 +89,7 @@ export default function HomePage() {
                 <a onClick={handleAdminPage}>
                   <img className="social-image" src={`/sprites/player/${playerSpritePrefix}_turn.gif`} />
                 </a>
-                <a href="https://www.linkedin.com/in/mauro-pezzati/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
+                <a href="https://www.linkedin.com/in/davide-rotolo-2600a8179/" target="_blank" onClick={x => handleTrkSocial('linkedin')}>
                   <img className="social-image" src="/sprites/others/linkedin.png" />
                 </a>
                 <a href="https://github.com/SplinterPezz/retro-dev-journey" target="_blank" onClick={x => handleTrkSocial('github')}>
