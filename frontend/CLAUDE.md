@@ -253,8 +253,9 @@ Check monthly with `npm outdated`. Minor and patch updates together; one major a
 - **Admin / editor** (lazy chunks): `@mui/material`, `@mui/x-date-pickers`, `apexcharts`, `react-apexcharts`,
   `@uiw/react-codemirror`, `@codemirror/lang-java`.
 
-Node must match `engines` in `package.json` (>= 22.13). Majors pending as of 2026-10: MUI 9, apexcharts 7,
-react-apexcharts 2, lucide-react 1, TypeScript 7, env-cmd 11, jest-dom 7.
+Node must match `engines` in `package.json` (>= 22.13). Majors pending as of 2026-11:
+- **TypeScript 7**: blocked until `typescript-eslint` supports it (it refuses TS 7 today).
+- `@types/node` follows the Node version in use (22 locally, 24 in CI): don't jump ahead of it.
 
 ## Working with the user
 

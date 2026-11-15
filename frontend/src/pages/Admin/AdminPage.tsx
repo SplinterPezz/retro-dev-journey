@@ -7,7 +7,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import ReactApexChart from 'react-apexcharts';
 import { COMPANY_IDS } from '../../config/ids';
 import './AdminPage.css';
-import { StyledTextField, blackCalendarTheme } from './adminTheme';
+import { StyledDateField, blackCalendarTheme } from './adminTheme';
 import {
   apexUniqueUsers,
   apexPageTime,
@@ -26,7 +26,8 @@ import {
 } from '../../services/analyticsService';
 import { isApiError } from '../../services/api';
 import { downloadCV, uploadCV } from '../../services/fileService';
-import { analyticsBackgroundImage, maxCvSizeMb } from '../../config/admin';
+import { analyticsBackgroundImage } from '../../config/admin';
+import { maxCvSizeBytes, maxCvSizeMb } from '../../config/cv';
 import { devError } from '../../config/env';
 import { capitalize, dayLabel, toSeriesByPage } from './series';
 import {
@@ -172,7 +173,7 @@ export default function AdminPage() {
     input.value = ''; // picking the same file again must fire onChange again
     if (!file) return;
 
-    if (file.size > maxCvSizeMb * 1024 * 1024) {
+    if (file.size > maxCvSizeBytes) {
       setUploadStatus('error');
       setUploadMessage(`File size must be less than ${maxCvSizeMb}MB`);
       return;
@@ -219,8 +220,7 @@ export default function AdminPage() {
                           value={startDate}
                           onChange={setStartDate}
                           maxDate={dayjs()}
-                          enableAccessibleFieldDOMStructure={false}
-                          slots={{ textField: StyledTextField }}
+                          slots={{ textField: StyledDateField }}
                         />
                         <DatePicker
                           value={endDate}
@@ -228,8 +228,7 @@ export default function AdminPage() {
                           onChange={setEndDate}
                           maxDate={dayjs()}
                           minDate={startDate ?? dayjs()}
-                          enableAccessibleFieldDOMStructure={false}
-                          slots={{ textField: StyledTextField }}
+                          slots={{ textField: StyledDateField }}
                         />
                       </div>
                     </LocalizationProvider>

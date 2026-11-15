@@ -1,6 +1,6 @@
 import { fetchFromApi } from './api';
 import { ApiError, UploadResponse } from '../types/api';
-import { maxCvSizeMb } from '../config/admin';
+import { cvDownloadFilename, maxCvSizeBytes, maxCvSizeMb } from '../config/cv';
 import { apiBaseUrl } from '../config/env';
 import { API_ENDPOINTS } from '../config/apiEndpoints';
 
@@ -13,7 +13,7 @@ export const downloadCV = async (): Promise<void> => {
     }
     
     const contentDisposition = response.headers.get('Content-Disposition');
-    let filename = 'pezzati mauro cv.pdf';
+    let filename = cvDownloadFilename;
     
     if (contentDisposition) {
       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
@@ -40,7 +40,7 @@ export const downloadCV = async (): Promise<void> => {
 
 export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> => {
   try {
-    if (file.size > maxCvSizeMb * 1024 * 1024) {
+    if (file.size > maxCvSizeBytes) {
       return {
         success: false,
         error: `File size exceeds ${maxCvSizeMb}MB limit`

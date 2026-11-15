@@ -77,7 +77,9 @@
 }
 
 .date-picker{
-    width: 170px;
+    /* MUI X 9 lays the date out as sections that don't shrink like an <input>: grow with them */
+    width: auto;
+    min-width: 170px;
 }
 
 .date-picker.start{

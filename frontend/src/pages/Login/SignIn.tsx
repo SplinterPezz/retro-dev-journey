@@ -115,7 +115,7 @@ export default function SignIn() {
   const later = useTimeouts();
 
   const handleCloseErrorMessage = (
-    event?: React.SyntheticEvent | Event,
+    event?: React.SyntheticEvent | Event | null,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -211,7 +211,7 @@ export default function SignIn() {
         </Alert>
       </Snackbar>
 
-      <SignInContainer direction="column" justifyContent="center" alignItems="center">
+      <SignInContainer direction="column">
         <StyledCard variant="outlined">
           <Typography
             component="h1"

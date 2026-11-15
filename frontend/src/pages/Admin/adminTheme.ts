@@ -1,5 +1,5 @@
 import { styled, createTheme } from '@mui/material/styles';
-import { TextField } from '@mui/material';
+import { PickersTextField } from '@mui/x-date-pickers/PickersTextField';
 
 export const blackCalendarTheme = createTheme({
   components: {
@@ -83,8 +83,9 @@ export const blackCalendarTheme = createTheme({
   },
 });
 
-export const StyledTextField = styled(TextField)({
-  '& .MuiInputBase-root': {
+// MUI X 9 draws the date as sections, not an <input>: the field is a PickersTextField
+export const StyledDateField = styled(PickersTextField)({
+  '& .MuiPickersInputBase-root': {
     backgroundColor: 'rgb(56 42 35)',
     borderRadius: '4px',
     border: '2px solid #333',
@@ -98,11 +99,8 @@ export const StyledTextField = styled(TextField)({
       backgroundColor: 'rgba(0, 0, 0, 0.95)',
     },
   },
-  '& .MuiInputBase-input': {
+  '& .MuiPickersInputBase-sectionsContainer': {
     color: '#fff',
-    '&::placeholder': {
-      color: 'rgba(255, 255, 255, 0.6)',
-    },
   },
   '& .MuiInputLabel-root': {
     color: '#ccc',
@@ -114,9 +112,11 @@ export const StyledTextField = styled(TextField)({
       color: '#ffd700',
     },
   },
-  '& .MuiOutlinedInput-notchedOutline': {
-    border: 'none',
-  },
+  // our border is on the root: hide MUI's outline, focused one included (its focus rule is more specific)
+  '& .MuiPickersInputBase-root .MuiPickersOutlinedInput-notchedOutline, & .MuiPickersInputBase-root.Mui-focused .MuiPickersOutlinedInput-notchedOutline':
+    {
+      border: 'none',
+    },
   '& .MuiSvgIcon-root': {
     color: '#ffd700',
   },
