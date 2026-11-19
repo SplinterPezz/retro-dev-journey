@@ -14,15 +14,14 @@ import { styled } from "@mui/material/styles";
 
 import { login } from "../../services/authService";
 import "./login.css";
-import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
-import { RootState } from "../../store/store";
 import { useNavigate } from "react-router";
 import { playerTurnSprite } from "../../config/assets";
 import { useTimeouts } from "../../hooks/useTimeouts";
 import { LoginModel } from "../../types/api";
 import { loginBackgroundImage } from "../../config/login";
 import { ROUTES } from '../../config/routes';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 type Field = "email" | "password";
 
@@ -85,9 +84,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function SignIn() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {

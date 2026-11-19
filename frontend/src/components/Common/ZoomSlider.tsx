@@ -1,11 +1,10 @@
 import React, { useRef } from 'react';
-import { useDispatch } from 'react-redux';
 import { ZoomIn, ZoomOut } from 'lucide-react';
-import { AppDispatch } from '../../store/store';
 import { setZoom } from '../../store/zoomSlice';
 import { useZoomLevel, ZOOM_LEVEL_COUNT } from '../../game/zoom';
 import '../AudioControls/AudioControls.css';
 import './ZoomSlider.css';
+import { useAppDispatch } from '../../store/hooks';
 
 // px, kept in sync with ZoomSlider.css
 const TICK_TOP = 8;
@@ -14,7 +13,7 @@ const TRACK_HEIGHT = TICK_TOP * 2 + TICK_GAP * (ZOOM_LEVEL_COUNT - 1);
 const ICON_SIZE = 24;
 
 const ZoomSlider: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const level = useZoomLevel();
   const trackRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);

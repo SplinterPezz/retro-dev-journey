@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
 import { markDiscoverySeen } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
@@ -46,6 +44,7 @@ import { StructureData, TechnologyData } from '../../types/sandbox';
 import { chapterPath } from '../../config/routes';
 import { COMPANY_IDS } from '../../config/ids';
 import './StoryMapPage.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const MAP_PLAYER_SPEED = 270;
 const BUILDING_REACH = 90;
@@ -138,12 +137,12 @@ const MapWorld: React.FC<MapWorldProps> = ({ nearbyId, lockedIds, statues, pathT
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
-  const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
-  const chapters = useSelector((state: RootState) => state.story.chapters);
-  const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
-  const startedAt = useSelector((state: RootState) => state.story.startedAt);
-  const timeline = useSelector((state: RootState) => state.story.timeline);
-  const dispatch = useDispatch<AppDispatch>();
+  const unlockedChapterIndex = useAppSelector((state) => state.story.unlockedChapterIndex);
+  const chapters = useAppSelector((state) => state.story.chapters);
+  const discoveriesSeen = useAppSelector((state) => state.story.discoveriesSeen);
+  const startedAt = useAppSelector((state) => state.story.startedAt);
+  const timeline = useAppSelector((state) => state.story.timeline);
+  const dispatch = useAppDispatch();
   const [exiting, setExiting] = useState(false);
   const location = useLocation();
   const [inDevelopmentOpen, setInDevelopmentOpen] = useState(

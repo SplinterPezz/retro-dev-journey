@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
 import { collect } from '../../../store/storySlice';
 import { CollectibleData, StoryFlags } from '../../../types/story';
 import { ENGINE_FLAGS } from '../../../config/story/flags';
+import { useAppDispatch } from '../../../store/hooks';
 
 interface CollectiblePopupsConfig {
   chapterId: string;
@@ -14,7 +13,7 @@ interface CollectiblePopupsConfig {
 }
 
 export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, total }: CollectiblePopupsConfig) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [queue, setQueue] = useState<CollectibleData[]>([]);
   const [loreOpen, setLoreOpen] = useState(false);
 

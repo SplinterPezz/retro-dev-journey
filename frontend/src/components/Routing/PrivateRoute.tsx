@@ -1,15 +1,13 @@
 import { Outlet, Navigate } from 'react-router';
-import { useSelector } from 'react-redux';
 import React, {useEffect} from 'react'
 import { checkAuthentication } from '../../store/authSlice';
-import { useDispatch } from 'react-redux';
-import { RootState } from '../../store/store';
 import { ROUTES } from '../../config/routes';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 
 const PrivateRoute = () => {
-  const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(checkAuthentication());

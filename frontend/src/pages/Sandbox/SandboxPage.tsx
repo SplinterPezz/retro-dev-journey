@@ -1,6 +1,4 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { useTracking } from '../../hooks/useTracking';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
@@ -45,6 +43,7 @@ import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
 import { DownloadButtonStructure, StructureData } from '../../types/sandbox';
 import './SandboxPage.css';
+import { useAppSelector } from '../../store/hooks';
 
 interface SandboxContainerCSSProperties extends React.CSSProperties {
   '--sandbox-background-image'?: string;
@@ -164,7 +163,7 @@ const Minimap: React.FC = () => (
 
 const SandboxPage: React.FC = () => {
   const isMobile = useIsMobile();
-  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
+  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useAppSelector((state) => state.welcome);
   const { isOpen: menuOpen } = useGameMenu();
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });

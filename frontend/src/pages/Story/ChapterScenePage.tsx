@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../store/store';
 import { setFlag } from '../../store/storySlice';
 import { StoryChapterConfig } from '../../types/story';
 import { getChapterIndex } from '../../config/story/chapters';
@@ -9,6 +7,7 @@ import { ENGINE_FLAGS } from '../../config/story/flags';
 import InteriorScene from './InteriorScene';
 import StoryIntroDialog from '../../components/Story/dialogue/StoryIntroDialog';
 import { ROUTES } from '../../config/routes';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface ChapterScenePageProps {
   chapter: StoryChapterConfig;
@@ -16,11 +15,9 @@ interface ChapterScenePageProps {
 
 const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
-  const introSeen = useSelector(
-    (state: RootState) => !!state.story.chapters[chapter.id]?.flags[ENGINE_FLAGS.introSeen]
-  );
+  const dispatch = useAppDispatch();
+  const unlockedChapterIndex = useAppSelector((state) => state.story.unlockedChapterIndex);
+  const introSeen = useAppSelector((state) => !!state.story.chapters[chapter.id]?.flags[ENGINE_FLAGS.introSeen]);
   const chapterIndex = getChapterIndex(chapter.id);
   const isLocked = unlockedChapterIndex < chapterIndex;
 

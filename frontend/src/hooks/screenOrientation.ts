@@ -1,10 +1,9 @@
 import { useEffect, useEffectEvent, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/store';
 import { setOrientation } from '../store/storySlice';
 import { StoryOrientation } from '../types/story';
 import { isMobileDevice } from './useIsMobile';
 import '../components/Common/ScreenRotation.css';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 export const isLandscape = (orientation: StoryOrientation | null): boolean =>
   orientation === 'landscape-primary' || orientation === 'landscape-secondary';
@@ -67,7 +66,7 @@ const useCssRotation = (orientation: StoryOrientation | null): boolean => {
 };
 
 export const useScreenRotation = (): void => {
-  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const orientation = useAppSelector((state) => state.story.orientation);
   const rotated = useCssRotation(orientation);
 
   useEffect(() => {
@@ -93,7 +92,7 @@ export const useScreenRotation = (): void => {
 
 // width and height swap while the picture is turned with CSS
 export const useLogicalViewport = (): { width: number; height: number } => {
-  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const orientation = useAppSelector((state) => state.story.orientation);
   const rotated = useCssRotation(orientation);
   const [size, setSize] = useState({ width: window.innerWidth, height: window.innerHeight });
 
@@ -108,8 +107,8 @@ export const useLogicalViewport = (): { width: number; height: number } => {
 
 // Reopening the browser or leaving fullscreen drops the lock: an upright phone goes back to portrait.
 export const useFallbackToPortrait = (): void => {
-  const dispatch = useDispatch<AppDispatch>();
-  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const dispatch = useAppDispatch();
+  const orientation = useAppSelector((state) => state.story.orientation);
   const check = useEffectEvent(() => {
     if (landscapeRequestPending) return;
     if (isLandscape(orientation) && !document.fullscreenElement && isMobileDevice() && isPortraitViewport()) {

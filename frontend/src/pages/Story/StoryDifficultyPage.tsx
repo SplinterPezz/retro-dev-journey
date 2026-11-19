@@ -1,7 +1,5 @@
 import React from 'react';
 import { Navigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
 import { setDifficulty } from '../../store/storySlice';
 import { StoryDifficulty } from '../../types/story';
 import { storyDifficultyLabels } from '../../config/story/difficulty';
@@ -10,12 +8,13 @@ import FirstVisitSetup from '../../components/FirstVisit/FirstVisitSetup';
 import { ROUTES } from '../../config/routes';
 import '../../components/Common/fullscreen-page.css';
 import './StoryDifficultyPage.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const difficulties: StoryDifficulty[] = ['junior', 'middle', 'senior'];
 
 const StoryDifficultyPage: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const difficulty = useSelector((state: RootState) => state.story.difficulty);
+  const dispatch = useAppDispatch();
+  const difficulty = useAppSelector((state) => state.story.difficulty);
 
   const handleSelect = (level: StoryDifficulty) => {
     dispatch(setDifficulty(level));

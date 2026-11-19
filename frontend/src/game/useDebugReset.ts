@@ -1,10 +1,9 @@
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store/store';
 import { completeChapter, resetChapter, resetStory, setFlag } from '../store/storySlice';
 import { ROUTES } from '../config/routes';
+import { useAppDispatch } from '../store/hooks';
 
 export const useDebugReset = (chapterId?: string) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const resetAll = () => {
     dispatch(resetStory());

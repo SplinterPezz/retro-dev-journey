@@ -1,7 +1,7 @@
 import { useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { setConsentGiven as setConsentInStore } from '../store/consentSlice';
 import { clearAllTrackingData } from '../store/trackingSlice';
+import { useAppDispatch } from '../store/hooks';
 
 declare global {
     interface Window {
@@ -34,7 +34,7 @@ const checkConsent = (): boolean | null => {
 };
 
 export const useIubenda = () => {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const updateConsent = useCallback((newConsent: boolean | null) => {
         if (newConsent === null) return;

@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { downloadButton, hideDownloadButtonInSandbox } from '../../config/sandbox';
 import { companies, technologies } from '../../config/career';
 import { defaultBuilding, defaultStatue } from '../../config/world';
 import { DailyQuest as DailyQuestItem } from '../../types/sandbox';
 import QuestPanel from '../QuestPanel/QuestPanel';
+import { useAppSelector } from '../../store/hooks';
 
 interface DailyQuestProps {
   questSuffix: string;
@@ -28,8 +27,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
   showProgress = true,
   maxVisible 
 }) => {
-  const { interactions } = useSelector((state: RootState) => state.tracking);
-  const { consentGiven, isLoading } = useSelector((state: RootState) => state.consent);
+  const { interactions } = useAppSelector((state) => state.tracking);
+  const { consentGiven, isLoading } = useAppSelector((state) => state.consent);
   const isConsentAccepted = consentGiven === true;
   
   const dailyQuests: DailyQuestItem[] = useMemo(() => {

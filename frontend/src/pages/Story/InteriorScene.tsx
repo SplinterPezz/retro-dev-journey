@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../../store/store';
 import { setFlag, recordScore } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
@@ -62,6 +60,7 @@ import { npcSprite } from '../../config/story/sprites';
 import { isDev } from '../../config/env';
 import { ROUTES } from '../../config/routes';
 import './InteriorScene.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface InteriorSceneProps {
   chapter: StoryChapterConfig;
@@ -80,16 +79,16 @@ const toCollidable = (id: string, position: Position, interactionRadius?: number
 });
 
 const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex, introPending = false }) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const chapterProgress = useSelector((state: RootState) => state.story.chapters[chapter.id]);
+  const chapterProgress = useAppSelector((state) => state.story.chapters[chapter.id]);
   const flags = chapterProgress?.flags ?? EMPTY_FLAGS;
   const completed = !!chapterProgress?.completed;
   const foundIds = chapterProgress?.collectibles ?? EMPTY_LIST;
-  const difficulty = useSelector((state: RootState) => state.story.difficulty) ?? DEFAULT_DIFFICULTY;
-  const startedAt = useSelector((state: RootState) => state.story.startedAt);
-  const timeline = useSelector((state: RootState) => state.story.timeline);
+  const difficulty = useAppSelector((state) => state.story.difficulty) ?? DEFAULT_DIFFICULTY;
+  const startedAt = useAppSelector((state) => state.story.startedAt);
+  const timeline = useAppSelector((state) => state.story.timeline);
   const setChapterFlag = (flag: string) => {
       dispatch(setFlag({ chapterId: chapter.id, flag }));
     };

@@ -1,6 +1,4 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { technologies } from '../../config/career';
 import { chapterCollectibles } from '../../config/story/collectibles';
 import { isTechnologyUnlocked, storyChapterOrder } from '../../config/story/chapters';
@@ -8,6 +6,7 @@ import { elapsedFor, timelineKey } from '../../config/story/timeline';
 import { StoryState } from '../../types/story';
 import { TechnologyData } from '../../types/sandbox';
 import { Rarity } from '../../types/game';
+import { useAppSelector } from '../../store/hooks';
 
 export interface CollectionEntry {
   id: string;
@@ -59,9 +58,9 @@ export const skillEntries = (story: StoryProgress): CollectionEntry[] =>
   });
 
 export const useCollection = (kind: 'items' | 'skills'): CollectionEntry[] => {
-  const chapters = useSelector((state: RootState) => state.story.chapters);
-  const startedAt = useSelector((state: RootState) => state.story.startedAt);
-  const timeline = useSelector((state: RootState) => state.story.timeline);
+  const chapters = useAppSelector((state) => state.story.chapters);
+  const startedAt = useAppSelector((state) => state.story.startedAt);
+  const timeline = useAppSelector((state) => state.story.timeline);
   return useMemo(() => {
     const story = { chapters, startedAt, timeline };
     return kind === 'items' ? itemEntries(story) : skillEntries(story);

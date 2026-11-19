@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { VolumeX, Volume2, ChevronUp, ChevronDown, Headphones } from 'lucide-react';
 import FullscreenButton from '../Common/FullscreenButton';
 import OrientationToggleButton from '../Common/OrientationToggleButton';
-import { AppDispatch, RootState } from '../../store/store';
 import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
 import { useBackgroundMusic } from '../../hooks/useBackgroundMusic';
 import './AudioControls.css'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface AudioControlsProps {
   audioSrc: string;
@@ -25,8 +24,8 @@ const AudioControls: React.FC<AudioControlsProps> = ({
   buttonStyle = 'normal',
   volumeStep = 10
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { musicVolume: volume, musicMuted: isMuted } = useSelector((state: RootState) => state.settings);
+  const dispatch = useAppDispatch();
+  const { musicVolume: volume, musicMuted: isMuted } = useAppSelector((state) => state.settings);
   const [showVolumeControls, setShowVolumeControls] = useState(false);
   useBackgroundMusic(audioSrc);
 

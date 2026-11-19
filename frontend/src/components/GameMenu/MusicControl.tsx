@@ -1,13 +1,12 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Music, Volume2, VolumeX } from 'lucide-react';
-import { AppDispatch, RootState } from '../../store/store';
 import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
 import '../AudioControls/AudioControls.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const MusicControl: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { musicVolume, musicMuted } = useSelector((state: RootState) => state.settings);
+  const dispatch = useAppDispatch();
+  const { musicVolume, musicMuted } = useAppSelector((state) => state.settings);
 
   const changeVolume = (volume: number) => {
     dispatch(setMusicVolume(volume));

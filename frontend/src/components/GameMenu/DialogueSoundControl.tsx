@@ -1,13 +1,12 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { MessageSquareText, Volume2, VolumeX } from 'lucide-react';
-import { AppDispatch, RootState } from '../../store/store';
 import { selectDialogueSound, setDialogueMuted, setDialogueVolume } from '../../store/settingsSlice';
 import '../AudioControls/AudioControls.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const DialogueSoundControl: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const settings = useSelector((state: RootState) => state.settings);
+  const dispatch = useAppDispatch();
+  const settings = useAppSelector((state) => state.settings);
   const { dialogueVolume, dialogueMuted } = selectDialogueSound(settings);
 
   const changeVolume = (volume: number) => {
