@@ -3,7 +3,7 @@ import { StoryChapterConfig, StoryNpcData } from '../../types/story';
 import { StructureData } from '../../types/sandbox';
 import { lockSprite, playerTurnSprite, preloadPathSprites, preloadPlayerSprites } from '../assets';
 import { companies } from '../career';
-import { detailsEnvironments, treesEnvironments } from '../environments';
+import { overworldEnvironments } from '../environments';
 import { mainTerrainImage } from '../world';
 import { chapterCollectibles, collectibleIcon } from './collectibles';
 import { MEEP_DIRECTIONS, NpcPose, meepSprite, npcSprite, storyProp } from './sprites';
@@ -46,6 +46,6 @@ export const storyMapAssets = (statues: StructureData[]): string[] =>
       lockSprite,
       ...companies.flatMap((c) => [c.data.image, c.data.signpost]),
       ...statues.map((t) => t.data.image),
-      ...[...treesEnvironments, ...detailsEnvironments].map((e) => e.image),
+      ...overworldEnvironments.map((e) => e.image),
     ]),
   ].filter((src): src is string => !!src);

@@ -158,3 +158,5 @@ export const detailsEnvironments: EnvironmentData[] = [
     position: {"x": 870, "y": 2730}
   }
 ]
+
+export const overworldEnvironments: EnvironmentData[] = [...treesEnvironments, ...detailsEnvironments];

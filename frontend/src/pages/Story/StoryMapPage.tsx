@@ -6,13 +6,9 @@ import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
 import { useLingering } from '../../game/hooks/useLingering';
 import { useProximityTrigger } from './hooks/useProximityTrigger';
 import { useDebugReset } from '../../game/useDebugReset';
-import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
 import DebugToolbar, { DebugAction } from '../../game/DebugToolbar';
-import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
-import PathRenderer from '../../components/Path/PathRenderer';
-import Structure from '../../components/Structures/Structure';
-import Environment from '../../components/Structures/Environment';
+import Overworld from '../../components/Overworld/Overworld';
 import Player from '../../components/Player/Player';
 import Meep from '../../components/Companion/Meep';
 import { useLaggedPosition } from '../../components/Companion/useLaggedPosition';
@@ -27,9 +23,9 @@ import { skillElapsed, skillEntry } from '../../components/GameMenu/useCollectio
 import LoadingSplash from '../../components/Common/LoadingSplash';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { storyMapAssets } from '../../config/story/assets';
-import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
+import { worldConfig, overworldBounds, playerHitbox, playerSpawnPosition } from '../../config/world';
 import { companies, technologies } from '../../config/career';
-import { treesEnvironments, detailsEnvironments } from '../../config/environments';
+import { overworldEnvironments } from '../../config/environments';
 import {
   chapterDisplayName,
   companyDisplayName,
@@ -73,67 +69,8 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   });
 };
 
-const environments = [...treesEnvironments, ...detailsEnvironments];
-
 const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
   technologies.filter((t) => isTechnologyUnlocked(t.data as TechnologyData, progress));
-
-const worldBounds = {
-  minX: 50,
-  minY: 50,
-  maxX: worldConfig.width - 50,
-  maxY: worldConfig.height - 50,
-};
-
-interface MapWorldProps {
-  nearbyId: string | null;
-  lockedIds: string[];
-  statues: StructureData[];
-  pathTargets: StructureData[];
-}
-
-// re-renders only when the nearby door or the unlocked statues change
-const MapWorld: React.FC<MapWorldProps> = ({ nearbyId, lockedIds, statues, pathTargets }) => {
-  const pathSegments = createPathGenerator({
-        startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
-        endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
-        structures: pathTargets,
-        tileSize: worldConfig.tileSize,
-      }).generatePath();
-
-  return (
-    <>
-      <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
-      <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
-      <div className="structure-container">
-        {companies.map((company) => (
-          <Structure
-            key={company.id}
-            data={company}
-            type="building"
-            isNearby={nearbyId === company.id}
-            locked={lockedIds.includes(company.id)}
-          />
-        ))}
-      </div>
-      <div className="structure-container">
-        {statues.map((tech) => (
-          <Structure key={tech.id} data={tech} type="technology" isNearby={false} />
-        ))}
-      </div>
-      <div className="structure-container">
-        {treesEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={256} />
-        ))}
-      </div>
-      <div className="structure-container">
-        {detailsEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={128} />
-        ))}
-      </div>
-    </>
-  );
-};
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
@@ -205,9 +142,9 @@ const StoryMapPage: React.FC = () => {
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
     speed: MAP_PLAYER_SPEED,
-    worldBounds,
+    worldBounds: overworldBounds,
     structures: solidStructures,
-    environments,
+    environments: overworldEnvironments,
     playerHitbox,
     canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen && !splashCovering && !inspecting,
   });
@@ -305,7 +242,7 @@ const StoryMapPage: React.FC = () => {
             </div>
           }
         >
-          <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} statues={statues} pathTargets={solidStructures} />
+          <Overworld technologies={statues} nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} />
           <Meep position={meepPosition} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>
