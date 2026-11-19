@@ -1,8 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useSelector } from 'react-redux';
 import { Backpack, Code, House, X } from 'lucide-react';
-import { RootState } from '../../store/store';
 import { ROUTES } from '../../config/routes';
 import { collectionTexts, menuProfile } from '../../config/menu';
 import { storyDifficultyLabels } from '../../config/story/difficulty';
@@ -15,6 +13,7 @@ import { CollectionEntry, useCollection } from './useCollections';
 import '../Story/dialogue/StoryIntroDialog.css';
 import '../AudioControls/AudioControls.css';
 import './GameMenu.css';
+import { useAppSelector } from '../../store/hooks';
 
 interface GameMenuProps {
   withMusic: boolean;
@@ -31,7 +30,7 @@ type MenuView = 'main' | 'items' | 'skills';
 const GameMenu: React.FC<GameMenuProps> = ({ withMusic }) => {
   const navigate = useNavigate();
   const { close } = useGameMenu();
-  const difficulty = useSelector((state: RootState) => state.story.difficulty);
+  const difficulty = useAppSelector((state) => state.story.difficulty);
   const [view, setView] = useState<MenuView>('main');
   const [inspected, setInspected] = useState<CollectionEntry | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);

@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { downloadButton, hideDownloadButtonInSandbox } from '../../config/sandbox';
 import { companies, technologies } from '../../config/career';
 import { defaultBuilding, defaultStatue } from '../../config/world';
 import { DailyQuest as DailyQuestItem } from '../../types/sandbox';
 import QuestPanel from '../QuestPanel/QuestPanel';
+import { useAppSelector } from '../../store/hooks';
 
 interface DailyQuestProps {
   questSuffix: string;
@@ -28,16 +27,16 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
   showProgress = true,
   maxVisible 
 }) => {
-  const { interactions } = useSelector((state: RootState) => state.tracking);
-  const { consentGiven, isLoading } = useSelector((state: RootState) => state.consent);
+  const { interactions } = useAppSelector((state) => state.tracking);
+  const { consentGiven, isLoading } = useAppSelector((state) => state.consent);
   const isConsentAccepted = consentGiven === true;
   
   const dailyQuests: DailyQuestItem[] = useMemo(() => {
     const companyQuests: DailyQuestItem[] = companies.map((company) => ({
       id: company.id + questSuffix,
       done: interactions.some(interaction => interaction.includes(company.id + questSuffix)),
-      name: `${company.name}`,
-      shortName: company.data.shortName !== undefined ? company.data.shortName : company.name,
+      name: company.name,
+      shortName: company.data.shortName ?? company.name,
       icon: company.data.image || defaultBuilding,
       type: 'building',
     }));
@@ -45,8 +44,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     const technologyQuests: DailyQuestItem[] = technologies.map((tech) => ({
       id: tech.id + questSuffix,
       done: interactions.some(interaction => interaction.includes(tech.id + questSuffix)),
-      name: `${tech.name}`,
-      shortName: tech.data.shortName !== undefined ? tech.data.shortName : tech.name,
+      name: tech.name,
+      shortName: tech.data.shortName ?? tech.name,
       icon: tech.data.image || defaultStatue,
       type: 'statue',
     }));

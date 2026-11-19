@@ -1,20 +1,15 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import React, { useEffect } from 'react';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { useTracking } from '../../hooks/useTracking';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
-import { createPathGenerator } from '../../game/path/pathGeneration';
+import { useLingering } from '../../game/hooks/useLingering';
 import GameScene from '../../game/GameScene';
 import DebugOverlay from '../../game/DebugOverlay';
 import Player from '../../components/Player/Player';
-import Structure from '../../components/Structures/Structure';
 import StructureDialog from '../../components/Structures/StructureDialog';
-import PathRenderer from '../../components/Path/PathRenderer';
-import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
-import Environment from '../../components/Structures/Environment';
 import DownloadCV from '../../components/Structures/DownloadCV';
+import Overworld from '../../components/Overworld/Overworld';
 import LoadingSplash from '../../components/Common/LoadingSplash';
 import MenuButton from '../../components/GameMenu/MenuButton';
 import FirstVisitSetup from '../../components/FirstVisit/FirstVisitSetup';
@@ -22,17 +17,9 @@ import { useGameMenu } from '../../components/GameMenu/GameMenuContext';
 import DailyQuest from '../../components/DailyQuest/DailyQuest';
 import WelcomeDialog from '../../components/WelcomeDialog/WelcomeDialog';
 import { useIsMobile } from '../../hooks/useIsMobile';
-import {
-  worldConfig,
-  mainPathConfig,
-  playerHitbox,
-  playerSpawnPosition,
-  terrainAutoRotate,
-  pathGenerationEnabled,
-  mainTerrainImage,
-} from '../../config/world';
+import { worldConfig, overworldBounds, playerHitbox, playerSpawnPosition, mainTerrainImage } from '../../config/world';
 import { companies, technologies } from '../../config/career';
-import { treesEnvironments, detailsEnvironments } from '../../config/environments';
+import { overworldEnvironments } from '../../config/environments';
 import {
   downloadButton,
   hideDownloadButtonInSandbox,
@@ -44,6 +31,7 @@ import { COMPANY_IDS } from '../../config/ids';
 import { preloadPathSprites, preloadPlayerSprites } from '../../config/assets';
 import { DownloadButtonStructure, StructureData } from '../../types/sandbox';
 import './SandboxPage.css';
+import { useAppSelector } from '../../store/hooks';
 
 interface SandboxContainerCSSProperties extends React.CSSProperties {
   '--sandbox-background-image'?: string;
@@ -57,17 +45,11 @@ const careerStructures: StructureData[] = [...companies, ...technologies];
 const interactiveStructures: (StructureData | DownloadButtonStructure)[] = hideDownloadButtonInSandbox
   ? careerStructures
   : [...careerStructures, downloadButton];
-const environments = [...treesEnvironments, ...detailsEnvironments];
+
+const DIALOG_HIDE_DELAY_MS = 50;
 
 const isDownloadButton = (s: StructureData | DownloadButtonStructure): s is DownloadButtonStructure =>
   s.id === downloadButton.id;
-
-const worldBounds = {
-  minX: 50,
-  minY: 50,
-  maxX: worldConfig.width - 50,
-  maxY: worldConfig.height - 50,
-};
 
 const requiredImages: string[] = [
   mainTerrainImage,
@@ -76,7 +58,7 @@ const requiredImages: string[] = [
   sandboxBackgroundImage,
   ...companies.flatMap((c) => [c.data.image, c.data.signpost]),
   ...technologies.map((t) => t.data.image),
-  ...environments.map((e) => e.image),
+  ...overworldEnvironments.map((e) => e.image),
   ...(hideDownloadButtonInSandbox ? [] : [downloadButton.data.image]),
 ].filter((src): src is string => !!src);
 
@@ -84,69 +66,12 @@ const debugHitboxes = [
   ...careerStructures.flatMap((s) =>
     s.data.collisionHitbox ? [{ id: s.id, position: s.position, hitbox: s.data.collisionHitbox }] : []
   ),
-  ...environments.flatMap((e, i) =>
+  ...overworldEnvironments.flatMap((e, i) =>
     e.collisionHitbox ? [{ id: `env-${i}`, position: e.position, hitbox: e.collisionHitbox }] : []
   ),
 ];
 
-interface StaticWorldProps {
-  nearbyId: string | null;
-}
-
-// re-renders only when the nearby structure changes, never on a player step
-const StaticWorld: React.FC<StaticWorldProps> = React.memo(({ nearbyId }) => {
-  const pathSegments = useMemo(
-    () =>
-      pathGenerationEnabled
-        ? createPathGenerator({
-            startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
-            endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
-            structures: careerStructures,
-            tileSize: worldConfig.tileSize,
-          }).generatePath()
-        : [],
-    []
-  );
-
-  return (
-    <>
-      <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
-      <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
-
-      <div className="structure-container">
-        {technologies.map((tech) => (
-          <Structure key={tech.id} data={tech} type="technology" isNearby={nearbyId === tech.id} />
-        ))}
-      </div>
-
-      <div className="structure-container">
-        {companies.map((company) => (
-          <Structure key={company.id} data={company} type="building" isNearby={nearbyId === company.id} />
-        ))}
-      </div>
-
-      <div className="structure-container">
-        {treesEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={256} />
-        ))}
-      </div>
-
-      <div className="structure-container">
-        {detailsEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={128} />
-        ))}
-      </div>
-
-      {!hideDownloadButtonInSandbox && (
-        <div className="structure-container">
-          <DownloadCV structure={downloadButton} isNearby={nearbyId === downloadButton.id} />
-        </div>
-      )}
-    </>
-  );
-});
-
-const Minimap: React.FC = React.memo(() => (
+const Minimap: React.FC = () => (
   <>
     <div className="minimap-main-path" />
     {careerStructures.map((structure) => (
@@ -161,12 +86,11 @@ const Minimap: React.FC = React.memo(() => (
       />
     ))}
   </>
-));
+);
 
 const SandboxPage: React.FC = () => {
-  const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
   const isMobile = useIsMobile();
-  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
+  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useAppSelector((state) => state.welcome);
   const { isOpen: menuOpen } = useGameMenu();
 
   const { trackInteraction } = useTracking({ page: 'sandbox' });
@@ -178,9 +102,9 @@ const SandboxPage: React.FC = () => {
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
     speed: 270,
-    worldBounds,
+    worldBounds: overworldBounds,
     structures: interactiveStructures,
-    environments,
+    environments: overworldEnvironments,
     playerHitbox,
     canMove: canPlayerMove,
   });
@@ -191,15 +115,10 @@ const SandboxPage: React.FC = () => {
     interactionRadius: 70,
   });
 
-  // closing waits a beat so walking along a radius edge does not flicker it
-  useEffect(() => {
-    if (nearbyStructure && !isDownloadButton(nearbyStructure)) {
-      setSelectedStructure(nearbyStructure);
-      return;
-    }
-    const timer = setTimeout(() => setSelectedStructure(null), 50);
-    return () => clearTimeout(timer);
-  }, [nearbyStructure]);
+  const selectedStructure = useLingering(
+    nearbyStructure && !isDownloadButton(nearbyStructure) ? nearbyStructure : null,
+    DIALOG_HIDE_DELAY_MS
+  );
 
   useEffect(() => {
     if (nearbyStructure) {
@@ -245,7 +164,13 @@ const SandboxPage: React.FC = () => {
             </div>
           }
         >
-          <StaticWorld nearbyId={nearbyStructure?.id ?? null} />
+          <Overworld technologies={technologies} nearbyId={nearbyStructure?.id ?? null}>
+            {!hideDownloadButtonInSandbox && (
+              <div className="structure-container">
+                <DownloadCV structure={downloadButton} isNearby={nearbyStructure?.id === downloadButton.id} />
+              </div>
+            )}
+          </Overworld>
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
           <DebugOverlay hitboxes={debugHitboxes} />
         </GameScene>

@@ -1,27 +1,56 @@
 import { fetchFromApi } from './api';
+import { Guard, isNumber, isString, listOf, shape } from './guards';
 import {
+  BrowserStats,
+  DailyUserStats,
   DateRangeFilter,
-  DailyUsersResponse,
-  PageTimeResponse,
-  DownloadsResponse,
-  InteractionsResponse,
-  DevicesResponse,
-  BrowsersResponse,
+  DeviceStats,
+  DownloadStats,
+  InteractionStats,
+  PageTimeStats,
+  StatsResponse,
 } from '../types/analytics';
 import { ApiError } from '../types/api';
 import { API_ENDPOINTS } from '../config/apiEndpoints';
 
-const getAnalytics = <T>(endpoint: string, dateFilter?: DateRangeFilter): Promise<T | ApiError> => {
-  const params = new URLSearchParams();
-  if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
-  if (dateFilter?.end_date) params.append('end_date', dateFilter.end_date);
-  const query = params.toString();
-  return fetchFromApi<T>(`${endpoint}${query ? `?${query}` : ''}`, { method: 'GET' });
+// the row shapes mirror backend/internal/models/models.go
+const statsOf = <Row,>(isRow: Guard<Row>): Guard<StatsResponse<Row>> => {
+  const isRows = listOf(isRow);
+  return shape<StatsResponse<Row>>({ data: (value): value is Row[] | null => value === null || isRows(value) });
 };
 
-export const getDailyUniqueUsers = (f?: DateRangeFilter) => getAnalytics<DailyUsersResponse>(API_ENDPOINTS.analytics.dailyUsers, f);
-export const getPageTimeStats = (f?: DateRangeFilter) => getAnalytics<PageTimeResponse>(API_ENDPOINTS.analytics.pageTime, f);
-export const getDownloadStats = (f?: DateRangeFilter) => getAnalytics<DownloadsResponse>(API_ENDPOINTS.analytics.downloads, f);
-export const getInteractionStats = (f?: DateRangeFilter) => getAnalytics<InteractionsResponse>(API_ENDPOINTS.analytics.interactions, f);
-export const getDeviceStats = (f?: DateRangeFilter) => getAnalytics<DevicesResponse>(API_ENDPOINTS.analytics.devices, f);
-export const getBrowserStats = (f?: DateRangeFilter) => getAnalytics<BrowsersResponse>(API_ENDPOINTS.analytics.browsers, f);
+const getAnalytics = <Row,>(endpoint: string, isRow: Guard<Row>) => {
+  const isStats = statsOf(isRow);
+  return (dateFilter?: DateRangeFilter): Promise<StatsResponse<Row> | ApiError> => {
+    const params = new URLSearchParams();
+    if (dateFilter?.start_date) params.append('start_date', dateFilter.start_date);
+    if (dateFilter?.end_date) params.append('end_date', dateFilter.end_date);
+    const query = params.toString();
+    return fetchFromApi(`${endpoint}${query ? `?${query}` : ''}`, { method: 'GET' }, isStats);
+  };
+};
+
+export const getDailyUniqueUsers = getAnalytics(
+  API_ENDPOINTS.analytics.dailyUsers,
+  shape<DailyUserStats>({ date: isString, uniqueUsers: isNumber })
+);
+export const getPageTimeStats = getAnalytics(
+  API_ENDPOINTS.analytics.pageTime,
+  shape<PageTimeStats>({ date: isString, page: isString, averageTime: isNumber, uniqueUsers: isNumber })
+);
+export const getDownloadStats = getAnalytics(
+  API_ENDPOINTS.analytics.downloads,
+  shape<DownloadStats>({ date: isString, page: isString, downloads: isNumber })
+);
+export const getInteractionStats = getAnalytics(
+  API_ENDPOINTS.analytics.interactions,
+  shape<InteractionStats>({ info: isString, count: isNumber })
+);
+export const getDeviceStats = getAnalytics(
+  API_ENDPOINTS.analytics.devices,
+  shape<DeviceStats>({ device: isString, count: isNumber })
+);
+export const getBrowserStats = getAnalytics(
+  API_ENDPOINTS.analytics.browsers,
+  shape<BrowserStats>({ browser: isString, count: isNumber })
+);

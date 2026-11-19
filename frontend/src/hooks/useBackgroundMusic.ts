@@ -1,12 +1,11 @@
 import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../store/store';
 import { setMusicMuted } from '../store/settingsSlice';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 // When the browser blocks autoplay the music is switched to muted, so it never starts by surprise later.
 export const useBackgroundMusic = (src?: string) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { musicVolume, musicMuted } = useSelector((state: RootState) => state.settings);
+  const dispatch = useAppDispatch();
+  const { musicVolume, musicMuted } = useAppSelector((state) => state.settings);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {

@@ -14,15 +14,15 @@ describe('storySlice', () => {
     let state = reducer(initial, completeChapter({ chapterId: 'eikony', unlockIndex: 2 }));
     state = reducer(state, completeChapter({ chapterId: 'prologue', unlockIndex: 1 }));
     expect(state.unlockedChapterIndex).toBe(2);
-    expect(state.chapters.prologue.completed).toBe(true);
+    expect(state.chapters.prologue?.completed).toBe(true);
   });
 
   it('keeps the best mini-game score', () => {
     let state = reducer(initial, recordScore({ chapterId: 'p', gameId: 'pc', score: { earned: 300, max: 500 } }));
     state = reducer(state, recordScore({ chapterId: 'p', gameId: 'pc', score: { earned: 100, max: 500 } }));
-    expect(state.chapters.p.scores?.pc).toEqual({ earned: 300, max: 500 });
+    expect(state.chapters.p?.scores?.pc).toEqual({ earned: 300, max: 500 });
     state = reducer(state, recordScore({ chapterId: 'p', gameId: 'pc', score: { earned: 500, max: 500 } }));
-    expect(state.chapters.p.scores?.pc.earned).toBe(500);
+    expect(state.chapters.p?.scores?.pc?.earned).toBe(500);
   });
 
   it('resets one chapter or the whole story, clearing the difficulty', () => {
@@ -47,7 +47,7 @@ describe('storySlice', () => {
     let state = reducer(initial, collect({ chapterId: 'p', id: 'floppy' }));
     state = reducer(state, collect({ chapterId: 'p', id: 'floppy' }));
     state = reducer(state, collect({ chapterId: 'p', id: 'phone' }));
-    expect(state.chapters.p.collectibles).toEqual(['floppy', 'phone']);
+    expect(state.chapters.p?.collectibles).toEqual(['floppy', 'phone']);
   });
 
   describe('timeline', () => {

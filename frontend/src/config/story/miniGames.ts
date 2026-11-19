@@ -150,7 +150,8 @@ const logWarningLines = [
   'W/Sensor: noisy reading, filtering',
 ];
 
-const logRounds = [
+type LogRound = { error: string; at: number; offset: number };
+const logRounds: [LogRound, ...LogRound[]] = [
   { error: 'E/AndroidRuntime: FATAL EXCEPTION: main java.lang.NullPointerException', at: 0.5, offset: 0 },
   { error: 'E/AndroidRuntime: FATAL EXCEPTION: main java.lang.IndexOutOfBoundsException: Index: 5, Size: 5', at: 0.75, offset: 7 },
 ];
@@ -172,7 +173,7 @@ const rotate = <T>(items: T[], by: number): T[] => [...items.slice(by), ...items
 
 export const buildLog = (difficulty: StoryDifficulty, round: number): { lines: string[]; errorIndex: number } => {
   const { lines, warnings } = logShapeByDifficulty[difficulty];
-  const { error, at, offset } = logRounds[round];
+  const { error, at, offset } = logRounds[round] ?? logRounds[0];
   const info = rotate(logInfoLines, offset).slice(0, lines - warnings - 1);
   const noise = rotate(logWarningLines, round).slice(0, warnings);
   const body = [...info, ...noise];
@@ -191,10 +192,10 @@ const scoreTiers: { tier: ScoreTier; reached: (percent: number) => boolean }[] =
   { tier: { id: 'great', title: 'Ready for the internship' }, reached: (p) => p >= 75 },
   { tier: { id: 'good', title: 'A bit more practice' }, reached: (p) => p >= 50 },
   { tier: { id: 'low', title: 'Back to the basics' }, reached: (p) => p > 0 },
-  { tier: { id: 'zero', title: 'Blank screen' }, reached: () => true },
 ];
+const zeroTier: ScoreTier = { id: 'zero', title: 'Blank screen' };
 
 export const tierFor = (earned: number, max: number): ScoreTier => {
   const percent = max > 0 ? (earned / max) * 100 : 0;
-  return (scoreTiers.find((t) => t.reached(percent)) ?? scoreTiers[scoreTiers.length - 1]).tier;
+  return scoreTiers.find((t) => t.reached(percent))?.tier ?? zeroTier;
 };

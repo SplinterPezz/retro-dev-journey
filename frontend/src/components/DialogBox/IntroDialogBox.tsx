@@ -19,13 +19,11 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   const [showDialog, setShowDialog] = useState(debugMode);
 
   useEffect(() => {
-    if (autoStart && !debugMode) {
-      const timer = setTimeout(() => {
-        setShowDialog(true);
-      }, initialDelay);
-
-      return () => clearTimeout(timer);
-    }
+    if (!autoStart || debugMode) return undefined;
+    const timer = setTimeout(() => {
+      setShowDialog(true);
+    }, initialDelay);
+    return () => clearTimeout(timer);
   }, [autoStart, initialDelay, debugMode]);
 
   const messages = introDialogMessages.map((message) => ({
@@ -47,14 +45,14 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   }
 
   if (debugMode) {
-    const lastMessage = introDialogMessages[introDialogMessages.length - 1];
+    const lastMessage = introDialogMessages.at(-1);
     return (
       <div className="dialog-box-container visible d-none d-sm-block">
         <div className="rpgui-content">
           <div className="rpgui-container framed">
             <div className="dialog-content">
               <p className="dialog-text">
-                {lastMessage.speaker}: {lastMessage.text}
+                {lastMessage?.speaker}: {lastMessage?.text}
               </p>
             </div>
           </div>

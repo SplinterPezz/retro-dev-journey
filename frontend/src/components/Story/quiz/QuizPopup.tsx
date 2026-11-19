@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { QuizData, QuizCategory, QuizQuestion, StoryDifficulty, StoryFlags } from '../../../types/story';
 import { DEFAULT_DIFFICULTY, exceedsMistakeLimit, maxMistakesByDifficulty } from '../../../config/story/difficulty';
 import { sameCode } from '../code/sameCode';
@@ -36,13 +36,11 @@ interface ShuffledQuestion {
   expectedCode?: string;
 }
 
-const shuffleArray = <T,>(arr: T[]): T[] => {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
+const shuffleArray = <T,>(items: readonly T[]): T[] => {
+  const pool = [...items];
+  const shuffled: T[] = [];
+  while (pool.length > 0) shuffled.push(...pool.splice(Math.floor(Math.random() * pool.length), 1));
+  return shuffled;
 };
 
 // shuffled so answers cannot be memorized by position
@@ -57,11 +55,11 @@ const shuffleQuestion = (q: QuizQuestion): ShuffledQuestion => {
       expectedCode: q.expectedCode,
     };
   }
-  const order = shuffleArray(q.options.map((_, i) => i));
+  const options = shuffleArray(q.options.map((text, i) => ({ text, correct: i === q.correctIndex })));
   return {
     question: q.question,
-    options: order.map((i) => q.options[i]),
-    correctIndex: order.indexOf(q.correctIndex),
+    options: options.map((o) => o.text),
+    correctIndex: options.findIndex((o) => o.correct),
     onWrongText: q.onWrongText,
   };
 };
@@ -84,10 +82,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
   const [runId, setRunId] = useState(0);
   const later = useTimeouts();
 
-  const activeCategory: QuizCategory | undefined = useMemo(
-    () => quiz.categories.find((c) => c.id === activeCategoryId),
-    [quiz.categories, activeCategoryId]
-  );
+  const activeCategory: QuizCategory | undefined = quiz.categories.find((c) => c.id === activeCategoryId);
 
   const mistakeLimit = maxMistakesByDifficulty[difficulty];
 

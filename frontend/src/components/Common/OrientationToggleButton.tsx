@@ -1,18 +1,17 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
-import { AppDispatch, RootState } from '../../store/store';
 import { setOrientation } from '../../store/storySlice';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { enterLandscape, isLandscape, isPortraitViewport, unlockOrientation } from '../../hooks/screenOrientation';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface OrientationToggleButtonProps {
   golden?: boolean;
 }
 
 const OrientationToggleButton: React.FC<OrientationToggleButtonProps> = ({ golden = false }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const dispatch = useAppDispatch();
+  const orientation = useAppSelector((state) => state.story.orientation);
   const isMobile = useIsMobile();
 
   if (!isMobile) return null;

@@ -1,9 +1,8 @@
-import { useCallback, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
+import { useState } from 'react';
 import { collect } from '../../../store/storySlice';
 import { CollectibleData, StoryFlags } from '../../../types/story';
 import { ENGINE_FLAGS } from '../../../config/story/flags';
+import { useAppDispatch } from '../../../store/hooks';
 
 interface CollectiblePopupsConfig {
   chapterId: string;
@@ -14,17 +13,14 @@ interface CollectiblePopupsConfig {
 }
 
 export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, total }: CollectiblePopupsConfig) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [queue, setQueue] = useState<CollectibleData[]>([]);
   const [loreOpen, setLoreOpen] = useState(false);
 
-  const onFind = useCallback(
-    (item: CollectibleData) => {
-      dispatch(collect({ chapterId, id: item.id }));
-      setQueue((q) => [...q, item]);
-    },
-    [dispatch, chapterId]
-  );
+  const onFind = (item: CollectibleData) => {
+    dispatch(collect({ chapterId, id: item.id }));
+    setQueue((q) => [...q, item]);
+  };
 
   const allFound = total > 0 && foundCount >= total;
 
@@ -40,7 +36,7 @@ export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, to
   };
 
   return {
-    current: queue[0] as CollectibleData | undefined,
+    current: queue[0],
     remaining: Math.max(queue.length - 1, 0),
     currentNumber: foundCount - queue.length + 1,
     loreOpen,

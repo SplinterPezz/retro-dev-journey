@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StoryDifficulty } from '../../../types/story';
 import CodeFixEditor from '../code/LazyCodeFixEditor';
 import { sameCode } from '../code/sameCode';
@@ -116,7 +116,7 @@ const ReadLogQuestion: React.FC<QuestionProps & { log: { lines: string[]; errorI
 );
 
 const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, onPowerOff }) => {
-  const steps = useMemo(() => buildSteps(difficulty), [difficulty]);
+  const steps = buildSteps(difficulty);
   const [results, setResults] = useState<boolean[]>([]);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -135,7 +135,8 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
     timerRef.current = setTimeout(() => setFeedback(null), FEEDBACK_MS);
   };
 
-  if (finished) {
+  const step = steps[stepIndex];
+  if (finished || !step) {
     const percent = Math.round((total / max) * 100);
     return (
       <PcMonitor onPowerOff={onPowerOff}>
@@ -157,7 +158,6 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
     );
   }
 
-  const step = steps[stepIndex];
   const roundsOfGame = steps.filter((s) => s.game === step.game).length;
   const counter = `(${step.round + 1} / ${roundsOfGame})`;
   const locked = feedback !== null;

@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,15 +14,14 @@ import { styled } from "@mui/material/styles";
 
 import { login } from "../../services/authService";
 import "./login.css";
-import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess } from "../../store/authSlice";
-import { RootState } from "../../store/store";
 import { useNavigate } from "react-router";
 import { playerTurnSprite } from "../../config/assets";
 import { useTimeouts } from "../../hooks/useTimeouts";
 import { LoginModel } from "../../types/api";
 import { loginBackgroundImage } from "../../config/login";
 import { ROUTES } from '../../config/routes';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 type Field = "email" | "password";
 
@@ -85,9 +84,9 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 export default function SignIn() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -115,7 +114,7 @@ export default function SignIn() {
   const later = useTimeouts();
 
   const handleCloseErrorMessage = (
-    event?: React.SyntheticEvent | Event | null,
+    _event?: React.SyntheticEvent | Event | null,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -161,7 +160,7 @@ export default function SignIn() {
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFieldErrors({});
 
@@ -173,23 +172,19 @@ export default function SignIn() {
       identifier: email,
       password: password,
     };
-    try {
-      const loginToken = await login(loginPayload);
-      if ("token" in loginToken) {
-        triggerError("Login success!", "success");
-        dispatch(loginSuccess({
-          id: loginToken.id,
-          user: loginToken.user,
-          token: loginToken.token,
-          expiration: loginToken.expiration,
-        }));
-      } else if (loginToken.fieldError && loginToken.error) {
-        handleErrorField(loginToken.fieldError, loginToken.error);
-      } else {
-        triggerError("Something went wrong : " + loginToken.error, "error");
-      }
-    } catch (err) {
-      triggerError("Something went wrong : " + err, "error");
+    const loginToken = await login(loginPayload).catch((err: unknown) => ({ error: String(err) }));
+    if ("token" in loginToken) {
+      triggerError("Login success!", "success");
+      dispatch(loginSuccess({
+        id: loginToken.id,
+        user: loginToken.user,
+        token: loginToken.token,
+        expiration: loginToken.expiration,
+      }));
+    } else if ("fieldError" in loginToken && loginToken.fieldError && loginToken.error) {
+      handleErrorField(loginToken.fieldError, loginToken.error);
+    } else {
+      triggerError(`Something went wrong : ${loginToken.error ?? "unknown error"}`, "error");
     }
   };
 

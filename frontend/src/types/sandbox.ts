@@ -1,17 +1,28 @@
+import type { ChapterId, CompanyId } from '../config/ids';
 import { Position, ShadowInfo, Hitbox, ImageSize, Rarity } from './game';
 
 // Shared engine types live in ./game; re-exported here for existing imports.
 export type { Position, EnvironmentData } from './game';
 
-export interface StructureData {
+interface StructureBase {
   id: string;
   name: string;
-  type: 'building' | 'statue';
   position: Position;
   description: string;
-  data: CompanyData | TechnologyData;
   interactionRadius: number;
 }
+
+export interface BuildingStructure extends StructureBase {
+  type: 'building';
+  data: CompanyData;
+}
+
+export interface StatueStructure extends StructureBase {
+  type: 'statue';
+  data: TechnologyData;
+}
+
+export type StructureData = BuildingStructure | StatueStructure;
 
 interface DownloadButtonData {
   id: string;
@@ -24,12 +35,13 @@ interface DownloadButtonData {
   collisionHitbox?: Hitbox;
 }
 
-export interface DownloadButtonStructure extends Omit<StructureData, 'data'> {
+export interface DownloadButtonStructure extends StructureBase {
+  type: 'statue';
   data: DownloadButtonData;
 }
 
 export interface CompanyData {
-  id: string;
+  id: CompanyId;
   name: string;
   shortName?: string;
   role: string;
@@ -71,7 +83,7 @@ export interface TechnologyData {
   collisionHitbox?: Hitbox;
   imageSize?: ImageSize;
   interactionRadius?: number;
-  storyChapter?: string;
+  storyChapter?: ChapterId;
   learnedText?: string;
   rarity: Rarity;
 }

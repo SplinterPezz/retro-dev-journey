@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { ChapterCollectibles, CollectibleData, CollectibleSpot, StoryFlags } from '../../../types/story';
 import { Position } from '../../../types/game';
 import { revealFlag } from '../../../config/story/flags';
@@ -49,9 +49,10 @@ interface CollectibleOnMap {
 export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPosition, isMoving, enabled, onFind }: CollectiblesConfig) => {
   const items = collectibles?.items ?? [];
 
-  // given a moment ago and not saved yet: nothing is given twice
+  const isSaved = (item: CollectibleData) => found.includes(item.id);
+  // given a moment ago and not saved yet: nothing is given twice (read in effects only)
   const givenRef = useRef(new Set<string>());
-  const isFound = (item: CollectibleData) => found.includes(item.id) || givenRef.current.has(item.id);
+  const isFound = (item: CollectibleData) => isSaved(item) || givenRef.current.has(item.id);
   const give = (item: CollectibleData) => {
     givenRef.current.add(item.id);
     onFind(item);
@@ -72,8 +73,9 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
       const unlock = item.unlock;
       if (unlock?.kind !== 'sequence' || isFound(item) || flags[revealFlag(item.id)]) continue;
 
-      const progress = (sequencesRef.current[item.id] ??= { nextStep: 0, inSpot: null });
-      const spot = Object.keys(unlock.spots).find((id) => isInSpot(playerPosition, unlock.spots[id])) ?? null;
+      const progress = sequencesRef.current[item.id] ?? { nextStep: 0, inSpot: null };
+      sequencesRef.current[item.id] = progress;
+      const spot = Object.entries(unlock.spots).find(([, area]) => isInSpot(playerPosition, area))?.[0] ?? null;
       if (spot === progress.inSpot) continue;
       progress.inSpot = spot;
       if (!spot) continue;
@@ -86,22 +88,24 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
   // timers re-armed only when who is waiting changes, not on every frame
   const waiting = items.filter((item) => {
     const unlock = item.unlock;
-    if (unlock?.kind !== 'idle' || isFound(item) || flags[revealFlag(item.id)]) return false;
+    if (unlock?.kind !== 'idle' || isSaved(item) || flags[revealFlag(item.id)]) return false;
     return !isMoving && isInSpot(playerPosition, unlock.spot);
   });
   const waitingKey = waiting.map((item) => item.id).join(',');
-  useEffect(() => {
-    if (!enabled || !waitingKey) return;
-    const timers = waiting.map((item) => {
+  const armWaitTimers = useEffectEvent(() =>
+    waiting.map((item) => {
       const seconds = item.unlock?.kind === 'idle' ? item.unlock.seconds : 0;
       return setTimeout(() => setFlag(revealFlag(item.id)), seconds * 1000);
-    });
+    })
+  );
+  useEffect(() => {
+    if (!enabled || !waitingKey) return;
+    const timers = armWaitTimers();
     return () => timers.forEach(clearTimeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [waitingKey, enabled]);
 
   const onMap: CollectibleOnMap[] = items.flatMap((item) => {
-    if (!item.position || isFound(item) || !isAvailable(item, flags) || isGivenByFlag(item)) return [];
+    if (!item.position || isSaved(item) || !isAvailable(item, flags) || isGivenByFlag(item)) return [];
     const near = isWithin(playerPosition, item.position, item.revealRadius ?? DEFAULT_REVEAL_RADIUS);
     return [{ item, near }];
   });

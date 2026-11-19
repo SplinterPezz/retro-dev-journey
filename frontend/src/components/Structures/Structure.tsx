@@ -1,41 +1,24 @@
 import React from 'react';
-import { StructureData, CompanyData, TechnologyData } from '../../types/sandbox';
+import { StructureData } from '../../types/sandbox';
 import './Structure.css';
 import { isDev } from '../../config/env';
-import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
+import { structureCentering, technologyCentering } from '../../config/world';
 import { lockSprite } from '../../config/assets';
 import { COMPANY_IDS } from '../../config/ids';
 
 interface StructureProps {
   data: StructureData;
-  type: 'building' | 'technology';
   isNearby: boolean;
   locked?: boolean;
 }
 
-const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = false }) => {
+const Structure: React.FC<StructureProps> = ({ data, isNearby, locked = false }) => {
+  const isBuilding = data.type === 'building';
 
-  const getStructureIcon = (): string => {
-    if (type === 'building') {
-        const companyData = data.data as CompanyData;
-        return companyData.image !== undefined ? companyData.image : defaultBuilding;
-    }
-    else {
-      const techData = data.data as TechnologyData;
-      return techData.image !== undefined ? techData.image : defaultStatue;
-    }
-  };
-
-  const getSignpostIcon = (): string | undefined => {
-    if (type === 'building') {
-        const companyData = data.data as CompanyData;
-        return companyData.signpost;
-    }
-    return undefined;
-  };
+  const getSignpostIcon = (): string | undefined => (data.type === 'building' ? data.data.signpost : undefined);
 
   const getStructureClasses = (): string => {
-    let classes = `structure-container ${type}`;
+    let classes = `structure-container ${isBuilding ? 'building' : 'technology'}`;
     
     if (isNearby) {
       classes += ' nearby';
@@ -47,15 +30,15 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
     <div
       className={getStructureClasses()}
       style={{
-        left: data.position.x + (type === 'building'? structureCentering.x : technologyCentering.x),
-        top: data.position.y + (type === 'building'? structureCentering.y : technologyCentering.y),
+        left: data.position.x + (isBuilding? structureCentering.x : technologyCentering.x),
+        top: data.position.y + (isBuilding? structureCentering.y : technologyCentering.y),
       }}
     >
       <div className="structure-sprite">
-        {type === 'building' ? (
+        {isBuilding ? (
           <>
             <img
-              src={getStructureIcon()}
+              src={data.data.image}
               alt={data.name}
               className="structure-building-image"
               style={{
@@ -91,7 +74,7 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
             }}/> : <></>
           }
             <img
-                src={getStructureIcon()}
+                src={data.data.image}
                 alt={data.name}
                 style={{
                   marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,
@@ -110,8 +93,8 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
             style={{
               width: data.interactionRadius * 2,
               height: data.interactionRadius * 2,
-              left: -(data.interactionRadius) - (type === 'building' ? structureCentering.x : technologyCentering.x),
-              top: -(data.interactionRadius) - (type === 'building' ? structureCentering.y : technologyCentering.y),
+              left: -(data.interactionRadius) - (isBuilding ? structureCentering.x : technologyCentering.x),
+              top: -(data.interactionRadius) - (isBuilding ? structureCentering.y : technologyCentering.y),
             }}
           />
         )}
@@ -129,4 +112,4 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
   );
 };
 
-export default React.memo(Structure);
+export default Structure;

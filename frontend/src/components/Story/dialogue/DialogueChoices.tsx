@@ -25,7 +25,7 @@ const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, di
     if (!openHintId) return;
     const closeIfOutside = (event: PointerEvent) => {
       const row = document.querySelector(`[data-hint-id="${openHintId}"]`);
-      if (!row?.contains(event.target as Node)) setOpenHintId(null);
+      if (!(event.target instanceof Node) || !row?.contains(event.target)) setOpenHintId(null);
     };
     document.addEventListener('pointerdown', closeIfOutside);
     return () => document.removeEventListener('pointerdown', closeIfOutside);
@@ -52,7 +52,7 @@ const DialogueChoices: React.FC<DialogueChoicesProps> = ({ choices, onSelect, di
             {Array.from({ length: choice.progress.total }).map((_, i) => (
               <span
                 key={i}
-                className={`story-choice-dot${i < choice.progress!.done ? ' filled' : ''}`}
+                className={`story-choice-dot${i < (choice.progress?.done ?? 0) ? ' filled' : ''}`}
               />
             ))}
           </span>

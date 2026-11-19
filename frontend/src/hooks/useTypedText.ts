@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 // Typing state is derived from `text`, not kept in a flag: a flag lagged a render
 // behind and the next line's choices flashed on screen.
@@ -8,12 +8,10 @@ export const useTypedText = (text: string, speed: number = 30) => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    setTyped({ text, count: 0 });
-    setDoneText(null);
     let charIndex = 0;
 
     const interval = setInterval(() => {
-      charIndex++;
+      charIndex += 1;
       setTyped({ text, count: charIndex });
       if (charIndex >= text.length) {
         setDoneText(text);
@@ -32,14 +30,14 @@ export const useTypedText = (text: string, speed: number = 30) => {
       ? text.slice(0, typed.count)
       : '';
 
-  const skip = useCallback(() => {
+  const skip = () => {
     if (intervalRef.current !== null) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     setTyped({ text, count: text.length });
     setDoneText(text);
-  }, [text]);
+  };
 
   return { displayedText, isTyping: !isDone, skip };
 };

@@ -9,7 +9,7 @@ interface MobileJoystickProps {
   onStop: () => void;
 }
 
-const MobileJoystick: React.FC<MobileJoystickProps> = React.memo(({ onMove, onStop }) => (
+const MobileJoystick: React.FC<MobileJoystickProps> = ({ onMove, onStop }) => (
   <div className="mobile-joystick">
     <Joystick
       size={100}
@@ -22,6 +22,6 @@ const MobileJoystick: React.FC<MobileJoystickProps> = React.memo(({ onMove, onSt
       minDistance={15}
     />
   </div>
-));
+);
 
 export default MobileJoystick;

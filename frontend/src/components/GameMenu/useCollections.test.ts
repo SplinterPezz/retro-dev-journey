@@ -26,7 +26,7 @@ describe('isTechnologyUnlocked', () => {
 describe('collection entries', () => {
   it('lists every collectible, found or not', () => {
     const items = itemEntries({ chapters: prologueDone });
-    expect(items).toHaveLength(chapterCollectibles[CHAPTER_IDS.prologue].items.length);
+    expect(items).toHaveLength(chapterCollectibles[CHAPTER_IDS.prologue]?.items.length ?? 0);
     expect(items.filter((i) => i.found).map((i) => i.id)).toEqual(['floppy']);
   });
 

@@ -13,13 +13,13 @@ describe('persisted state migrations', () => {
       tracking: { uuid: 'abcd1234-abcd-4bcd-abcd-abcd1234', interactions: ['k'] },
       story: { unlockedChapterIndex: 1, chapters: { prologue: { completed: true, flags: {} } } },
     };
-    const v2 = migrations[2](v1) as unknown as typeof v1;
+    const v2 = migrations[2]?.(v1) as unknown as typeof v1;
     expect(v2.tracking).toEqual({ uuid: '', interactions: ['k'] });
     expect(v2.story).toBe(v1.story);
   });
 
   it('1 -> 2 accepts a state without tracking', () => {
     const v1 = { _persist: { version: 1, rehydrated: false } };
-    expect(migrations[2](v1)).toBe(v1);
+    expect(migrations[2]?.(v1)).toBe(v1);
   });
 });

@@ -16,31 +16,24 @@ const loadImage = (src: string): Promise<void> =>
 
 // `images` must keep its identity between renders: a new array starts the loading again.
 export const useResourceLoader = (images: string[]): LoaderState => {
-  const [state, setState] = useState<LoaderState>({ isLoading: images.length > 0, loaded: 0, total: images.length });
+  // progress of one list: a new list reads as "nothing loaded yet" without an extra render
+  const [progress, setProgress] = useState<{ images: string[]; loaded: number; done: boolean }>({ images, loaded: 0, done: false });
+  const current = progress.images === images ? progress : { loaded: 0, done: false };
 
   useEffect(() => {
-    if (images.length === 0) {
-      setState({ isLoading: false, loaded: 0, total: 0 });
-      return;
-    }
+    if (images.length === 0) return;
 
     let cancelled = false;
     let loaded = 0;
-    setState({ isLoading: true, loaded: 0, total: images.length });
 
     const loads = images.map(async (src) => {
-      try {
-        await loadImage(src);
-      } catch (error) {
-        console.warn(`Failed to load resource: ${src}`, error);
-      } finally {
-        loaded++;
-        if (!cancelled) setState((prev) => ({ ...prev, loaded }));
-      }
+      await loadImage(src).catch((error: unknown) => console.warn(`Failed to load resource: ${src}`, error));
+      loaded += 1;
+      if (!cancelled) setProgress({ images, loaded, done: false });
     });
 
     void Promise.all(loads).then(() => {
-      if (!cancelled) setState((prev) => ({ ...prev, isLoading: false }));
+      if (!cancelled) setProgress({ images, loaded, done: true });
     });
 
     return () => {
@@ -48,5 +41,5 @@ export const useResourceLoader = (images: string[]): LoaderState => {
     };
   }, [images]);
 
-  return state;
+  return { isLoading: images.length > 0 && !current.done, loaded: current.loaded, total: images.length };
 };

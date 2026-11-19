@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
 import { resetStory } from '../../store/storySlice';
 import { ROUTES } from '../../config/routes';
 import './GameModeSelector.css';
@@ -27,15 +25,16 @@ import {
   newStoryButtonText,
   storyInProgressBackText,
 } from '../../config/gameModeSelector';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface GameSelectorProps {
-  handleDownloadClick(platform:string): void
+  handleDownloadClick: (platform: string) => void;
 }
 
 const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
-  const hasStory = useSelector((state: RootState) => state.story.difficulty !== null);
+  const dispatch = useAppDispatch();
+  const hasStory = useAppSelector((state) => state.story.difficulty !== null);
   const [backgroundVisible, setBackgroundVisible] = useState(true);
   const [askingStory, setAskingStory] = useState(false);
 

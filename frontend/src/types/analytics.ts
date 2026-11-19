@@ -36,44 +36,7 @@ export interface BrowserStats {
   count: number;
 }
 
-export interface DailyUsersResponse {
-  data: DailyUserStats[];
-  start_date: string;
-  end_date: string;
-  total_days: number;
-}
-
-export interface PageTimeResponse {
-  data: PageTimeStats[];
-  start_date: string;
-  end_date: string;
-  total_records: number;
-}
-
-export interface DownloadsResponse {
-  data: DownloadStats[];
-  start_date: string;
-  end_date: string;
-  total_downloads: number;
-}
-
-export interface InteractionsResponse {
-  data: InteractionStats[];
-  start_date: string;
-  end_date: string;
-  total_interactions: number;
-}
-
-export interface DevicesResponse {
-  data: DeviceStats[];
-  start_date: string;
-  end_date: string;
-  total_users: number;
-}
-
-export interface BrowsersResponse {
-  data: BrowserStats[];
-  start_date: string;
-  end_date: string;
-  total_users: number;
+// the backend (Go) sends an empty list as null
+export interface StatsResponse<Row> {
+  data: Row[] | null;
 }

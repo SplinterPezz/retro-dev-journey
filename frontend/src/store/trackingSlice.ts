@@ -7,18 +7,8 @@ const initialState: UserTrackingState = {
 };
 
 const extractDateFromKey = (key: string): string | null => {
-  const parts = key.split('-');
-  if (parts.length >= 3) {
-    // YYYY-MM-DD
-    const dateParts = parts.slice(-3);
-    if (dateParts.length === 3 && 
-        dateParts[0].length === 4 &&
-        dateParts[1].length === 2 &&
-        dateParts[2].length === 2) {
-      return dateParts.join('-');
-    }
-  }
-  return null;
+  const [year, month, day] = key.split('-').slice(-3);
+  return year?.length === 4 && month?.length === 2 && day?.length === 2 ? `${year}-${month}-${day}` : null;
 };
 
 const isInteractionOlderThanToday = (key: string): boolean => {

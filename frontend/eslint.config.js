@@ -7,7 +7,7 @@ export default tseslint.config(
   { ignores: ['build', 'node_modules', 'public'] },
   {
     files: ['**/*.{ts,tsx}'],
-    extends: [js.configs.recommended, tseslint.configs.recommended],
+    extends: [js.configs.recommended, tseslint.configs.strictTypeChecked],
     languageOptions: {
       ecmaVersion: 2022,
       globals: globals.browser,
@@ -19,11 +19,13 @@ export default tseslint.config(
     },
     plugins: { 'react-hooks': reactHooks },
     rules: {
-      // Same hook checks Create React App ran.
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
-      // Promises that nobody awaits or catches: an error there is lost.
-      '@typescript-eslint/no-floating-promises': 'error',
+      // rules of hooks plus the React Compiler checks (refs, purity, effects...)
+      ...reactHooks.configs.flat['recommended-latest'].rules,
+      // numbers in templates and one-line arrow callbacks are fine: the rest of the strict preset stays
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      '@typescript-eslint/no-confusing-void-expression': ['error', { ignoreArrowShorthand: true }],
+      // an Immer draft drops a Record key with delete
+      '@typescript-eslint/no-dynamic-delete': 'off',
       '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],
     },
   },

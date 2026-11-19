@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Maximize, Minimize } from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { isLandscape } from '../../hooks/screenOrientation';
+import { useAppSelector } from '../../store/hooks';
 
 interface FullscreenButtonProps {
   golden?: boolean;
@@ -12,10 +11,10 @@ interface FullscreenButtonProps {
 // iOS Safari has no Fullscreen API for pages: the button hides where it is unsupported.
 const FullscreenButton: React.FC<FullscreenButtonProps> = ({ golden = false }) => {
   const isMobile = useIsMobile();
-  const orientation = useSelector((state: RootState) => state.story.orientation);
+  const orientation = useAppSelector((state) => state.story.orientation);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const supported = typeof document !== 'undefined'
-    && document.fullscreenEnabled === true
+    && document.fullscreenEnabled
     && typeof document.documentElement.requestFullscreen === 'function';
 
   useEffect(() => {

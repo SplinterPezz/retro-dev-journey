@@ -1,4 +1,4 @@
-import { WorldConfig, Position, Hitbox } from '../types/game';
+import { WorldConfig, Position, Hitbox, WorldBounds } from '../types/game';
 
 const tileSize: number = 128;
 
@@ -30,6 +30,16 @@ export const worldConfig: WorldConfig = {
   width: 2000,
   height: 3024,
   tileSize: tileSize
+};
+
+// how far from the world's edge the player can walk
+const WORLD_EDGE = 50;
+
+export const overworldBounds: WorldBounds = {
+  minX: WORLD_EDGE,
+  minY: WORLD_EDGE,
+  maxX: worldConfig.width - WORLD_EDGE,
+  maxY: worldConfig.height - WORLD_EDGE,
 };
 
 export const mainPathConfig = {

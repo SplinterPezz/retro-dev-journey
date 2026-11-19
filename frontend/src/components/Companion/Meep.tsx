@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Position } from '../../types/sandbox';
 import { MeepDirection, meepSprite } from '../../config/story/sprites';
 import './Meep.css';
@@ -16,22 +16,25 @@ const FACING_BY_SECTOR: MeepDirection[] = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N',
 const directionFromStep = (dx: number, dy: number): MeepDirection => {
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const sector = Math.round(((angle + 360) % 360) / 45) % 8;
-  return FACING_BY_SECTOR[sector];
+  return FACING_BY_SECTOR[sector] ?? 'E';
 };
 
+// standing still keeps the last facing
+const MIN_STEP_PX = 0.5;
+
 const Meep: React.FC<MeepProps> = ({ position }) => {
-  const lastRef = useRef<{ x: number; y: number; direction: MeepDirection }>({
+  const [last, setLast] = useState<{ x: number; y: number; direction: MeepDirection }>({
     x: position.x,
     y: position.y,
     direction: 'S',
   });
 
-  const dx = position.x - lastRef.current.x;
-  const dy = position.y - lastRef.current.y;
-  if (Math.hypot(dx, dy) > 0.5) {
-    lastRef.current = { x: position.x, y: position.y, direction: directionFromStep(dx, dy) };
+  const dx = position.x - last.x;
+  const dy = position.y - last.y;
+  if (Math.hypot(dx, dy) > MIN_STEP_PX) {
+    setLast({ x: position.x, y: position.y, direction: directionFromStep(dx, dy) });
   }
-  const direction = lastRef.current.direction;
+  const direction = last.direction;
 
   return (
     <div
@@ -46,4 +49,4 @@ const Meep: React.FC<MeepProps> = ({ position }) => {
   );
 };
 
-export default React.memo(Meep);
+export default Meep;

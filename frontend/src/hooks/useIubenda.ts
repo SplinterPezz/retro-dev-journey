@@ -1,14 +1,14 @@
 import { useEffect, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
 import { setConsentGiven as setConsentInStore } from '../store/consentSlice';
 import { clearAllTrackingData } from '../store/trackingSlice';
+import { useAppDispatch } from '../store/hooks';
 
 declare global {
     interface Window {
         _iub?: {
             cs?: {
                 api?: {
-                    isConsentGiven: () => boolean;
+                    isConsentGiven: () => boolean | undefined;
                 };
             };
         };
@@ -20,26 +20,8 @@ declare global {
     }
 }
 
-export const useIubenda = () => {
-    const dispatch = useDispatch();
-
-    const updateConsent = useCallback((newConsent: boolean | null) => {
-        if (newConsent === null) return;
-
-        if (newConsent === false) {
-            dispatch(clearAllTrackingData());
-        }
-
-        dispatch(setConsentInStore(newConsent));
-    }, [dispatch]);
-
-    const checkConsent = useCallback((): boolean | null => {
-    if (
-        !window._iub || 
-        !window._iub.cs || 
-        !window._iub.cs.api || 
-        typeof window._iub.cs.api.isConsentGiven !== 'function'
-    ) {
+const checkConsent = (): boolean | null => {
+    if (typeof window._iub?.cs?.api?.isConsentGiven !== 'function') {
         return null;
     }
 
@@ -49,7 +31,20 @@ export const useIubenda = () => {
         console.warn('Error calling isConsentGiven:', error);
         return null;
     }
-}, []);
+};
+
+export const useIubenda = () => {
+    const dispatch = useAppDispatch();
+
+    const updateConsent = useCallback((newConsent: boolean | null) => {
+        if (newConsent === null) return;
+
+        if (!newConsent) {
+            dispatch(clearAllTrackingData());
+        }
+
+        dispatch(setConsentInStore(newConsent));
+    }, [dispatch]);
 
     useEffect(() => {
         const handler = (consent: boolean) => updateConsent(consent);
@@ -78,5 +73,5 @@ export const useIubenda = () => {
             window.iubendaPreferenceExpressed = undefined;
             window.iubendaConsentChanged = undefined;
         };
-    }, [checkConsent, updateConsent]);
+    }, [updateConsent]);
 };

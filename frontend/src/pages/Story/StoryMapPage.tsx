@@ -1,18 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
 import { markDiscoverySeen } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
+import { useLingering } from '../../game/hooks/useLingering';
+import { useProximityTrigger } from './hooks/useProximityTrigger';
 import { useDebugReset } from '../../game/useDebugReset';
-import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
 import DebugToolbar, { DebugAction } from '../../game/DebugToolbar';
-import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
-import PathRenderer from '../../components/Path/PathRenderer';
-import Structure from '../../components/Structures/Structure';
-import Environment from '../../components/Structures/Environment';
+import Overworld from '../../components/Overworld/Overworld';
 import Player from '../../components/Player/Player';
 import Meep from '../../components/Companion/Meep';
 import { useLaggedPosition } from '../../components/Companion/useLaggedPosition';
@@ -27,9 +23,9 @@ import { skillElapsed, skillEntry } from '../../components/GameMenu/useCollectio
 import LoadingSplash from '../../components/Common/LoadingSplash';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { storyMapAssets } from '../../config/story/assets';
-import { worldConfig, mainPathConfig, playerHitbox, playerSpawnPosition, terrainAutoRotate } from '../../config/world';
+import { worldConfig, overworldBounds, playerHitbox, playerSpawnPosition } from '../../config/world';
 import { companies, technologies } from '../../config/career';
-import { treesEnvironments, detailsEnvironments } from '../../config/environments';
+import { overworldEnvironments } from '../../config/environments';
 import {
   chapterDisplayName,
   companyDisplayName,
@@ -40,10 +36,11 @@ import {
 } from '../../config/story/chapters';
 import { MEEP_LAG_MS } from './sceneRules';
 import { ChapterProgress } from '../../types/story';
-import { StructureData, TechnologyData } from '../../types/sandbox';
+import { StatueStructure, StructureData } from '../../types/sandbox';
 import { chapterPath } from '../../config/routes';
 import { COMPANY_IDS } from '../../config/ids';
 import './StoryMapPage.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 const MAP_PLAYER_SPEED = 270;
 const BUILDING_REACH = 90;
@@ -72,80 +69,17 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   });
 };
 
-const environments = [...treesEnvironments, ...detailsEnvironments];
-
-const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
-  technologies.filter((t) => isTechnologyUnlocked(t.data as TechnologyData, progress));
-
-const worldBounds = {
-  minX: 50,
-  minY: 50,
-  maxX: worldConfig.width - 50,
-  maxY: worldConfig.height - 50,
-};
-
-interface MapWorldProps {
-  nearbyId: string | null;
-  lockedIds: string[];
-  statues: StructureData[];
-  pathTargets: StructureData[];
-}
-
-// re-renders only when the nearby door or the unlocked statues change
-const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds, statues, pathTargets }) => {
-  const pathSegments = useMemo(
-    () =>
-      createPathGenerator({
-        startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
-        endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
-        structures: pathTargets,
-        tileSize: worldConfig.tileSize,
-      }).generatePath(),
-    [pathTargets]
-  );
-
-  return (
-    <>
-      <TerrainRenderer worldConfig={worldConfig} autoRotate={terrainAutoRotate} />
-      <PathRenderer pathSegments={pathSegments} tileSize={worldConfig.tileSize} />
-      <div className="structure-container">
-        {companies.map((company) => (
-          <Structure
-            key={company.id}
-            data={company}
-            type="building"
-            isNearby={nearbyId === company.id}
-            locked={lockedIds.includes(company.id)}
-          />
-        ))}
-      </div>
-      <div className="structure-container">
-        {statues.map((tech) => (
-          <Structure key={tech.id} data={tech} type="technology" isNearby={false} />
-        ))}
-      </div>
-      <div className="structure-container">
-        {treesEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={256} />
-        ))}
-      </div>
-      <div className="structure-container">
-        {detailsEnvironments.map((environment, index) => (
-          <Environment key={index} environment={environment} size={128} />
-        ))}
-      </div>
-    </>
-  );
-});
+const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StatueStructure[] =>
+  technologies.filter((t) => isTechnologyUnlocked(t.data, progress));
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
-  const unlockedChapterIndex = useSelector((state: RootState) => state.story.unlockedChapterIndex);
-  const chapters = useSelector((state: RootState) => state.story.chapters);
-  const discoveriesSeen = useSelector((state: RootState) => state.story.discoveriesSeen);
-  const startedAt = useSelector((state: RootState) => state.story.startedAt);
-  const timeline = useSelector((state: RootState) => state.story.timeline);
-  const dispatch = useDispatch<AppDispatch>();
+  const unlockedChapterIndex = useAppSelector((state) => state.story.unlockedChapterIndex);
+  const chapters = useAppSelector((state) => state.story.chapters);
+  const discoveriesSeen = useAppSelector((state) => state.story.discoveriesSeen);
+  const startedAt = useAppSelector((state) => state.story.startedAt);
+  const timeline = useAppSelector((state) => state.story.timeline);
+  const dispatch = useAppDispatch();
   const [exiting, setExiting] = useState(false);
   const location = useLocation();
   const [inDevelopmentOpen, setInDevelopmentOpen] = useState(
@@ -159,7 +93,7 @@ const StoryMapPage: React.FC = () => {
   const { isOpen: menuOpen } = useGameMenu();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
-  const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
+  const quests = chapterQuests(unlockedChapterIndex);
   const lockedIds = useMemo(() => {
     const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
     return companies.filter((c) => !open.has(c.id)).map((c) => c.id);
@@ -178,21 +112,17 @@ const StoryMapPage: React.FC = () => {
     }
   }, [unfinishedStandalone, navigate]);
 
-  const activeCompany = useMemo(
-    () => (activeChapter?.companyId ? companies.find((c) => c.id === activeChapter.companyId) : undefined),
-    [activeChapter]
-  );
+  const activeCompany = (activeChapter?.companyId ? companies.find((c) => c.id === activeChapter.companyId) : undefined);
 
-  const statues = useMemo(() => unlockedTechnologies(chapters), [chapters]);
-  const mapAssets = useMemo(() => storyMapAssets(statues), [statues]);
+  const statues = unlockedTechnologies(chapters);
+  const mapAssets = storyMapAssets(statues);
   const splash = useLoadingSplash(mapAssets);
   const splashCovering = splash.visible && !splash.leaving;
-  const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
+  const solidStructures = [...companies, ...statues];
   const newDiscoveries = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id));
   const discovery = newDiscoveries[0];
   const discoveriesLeft = newDiscoveries.length - 1;
-  const discoveryTech = discovery?.data as TechnologyData | undefined;
-  const [shownStatue, setShownStatue] = useState<StructureData | null>(null);
+  const discoveryTech = discovery?.data;
   const [inspecting, setInspecting] = useState(false);
   const discoveryPopup = discovery && discoveryTech && (
     <UnlockPopup
@@ -212,16 +142,16 @@ const StoryMapPage: React.FC = () => {
   const { playerPosition, isMoving, direction, handleJoystickMove, handleJoystickStop } = usePlayerMovement({
     initialPosition: playerSpawnPosition,
     speed: MAP_PLAYER_SPEED,
-    worldBounds,
+    worldBounds: overworldBounds,
     structures: solidStructures,
-    environments,
+    environments: overworldEnvironments,
     playerHitbox,
     canMove: !exiting && !discovery && !inDevelopmentOpen && !menuOpen && !splashCovering && !inspecting,
   });
 
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
 
-  const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
+  const doorCollidable = (activeCompany ? [activeCompany] : []);
 
   const { nearbyStructure: nearbyDoor } = useCollisionDetection({
     playerPosition,
@@ -229,24 +159,19 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: BUILDING_REACH,
   });
 
-  const [shownAtDoor, setShownAtDoor] = useState(false);
+  // once per walk-up: the "in development" window, or the way into the chapter
+  useProximityTrigger({
+    nearbyId: nearbyDoor?.id ?? null,
+    enabled: !!activeChapter && !exiting,
+    canOpen: () => true,
+    onOpen: () => (activeChapter?.inDevelopment ? setInDevelopmentOpen(true) : setExiting(true)),
+  });
+
   useEffect(() => {
-    if (!nearbyDoor) {
-      setShownAtDoor(false);
-      return;
-    }
-    if (!activeChapter || exiting) return;
-    if (activeChapter.inDevelopment) {
-      if (!shownAtDoor) {
-        setShownAtDoor(true);
-        setInDevelopmentOpen(true);
-      }
-      return;
-    }
-    setExiting(true);
+    if (!exiting || !activeChapter) return;
     const timer = setTimeout(() => navigate(chapterPath(activeChapter.id)), ENTER_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [nearbyDoor, activeChapter, exiting, shownAtDoor, navigate]);
+  }, [exiting, activeChapter, navigate]);
 
   const { nearbyStructure: nearbyStatue } = useCollisionDetection({
     playerPosition,
@@ -254,24 +179,16 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: STATUE_REACH,
   });
 
-  // like the Sandbox: shown while walking past, hidden a beat after leaving so a radius edge does not flicker it
-  useEffect(() => {
-    if (nearbyStatue) {
-      setShownStatue(nearbyStatue);
-      return;
-    }
-    const timer = setTimeout(() => setShownStatue(null), STATUE_HIDE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [nearbyStatue]);
+  const shownStatue = useLingering(nearbyStatue, STATUE_HIDE_DELAY_MS);
 
-  const shownSkill = shownStatue?.data as TechnologyData | undefined;
+  const shownSkill = shownStatue?.data;
   const skillVisible = !!shownSkill && !splash.visible && !menuOpen && !discovery && !inDevelopmentOpen;
   const shownEntry = shownSkill && skillEntry(shownSkill, true, skillElapsed(shownSkill, { startedAt, timeline }));
   const skillWindow = skillVisible && shownEntry && (
     <>
       <SkillWindow
         entry={shownEntry}
-        chapterName={chapterDisplayName(shownSkill?.storyChapter ?? '')}
+        chapterName={chapterDisplayName(shownSkill.storyChapter ?? '')}
         onInspect={() => setInspecting(true)}
       />
       {inspecting && <ItemInspector entry={shownEntry} onClose={() => setInspecting(false)} />}
@@ -325,7 +242,7 @@ const StoryMapPage: React.FC = () => {
             </div>
           }
         >
-          <MapWorld nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} statues={statues} pathTargets={solidStructures} />
+          <Overworld technologies={statues} nearbyId={nearbyDoor?.id ?? null} lockedIds={lockedIds} />
           <Meep position={meepPosition} />
           <Player position={playerPosition} isMoving={isMoving} direction={direction} />
         </GameScene>

@@ -1,12 +1,11 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/store';
 import { setUUID, addInteraction, clearAllTrackingData } from '../store/trackingSlice';
 import { TrkData, PageType, timeTrackingIntervals } from '../types/tracking';
 import { sendTrackingData } from '../services/trkService';
 import { generateVisitorId, getDeviceInfo, createInteractionKey } from '../services/tracking/device';
 import { questSuffix } from '../config/tracking';
 import { devLog } from '../config/env';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
 interface UseTrackingProps {
   page: PageType;
@@ -18,14 +17,16 @@ const today = () => new Date().toISOString().slice(0, 10);
 // Active only after cookie consent: one event per view-time threshold and per
 // interaction, per page per day.
 export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
-  const dispatch = useDispatch();
-  const { uuid, interactions } = useSelector((state: RootState) => state.tracking);
-  const { consentGiven, isLoading } = useSelector((state: RootState) => state.consent);
+  const dispatch = useAppDispatch();
+  const { uuid, interactions } = useAppSelector((state) => state.tracking);
+  const { consentGiven, isLoading } = useAppSelector((state) => state.consent);
 
   const startDateRef = useRef(today());
   const deviceInfoRef = useRef(getDeviceInfo());
   const interactionsRef = useRef(interactions);
-  interactionsRef.current = interactions;
+  useEffect(() => {
+    interactionsRef.current = interactions;
+  }, [interactions]);
 
   const isTrackingAllowed = enabled && consentGiven === true;
 

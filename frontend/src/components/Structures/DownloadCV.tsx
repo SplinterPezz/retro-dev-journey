@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { DownloadButtonStructure } from '../../types/sandbox';
 import { downloadCV } from '../../services/fileService';
 import { downloadCVCooldown } from '../../config/sandbox';
@@ -11,13 +11,35 @@ interface DownloadCVProps {
     structure: DownloadButtonStructure;
 }
 
+const SUCCESS_MESSAGE_MS = 2000;
+const ERROR_MESSAGE_MS = 3000;
+
 const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     const [isDownloading, setIsDownloading] = useState(false);
-    const [cooldownActive, setCooldownActive] = useState(false);
     const [cooldownTimer, setCooldownTimer] = useState(0);
+    const cooldownActive = cooldownTimer > 0;
     const [downloadStatus, setDownloadStatus] = useState<'idle' | 'downloading' | 'success' | 'error'>('idle');
     const downloadTriggeredRef = useRef(false);
     const later = useTimeouts();
+
+    const startDownload = useEffectEvent(async () => {
+        if (cooldownActive || isDownloading) return;
+
+        setIsDownloading(true);
+        setDownloadStatus('downloading');
+
+        const failed = await downloadCV().then(
+            () => false,
+            (error: unknown) => {
+                console.error('Download failed:', error);
+                return true;
+            }
+        );
+        setIsDownloading(false);
+        setDownloadStatus(failed ? 'error' : 'success');
+        if (!failed) setCooldownTimer(downloadCVCooldown);
+        later(() => setDownloadStatus('idle'), failed ? ERROR_MESSAGE_MS : SUCCESS_MESSAGE_MS);
+    });
 
     useEffect(() => {
         if (!isNearby) {
@@ -25,48 +47,19 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         }
     }, [isNearby]);
 
+    // once per walk-up
     useEffect(() => {
         if (isNearby && !cooldownActive && !downloadTriggeredRef.current && !isDownloading) {
-            void handleDownload();
+            void startDownload();
             downloadTriggeredRef.current = true;
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNearby, cooldownActive, isDownloading]);
 
     useEffect(() => {
         if (!cooldownActive) return;
-        if (cooldownTimer <= 0) {
-            setCooldownActive(false);
-            return;
-        }
         const tick = setTimeout(() => setCooldownTimer((prev) => prev - 1), 1000);
         return () => clearTimeout(tick);
     }, [cooldownActive, cooldownTimer]);
-
-    const handleDownload = async () => {
-        if (cooldownActive || isDownloading) return;
-
-        setIsDownloading(true);
-        setDownloadStatus('downloading');
-
-        try {
-            await downloadCV();
-            setDownloadStatus('success');
-            
-            setCooldownActive(true);
-            setCooldownTimer(downloadCVCooldown);
-            
-            later(() => setDownloadStatus('idle'), 2000);
-            
-        } catch (error) {
-            console.error('Download failed:', error);
-            setDownloadStatus('error');
-            
-            later(() => setDownloadStatus('idle'), 3000);
-        } finally {
-            setIsDownloading(false);
-        }
-    };
 
     const getDisplayImage = () => {
         if (isNearby && !cooldownActive) {
@@ -183,4 +176,4 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     );
 };
 
-export default React.memo(DownloadCV);
+export default DownloadCV;

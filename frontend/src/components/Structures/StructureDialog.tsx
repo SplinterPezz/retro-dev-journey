@@ -8,8 +8,6 @@ interface StructureDialogProps {
 
 const StructureDialog: React.FC<StructureDialogProps> = ({ structure }) => {
   const isCompany = structure.type === 'building';
-  const companyData = isCompany ? structure.data as CompanyData : null;
-  const techData = !isCompany ? structure.data as TechnologyData : null;
 
   return (
     <>
@@ -26,10 +24,10 @@ const StructureDialog: React.FC<StructureDialogProps> = ({ structure }) => {
             </div>
             
             <div className="dialog-content-structure">
-              {isCompany && companyData ? (
-                <CompanyInfo company={companyData} />
+              {structure.type === 'building' ? (
+                <CompanyInfo company={structure.data} />
               ) : (
-                <TechnologyInfo technology={techData!} />
+                <TechnologyInfo technology={structure.data} />
               )}
             </div>
             

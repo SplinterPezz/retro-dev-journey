@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import QuestPanel from '../../QuestPanel/QuestPanel';
 import './StoryProgress.css';
 
@@ -17,7 +17,7 @@ interface StoryProgressProps {
 const StoryProgress: React.FC<StoryProgressProps> = ({ objectives, name = 'Objectives' }) => {
   const doneCount = objectives.filter((o) => o.done).length;
   const percentage = objectives.length ? (doneCount / objectives.length) * 100 : 0;
-  const toggleLabel = useMemo(() => ({ show: `Show ${name.toLowerCase()}`, hide: `Hide ${name.toLowerCase()}` }), [name]);
+  const toggleLabel = ({ show: `Show ${name.toLowerCase()}`, hide: `Hide ${name.toLowerCase()}` });
 
   return (
     <QuestPanel
@@ -38,4 +38,4 @@ const StoryProgress: React.FC<StoryProgressProps> = ({ objectives, name = 'Objec
   );
 };
 
-export default React.memo(StoryProgress);
+export default StoryProgress;

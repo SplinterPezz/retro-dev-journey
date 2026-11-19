@@ -1,15 +1,15 @@
 import { ChapterProgress } from '../../types/story';
 import { TechnologyData } from '../../types/sandbox';
-import { CHAPTER_IDS, COMPANY_IDS } from '../ids';
+import { CHAPTER_IDS, COMPANY_IDS, ChapterId, CompanyId } from '../ids';
 import { companies } from '../career';
 import { PROLOGUE_FLAGS } from './flags';
 import { storyUi } from './sprites';
 
 // A chapter without companyId has no building on the overworld and plays on its own map.
 export interface ChapterMeta {
-  id: string;
+  id: ChapterId;
   name?: string;
-  companyId?: string;
+  companyId?: CompanyId;
   endFlag?: string;
   inDevelopment?: boolean;
 }

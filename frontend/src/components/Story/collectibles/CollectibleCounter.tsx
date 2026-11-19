@@ -16,4 +16,4 @@ const CollectibleCounter: React.FC<CollectibleCounterProps> = ({ found, total })
   </div>
 );
 
-export default React.memo(CollectibleCounter);
+export default CollectibleCounter;

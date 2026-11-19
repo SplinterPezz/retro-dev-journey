@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, use, useState } from 'react';
 import { useLocation } from 'react-router';
 
 interface GameMenuState {
@@ -10,16 +10,16 @@ interface GameMenuState {
 const GameMenuContext = createContext<GameMenuState>({ isOpen: false, open: () => {}, close: () => {} });
 
 export const GameMenuProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
+  // open only on the page it was opened from: any page change closes it
+  const [openedOn, setOpenedOn] = useState<string | null>(null);
+  const isOpen = openedOn === pathname;
 
-  useEffect(() => setIsOpen(false), [pathname]);
+  const open = () => setOpenedOn(pathname);
+  const close = () => setOpenedOn(null);
+  const value = ({ isOpen, open, close });
 
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
-  const value = useMemo(() => ({ isOpen, open, close }), [isOpen, open, close]);
-
-  return <GameMenuContext.Provider value={value}>{children}</GameMenuContext.Provider>;
+  return <GameMenuContext value={value}>{children}</GameMenuContext>;
 };
 
-export const useGameMenu = () => useContext(GameMenuContext);
+export const useGameMenu = () => use(GameMenuContext);

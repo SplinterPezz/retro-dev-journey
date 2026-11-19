@@ -1,16 +1,15 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../store/store';
 import { setTipsAcceptedDesktop, setTipsAcceptedMobile } from '../../store/welcomeSlice';
 import './WelcomeDialog.css';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface WelcomeDialogProps {
   isMobile: boolean;
 }
 
 const WelcomeDialog: React.FC<WelcomeDialogProps> = ({ isMobile }) => {
-  const dispatch = useDispatch();
-  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
+  const dispatch = useAppDispatch();
+  const { tipsAcceptedDesktop, tipsAcceptedMobile } = useAppSelector((state) => state.welcome);
 
   const shouldShow = isMobile ? !tipsAcceptedMobile : !tipsAcceptedDesktop;
 

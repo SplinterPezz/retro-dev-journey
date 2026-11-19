@@ -4,6 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ThemeProvider } from '@mui/material/styles';
+import type { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { COMPANY_IDS } from '../../config/ids';
 import './AdminPage.css';
@@ -37,7 +38,9 @@ import {
   DownloadStats,
   InteractionStats,
   PageTimeStats,
+  StatsResponse,
 } from '../../types/analytics';
+import { ApiError } from '../../types/api';
 
 type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
 
@@ -59,28 +62,35 @@ const NO_DATA: AnalyticsData = {
   browsers: null,
 };
 
-const withCategories = <C extends { options: { xaxis?: object } }>(chart: C, categories: string[]) => ({
+const withCategories = (chart: { options: ApexOptions }, categories: string[]): ApexOptions => ({
   ...chart.options,
   xaxis: { ...chart.options.xaxis, categories },
 });
 
+const API_DATE = 'YYYY-MM-DD';
+
 export default function AdminPage() {
   const [startDate, setStartDate] = useState<Dayjs | null>(dayjs().subtract(30, 'day'));
   const [endDate, setEndDate] = useState<Dayjs | null>(dayjs());
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<AnalyticsData>(NO_DATA);
+  // what was fetched and for which dates: while it is not the current range, the page is loading
+  const [fetched, setFetched] = useState<{ range: string | null; data: AnalyticsData; error: string | null }>({
+    range: null,
+    data: NO_DATA,
+    error: null,
+  });
+  const range = startDate && endDate ? `${startDate.format(API_DATE)}_${endDate.format(API_DATE)}` : null;
+  const loading = fetched.range !== range;
+  const error = loading ? null : fetched.error;
+  const { data } = fetched;
   const [uploadStatus, setUploadStatus] = useState<UploadStatus>('idle');
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!startDate || !endDate) return;
+    if (!startDate || !endDate || !range) return;
     let cancelled = false;
-    const dateRange = { start_date: startDate.format('YYYY-MM-DD'), end_date: endDate.format('YYYY-MM-DD') };
+    const dateRange = { start_date: startDate.format(API_DATE), end_date: endDate.format(API_DATE) };
 
-    setLoading(true);
-    setError(null);
     Promise.all([
       getDailyUniqueUsers(dateRange),
       getPageTimeStats(dateRange),
@@ -91,33 +101,31 @@ export default function AdminPage() {
     ])
       .then(([users, pageTime, interactions, downloads, devices, browsers]) => {
         if (cancelled) return;
-        const rows = <T,>(r: { data: T[] | null } | { success: boolean }): T[] | null =>
-          isApiError(r) || !('data' in r) ? null : r.data;
-        setData({
-          users: rows(users),
-          pageTime: rows(pageTime),
-          interactions: rows(interactions),
-          downloads: rows(downloads),
-          devices: rows(devices),
-          browsers: rows(browsers),
+        const rows = <T,>(r: StatsResponse<T> | ApiError): T[] | null => (isApiError(r) ? null : r.data);
+        const failed = [users, pageTime, interactions, downloads, devices, browsers].some(isApiError);
+        setFetched({
+          range,
+          data: {
+            users: rows(users),
+            pageTime: rows(pageTime),
+            interactions: rows(interactions),
+            downloads: rows(downloads),
+            devices: rows(devices),
+            browsers: rows(browsers),
+          },
+          error: failed ? 'Failed to fetch some data' : null,
         });
-        if ([users, pageTime, interactions, downloads, devices, browsers].some(isApiError)) {
-          setError('Failed to fetch some data');
-        }
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         if (cancelled) return;
-        setError('An error occurred while fetching data');
+        setFetched((prev) => ({ ...prev, range, error: 'An error occurred while fetching data' }));
         devError('Error on fetch:', err);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
       });
 
     return () => {
       cancelled = true;
     };
-  }, [startDate, endDate]);
+  }, [startDate, endDate, range]);
 
   const charts = useMemo(() => {
     const usersChart = data.users && {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { Position, Hitbox } from '../../types/game';
 import { NpcDirection, StoryNpcData, StoryPropData } from '../../types/story';
 import { hitsAny } from '../collision';
@@ -40,6 +40,7 @@ const isLastWaypoint = (walker: Walker, waypoints: Position[]) => {
 
 const stepWalker = (walker: Walker, patrol: Patrol, step: number, now: number, props: StoryPropData[]): boolean => {
   const goal = patrol.waypoints[walker.target];
+  if (!goal) return false;
   const dx = goal.x - walker.position.x;
   const dy = goal.y - walker.position.y;
   const dist = Math.hypot(dx, dy);
@@ -81,14 +82,29 @@ export const useNpcPatrol = (
 ): Record<string, NpcPatrolState> => {
   const walkersRef = useRef<Record<string, Walker>>({});
   const [states, setStates] = useState<Record<string, NpcPatrolState>>(() =>
-    Object.fromEntries(npcs.map((n) => [n.id, { position: n.position, moving: false, direction: 'S' as NpcDirection }]))
+    Object.fromEntries(npcs.map((n) => [n.id, { position: n.position, moving: false, direction: 'S' }]))
   );
-  // the loop starts once per scene and reads the latest arguments through refs
-  const pausedRef = useRef(pausedNpcId);
-  pausedRef.current = pausedNpcId;
-  const propsRef = useRef(props);
-  propsRef.current = props;
   const lastSnapshotRef = useRef<Record<string, string>>({});
+
+  // the loop starts once per scene and reads the latest arguments through this Effect Event
+  const stepWalkers = useEffectEvent((now: number, dt: number) => {
+    const changedStates: Record<string, NpcPatrolState> = {};
+
+    npcs.forEach((n) => {
+      const walker = walkersRef.current[n.id];
+      if (!n.patrol || !walker) return;
+      const isPaused = pausedNpcId === n.id || now < walker.pausedUntil;
+      const moving = !isPaused && stepWalker(walker, n.patrol, n.patrol.speed * dt, now, props);
+
+      const snapshot = `${walker.position.x.toFixed(1)},${walker.position.y.toFixed(1)},${moving},${walker.facing}`;
+      if (lastSnapshotRef.current[n.id] !== snapshot) {
+        lastSnapshotRef.current[n.id] = snapshot;
+        changedStates[n.id] = { position: { ...walker.position }, moving, direction: walker.facing };
+      }
+    });
+
+    if (Object.keys(changedStates).length > 0) setStates((old) => ({ ...old, ...changedStates }));
+  });
 
   useEffect(() => {
     const walkers: Record<string, Walker> = {};
@@ -104,22 +120,7 @@ export const useNpcPatrol = (
     const tick = (now: number) => {
       const dt = Math.min((now - last) / 1000, 1 / 20);
       last = now;
-      const changedStates: Record<string, NpcPatrolState> = {};
-
-      npcs.forEach((n) => {
-        const walker = walkersRef.current[n.id];
-        if (!n.patrol || !walker) return;
-        const isPaused = pausedRef.current === n.id || now < walker.pausedUntil;
-        const moving = !isPaused && stepWalker(walker, n.patrol, n.patrol.speed * dt, now, propsRef.current);
-
-        const snapshot = `${walker.position.x.toFixed(1)},${walker.position.y.toFixed(1)},${moving},${walker.facing}`;
-        if (lastSnapshotRef.current[n.id] !== snapshot) {
-          lastSnapshotRef.current[n.id] = snapshot;
-          changedStates[n.id] = { position: { ...walker.position }, moving, direction: walker.facing };
-        }
-      });
-
-      if (Object.keys(changedStates).length > 0) setStates((old) => ({ ...old, ...changedStates }));
+      stepWalkers(now, dt);
       frame = requestAnimationFrame(tick);
     };
 

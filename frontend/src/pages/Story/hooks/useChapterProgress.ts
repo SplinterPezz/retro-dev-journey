@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../store/store';
 import { completeChapter } from '../../../store/storySlice';
 import { StoryChapterConfig, StoryFlags, StoryNpcData } from '../../../types/story';
 import { ENGINE_FLAGS, cuedFlag } from '../../../config/story/flags';
+import { useAppDispatch } from '../../../store/hooks';
 
 interface ChapterProgressConfig {
   chapter: StoryChapterConfig;
@@ -41,7 +40,7 @@ export const useChapterProgress = ({
   canCue,
   onCue,
 }: ChapterProgressConfig) => {
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (!flags[ENGINE_FLAGS.objectivesDone] && allObjectivesDone(chapter, flags)) setFlag(ENGINE_FLAGS.objectivesDone);

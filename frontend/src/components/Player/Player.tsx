@@ -33,4 +33,4 @@ const Player: React.FC<PlayerProps> = ({ position, isMoving, direction }) => (
   </div>
 );
 
-export default React.memo(Player);
+export default Player;

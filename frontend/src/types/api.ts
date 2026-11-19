@@ -1,5 +1,5 @@
 export interface ApiError {
-  success: boolean;
+  success: false;
   error?: string;
   fieldError?: string;
 }

@@ -13,8 +13,7 @@ export const useMeepBeats = (beats: MeepBeat[], flags: StoryFlags, completed: bo
 
   useEffect(() => {
     fire(beats.find((b) => b.trigger === 'onEnter'));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [beats, fire]);
 
   useEffect(() => {
     beats.filter((b) => b.trigger === 'onFlag' && b.flag && flags[b.flag]).forEach(fire);

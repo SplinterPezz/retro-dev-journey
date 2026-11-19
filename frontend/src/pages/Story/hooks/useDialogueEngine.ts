@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { StoryNpcData, StoryFlags } from '../../../types/story';
 import { buildChoiceItems, getNode, pickNextNode } from '../dialogue';
 import { seenFlag } from '../../../config/story/flags';
@@ -16,45 +16,42 @@ export const useDialogueEngine = (
 ) => {
   const [active, setActive] = useState<ActiveDialogue | null>(null);
 
-  const open = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: false }), []);
-  const cue = useCallback((npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: true }), []);
-  const close = useCallback(() => setActive(null), []);
+  const open = (npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: false });
+  const cue = (npc: StoryNpcData, nodeId: string) => setActive({ npc, nodeId, cued: true });
+  const close = () => setActive(null);
 
   // the seen flag is what locks an isAnswer choice once its question was asked
   const npcId = active?.npc.id;
   const nodeId = active?.nodeId;
-  useEffect(() => {
+  const markShown = useEffectEvent(() => {
     if (!active) return;
     const node = getNode(active.npc, active.nodeId);
     if (node?.setFlag) setFlag(node.setFlag);
     setFlag(seenFlag(active.npc.id, active.nodeId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  // once per line shown
+  useEffect(() => {
+    markShown();
   }, [npcId, nodeId]);
 
-  const selectChoice = useCallback(
-    (optionId: string) => {
-      if (!active) return;
-      const choice = getNode(active.npc, active.nodeId)?.choices?.[Number(optionId)];
-      if (!choice) return;
-      if (choice.setFlag) setFlag(choice.setFlag);
-      const next = pickNextNode(choice, active.npc, flags);
-      setActive(next ? { ...active, nodeId: next } : null);
-    },
-    [active, flags, setFlag]
-  );
+  const selectChoice = (optionId: string) => {
+    if (!active) return;
+    const choice = getNode(active.npc, active.nodeId)?.choices?.[Number(optionId)];
+    if (!choice) return;
+    if (choice.setFlag) setFlag(choice.setFlag);
+    const next = pickNextNode(choice, active.npc, flags);
+    setActive(next ? { ...active, nodeId: next } : null);
+  };
 
-  const advance = useCallback(() => {
+  const advance = () => {
     if (!active) return;
     const node = getNode(active.npc, active.nodeId);
     const npc = node?.nextNpcId ? npcs.find((n) => n.id === node.nextNpcId) : active.npc;
     setActive(node?.next && npc ? { ...active, npc, nodeId: node.next } : null);
-  }, [active, npcs]);
+  };
 
   const node = active ? getNode(active.npc, active.nodeId) ?? null : null;
-  const choices = useMemo(
-    () => (active && node ? buildChoiceItems(active.npc, node, flags) : undefined),
-    [active, node, flags]
-  );
+  const choices = (active && node ? buildChoiceItems(active.npc, node, flags) : undefined);
 
   // a cued dialogue runs to its end even if the player walks away
   const isCued = !!active?.cued;

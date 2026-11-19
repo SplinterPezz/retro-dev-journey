@@ -3,7 +3,8 @@
 A portfolio played as a pixel-art game: **Home**, **Sandbox** (the career overworld), **Story Mode** (a story map
 plus chapter scenes) and an **Admin** dashboard.
 
-React 19 + TypeScript (strict) + Vite, Redux Toolkit with redux-persist, React Router 7, RPGUI for the pixel UI,
+React 19 with the **React Compiler** + TypeScript (strict) + Vite, Redux Toolkit with redux-persist, React Router 8,
+RPGUI for the pixel UI,
 MUI + ApexCharts only in Admin, CodeMirror only in the Story code questions. Tests with Vitest + Testing Library.
 
 ## Commands
@@ -36,19 +37,21 @@ src/
   game/              engine shared by Sandbox, story map and chapters
     GameScene.tsx    viewport + camera + zoom + music + joystick + debug tools
     movement.ts, collision.ts, camera.ts, zoom.ts      pure logic, no React
-    hooks/           usePlayerMovement, useCollisionDetection, useNpcPatrol
+    hooks/           usePlayerMovement, useCollisionDetection, useNpcPatrol, useLingering
     path/            overworld path generation
   pages/             one folder per page: Home, Sandbox, Story, Login, Admin
     Story/           InteriorScene (chapter scene), StoryMapPage, routing guards,
-                     sceneRules.ts / dialogue.ts (rules without React), hooks/ (one concern each)
+                     sceneRules.ts / dialogue.ts (rules without React), hooks/ (one concern each,
+                     e.g. useSceneTriggers for everything opened by walking up to it)
   components/        UI pieces, one folder per component with its .tsx and .css
     Common/          used by several pages (LoadingSplash, ZoomSlider, MobileJoystick, buttons...)
     Story/           dialogue, quiz, mini games, hud, world, collectibles
+    Overworld/       the career world drawn by both the Sandbox and the story map
     GameMenu/, FirstVisit/, Structures/, Player/, Companion/ ...
   hooks/             shared hooks (useLoadingSplash, useResourceLoader, useBackgroundMusic, useTypingSound...)
   audio/             Web Audio playback (dialogue typing tick)
   services/          backend calls through fetchFromApi (api.ts); fileService fetches the CV blob directly
-  store/             slices + store.ts + migrations.ts
+  store/             slices + store.ts + migrations.ts + hooks.ts (useAppDispatch / useAppSelector)
 public/
   sprites/           all game art (see "Sprites")
   audio/             music and sound effects
@@ -100,9 +103,39 @@ Many comments mean the code is not readable: rename or extract instead of explai
   `eslint-disable`. An empty `catch {}` keeps a one-line comment saying why.
 - Same rules in CSS.
 
+### React 19 and the React Compiler
+The compiler (`babel-plugin-react-compiler`, wired in `vite.config.ts`) memoizes every component and hook, and the
+`react-hooks` lint preset fails the build on code it cannot compile. Every function must stay compilable.
+- **No manual `useMemo` / `useCallback` / `React.memo`**: write plain values and functions. Keep one only where the
+  lint needs a stable identity for an effect dependency.
+- **Render stays pure**: never read or write `ref.current` during render, no `Math.random()` / `Date.now()` in
+  render (use a lazy `useState` initializer).
+- **Latest value inside a long-lived effect** (animation loop, timer, window listener): `useEffectEvent`, not a ref
+  written during render. Effect Events are called only from effects and never listed as dependencies.
+- **Derive instead of syncing**: no `setState` at the top of an effect to mirror props or state. Compute the value
+  during render, or use the `if (changed) setState(...)` during-render pattern (`useLingering`, `Meep`).
+- No `eslint-disable` for `react-hooks` rules: the compiler skips the whole function.
+- Constructs the compiler does not handle yet: `try/finally`, `??=`, `x++` on a variable captured by a closure,
+  casted computed keys (`['--var' as string]`). Use `.catch()` / `.then()`, plain assignments, `as CSSProperties`.
+- Redux through `useAppDispatch` / `useAppSelector` (`store/hooks.ts`), context through `use(Context)`.
+
+### TypeScript
+`strict` plus `noUncheckedIndexedAccess`, `noImplicitReturns`, `noImplicitOverride`, `noUnusedLocals` and
+`noUnusedParameters`; the lint runs typescript-eslint's `strictTypeChecked` preset.
+- An array or `Record` read by index may be missing: handle it (`?.`, `??`, a guard), never `!` or a cast.
+- Narrow instead of casting: `instanceof` for DOM targets and errors, `in` / `typeof` for unknown data,
+  discriminated unions (`StructureData` on `type`: `'building'` | `'statue'`).
+- Data from outside (API responses, persisted state) is `unknown` until checked. `fetchFromApi` gives a response
+  a type only through a guard (`services/guards.ts`: `shape`, `listOf`...), written from the backend's models
+  (`backend/internal/models`, `handlers`); a new endpoint gets its guard with its type.
+- Ids are unions, not `string`: `ChapterId`, `CompanyId` (`config/ids.ts`). Saved progress stays keyed by `string`.
+- Config objects are checked with `satisfies` (`chartOptions.ts`): a misspelt property fails the build.
+- A list that needs a minimum length says so in its type (`waypoints: [Position, Position, ...Position[]]`).
+- `exactOptionalPropertyTypes` stays off: it only added `| undefined` to forwarded props.
+
 ### Style
 - Match the surrounding code: naming, idioms, density. Strict TypeScript, no `any`.
-- Function components and hooks; memoize the static parts of a scene so a player step does not re-render them.
+- Function components and hooks.
 
 ## Sprites
 
