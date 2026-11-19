@@ -5,6 +5,8 @@ import { AppDispatch, RootState } from '../../store/store';
 import { markDiscoverySeen } from '../../store/storySlice';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
+import { useLingering } from '../../game/hooks/useLingering';
+import { useProximityTrigger } from './hooks/useProximityTrigger';
 import { useDebugReset } from '../../game/useDebugReset';
 import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
@@ -192,7 +194,6 @@ const StoryMapPage: React.FC = () => {
   const discovery = newDiscoveries[0];
   const discoveriesLeft = newDiscoveries.length - 1;
   const discoveryTech = discovery?.data as TechnologyData | undefined;
-  const [shownStatue, setShownStatue] = useState<StructureData | null>(null);
   const [inspecting, setInspecting] = useState(false);
   const discoveryPopup = discovery && discoveryTech && (
     <UnlockPopup
@@ -229,24 +230,19 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: BUILDING_REACH,
   });
 
-  const [shownAtDoor, setShownAtDoor] = useState(false);
+  // once per walk-up: the "in development" window, or the way into the chapter
+  useProximityTrigger({
+    nearbyId: nearbyDoor?.id ?? null,
+    enabled: !!activeChapter && !exiting,
+    canOpen: () => true,
+    onOpen: () => (activeChapter?.inDevelopment ? setInDevelopmentOpen(true) : setExiting(true)),
+  });
+
   useEffect(() => {
-    if (!nearbyDoor) {
-      setShownAtDoor(false);
-      return;
-    }
-    if (!activeChapter || exiting) return;
-    if (activeChapter.inDevelopment) {
-      if (!shownAtDoor) {
-        setShownAtDoor(true);
-        setInDevelopmentOpen(true);
-      }
-      return;
-    }
-    setExiting(true);
+    if (!exiting || !activeChapter) return;
     const timer = setTimeout(() => navigate(chapterPath(activeChapter.id)), ENTER_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [nearbyDoor, activeChapter, exiting, shownAtDoor, navigate]);
+  }, [exiting, activeChapter, navigate]);
 
   const { nearbyStructure: nearbyStatue } = useCollisionDetection({
     playerPosition,
@@ -254,15 +250,7 @@ const StoryMapPage: React.FC = () => {
     interactionRadius: STATUE_REACH,
   });
 
-  // like the Sandbox: shown while walking past, hidden a beat after leaving so a radius edge does not flicker it
-  useEffect(() => {
-    if (nearbyStatue) {
-      setShownStatue(nearbyStatue);
-      return;
-    }
-    const timer = setTimeout(() => setShownStatue(null), STATUE_HIDE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [nearbyStatue]);
+  const shownStatue = useLingering(nearbyStatue, STATUE_HIDE_DELAY_MS);
 
   const shownSkill = shownStatue?.data as TechnologyData | undefined;
   const skillVisible = !!shownSkill && !splash.visible && !menuOpen && !discovery && !inDevelopmentOpen;

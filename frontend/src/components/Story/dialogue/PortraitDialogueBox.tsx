@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useEffectEvent } from 'react';
 import { useTypedText } from '../../../hooks/useTypedText';
 import { useTypingSound } from '../../../hooks/useTypingSound';
 import DialogueChoices, { ChoiceButtonItem } from './DialogueChoices';
@@ -40,24 +40,20 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
     }
   };
 
-  const handleBoxClickRef = useRef(handleBoxClick);
-  handleBoxClickRef.current = handleBoxClick;
   const hasChoices = !!choices && choices.length > 0;
   const { isOpen: menuOpen } = useGameMenu();
-  const menuOpenRef = useRef(menuOpen);
-  menuOpenRef.current = menuOpen;
+  const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
+    if (!DIALOGUE_ADVANCE_KEYS.includes(e.key) || menuOpen) return;
+    const target = e.target as HTMLElement | null;
+    if (target?.closest('button, input, textarea, .cm-editor')) return;
+    if (hasChoices && !isTyping) return;
+    e.preventDefault();
+    handleBoxClick();
+  });
   useEffect(() => {
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (!DIALOGUE_ADVANCE_KEYS.includes(e.key) || menuOpenRef.current) return;
-      const target = e.target as HTMLElement | null;
-      if (target?.closest('button, input, textarea, .cm-editor')) return;
-      if (hasChoices && !isTyping) return;
-      e.preventDefault();
-      handleBoxClickRef.current();
-    };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [hasChoices, isTyping]);
+  }, []);
 
   return (
     <div className="portrait-dialogue-container">

@@ -19,9 +19,8 @@ export default tseslint.config(
     },
     plugins: { 'react-hooks': reactHooks },
     rules: {
-      // Same hook checks Create React App ran.
-      'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': 'warn',
+      // rules of hooks plus the React Compiler checks (refs, purity, effects...)
+      ...reactHooks.configs.flat['recommended-latest'].rules,
       // Promises that nobody awaits or catches: an error there is lost.
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: { attributes: false } }],

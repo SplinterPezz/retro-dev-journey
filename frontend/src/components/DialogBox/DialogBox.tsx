@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useEffectEvent } from 'react';
 import { useTypedText } from '../../hooks/useTypedText';
 import './DialogBox.css';
 
@@ -15,7 +15,7 @@ interface DialogBoxProps {
   messageDuration?: number;
 }
 
-type Phase = 'waiting' | 'typing' | 'holding' | 'fading';
+type Phase = 'waiting' | 'typing' | 'fading';
 
 const FADE_MS = 500;
 
@@ -28,20 +28,19 @@ const DialogBox: React.FC<DialogBoxProps> = ({ messages, onComplete, typingSpeed
   const { displayedText, isTyping } = useTypedText(phase === 'waiting' ? '' : fullText, typingSpeed);
   const finished = index >= messages.length;
   const delay = message?.delay ?? 0;
-  const onCompleteRef = useRef(onComplete);
-  onCompleteRef.current = onComplete;
+  const notifyComplete = useEffectEvent(() => onComplete?.());
+  // typed out: the line is held without waiting for another render
+  const holding = phase === 'typing' && !isTyping;
 
   useEffect(() => {
     if (finished) {
-      onCompleteRef.current?.();
+      notifyComplete();
       return;
     }
     let timer: ReturnType<typeof setTimeout> | undefined;
     if (phase === 'waiting') {
       timer = setTimeout(() => setPhase('typing'), delay);
-    } else if (phase === 'typing' && !isTyping) {
-      setPhase('holding');
-    } else if (phase === 'holding') {
+    } else if (holding) {
       timer = setTimeout(() => setPhase('fading'), messageDuration);
     } else if (phase === 'fading') {
       timer = setTimeout(() => {
@@ -50,13 +49,13 @@ const DialogBox: React.FC<DialogBoxProps> = ({ messages, onComplete, typingSpeed
       }, FADE_MS);
     }
     return () => clearTimeout(timer);
-  }, [finished, phase, isTyping, delay, messageDuration]);
+  }, [finished, phase, holding, delay, messageDuration]);
 
   if (finished) {
     return null;
   }
 
-  const isVisible = phase === 'typing' || phase === 'holding';
+  const isVisible = phase === 'typing';
 
   return (
     <div className={`dialog-box-container d-none d-sm-block ${isVisible ? 'visible' : 'hidden'}`}>
@@ -65,7 +64,7 @@ const DialogBox: React.FC<DialogBoxProps> = ({ messages, onComplete, typingSpeed
           <div className="dialog-content">
             <p className="dialog-text">
               {phase === 'waiting' ? '' : displayedText}
-              {phase === 'typing' && <span className="cursor">|</span>}
+              {phase === 'typing' && !holding && <span className="cursor">|</span>}
             </p>
           </div>
         </div>

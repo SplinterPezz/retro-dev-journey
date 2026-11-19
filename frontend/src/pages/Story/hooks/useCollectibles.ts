@@ -49,9 +49,10 @@ interface CollectibleOnMap {
 export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPosition, isMoving, enabled, onFind }: CollectiblesConfig) => {
   const items = collectibles?.items ?? [];
 
-  // given a moment ago and not saved yet: nothing is given twice
+  const isSaved = (item: CollectibleData) => found.includes(item.id);
+  // given a moment ago and not saved yet: nothing is given twice (read in effects only)
   const givenRef = useRef(new Set<string>());
-  const isFound = (item: CollectibleData) => found.includes(item.id) || givenRef.current.has(item.id);
+  const isFound = (item: CollectibleData) => isSaved(item) || givenRef.current.has(item.id);
   const give = (item: CollectibleData) => {
     givenRef.current.add(item.id);
     onFind(item);
@@ -86,7 +87,7 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
   // timers re-armed only when who is waiting changes, not on every frame
   const waiting = items.filter((item) => {
     const unlock = item.unlock;
-    if (unlock?.kind !== 'idle' || isFound(item) || flags[revealFlag(item.id)]) return false;
+    if (unlock?.kind !== 'idle' || isSaved(item) || flags[revealFlag(item.id)]) return false;
     return !isMoving && isInSpot(playerPosition, unlock.spot);
   });
   const waitingKey = waiting.map((item) => item.id).join(',');
@@ -101,7 +102,7 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
   }, [waitingKey, enabled]);
 
   const onMap: CollectibleOnMap[] = items.flatMap((item) => {
-    if (!item.position || isFound(item) || !isAvailable(item, flags) || isGivenByFlag(item)) return [];
+    if (!item.position || isSaved(item) || !isAvailable(item, flags) || isGivenByFlag(item)) return [];
     const near = isWithin(playerPosition, item.position, item.revealRadius ?? DEFAULT_REVEAL_RADIUS);
     return [{ item, near }];
   });

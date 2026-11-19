@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
@@ -160,7 +160,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     canMove: !introPending && !activeQuiz && !activeMiniGame && !outro.active && !found.isOpen && !menuOpen,
     areas: walkableAreas,
   });
-  teleportRef.current = teleport;
+  useEffect(() => {
+    teleportRef.current = teleport;
+  }, [teleport]);
 
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
   const litRoomId = litSideRoomId(chapter.sideRooms, playerPosition);

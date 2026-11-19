@@ -25,7 +25,9 @@ export const useTracking = ({ page, enabled = true }: UseTrackingProps) => {
   const startDateRef = useRef(today());
   const deviceInfoRef = useRef(getDeviceInfo());
   const interactionsRef = useRef(interactions);
-  interactionsRef.current = interactions;
+  useEffect(() => {
+    interactionsRef.current = interactions;
+  }, [interactions]);
 
   const isTrackingAllowed = enabled && consentGiven === true;
 

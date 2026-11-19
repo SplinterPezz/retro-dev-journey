@@ -1,4 +1,4 @@
-import { useMemo, useRef } from 'react';
+import { useMemo, useState } from 'react';
 import { CollidableEntity, Position } from '../../types/game';
 import { findNearest } from '../collision';
 
@@ -20,10 +20,10 @@ export const useCollisionDetection = <T extends CollidableEntity>({
     [playerPosition, structures, interactionRadius]
   );
 
-  const stableRef = useRef<T | null>(null);
-  if ((stableRef.current?.id ?? null) !== (nearest?.id ?? null)) {
-    stableRef.current = nearest;
+  const [stable, setStable] = useState<T | null>(nearest);
+  if ((stable?.id ?? null) !== (nearest?.id ?? null)) {
+    setStable(nearest);
   }
 
-  return { nearbyStructure: stableRef.current };
+  return { nearbyStructure: stable };
 };

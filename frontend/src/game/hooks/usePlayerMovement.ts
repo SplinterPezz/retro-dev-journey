@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useEffectEvent, useCallback, useMemo, useRef } from 'react';
 import { Position, Direction, CollidableEntity, EnvironmentData, Hitbox, WorldBounds } from '../../types/game';
 import { playerHitbox as defaultPlayerHitbox } from '../../config/world';
-import { Blocker, hitsAny, isInside, toBlockers } from '../collision';
+import { hitsAny, isInside, toBlockers } from '../collision';
 import { getDirectionFromJoystick, getDirectionFromKeys, getJoystickIntensity, stepPosition } from '../movement';
 import type { JoystickMoveEvent } from '../../components/Common/MobileJoystick';
 import { GAME_KEYS, RUN_KEYS } from '../../config/controls';
@@ -37,26 +37,15 @@ const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean => areas
 const RUN_SPEED_FACTOR = 1.5;
 const JOYSTICK_RUN_INTENSITY = 0.7;
 
-// The loop starts once and reads everything from refs; state changes only on a real
-// change, so standing still costs no renders.
+// The loop starts once and reads the latest config through Effect Events; state changes
+// only on a real change, so standing still costs no renders.
 export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const [position, setPosition] = useState(config.initialPosition);
   const [direction, setDirection] = useState<Direction>('idle');
   const [isMoving, setIsMoving] = useState(false);
 
-  const configRef = useRef(config);
-  configRef.current = config;
-
-  const blockersRef = useRef<{ structures?: readonly CollidableEntity[]; environments?: readonly EnvironmentData[]; list: Blocker[] }>({
-    list: [],
-  });
-  if (blockersRef.current.structures !== config.structures || blockersRef.current.environments !== config.environments) {
-    blockersRef.current = {
-      structures: config.structures,
-      environments: config.environments,
-      list: toBlockers(config.structures, config.environments),
-    };
-  }
+  const { canMove, structures, environments } = config;
+  const blockers = useMemo(() => toBlockers(structures, environments), [structures, environments]);
 
   const positionRef = useRef(config.initialPosition);
   const directionRef = useRef<Direction>('idle');
@@ -64,9 +53,10 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const keysRef = useRef<Set<string>>(new Set());
   const joystickRef = useRef<JoystickState>(IDLE_JOYSTICK);
   const isWindowFocusedRef = useRef(true);
+  const lastFrameRef = useRef(0);
 
   const handleJoystickMove = useCallback((e: JoystickMoveEvent) => {
-    if (configRef.current.canMove === false) return;
+    if (canMove === false) return;
     const x = e.x ?? null;
     const y = e.y ?? null;
     const d = getDirectionFromJoystick(x, y);
@@ -75,7 +65,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     if (prev.direction !== d || Math.abs(prev.intensity - i) > 0.05) {
       joystickRef.current = { isActive: true, direction: d, intensity: i };
     }
-  }, []);
+  }, [canMove]);
 
   const teleport = useCallback((to: Position) => {
     keysRef.current.clear();
@@ -92,21 +82,21 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     joystickRef.current = IDLE_JOYSTICK;
   }, []);
 
+  const handleKeyDown = useEffectEvent((e: KeyboardEvent) => {
+    if (isTextTarget(e.target)) return;
+    const k = e.key.toLowerCase();
+    if (!GAME_KEYS.includes(k)) return;
+    e.preventDefault();
+    if (canMove === false) return;
+    if (!isWindowFocusedRef.current || e.ctrlKey || e.altKey || e.metaKey) {
+      keysRef.current.clear();
+      return;
+    }
+    keysRef.current.add(k);
+  });
+
   useEffect(() => {
     const clearKeys = () => keysRef.current.clear();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isTextTarget(e.target)) return;
-      const k = e.key.toLowerCase();
-      if (!GAME_KEYS.includes(k)) return;
-      e.preventDefault();
-      if (configRef.current.canMove === false) return;
-      if (!isWindowFocusedRef.current || e.ctrlKey || e.altKey || e.metaKey) {
-        clearKeys();
-        return;
-      }
-      keysRef.current.add(k);
-    };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       keysRef.current.delete(e.key.toLowerCase());
@@ -156,71 +146,71 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     };
   }, []);
 
+  const setMoving = (moving: boolean) => {
+    if (isMovingRef.current === moving) return;
+    isMovingRef.current = moving;
+    setIsMoving(moving);
+  };
+
+  const onFrame = useEffectEvent((now: number) => {
+    const keys = keysRef.current;
+    const lastTime = lastFrameRef.current;
+    lastFrameRef.current = now;
+
+    // unfocused window: keyup never arrives, so drop held keys
+    if (!isWindowFocusedRef.current && !joystickRef.current.isActive) {
+      keys.clear();
+    }
+
+    // a key held when canMove turns false must stop the player at once
+    if (canMove === false) {
+      keys.clear();
+      joystickRef.current = IDLE_JOYSTICK;
+      setMoving(false);
+      return;
+    }
+
+    // First frame assumes 60fps; a long gap is capped at 30fps worth of travel.
+    const deltaTime = lastTime === 0 ? 1 / 60 : Math.min((now - lastTime) / 1000, 1 / 30);
+
+    const js = joystickRef.current;
+    const useJoystick = js.isActive && js.direction !== 'idle';
+    const dir = useJoystick ? js.direction : getDirectionFromKeys(keys);
+    const moving = dir !== 'idle';
+
+    if (moving && directionRef.current !== dir) {
+      directionRef.current = dir;
+      setDirection(dir);
+    }
+    setMoving(moving);
+    if (!moving) return;
+
+    const run = useJoystick ? js.intensity > JOYSTICK_RUN_INTENSITY : RUN_KEYS.some((k) => keys.has(k));
+    let speed = run ? config.speed * RUN_SPEED_FACTOR : config.speed;
+    if (useJoystick) speed /= RUN_SPEED_FACTOR;
+    const intensity = useJoystick ? js.intensity : 1;
+
+    const hitbox = config.playerHitbox || defaultPlayerHitbox;
+    const { areas } = config;
+    const next = stepPosition(
+      positionRef.current,
+      dir,
+      speed * intensity * deltaTime,
+      config.worldBounds,
+      (p) => hitsAny(p, hitbox, blockers) || (!!areas && !insideAny(p, areas))
+    );
+    if (next !== positionRef.current) {
+      positionRef.current = next;
+      setPosition(next);
+    }
+  });
+
   useEffect(() => {
     let frame = 0;
-    let lastTime = 0;
-
-    const setMoving = (moving: boolean) => {
-      if (isMovingRef.current === moving) return;
-      isMovingRef.current = moving;
-      setIsMoving(moving);
-    };
-
     const loop = (now: number) => {
       frame = requestAnimationFrame(loop);
-      const cfg = configRef.current;
-      const keys = keysRef.current;
-
-      // unfocused window: keyup never arrives, so drop held keys
-      if (!isWindowFocusedRef.current && !joystickRef.current.isActive) {
-        keys.clear();
-      }
-
-      // a key held when canMove turns false must stop the player at once
-      if (cfg.canMove === false) {
-        keys.clear();
-        joystickRef.current = IDLE_JOYSTICK;
-        setMoving(false);
-        lastTime = now;
-        return;
-      }
-
-      // First frame assumes 60fps; a long gap is capped at 30fps worth of travel.
-      const deltaTime = lastTime === 0 ? 1 / 60 : Math.min((now - lastTime) / 1000, 1 / 30);
-      lastTime = now;
-
-      const js = joystickRef.current;
-      const useJoystick = js.isActive && js.direction !== 'idle';
-      const dir = useJoystick ? js.direction : getDirectionFromKeys(keys);
-      const moving = dir !== 'idle';
-
-      if (moving && directionRef.current !== dir) {
-        directionRef.current = dir;
-        setDirection(dir);
-      }
-      setMoving(moving);
-      if (!moving) return;
-
-      const run = useJoystick ? js.intensity > JOYSTICK_RUN_INTENSITY : RUN_KEYS.some((k) => keys.has(k));
-      let speed = run ? cfg.speed * RUN_SPEED_FACTOR : cfg.speed;
-      if (useJoystick) speed /= RUN_SPEED_FACTOR;
-      const intensity = useJoystick ? js.intensity : 1;
-
-      const hitbox = cfg.playerHitbox || defaultPlayerHitbox;
-      const blockers = blockersRef.current.list;
-      const next = stepPosition(
-        positionRef.current,
-        dir,
-        speed * intensity * deltaTime,
-        cfg.worldBounds,
-        (p) => hitsAny(p, hitbox, blockers) || (!!cfg.areas && !insideAny(p, cfg.areas))
-      );
-      if (next !== positionRef.current) {
-        positionRef.current = next;
-        setPosition(next);
-      }
+      onFrame(now);
     };
-
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
   }, []);

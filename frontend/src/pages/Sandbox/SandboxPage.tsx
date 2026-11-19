@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
 import { useTracking } from '../../hooks/useTracking';
 import { usePlayerMovement } from '../../game/hooks/usePlayerMovement';
 import { useCollisionDetection } from '../../game/hooks/useCollisionDetection';
+import { useLingering } from '../../game/hooks/useLingering';
 import { createPathGenerator } from '../../game/path/pathGeneration';
 import GameScene from '../../game/GameScene';
 import DebugOverlay from '../../game/DebugOverlay';
@@ -58,6 +59,8 @@ const interactiveStructures: (StructureData | DownloadButtonStructure)[] = hideD
   ? careerStructures
   : [...careerStructures, downloadButton];
 const environments = [...treesEnvironments, ...detailsEnvironments];
+
+const DIALOG_HIDE_DELAY_MS = 50;
 
 const isDownloadButton = (s: StructureData | DownloadButtonStructure): s is DownloadButtonStructure =>
   s.id === downloadButton.id;
@@ -164,7 +167,6 @@ const Minimap: React.FC = React.memo(() => (
 ));
 
 const SandboxPage: React.FC = () => {
-  const [selectedStructure, setSelectedStructure] = useState<StructureData | null>(null);
   const isMobile = useIsMobile();
   const { tipsAcceptedDesktop, tipsAcceptedMobile } = useSelector((state: RootState) => state.welcome);
   const { isOpen: menuOpen } = useGameMenu();
@@ -191,15 +193,10 @@ const SandboxPage: React.FC = () => {
     interactionRadius: 70,
   });
 
-  // closing waits a beat so walking along a radius edge does not flicker it
-  useEffect(() => {
-    if (nearbyStructure && !isDownloadButton(nearbyStructure)) {
-      setSelectedStructure(nearbyStructure);
-      return;
-    }
-    const timer = setTimeout(() => setSelectedStructure(null), 50);
-    return () => clearTimeout(timer);
-  }, [nearbyStructure]);
+  const selectedStructure = useLingering(
+    nearbyStructure && !isDownloadButton(nearbyStructure) ? nearbyStructure : null,
+    DIALOG_HIDE_DELAY_MS
+  );
 
   useEffect(() => {
     if (nearbyStructure) {

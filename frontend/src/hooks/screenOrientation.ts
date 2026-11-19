@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../store/store';
 import { setOrientation } from '../store/storySlice';
@@ -110,16 +110,14 @@ export const useLogicalViewport = (): { width: number; height: number } => {
 export const useFallbackToPortrait = (): void => {
   const dispatch = useDispatch<AppDispatch>();
   const orientation = useSelector((state: RootState) => state.story.orientation);
-  const orientationRef = useRef(orientation);
-  orientationRef.current = orientation;
+  const check = useEffectEvent(() => {
+    if (landscapeRequestPending) return;
+    if (isLandscape(orientation) && !document.fullscreenElement && isMobileDevice() && isPortraitViewport()) {
+      dispatch(setOrientation('portrait'));
+    }
+  });
 
   useEffect(() => {
-    const check = () => {
-      if (landscapeRequestPending) return;
-      if (isLandscape(orientationRef.current) && !document.fullscreenElement && isMobileDevice() && isPortraitViewport()) {
-        dispatch(setOrientation('portrait'));
-      }
-    };
     // leaving fullscreen (Android back) also turns the phone upright
     const query = window.matchMedia('(orientation: portrait)');
     check();
@@ -129,5 +127,5 @@ export const useFallbackToPortrait = (): void => {
       document.removeEventListener('fullscreenchange', check);
       query.removeEventListener('change', check);
     };
-  }, [dispatch]);
+  }, []);
 };

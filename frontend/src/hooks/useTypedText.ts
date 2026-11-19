@@ -8,8 +8,6 @@ export const useTypedText = (text: string, speed: number = 30) => {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    setTyped({ text, count: 0 });
-    setDoneText(null);
     let charIndex = 0;
 
     const interval = setInterval(() => {
