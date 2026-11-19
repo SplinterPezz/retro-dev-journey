@@ -38,7 +38,9 @@ import {
   DownloadStats,
   InteractionStats,
   PageTimeStats,
+  StatsResponse,
 } from '../../types/analytics';
+import { ApiError } from '../../types/api';
 
 type UploadStatus = 'success' | 'error' | 'waiting' | 'idle';
 
@@ -99,8 +101,7 @@ export default function AdminPage() {
     ])
       .then(([users, pageTime, interactions, downloads, devices, browsers]) => {
         if (cancelled) return;
-        const rows = <T,>(r: { data: T[] | null } | { success: boolean }): T[] | null =>
-          isApiError(r) || !('data' in r) ? null : r.data;
+        const rows = <T,>(r: StatsResponse<T> | ApiError): T[] | null => (isApiError(r) ? null : r.data);
         const failed = [users, pageTime, interactions, downloads, devices, browsers].some(isApiError);
         setFetched({
           range,

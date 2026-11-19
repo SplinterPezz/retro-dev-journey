@@ -1,4 +1,5 @@
 import { fetchFromApi } from './api';
+import { isNumber, isString, shape } from './guards';
 import { ApiError, UploadResponse } from '../types/api';
 import { cvDownloadFilename, maxCvSizeBytes, maxCvSizeMb } from '../config/cv';
 import { apiBaseUrl } from '../config/env';
@@ -35,6 +36,9 @@ export const downloadCV = async (): Promise<void> => {
   }
 };
 
+// what backend/internal/handlers UploadCV answers
+const isUploadResponse = shape<UploadResponse>({ message: isString, filename: isString, size: isNumber });
+
 export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> => {
   try {
     if (file.size > maxCvSizeBytes) {
@@ -46,12 +50,7 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     const formData = new FormData();
     formData.append('cv', file);
     
-    const response = await fetchFromApi<UploadResponse>(API_ENDPOINTS.cvUpload, {
-      method: 'POST',
-      body: formData,
-    });
-    
-    return response;
+    return await fetchFromApi(API_ENDPOINTS.cvUpload, { method: 'POST', body: formData }, isUploadResponse);
     
   } catch (error) {
     console.error('Upload failed:', error);

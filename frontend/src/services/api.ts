@@ -1,20 +1,25 @@
 import { store } from "../store/store";
 import { checkAuthentication, logout } from "../store/authSlice";
 import { ApiError } from "../types/api";
-import { apiBaseUrl } from "../config/env";
+import { apiBaseUrl, devError } from "../config/env";
 import { PUBLIC_ENDPOINTS } from "../config/apiEndpoints";
+import { Guard, isRecord } from "./guards";
 
 const authExpired: ApiError = { success: false, error: 'Authentication expired' };
+const unexpectedResponse: ApiError = { success: false, error: 'Unexpected response from the server' };
 
-const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 const nonEmptyText = (value: unknown): string | undefined => (typeof value === 'string' && value ? value : undefined);
 
 export const isApiError = (value: unknown): value is ApiError => isRecord(value) && value.success === false;
 
-export async function fetchFromApi<T>(
+// Without a guard the body stays unknown: a response gets a type only by passing its check.
+export function fetchFromApi(endpoint: string, options?: RequestInit): Promise<unknown>;
+export function fetchFromApi<T>(endpoint: string, options: RequestInit, isExpected: Guard<T>): Promise<T | ApiError>;
+export async function fetchFromApi(
   endpoint: string,
-  options: RequestInit = {}
-): Promise<T | ApiError> {
+  options: RequestInit = {},
+  isExpected?: Guard<unknown>
+): Promise<unknown> {
   const isPublic = PUBLIC_ENDPOINTS.includes(endpoint);
 
   store.dispatch(checkAuthentication());
@@ -53,10 +58,16 @@ export async function fetchFromApi<T>(
 
   if (!response.ok) {
     const details = isRecord(responseBody) ? responseBody : {};
-    const error = nonEmptyText(details.message) ?? nonEmptyText(responseBody) ?? response.statusText;
+    // the analytics handlers answer { error }, the others { message }
+    const error =
+      nonEmptyText(details.message) ?? nonEmptyText(details.error) ?? nonEmptyText(responseBody) ?? response.statusText;
     const fieldError = nonEmptyText(details.fieldError);
     return fieldError ? { success: false, fieldError, error } : { success: false, error };
   }
 
-  return responseBody as T;
+  if (isExpected && !isExpected(responseBody)) {
+    devError('Unexpected response from', endpoint, responseBody);
+    return unexpectedResponse;
+  }
+  return responseBody;
 }

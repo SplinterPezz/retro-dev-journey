@@ -125,7 +125,9 @@ The compiler (`babel-plugin-react-compiler`, wired in `vite.config.ts`) memoizes
 - An array or `Record` read by index may be missing: handle it (`?.`, `??`, a guard), never `!` or a cast.
 - Narrow instead of casting: `instanceof` for DOM targets and errors, `in` / `typeof` for unknown data,
   discriminated unions (`StructureData` on `type`: `'building'` | `'statue'`).
-- Data from outside (API responses, persisted state) is `unknown` until checked (`services/api.ts`).
+- Data from outside (API responses, persisted state) is `unknown` until checked. `fetchFromApi` gives a response
+  a type only through a guard (`services/guards.ts`: `shape`, `listOf`...), written from the backend's models
+  (`backend/internal/models`, `handlers`); a new endpoint gets its guard with its type.
 - Ids are unions, not `string`: `ChapterId`, `CompanyId` (`config/ids.ts`). Saved progress stays keyed by `string`.
 - Config objects are checked with `satisfies` (`chartOptions.ts`): a misspelt property fails the build.
 - A list that needs a minimum length says so in its type (`waypoints: [Position, Position, ...Position[]]`).
