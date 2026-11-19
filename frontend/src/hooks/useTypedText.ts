@@ -11,7 +11,7 @@ export const useTypedText = (text: string, speed: number = 30) => {
     let charIndex = 0;
 
     const interval = setInterval(() => {
-      charIndex++;
+      charIndex += 1;
       setTyped({ text, count: charIndex });
       if (charIndex >= text.length) {
         setDoneText(text);

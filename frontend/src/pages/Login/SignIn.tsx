@@ -173,23 +173,19 @@ export default function SignIn() {
       identifier: email,
       password: password,
     };
-    try {
-      const loginToken = await login(loginPayload);
-      if ("token" in loginToken) {
-        triggerError("Login success!", "success");
-        dispatch(loginSuccess({
-          id: loginToken.id,
-          user: loginToken.user,
-          token: loginToken.token,
-          expiration: loginToken.expiration,
-        }));
-      } else if (loginToken.fieldError && loginToken.error) {
-        handleErrorField(loginToken.fieldError, loginToken.error);
-      } else {
-        triggerError("Something went wrong : " + loginToken.error, "error");
-      }
-    } catch (err) {
-      triggerError("Something went wrong : " + err, "error");
+    const loginToken = await login(loginPayload).catch((err: unknown) => ({ error: String(err) }));
+    if ("token" in loginToken) {
+      triggerError("Login success!", "success");
+      dispatch(loginSuccess({
+        id: loginToken.id,
+        user: loginToken.user,
+        token: loginToken.token,
+        expiration: loginToken.expiration,
+      }));
+    } else if ("fieldError" in loginToken && loginToken.fieldError && loginToken.error) {
+      handleErrorField(loginToken.fieldError, loginToken.error);
+    } else {
+      triggerError("Something went wrong : " + loginToken.error, "error");
     }
   };
 

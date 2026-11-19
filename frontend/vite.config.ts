@@ -1,8 +1,10 @@
 import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react()],
+  // React Compiler memoizes components and hooks: no manual useMemo / useCallback / memo needed
+  plugins: [react(), babel({ presets: [reactCompilerPreset()] })],
   // Keep the variable names and .env files used since Create React App.
   envPrefix: 'REACT_APP_',
   server: {

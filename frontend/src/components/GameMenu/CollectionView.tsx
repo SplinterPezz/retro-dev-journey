@@ -19,7 +19,7 @@ const CollectionCell: React.FC<{ entry: CollectionEntry; onInspect: (entry: Coll
     return (
       <li className="collection-cell collection-cell--missing">
         <div className="collection-cell-art">
-          <div className="collection-silhouette" style={{ ['--silhouette' as string]: `url('${entry.image}')` }} />
+          <div className="collection-silhouette" style={{ '--silhouette': `url('${entry.image}')` } as React.CSSProperties} />
         </div>
         <div className="collection-cell-name">{collectionTexts.missingName}</div>
       </li>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useMemo, useState } from 'react';
 import { StoryNpcData, StoryFlags } from '../../../types/story';
 import { buildChoiceItems, getNode, pickNextNode } from '../dialogue';
 import { seenFlag } from '../../../config/story/flags';
@@ -23,12 +23,15 @@ export const useDialogueEngine = (
   // the seen flag is what locks an isAnswer choice once its question was asked
   const npcId = active?.npc.id;
   const nodeId = active?.nodeId;
-  useEffect(() => {
+  const markShown = useEffectEvent(() => {
     if (!active) return;
     const node = getNode(active.npc, active.nodeId);
     if (node?.setFlag) setFlag(node.setFlag);
     setFlag(seenFlag(active.npc.id, active.nodeId));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  });
+  // once per line shown
+  useEffect(() => {
+    markShown();
   }, [npcId, nodeId]);
 
   const selectChoice = useCallback(

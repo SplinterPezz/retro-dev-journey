@@ -1,6 +1,6 @@
 import React from 'react';
 import { Position } from '../../../types/sandbox';
-import { quizMarkerImage, quizSparkleImage } from '../../../config/story/assets';
+import { quizMarkerImage, sparkleStyle } from '../../../config/story/assets';
 import './QuizMarker.css';
 
 interface QuizMarkerProps {
@@ -17,7 +17,7 @@ const QuizMarker: React.FC<QuizMarkerProps> = ({
     style={{
       left: position.x,
       top: position.y,
-      ['--sparkle-image' as string]: `url('${quizSparkleImage}')`,
+      ...sparkleStyle,
     }}
   >
     <img src={image} alt="" className="quiz-marker-sprite" />

@@ -28,18 +28,17 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
         setIsDownloading(true);
         setDownloadStatus('downloading');
 
-        try {
-            await downloadCV();
-            setDownloadStatus('success');
-            setCooldownTimer(downloadCVCooldown);
-            later(() => setDownloadStatus('idle'), SUCCESS_MESSAGE_MS);
-        } catch (error) {
-            console.error('Download failed:', error);
-            setDownloadStatus('error');
-            later(() => setDownloadStatus('idle'), ERROR_MESSAGE_MS);
-        } finally {
-            setIsDownloading(false);
-        }
+        const failed = await downloadCV().then(
+            () => false,
+            (error: unknown) => {
+                console.error('Download failed:', error);
+                return true;
+            }
+        );
+        setIsDownloading(false);
+        setDownloadStatus(failed ? 'error' : 'success');
+        if (!failed) setCooldownTimer(downloadCVCooldown);
+        later(() => setDownloadStatus('idle'), failed ? ERROR_MESSAGE_MS : SUCCESS_MESSAGE_MS);
     });
 
     useEffect(() => {

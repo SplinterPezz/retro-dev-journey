@@ -27,14 +27,9 @@ export const useResourceLoader = (images: string[]): LoaderState => {
     let loaded = 0;
 
     const loads = images.map(async (src) => {
-      try {
-        await loadImage(src);
-      } catch (error) {
-        console.warn(`Failed to load resource: ${src}`, error);
-      } finally {
-        loaded++;
-        if (!cancelled) setProgress({ images, loaded, done: false });
-      }
+      await loadImage(src).catch((error: unknown) => console.warn(`Failed to load resource: ${src}`, error));
+      loaded += 1;
+      if (!cancelled) setProgress({ images, loaded, done: false });
     });
 
     void Promise.all(loads).then(() => {

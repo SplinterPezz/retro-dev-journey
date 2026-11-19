@@ -20,6 +20,19 @@ declare global {
     }
 }
 
+const checkConsent = (): boolean | null => {
+    if (typeof window._iub?.cs?.api?.isConsentGiven !== 'function') {
+        return null;
+    }
+
+    try {
+        return window._iub.cs.api.isConsentGiven() ?? window.iubendaConsent ?? null;
+    } catch (error) {
+        console.warn('Error calling isConsentGiven:', error);
+        return null;
+    }
+};
+
 export const useIubenda = () => {
     const dispatch = useDispatch();
 
@@ -32,24 +45,6 @@ export const useIubenda = () => {
 
         dispatch(setConsentInStore(newConsent));
     }, [dispatch]);
-
-    const checkConsent = useCallback((): boolean | null => {
-    if (
-        !window._iub || 
-        !window._iub.cs || 
-        !window._iub.cs.api || 
-        typeof window._iub.cs.api.isConsentGiven !== 'function'
-    ) {
-        return null;
-    }
-
-    try {
-        return window._iub.cs.api.isConsentGiven() ?? window.iubendaConsent ?? null;
-    } catch (error) {
-        console.warn('Error calling isConsentGiven:', error);
-        return null;
-    }
-}, []);
 
     useEffect(() => {
         const handler = (consent: boolean) => updateConsent(consent);
@@ -78,5 +73,5 @@ export const useIubenda = () => {
             window.iubendaPreferenceExpressed = undefined;
             window.iubendaConsentChanged = undefined;
         };
-    }, [checkConsent, updateConsent]);
+    }, [updateConsent]);
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StoryPropData } from '../../../types/story';
-import { quizSparkleImage } from '../../../config/story/assets';
+import { sparkleStyle } from '../../../config/story/assets';
 import './BobbingProp.css';
 
 interface BobbingPropProps {
@@ -15,7 +15,7 @@ const BobbingProp: React.FC<BobbingPropProps> = ({ prop }) => (
       top: prop.position.y,
       width: prop.imageSize?.width,
       height: prop.imageSize?.height,
-      ['--sparkle-image' as string]: `url('${quizSparkleImage}')`,
+      ...sparkleStyle,
     }}
   >
     <img src={prop.image} alt="" className="bobbing-prop-sprite" />

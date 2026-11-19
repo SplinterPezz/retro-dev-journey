@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { StoryChapterConfig, StoryNpcData } from '../../types/story';
 import { StructureData } from '../../types/sandbox';
 import { lockSprite, playerTurnSprite, preloadPathSprites, preloadPlayerSprites } from '../assets';
@@ -9,7 +10,9 @@ import { MEEP_DIRECTIONS, NpcPose, meepSprite, npcSprite, storyProp } from './sp
 
 export const doorImage = storyProp('door');
 export const quizMarkerImage = storyProp('quiz_question_mark_v5');
-export const quizSparkleImage = '/sprites/others/sparkling.gif';
+const quizSparkleImage = '/sprites/others/sparkling.gif';
+// a public path cannot be a url() in a .css file: the sparkle reaches the CSS as a variable
+export const sparkleStyle = { '--sparkle-image': `url('${quizSparkleImage}')` } as CSSProperties;
 
 const meepSprites = MEEP_DIRECTIONS.map(meepSprite);
 

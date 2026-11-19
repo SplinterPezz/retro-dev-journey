@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { ChapterCollectibles, CollectibleData, CollectibleSpot, StoryFlags } from '../../../types/story';
 import { Position } from '../../../types/game';
 import { revealFlag } from '../../../config/story/flags';
@@ -73,7 +73,8 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
       const unlock = item.unlock;
       if (unlock?.kind !== 'sequence' || isFound(item) || flags[revealFlag(item.id)]) continue;
 
-      const progress = (sequencesRef.current[item.id] ??= { nextStep: 0, inSpot: null });
+      const progress = sequencesRef.current[item.id] ?? { nextStep: 0, inSpot: null };
+      sequencesRef.current[item.id] = progress;
       const spot = Object.keys(unlock.spots).find((id) => isInSpot(playerPosition, unlock.spots[id])) ?? null;
       if (spot === progress.inSpot) continue;
       progress.inSpot = spot;
@@ -91,14 +92,16 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
     return !isMoving && isInSpot(playerPosition, unlock.spot);
   });
   const waitingKey = waiting.map((item) => item.id).join(',');
-  useEffect(() => {
-    if (!enabled || !waitingKey) return;
-    const timers = waiting.map((item) => {
+  const armWaitTimers = useEffectEvent(() =>
+    waiting.map((item) => {
       const seconds = item.unlock?.kind === 'idle' ? item.unlock.seconds : 0;
       return setTimeout(() => setFlag(revealFlag(item.id)), seconds * 1000);
-    });
+    })
+  );
+  useEffect(() => {
+    if (!enabled || !waitingKey) return;
+    const timers = armWaitTimers();
     return () => timers.forEach(clearTimeout);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [waitingKey, enabled]);
 
   const onMap: CollectibleOnMap[] = items.flatMap((item) => {
