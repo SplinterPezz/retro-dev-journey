@@ -52,7 +52,7 @@ export const skillEntry = (tech: TechnologyData, found: boolean, elapsedMs?: num
 
 export const skillEntries = (story: StoryProgress): CollectionEntry[] =>
   technologies.map((structure) => {
-    const tech = structure.data as TechnologyData;
+    const tech = structure.data;
     const found = isTechnologyUnlocked(tech, story.chapters);
     return skillEntry(tech, found, found ? skillElapsed(tech, story) : undefined);
   });

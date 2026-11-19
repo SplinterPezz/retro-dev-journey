@@ -1,4 +1,4 @@
-import { StructureData, CompanyData, TechnologyData } from '../types/sandbox';
+import { BuildingStructure, StatueStructure, CompanyData, TechnologyData } from '../types/sandbox';
 import { mainPathConfig } from './world';
 import { CHAPTER_IDS, COMPANY_IDS } from './ids';
 
@@ -510,7 +510,7 @@ const technologiesData: TechnologyData[] = [
   }
 ];
 
-export const companies: StructureData[] = companiesData.map((company) => ({
+export const companies: BuildingStructure[] = companiesData.map((company) => ({
   id: company.id,
   name: company.name,
   type: 'building',
@@ -520,7 +520,7 @@ export const companies: StructureData[] = companiesData.map((company) => ({
   interactionRadius: company.interactionRadius !== undefined ? company.interactionRadius : 250
 }));
 
-export const technologies: StructureData[] = technologiesData.map((tech) => ({
+export const technologies: StatueStructure[] = technologiesData.map((tech) => ({
   id: tech.id,
   name: tech.name,
   type: 'statue',

@@ -7,13 +7,13 @@ import Environment from '../Structures/Environment';
 import { companies } from '../../config/career';
 import { detailsEnvironments, treesEnvironments } from '../../config/environments';
 import { mainPathConfig, pathGenerationEnabled, terrainAutoRotate, worldConfig } from '../../config/world';
-import { StructureData } from '../../types/sandbox';
+import { StatueStructure } from '../../types/sandbox';
 
 const TREE_SIZE = 256;
 const DETAIL_SIZE = 128;
 
 interface OverworldProps {
-  technologies: StructureData[];
+  technologies: StatueStructure[];
   nearbyId: string | null;
   lockedIds?: string[];
   children?: React.ReactNode;
@@ -38,7 +38,7 @@ const Overworld: React.FC<OverworldProps> = ({ technologies, nearbyId, lockedIds
 
       <div className="structure-container">
         {technologies.map((tech) => (
-          <Structure key={tech.id} data={tech} type="technology" isNearby={nearbyId === tech.id} />
+          <Structure key={tech.id} data={tech} isNearby={nearbyId === tech.id} />
         ))}
       </div>
 
@@ -47,7 +47,6 @@ const Overworld: React.FC<OverworldProps> = ({ technologies, nearbyId, lockedIds
           <Structure
             key={company.id}
             data={company}
-            type="building"
             isNearby={nearbyId === company.id}
             locked={lockedIds.includes(company.id)}
           />

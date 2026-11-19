@@ -3,15 +3,25 @@ import { Position, ShadowInfo, Hitbox, ImageSize, Rarity } from './game';
 // Shared engine types live in ./game; re-exported here for existing imports.
 export type { Position, EnvironmentData } from './game';
 
-export interface StructureData {
+interface StructureBase {
   id: string;
   name: string;
-  type: 'building' | 'statue';
   position: Position;
   description: string;
-  data: CompanyData | TechnologyData;
   interactionRadius: number;
 }
+
+export interface BuildingStructure extends StructureBase {
+  type: 'building';
+  data: CompanyData;
+}
+
+export interface StatueStructure extends StructureBase {
+  type: 'statue';
+  data: TechnologyData;
+}
+
+export type StructureData = BuildingStructure | StatueStructure;
 
 interface DownloadButtonData {
   id: string;
@@ -24,7 +34,8 @@ interface DownloadButtonData {
   collisionHitbox?: Hitbox;
 }
 
-export interface DownloadButtonStructure extends Omit<StructureData, 'data'> {
+export interface DownloadButtonStructure extends StructureBase {
+  type: 'statue';
   data: DownloadButtonData;
 }
 

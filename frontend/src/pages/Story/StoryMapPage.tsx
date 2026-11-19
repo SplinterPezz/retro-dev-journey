@@ -36,7 +36,7 @@ import {
 } from '../../config/story/chapters';
 import { MEEP_LAG_MS } from './sceneRules';
 import { ChapterProgress } from '../../types/story';
-import { StructureData, TechnologyData } from '../../types/sandbox';
+import { StatueStructure, StructureData } from '../../types/sandbox';
 import { chapterPath } from '../../config/routes';
 import { COMPANY_IDS } from '../../config/ids';
 import './StoryMapPage.css';
@@ -69,8 +69,8 @@ const chapterQuests = (unlockedIndex: number): StoryObjective[] => {
   });
 };
 
-const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StructureData[] =>
-  technologies.filter((t) => isTechnologyUnlocked(t.data as TechnologyData, progress));
+const unlockedTechnologies = (progress: Record<string, ChapterProgress>): StatueStructure[] =>
+  technologies.filter((t) => isTechnologyUnlocked(t.data, progress));
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
@@ -122,7 +122,7 @@ const StoryMapPage: React.FC = () => {
   const newDiscoveries = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id));
   const discovery = newDiscoveries[0];
   const discoveriesLeft = newDiscoveries.length - 1;
-  const discoveryTech = discovery?.data as TechnologyData | undefined;
+  const discoveryTech = discovery?.data;
   const [inspecting, setInspecting] = useState(false);
   const discoveryPopup = discovery && discoveryTech && (
     <UnlockPopup
@@ -181,7 +181,7 @@ const StoryMapPage: React.FC = () => {
 
   const shownStatue = useLingering(nearbyStatue, STATUE_HIDE_DELAY_MS);
 
-  const shownSkill = shownStatue?.data as TechnologyData | undefined;
+  const shownSkill = shownStatue?.data;
   const skillVisible = !!shownSkill && !splash.visible && !menuOpen && !discovery && !inDevelopmentOpen;
   const shownEntry = shownSkill && skillEntry(shownSkill, true, skillElapsed(shownSkill, { startedAt, timeline }));
   const skillWindow = skillVisible && shownEntry && (
