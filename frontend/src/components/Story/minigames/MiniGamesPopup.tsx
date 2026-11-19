@@ -135,7 +135,8 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
     timerRef.current = setTimeout(() => setFeedback(null), FEEDBACK_MS);
   };
 
-  if (finished) {
+  const step = steps[stepIndex];
+  if (finished || !step) {
     const percent = Math.round((total / max) * 100);
     return (
       <PcMonitor onPowerOff={onPowerOff}>
@@ -157,7 +158,6 @@ const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, o
     );
   }
 
-  const step = steps[stepIndex];
   const roundsOfGame = steps.filter((s) => s.game === step.game).length;
   const counter = `(${step.round + 1} / ${roundsOfGame})`;
   const locked = feedback !== null;

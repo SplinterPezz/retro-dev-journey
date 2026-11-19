@@ -16,7 +16,7 @@ const FACING_BY_SECTOR: MeepDirection[] = ['E', 'SE', 'S', 'SW', 'W', 'NW', 'N',
 const directionFromStep = (dx: number, dy: number): MeepDirection => {
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
   const sector = Math.round(((angle + 360) % 360) / 45) % 8;
-  return FACING_BY_SECTOR[sector];
+  return FACING_BY_SECTOR[sector] ?? 'E';
 };
 
 // standing still keeps the last facing

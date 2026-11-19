@@ -40,6 +40,7 @@ const isLastWaypoint = (walker: Walker, waypoints: Position[]) => {
 
 const stepWalker = (walker: Walker, patrol: Patrol, step: number, now: number, props: StoryPropData[]): boolean => {
   const goal = patrol.waypoints[walker.target];
+  if (!goal) return false;
   const dx = goal.x - walker.position.x;
   const dy = goal.y - walker.position.y;
   const dist = Math.hypot(dx, dy);
@@ -81,7 +82,7 @@ export const useNpcPatrol = (
 ): Record<string, NpcPatrolState> => {
   const walkersRef = useRef<Record<string, Walker>>({});
   const [states, setStates] = useState<Record<string, NpcPatrolState>>(() =>
-    Object.fromEntries(npcs.map((n) => [n.id, { position: n.position, moving: false, direction: 'S' as NpcDirection }]))
+    Object.fromEntries(npcs.map((n) => [n.id, { position: n.position, moving: false, direction: 'S' }]))
   );
   const lastSnapshotRef = useRef<Record<string, string>>({});
 

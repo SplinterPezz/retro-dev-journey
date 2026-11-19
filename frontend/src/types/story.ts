@@ -1,3 +1,4 @@
+import type { ChapterId } from '../config/ids';
 import { Position, Hitbox, WorldConfig, ImageSize, WorldBounds, Rarity } from './game';
 
 // Flag names live in config/story/flags.ts.
@@ -61,7 +62,7 @@ export type NpcDirection = 'N' | 'S' | 'E' | 'W';
 // Walks back and forth between the waypoints. A step into a prop's hitbox is
 // refused and the NPC turns around, so routes must follow the aisles.
 interface NpcPatrol {
-  waypoints: Position[];
+  waypoints: [Position, Position, ...Position[]];
   speed: number;
   pauseMs: number;
 }
@@ -203,7 +204,7 @@ export interface SideRoom {
 }
 
 export interface StoryChapterConfig {
-  id: string;
+  id: ChapterId;
   title: string;
   audioTrack?: string;
   splashTitle?: string;

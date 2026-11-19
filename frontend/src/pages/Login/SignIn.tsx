@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -114,7 +114,7 @@ export default function SignIn() {
   const later = useTimeouts();
 
   const handleCloseErrorMessage = (
-    event?: React.SyntheticEvent | Event | null,
+    _event?: React.SyntheticEvent | Event | null,
     reason?: string
   ) => {
     if (reason === "clickaway") {
@@ -160,7 +160,7 @@ export default function SignIn() {
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     setFieldErrors({});
 
@@ -184,7 +184,7 @@ export default function SignIn() {
     } else if ("fieldError" in loginToken && loginToken.fieldError && loginToken.error) {
       handleErrorField(loginToken.fieldError, loginToken.error);
     } else {
-      triggerError("Something went wrong : " + loginToken.error, "error");
+      triggerError(`Something went wrong : ${loginToken.error ?? "unknown error"}`, "error");
     }
   };
 

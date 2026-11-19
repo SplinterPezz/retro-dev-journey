@@ -1,5 +1,5 @@
 import { ChapterCollectibles } from '../../types/story';
-import { CHAPTER_IDS } from '../ids';
+import { CHAPTER_IDS, ChapterId } from '../ids';
 import { PROLOGUE_FLAGS } from './flags';
 import { meepSprite, storyCollectible } from './sprites';
 
@@ -8,7 +8,7 @@ import { meepSprite, storyCollectible } from './sprites';
 export const collectibleIcon = storyCollectible('collectible_icon');
 export const collectibleCheer = meepSprite('idle');
 
-export const chapterCollectibles: Record<string, ChapterCollectibles> = {
+export const chapterCollectibles: Partial<Record<ChapterId, ChapterCollectibles>> = {
   [CHAPTER_IDS.prologue]: {
     items: [
       {

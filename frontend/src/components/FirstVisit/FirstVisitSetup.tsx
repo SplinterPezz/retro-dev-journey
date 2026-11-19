@@ -13,7 +13,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 const FirstVisitSetup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useAppDispatch();
   const orientation = useAppSelector((state) => state.story.orientation);
-  const soundAsked = useAppSelector((state) => !!state.settings.soundAsked);
+  const soundAsked = useAppSelector((state) => state.settings.soundAsked);
   // a desktop that later turns into a phone is not asked
   const [isPhoneOnOpen] = useState(() => isMobileDevice());
 

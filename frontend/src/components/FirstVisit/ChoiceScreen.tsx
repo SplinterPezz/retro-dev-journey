@@ -1,4 +1,3 @@
-import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import './ChoiceScreen.css';
 import '../Common/pixel-button.css';

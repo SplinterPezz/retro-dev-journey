@@ -28,7 +28,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 
 interface GameSelectorProps {
-  handleDownloadClick(platform:string): void
+  handleDownloadClick: (platform: string) => void;
 }
 
 const GameModeSelector: React.FC<GameSelectorProps> = ({ handleDownloadClick }) => {

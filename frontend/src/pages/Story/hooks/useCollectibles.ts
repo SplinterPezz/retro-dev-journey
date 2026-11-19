@@ -75,7 +75,7 @@ export const useCollectibles = ({ collectibles, found, flags, setFlag, playerPos
 
       const progress = sequencesRef.current[item.id] ?? { nextStep: 0, inSpot: null };
       sequencesRef.current[item.id] = progress;
-      const spot = Object.keys(unlock.spots).find((id) => isInSpot(playerPosition, unlock.spots[id])) ?? null;
+      const spot = Object.entries(unlock.spots).find(([, area]) => isInSpot(playerPosition, area))?.[0] ?? null;
       if (spot === progress.inSpot) continue;
       progress.inSpot = spot;
       if (!spot) continue;

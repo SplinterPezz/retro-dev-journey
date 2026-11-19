@@ -24,8 +24,9 @@ describe('useLingering', () => {
   });
 
   it('does not hide a value that comes back within the delay', () => {
+    const stillThere: { value: string | null } = { value: 'statue' };
     const hook = renderHook(({ value }: { value: string | null }) => useLingering(value, 50), {
-      initialProps: { value: 'statue' as string | null },
+      initialProps: stillThere,
     });
     hook.rerender({ value: null });
     act(() => {

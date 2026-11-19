@@ -61,7 +61,7 @@ export const isAtExitDoor = (chapter: StoryChapterConfig, player: Position): boo
 export const litSideRoomId = (sideRooms: SideRoom[] | undefined, player: Position): string | undefined =>
   sideRooms?.find((room) => room.dark && room.surfaces.some((s) => isInside(player, s.bounds)))?.id;
 
-const toCollidable = (id: string, position: Position, interactionRadius?: number, collisionHitbox?: Hitbox): CollidableEntity => ({
+const toCollidable = (id: string, position: Position, interactionRadius: number, collisionHitbox?: Hitbox): CollidableEntity => ({
   id,
   position,
   interactionRadius,

@@ -28,7 +28,7 @@ const randomTiles = (width: number, height: number, tileSize: number): TerrainTi
         id: `terrain-${x}-${y}`,
         x: x * tileSize,
         y: y * tileSize,
-        rotation: ROTATIONS[Math.floor(Math.random() * ROTATIONS.length)],
+        rotation: ROTATIONS[Math.floor(Math.random() * ROTATIONS.length)] ?? 0,
       });
     }
   }

@@ -20,7 +20,7 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
           width: tileSize + 1,
           height: tileSize + 1,
           zIndex: segment.zIndex,
-          backgroundImage: `url(${pathSprites[segment.type] ?? pathSprites.core})`,
+          backgroundImage: `url(${pathSprites[segment.type]})`,
           transform: segment.rotation !== 0 ? `rotate(${segment.rotation}deg)` : undefined,
           transformOrigin: 'center center',
         }}

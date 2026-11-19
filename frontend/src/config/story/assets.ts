@@ -17,9 +17,10 @@ export const sparkleStyle = { '--sparkle-image': `url('${quizSparkleImage}')` } 
 const meepSprites = MEEP_DIRECTIONS.map(meepSprite);
 
 // only patrolling NPCs walk; the others have no walk sprites
-const WALKING_POSES: NpcPose[] = ['idle', 'walk_E', 'walk_N', 'walk_S'];
+const IDLE_POSES: NpcPose[] = ['idle'];
+const WALKING_POSES: NpcPose[] = [...IDLE_POSES, 'walk_E', 'walk_N', 'walk_S'];
 const npcSprites = (npc: StoryNpcData) =>
-  (npc.patrol ? WALKING_POSES : (['idle'] as NpcPose[])).map((pose) => npcSprite(npc.spriteBase, pose));
+  (npc.patrol ? WALKING_POSES : IDLE_POSES).map((pose) => npcSprite(npc.spriteBase, pose));
 
 export const chapterAssets = (chapter: StoryChapterConfig): string[] => [
   ...new Set([
@@ -32,7 +33,8 @@ export const chapterAssets = (chapter: StoryChapterConfig): string[] => [
     ...meepSprites,
     ...preloadPlayerSprites,
     playerTurnSprite,
-    ...(chapterCollectibles[chapter.id] ? [collectibleIcon, ...chapterCollectibles[chapter.id].items.map((c) => c.image)] : []),
+    ...(chapterCollectibles[chapter.id]?.items.map((c) => c.image) ?? []),
+    ...(chapterCollectibles[chapter.id] ? [collectibleIcon] : []),
   ]),
 ];
 

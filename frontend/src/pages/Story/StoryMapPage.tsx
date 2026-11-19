@@ -188,7 +188,7 @@ const StoryMapPage: React.FC = () => {
     <>
       <SkillWindow
         entry={shownEntry}
-        chapterName={chapterDisplayName(shownSkill?.storyChapter ?? '')}
+        chapterName={chapterDisplayName(shownSkill.storyChapter ?? '')}
         onInspect={() => setInspecting(true)}
       />
       {inspecting && <ItemInspector entry={shownEntry} onClose={() => setInspecting(false)} />}

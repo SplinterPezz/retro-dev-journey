@@ -47,7 +47,6 @@ import {
   sceneCollidables,
   walkableWorld,
 } from './sceneRules';
-import { playerSpawnPosition as defaultSpawn } from '../../config/world';
 import { chapterAssets } from '../../config/story/assets';
 import { chapterCollectibles } from '../../config/story/collectibles';
 import { DEFAULT_DIFFICULTY } from '../../config/story/difficulty';
@@ -116,7 +115,7 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   // reloaded in the middle of the closing scene: back at the seat
   const outroSeat = chapter.outro && flags[chapter.outro.startedFlag] ? chapter.outro.playerPosition : undefined;
   const { playerPosition, isMoving, direction, playerHitbox, handleJoystickMove, handleJoystickStop, teleport } = usePlayerMovement({
-    initialPosition: outroSeat ?? chapter.playerSpawn ?? defaultSpawn,
+    initialPosition: outroSeat ?? chapter.playerSpawn,
     speed: PLAYER_SPEED,
     worldBounds,
     structures: collidables.blockers,

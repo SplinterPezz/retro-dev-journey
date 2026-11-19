@@ -4,6 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { ThemeProvider } from '@mui/material/styles';
+import type { ApexOptions } from 'apexcharts';
 import ReactApexChart from 'react-apexcharts';
 import { COMPANY_IDS } from '../../config/ids';
 import './AdminPage.css';
@@ -59,7 +60,7 @@ const NO_DATA: AnalyticsData = {
   browsers: null,
 };
 
-const withCategories = <C extends { options: { xaxis?: object } }>(chart: C, categories: string[]) => ({
+const withCategories = (chart: { options: ApexOptions }, categories: string[]): ApexOptions => ({
   ...chart.options,
   xaxis: { ...chart.options.xaxis, categories },
 });
@@ -114,7 +115,7 @@ export default function AdminPage() {
           error: failed ? 'Failed to fetch some data' : null,
         });
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         if (cancelled) return;
         setFetched((prev) => ({ ...prev, range, error: 'An error occurred while fetching data' }));
         devError('Error on fetch:', err);

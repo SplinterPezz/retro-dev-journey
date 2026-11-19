@@ -35,8 +35,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     const companyQuests: DailyQuestItem[] = companies.map((company) => ({
       id: company.id + questSuffix,
       done: interactions.some(interaction => interaction.includes(company.id + questSuffix)),
-      name: `${company.name}`,
-      shortName: company.data.shortName !== undefined ? company.data.shortName : company.name,
+      name: company.name,
+      shortName: company.data.shortName ?? company.name,
       icon: company.data.image || defaultBuilding,
       type: 'building',
     }));
@@ -44,8 +44,8 @@ const DailyQuest: React.FC<DailyQuestProps> = ({
     const technologyQuests: DailyQuestItem[] = technologies.map((tech) => ({
       id: tech.id + questSuffix,
       done: interactions.some(interaction => interaction.includes(tech.id + questSuffix)),
-      name: `${tech.name}`,
-      shortName: tech.data.shortName !== undefined ? tech.data.shortName : tech.name,
+      name: tech.name,
+      shortName: tech.data.shortName ?? tech.name,
       icon: tech.data.image || defaultStatue,
       type: 'statue',
     }));

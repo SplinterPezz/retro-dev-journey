@@ -37,7 +37,7 @@ const StoryIntroDialog: React.FC<StoryIntroDialogProps> = ({ title, pages, onCom
           <div className="dialog-separator">
             <hr className="golden" />
           </div>
-          <p className="story-intro-text">{page.text}</p>
+          <p className="story-intro-text">{page?.text}</p>
 
           <div className="story-intro-footer">
             <button type="button" className="rpgui-button golden story-intro-button" onClick={handleNext}>

@@ -34,7 +34,7 @@ const VolumeRow: React.FC<VolumeRowProps> = ({ icon: Icon, name, volume, muted, 
         step={VOLUME_STEP}
         value={volume}
         onChange={(e) => changeVolume(Number(e.target.value))}
-        aria-label={`${name[0].toUpperCase()}${name.slice(1)} volume`}
+        aria-label={`${name.charAt(0).toUpperCase()}${name.slice(1)} volume`}
       />
       <button
         type="button"

@@ -36,7 +36,7 @@ export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, to
   };
 
   return {
-    current: queue[0] as CollectibleData | undefined,
+    current: queue[0],
     remaining: Math.max(queue.length - 1, 0),
     currentNumber: foundCount - queue.length + 1,
     loreOpen,

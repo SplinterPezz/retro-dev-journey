@@ -18,7 +18,7 @@ const WALK_POSE: Record<NpcDirection, { pose: NpcPose; flip: boolean }> = {
   N: { pose: 'walk_N', flip: false },
   S: { pose: 'walk_S', flip: false },
 };
-const IDLE_POSE = { pose: 'idle' as NpcPose, flip: false };
+const IDLE_POSE: { pose: NpcPose; flip: boolean } = { pose: 'idle', flip: false };
 
 const InteriorNpc: React.FC<InteriorNpcProps> = ({ npc, position, moving = false, direction = 'S', isNearby }) => {
   const { pose, flip } = moving ? WALK_POSE[direction] : IDLE_POSE;

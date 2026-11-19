@@ -118,7 +118,18 @@ The compiler (`babel-plugin-react-compiler`, wired in `vite.config.ts`) memoizes
 - Constructs the compiler does not handle yet: `try/finally`, `??=`, `x++` on a variable captured by a closure,
   casted computed keys (`['--var' as string]`). Use `.catch()` / `.then()`, plain assignments, `as CSSProperties`.
 - Redux through `useAppDispatch` / `useAppSelector` (`store/hooks.ts`), context through `use(Context)`.
-- Types narrow, they are not cast: `StructureData` is a union on `type` (`'building'` | `'statue'`).
+
+### TypeScript
+`strict` plus `noUncheckedIndexedAccess`, `noImplicitReturns`, `noImplicitOverride`, `noUnusedLocals` and
+`noUnusedParameters`; the lint runs typescript-eslint's `strictTypeChecked` preset.
+- An array or `Record` read by index may be missing: handle it (`?.`, `??`, a guard), never `!` or a cast.
+- Narrow instead of casting: `instanceof` for DOM targets and errors, `in` / `typeof` for unknown data,
+  discriminated unions (`StructureData` on `type`: `'building'` | `'statue'`).
+- Data from outside (API responses, persisted state) is `unknown` until checked (`services/api.ts`).
+- Ids are unions, not `string`: `ChapterId`, `CompanyId` (`config/ids.ts`). Saved progress stays keyed by `string`.
+- Config objects are checked with `satisfies` (`chartOptions.ts`): a misspelt property fails the build.
+- A list that needs a minimum length says so in its type (`waypoints: [Position, Position, ...Position[]]`).
+- `exactOptionalPropertyTypes` stays off: it only added `| undefined` to forwarded props.
 
 ### Style
 - Match the surrounding code: naming, idioms, density. Strict TypeScript, no `any`.
@@ -274,7 +285,6 @@ Check monthly with `npm outdated`. Minor and patch updates together; one major a
   `@uiw/react-codemirror`, `@codemirror/lang-java`.
 
 Node must match `engines` in `package.json` (>= 22.13). Majors pending as of 2026-11:
-- `noUncheckedIndexedAccess` (74 errors) and `exactOptionalPropertyTypes` (32 errors) are not enabled yet.
 - **TypeScript 7**: blocked until `typescript-eslint` supports it (it refuses TS 7 today).
 - `@types/node` follows the Node version in use (22 locally, 24 in CI): don't jump ahead of it.
 

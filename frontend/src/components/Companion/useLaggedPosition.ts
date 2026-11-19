@@ -20,7 +20,7 @@ export const useLaggedPosition = (target: Position, delayMs = 450): Position => 
       const history = historyRef.current;
 
       // keep one sample older than the target time
-      while (history.length > 1 && history[1].t <= targetTime) {
+      while ((history[1]?.t ?? Infinity) <= targetTime) {
         history.shift();
       }
 

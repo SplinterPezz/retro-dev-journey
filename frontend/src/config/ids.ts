@@ -17,3 +17,6 @@ export const COMPANY_IDS = {
   codesour: 'codesour',
   futureOpportunity: '???',
 } as const;
+
+export type ChapterId = (typeof CHAPTER_IDS)[keyof typeof CHAPTER_IDS];
+export type CompanyId = (typeof COMPANY_IDS)[keyof typeof COMPANY_IDS];

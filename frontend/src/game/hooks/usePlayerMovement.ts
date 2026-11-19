@@ -26,10 +26,8 @@ interface JoystickState {
 
 const IDLE_JOYSTICK: JoystickState = { isActive: false, direction: 'idle', intensity: 0 };
 
-const isTextTarget = (target: EventTarget | null): boolean => {
-  const el = target as HTMLElement | null;
-  return !!el && (el.isContentEditable || !!el.closest?.('input, textarea, .cm-editor'));
-};
+const isTextTarget = (target: EventTarget | null): boolean =>
+  target instanceof HTMLElement && (target.isContentEditable || !!target.closest('input, textarea, .cm-editor'));
 
 const insideAny = (p: Position, areas: readonly WorldBounds[]): boolean => areas.some((a) => isInside(p, a));
 

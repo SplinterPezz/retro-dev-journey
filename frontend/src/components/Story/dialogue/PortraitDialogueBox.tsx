@@ -44,8 +44,7 @@ const PortraitDialogueBox: React.FC<PortraitDialogueBoxProps> = ({
   const { isOpen: menuOpen } = useGameMenu();
   const onKeyDown = useEffectEvent((e: KeyboardEvent) => {
     if (!DIALOGUE_ADVANCE_KEYS.includes(e.key) || menuOpen) return;
-    const target = e.target as HTMLElement | null;
-    if (target?.closest('button, input, textarea, .cm-editor')) return;
+    if (e.target instanceof Element && e.target.closest('button, input, textarea, .cm-editor')) return;
     if (hasChoices && !isTyping) return;
     e.preventDefault();
     handleBoxClick();

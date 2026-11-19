@@ -16,10 +16,7 @@ export const downloadCV = async (): Promise<void> => {
     let filename = cvDownloadFilename;
     
     if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-      if (filenameMatch) {
-        filename = filenameMatch[1];
-      }
+      filename = contentDisposition.match(/filename="(.+)"/)?.[1] ?? filename;
     }
     
     const blob = await response.blob();
@@ -60,7 +57,7 @@ export const uploadCV = async (file: File): Promise<UploadResponse | ApiError> =
     console.error('Upload failed:', error);
     return {
       success: false,
-      error: (error as Error).message || 'Upload failed'
+      error: (error instanceof Error && error.message) || 'Upload failed'
     };
   }
 };

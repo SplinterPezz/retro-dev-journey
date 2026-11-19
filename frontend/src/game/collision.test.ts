@@ -41,26 +41,25 @@ describe('hitsAny / toBlockers', () => {
 });
 
 describe('findNearest', () => {
-  const entities = [
-    { id: 'far', position: { x: 60, y: 0 } },
-    { id: 'near', position: { x: 20, y: 0 } },
-    { id: 'big', position: { x: 300, y: 0 }, interactionRadius: 400 },
-  ];
+  const far = { id: 'far', position: { x: 60, y: 0 } };
+  const near = { id: 'near', position: { x: 20, y: 0 } };
+  const big = { id: 'big', position: { x: 300, y: 0 }, interactionRadius: 400 };
+  const entities = [far, near, big];
 
   it('returns the closest entity within its radius', () => {
     expect(findNearest({ x: 0, y: 0 }, entities, 70)?.id).toBe('near');
   });
 
   it('honours a per-entity radius over the default', () => {
-    expect(findNearest({ x: 0, y: 0 }, [entities[2]], 70)?.id).toBe('big');
+    expect(findNearest({ x: 0, y: 0 }, [big], 70)?.id).toBe('big');
   });
 
   it('returns null when nothing is in range', () => {
-    expect(findNearest({ x: 1000, y: 1000 }, entities.slice(0, 2), 70)).toBeNull();
+    expect(findNearest({ x: 1000, y: 1000 }, [far, near], 70)).toBeNull();
   });
 
   it('prefers an entity with a collision box', () => {
     const withBox = { id: 'boxed', position: { x: 50, y: 0 }, data: { collisionHitbox: box } };
-    expect(findNearest({ x: 0, y: 0 }, [entities[1], withBox], 70)?.id).toBe('boxed');
+    expect(findNearest({ x: 0, y: 0 }, [near, withBox], 70)?.id).toBe('boxed');
   });
 });

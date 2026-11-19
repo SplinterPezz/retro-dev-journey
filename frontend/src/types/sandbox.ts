@@ -1,3 +1,4 @@
+import type { ChapterId, CompanyId } from '../config/ids';
 import { Position, ShadowInfo, Hitbox, ImageSize, Rarity } from './game';
 
 // Shared engine types live in ./game; re-exported here for existing imports.
@@ -40,7 +41,7 @@ export interface DownloadButtonStructure extends StructureBase {
 }
 
 export interface CompanyData {
-  id: string;
+  id: CompanyId;
   name: string;
   shortName?: string;
   role: string;
@@ -82,7 +83,7 @@ export interface TechnologyData {
   collisionHitbox?: Hitbox;
   imageSize?: ImageSize;
   interactionRadius?: number;
-  storyChapter?: string;
+  storyChapter?: ChapterId;
   learnedText?: string;
   rarity: Rarity;
 }

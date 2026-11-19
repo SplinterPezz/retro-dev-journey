@@ -8,7 +8,7 @@ declare global {
         _iub?: {
             cs?: {
                 api?: {
-                    isConsentGiven: () => boolean;
+                    isConsentGiven: () => boolean | undefined;
                 };
             };
         };
@@ -39,7 +39,7 @@ export const useIubenda = () => {
     const updateConsent = useCallback((newConsent: boolean | null) => {
         if (newConsent === null) return;
 
-        if (newConsent === false) {
+        if (!newConsent) {
             dispatch(clearAllTrackingData());
         }
 

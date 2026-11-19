@@ -9,7 +9,7 @@ export const apexUniqueUsers = {
     options: {
       chart: {
         height: 350,
-        type: 'line' as const,
+        type: 'line',
         zoom: {
           enabled: false
         },
@@ -23,18 +23,17 @@ export const apexUniqueUsers = {
         enabled: false
       },
       stroke: {
-        curve: 'smooth' as const,
+        curve: 'smooth',
         colors: ['#ffd700'],
         width: 3
       },
       title: {
         text: 'Daily Unique Users',
-        align: 'left' as const,
+        align: 'left',
         style: {
           color: '#ffd700',
           fontSize: '18px',
           fontWeight: 'bold',
-          font: 'Arial',
         }
       },
       grid: {
@@ -67,10 +66,9 @@ export const apexUniqueUsers = {
         }
       },
       tooltip: {
-        theme: 'dark' as const,
+        theme: 'dark',
         style: {
           fontSize: '12px',
-          backgroundColor: '#000000'
         }
       },
       markers: {
@@ -84,7 +82,7 @@ export const apexUniqueUsers = {
           colors: '#ffffff'
         }
       }
-    } as ApexOptions,
+    } satisfies ApexOptions,
   }
 
 export const apexPageTime = {
@@ -92,7 +90,7 @@ export const apexPageTime = {
     options: {
       chart: {
         height: 350,
-        type: 'line' as const,
+        type: 'line',
         zoom: {
           enabled: false
         },
@@ -106,12 +104,12 @@ export const apexPageTime = {
         enabled: false
       },
       stroke: {
-        curve: 'smooth' as const,
+        curve: 'smooth',
         width: 3
       },
       title: {
         text: 'Average Time per Page',
-        align: 'left' as const,
+        align: 'left',
         style: {
           color: '#ffd700',
           fontSize: '18px',
@@ -147,17 +145,16 @@ export const apexPageTime = {
           }
         },
         title: {
-          text: 'Time (seconds - ' + timeTrackingIntervals[timeTrackingIntervals.length-1] +'s max)',
+          text: `Time (seconds - ${timeTrackingIntervals.at(-1) ?? 0}s max)`,
           style: {
             color: '#ffd700'
           }
         }
       },
       tooltip: {
-        theme: 'dark' as const,
+        theme: 'dark',
         style: {
           fontSize: '12px',
-          backgroundColor: '#000000'
         }
       },
       legend: {
@@ -166,7 +163,7 @@ export const apexPageTime = {
         }
       },
       colors: ['#ffd700', '#ff6b6b', '#4ecdc4', '#ffd700', '#96ceb4']
-    } as ApexOptions,
+    } satisfies ApexOptions,
   }
 
 export const apexInteractionsDaily = {
@@ -176,7 +173,7 @@ export const apexInteractionsDaily = {
   }],
   options: {
     chart: {
-      type: 'bar' as const,
+      type: 'bar',
       height: 350,
       background: 'rgba(30, 30, 30, 0.7)',
       foreColor: '#ffffff',
@@ -189,7 +186,7 @@ export const apexInteractionsDaily = {
         horizontal: false,
         columnWidth: '55%',
         borderRadius: 5,
-        borderRadiusApplication: 'end' as const,
+        borderRadiusApplication: 'end',
         colors: {
           ranges: [{
             from: 0,
@@ -209,7 +206,7 @@ export const apexInteractionsDaily = {
     },
     title: {
       text: 'Most Interacted Elements',
-      align: 'left' as const,
+      align: 'left',
       margin: 20,
       style: {
         color: '#ffd700',
@@ -259,18 +256,17 @@ export const apexInteractionsDaily = {
       colors: ['#ffd700']
     },
     tooltip: {
-      theme: 'dark' as const,
+      theme: 'dark',
       style: {
         fontSize: '12px',
-        backgroundColor: '#000000'
       },
       y: {
         formatter: function (val: number) {
-          return val + " interactions"
+          return `${val} interactions`
         }
       }
     }
-  } as ApexOptions,
+  } satisfies ApexOptions,
 }
 
 export const apexDailyDownloads = {
@@ -278,7 +274,7 @@ export const apexDailyDownloads = {
   options: {
     chart: {
       height: 350,
-      type: 'line' as const,
+      type: 'line',
       zoom: {
         enabled: false
       },
@@ -292,12 +288,12 @@ export const apexDailyDownloads = {
       enabled: false
     },
     stroke: {
-      curve: 'smooth' as const,
+      curve: 'smooth',
       width: 3
     },
     title: {
       text: 'Daily Downloads by Page',
-      align: 'left' as const,
+      align: 'left',
       style: {
         color: '#ffd700',
         fontSize: '18px',
@@ -340,14 +336,13 @@ export const apexDailyDownloads = {
       }
     },
     tooltip: {
-      theme: 'dark' as const,
+      theme: 'dark',
       style: {
         fontSize: '12px',
-        backgroundColor: '#000000'
       },
       y: {
         formatter: function (val: number) {
-          return val + " downloads"
+          return `${val} downloads`
         }
       }
     },
@@ -357,20 +352,20 @@ export const apexDailyDownloads = {
       }
     },
     colors: ['#ffd700', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4']
-  } as ApexOptions,
+  } satisfies ApexOptions,
 };
 
 export const apexDevicesDonut = {
   series: [] as number[],
   options: {
     chart: {
-      type: 'donut' as const,
+      type: 'donut',
       background: 'rgba(30, 30, 30, 0.7)',
       foreColor: '#ffffff'
     },
     title: {
       text: 'Users by Device Type',
-      align: 'left' as const,
+      align: 'left',
       style: {
         color: '#ffd700',
         fontSize: '18px',
@@ -383,7 +378,7 @@ export const apexDevicesDonut = {
       labels: {
         colors: '#ffffff'
       },
-      position: 'bottom' as const
+      position: 'bottom'
     },
     plotOptions: {
       pie: {
@@ -411,14 +406,13 @@ export const apexDevicesDonut = {
       }
     },
     tooltip: {
-      theme: 'dark' as const,
+      theme: 'dark',
       style: {
         fontSize: '12px',
-        backgroundColor: '#000000'
       },
       y: {
         formatter: function (val: number) {
-          return val + " users"
+          return `${val} users`
         }
       }
     },
@@ -429,11 +423,11 @@ export const apexDevicesDonut = {
           width: 200
         },
         legend: {
-          position: 'bottom' as const
+          position: 'bottom'
         }
       }
     }]
-  } as ApexOptions,
+  } satisfies ApexOptions,
 };
 
 export const apexBrowsersPie = {
@@ -441,13 +435,13 @@ export const apexBrowsersPie = {
   options: {
     chart: {
       width: 380,
-      type: 'pie' as const,
+      type: 'pie',
       background: 'rgba(30, 30, 30, 0.7)',
       foreColor: '#ffffff'
     },
     title: {
       text: 'Users by Browser',
-      align: 'left' as const,
+      align: 'left',
       style: {
         color: '#ffd700',
         fontSize: '18px',
@@ -460,7 +454,7 @@ export const apexBrowsersPie = {
       labels: {
         colors: '#ffffff'
       },
-      position: 'bottom' as const
+      position: 'bottom'
     },
     dataLabels: {
       enabled: true,
@@ -469,14 +463,13 @@ export const apexBrowsersPie = {
       }
     },
     tooltip: {
-      theme: 'dark' as const,
+      theme: 'dark',
       style: {
         fontSize: '12px',
-        backgroundColor: '#000000'
       },
       y: {
         formatter: function (val: number) {
-          return val + " users"
+          return `${val} users`
         }
       }
     },
@@ -487,9 +480,9 @@ export const apexBrowsersPie = {
           width: 200
         },
         legend: {
-          position: 'bottom' as const
+          position: 'bottom'
         }
       }
     }]
-  } as ApexOptions,
+  } satisfies ApexOptions,
 };

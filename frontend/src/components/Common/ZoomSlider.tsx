@@ -19,7 +19,8 @@ const ZoomSlider: React.FC = () => {
   const draggingRef = useRef(false);
 
   const levelFromY = (clientY: number): number => {
-    const rect = trackRef.current!.getBoundingClientRect();
+    const rect = trackRef.current?.getBoundingClientRect();
+    if (!rect) return level;
     const index = Math.round((clientY - rect.top - TICK_TOP) / TICK_GAP);
     const clamped = Math.min(ZOOM_LEVEL_COUNT - 1, Math.max(0, index));
     return ZOOM_LEVEL_COUNT - clamped;

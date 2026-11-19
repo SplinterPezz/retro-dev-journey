@@ -2,7 +2,7 @@ import React from 'react';
 import { StructureData } from '../../types/sandbox';
 import './Structure.css';
 import { isDev } from '../../config/env';
-import { structureCentering, technologyCentering, defaultBuilding, defaultStatue } from '../../config/world';
+import { structureCentering, technologyCentering } from '../../config/world';
 import { lockSprite } from '../../config/assets';
 import { COMPANY_IDS } from '../../config/ids';
 
@@ -14,8 +14,6 @@ interface StructureProps {
 
 const Structure: React.FC<StructureProps> = ({ data, isNearby, locked = false }) => {
   const isBuilding = data.type === 'building';
-
-  const getStructureIcon = (): string => data.data.image ?? (isBuilding ? defaultBuilding : defaultStatue);
 
   const getSignpostIcon = (): string | undefined => (data.type === 'building' ? data.data.signpost : undefined);
 
@@ -40,7 +38,7 @@ const Structure: React.FC<StructureProps> = ({ data, isNearby, locked = false })
         {isBuilding ? (
           <>
             <img
-              src={getStructureIcon()}
+              src={data.data.image}
               alt={data.name}
               className="structure-building-image"
               style={{
@@ -76,7 +74,7 @@ const Structure: React.FC<StructureProps> = ({ data, isNearby, locked = false })
             }}/> : <></>
           }
             <img
-                src={getStructureIcon()}
+                src={data.data.image}
                 alt={data.name}
                 style={{
                   marginLeft: data.data.centering !== undefined ? data.data.centering.x : 0,

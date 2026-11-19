@@ -14,7 +14,7 @@ const FullscreenButton: React.FC<FullscreenButtonProps> = ({ golden = false }) =
   const orientation = useAppSelector((state) => state.story.orientation);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const supported = typeof document !== 'undefined'
-    && document.fullscreenEnabled === true
+    && document.fullscreenEnabled
     && typeof document.documentElement.requestFullscreen === 'function';
 
   useEffect(() => {
