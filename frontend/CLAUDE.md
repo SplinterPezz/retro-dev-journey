@@ -45,9 +45,13 @@ src/
                      e.g. useSceneTriggers for everything opened by walking up to it)
   components/        UI pieces, one folder per component with its .tsx and .css
     Common/          used by several pages (LoadingSplash, ZoomSlider, MobileJoystick, buttons...)
-    Story/           dialogue, quiz, mini games, hud, world, collectibles
+    Story/           dialogue, quiz, mini games, collectibles, world, hud (objectives, UnlockPopup for
+                     achievements, SkillWindow on the map, ChapterCurtain)
     Overworld/       the career world drawn by both the Sandbox and the story map
-    GameMenu/, FirstVisit/, Structures/, Player/, Companion/ ...
+    GameMenu/        the menu of every game page: volumes, Items / Skills collections (useCollections),
+                     the 3D ItemInspector
+    FirstVisit/      the one-time orientation and sound questions (ChoiceScreen)
+    Structures/, Player/, Companion/ (Meep) ...
   hooks/             shared hooks (useLoadingSplash, useResourceLoader, useBackgroundMusic, useTypingSound...)
   audio/             Web Audio playback (dialogue typing tick)
   services/          backend calls through fetchFromApi (api.ts); fileService fetches the CV blob directly
@@ -108,6 +112,10 @@ The compiler (`babel-plugin-react-compiler`, wired in `vite.config.ts`) memoizes
 `react-hooks` lint preset fails the build on code it cannot compile. Every function must stay compilable.
 - **No manual `useMemo` / `useCallback` / `React.memo`**: write plain values and functions. Keep one only where the
   lint needs a stable identity for an effect dependency.
+- **The compiler does not guarantee identity**: a value used past a later hook call is not memoized, so it is a new
+  array or object on every render. A hook that restarts when its input changes keys on the content, not the
+  reference (`useResourceLoader` joins the image list); otherwise keep a `useMemo` with a one-line why. This is how
+  the story map once stayed on its loading screen forever.
 - **Render stays pure**: never read or write `ref.current` during render, no `Math.random()` / `Date.now()` in
   render (use a lazy `useState` initializer).
 - **Latest value inside a long-lived effect** (animation loop, timer, window listener): `useEffectEvent`, not a ref
@@ -182,10 +190,12 @@ Use `config/story/prologue.ts` (standalone map) or `eikony.ts` (a building on th
    `chapterAssets()` preloads everything the config lists - an image used outside the config must be added there.
 7. **Hitboxes** for every prop and NPC, checked with the debug overlay (see "Hitboxes").
 8. **Typing voices** for new speakers in `config/typingVoices.ts`.
-9. **Collectibles**, if any: an entry in `chapterCollectibles` (`config/story/collectibles.ts`).
+9. **Collectibles**, if any: an entry in `chapterCollectibles` (`config/story/collectibles.ts`), each with a `rarity`
+   (`common` | `rare` | `epic` | `legendary`): it drives the frame colour in the menu and the achievement popup.
 10. **Music**: the track in `public/audio`, set as `audioTrack`.
-11. **Technologies** unlocked by the chapter: `storyChapter` on the technology in `config/career.ts` - its statue
-    appears on the map once the chapter is finished.
+11. **Technologies** unlocked by the chapter: `storyChapter` on the technology in `config/career.ts`, with its
+    `rarity` and `learnedText` (shown in the unlock popup and in Skills) - its statue appears on the map once the
+    chapter is finished.
 12. **Ready**: remove `inDevelopment` from its `storyChapterOrder` row.
 
 Then play it through with the debug buttons, in the three layouts.
@@ -195,6 +205,8 @@ Then play it through with the debug buttons, in the three layouts.
 ### Saved data
 - Story flag values (`config/story/flags.ts`) and ids (`config/ids.ts`) are saved in players' progress and in
   tracking: **never change a value**, rename the key instead.
+- Same for the timeline keys (`config/story/timeline.ts`, the timestamps behind the elapsed times) and the ids of
+  collectibles and technologies (found items and unlocked skills are saved by id).
 - Changing the shape of a persisted slice needs a migration in `store/migrations.ts` (bump `PERSIST_VERSION`).
   New fields read from older saves need a default (see `selectDialogueSound`).
 
@@ -289,6 +301,16 @@ Check monthly with `npm outdated`. Minor and patch updates together; one major a
 Node must match `engines` in `package.json` (>= 22.13). Majors pending as of 2026-11:
 - **TypeScript 7**: blocked until `typescript-eslint` supports it (it refuses TS 7 today).
 - `@types/node` follows the Node version in use (22 locally, 24 in CI): don't jump ahead of it.
+
+## README and screenshots
+
+- The root `README.md` describes every feature players see, with screenshots in `screenshots/`. A new feature gets
+  its line and, when it is visual, its screenshot in the same change.
+- Same sizes as the existing ones: `story/` JPG at 1x - desktop 1350x1110, portrait 439x958, landscape 959x445;
+  `desktop/` PNG at 2x (viewport about 1515x950); `mobile/` PNG at 2x (375x666, 666x375 in landscape).
+- Take them on a production build (`npm run build` + `npm run preview`), so no debug overlay or toolbar shows, in a
+  browser of your own with a prepared save in that browser's localStorage - never in the user's tab or profile.
+- Never add or inflate credits about Claude in the README (see below).
 
 ## Working with the user
 

@@ -1,6 +1,6 @@
 # 🎮 Retro Dev Journey
 
-[![React](https://img.shields.io/badge/React-19.3.0-61DAFB?style=flat&logo=react)](https://reactjs.org/)
+[![React](https://img.shields.io/badge/React-19.3.1-61DAFB?style=flat&logo=react)](https://reactjs.org/)
 [![Go](https://img.shields.io/badge/Go-1.24.3-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-8.10.0-47A248?style=flat&logo=mongodb)](https://www.mongodb.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0.3-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
@@ -18,7 +18,7 @@
   <img src="./frontend/public/sprites/statues/mongodb.png" width="150">
 </div>
 
-> 🚀 **FULL Development Timeline:** 2 weeks development + 1 week debugging
+> 🚀 **Version 1.0 Development Timeline:** 2 weeks development + 1 week debugging. Since then the project keeps growing in my free time.
 
 ---
 
@@ -99,6 +99,8 @@ The environment files could be optimized by using a single env file for both the
 ---
 
 ## ⏱️ Development Timeline
+The three weeks below refer to version 1.0 of the project. Since then I keep working on it in my free time.
+
 **Week 1: Foundation (7 days)**
 * **Day 1**: Research pixel art games, RPG UI frameworks, and portfolio inspiration
 * **Days 2-3**: Project architecture, Docker setup, MongoDB schema design
@@ -148,12 +150,15 @@ The environment files could be optimized by using a single env file for both the
 ## ✨ Key Features
 
 - 🎮 **Interactive World** - Navigate through a pixel-art world representing career progression
-- 📖 **Story Mode** - The career chapter by chapter: dialogues, quizzes and mini games on three difficulty levels, hidden collectibles, technologies unlocked along the way
+- 📖 **Story Mode** - The career chapter by chapter: branching dialogues, quizzes and mini games on three difficulty levels, hidden collectibles, technologies unlocked along the way
+- 💬 **Talking characters** - Dialogues typed letter by letter with a typing sound; every character has its own voice (pitch and rhythm)
+- 🎒 **Items & Skills** - A game menu with every collectible and technology found, their rarity (common, rare, epic, legendary), a 3D inspector and the time it took to find each one
+- ⏱️ **Speedrun timer** - Every collectible and unlocked skill shows when it was found, counted from the start of the story
 - 📊 **Real-time Analytics** - Track user interactions with MongoDB storage and admin dashboard
-- 📱 **Responsive Design** - Optimized for both desktop and mobile with touch controls
+- 📱 **Responsive Design** - Desktop, phone portrait and phone landscape layouts, touch joystick, zoom buttons, fullscreen and orientation lock
 - 🛤️ **Dynamic Path Generation** - Automatically generated paths connecting career milestones
 - 🎯 **Quest System** - Daily quest tracking for user engagement
-- 🎵 **Audio Controls** - Immersive background music with volume controls
+- 🎵 **Audio Controls** - Music and dialogue sound with their own volume and mute, shared by every page and remembered
 - 📄 **CV Management** - Secure upload/download functionality for CV files for fast update.
 
 ---
@@ -173,19 +178,22 @@ golang.org/x/crypto v0.36.0              // Cryptographic functions
 ### Frontend (React + TypeScript, built with Vite)
 ```json
 {
-  "react": "^19.3.0",
+  "react": "^19.3.0", // with the React Compiler (babel-plugin-react-compiler)
   "react-dom": "^19.3.0",
   "@reduxjs/toolkit": "^2.13.0",
   "react-redux": "^9.3.0",
   "redux-persist": "^6.0.0",
-  "react-router": "^7.18.4",
-  "@mui/material": "^7.3.11", // Login card and admin area only
-  "react-apexcharts": "^1.9.0", // Admin charts
+  "react-router": "^8.5.2",
+  "@mui/material": "^9.5.0", // Login card and admin area only
+  "react-apexcharts": "^2.2.1", // Admin charts
   "@uiw/react-codemirror": "^4.25.12", // Code questions in Story Mode
+  "lucide-react": "^1.73.0", // Icons
   "react-joystick-component": "^6.2.1", // Can be easly removed by creating a custom one
-  // dev: vite 8, vitest 5, typescript 6.0, eslint 10
+  // dev: vite 8, vitest 5, typescript 6.0, eslint 10 + typescript-eslint, knip
 }
 ```
+
+The heavy libraries stay out of the first download: MUI and ApexCharts are only in the admin chunk, CodeMirror only loads when a quiz needs it.
 
 ---
 
@@ -261,14 +269,18 @@ docker --version  # Should be 28.1.1+
 - **Movement:** WASD or Arrow keys
 - **Run:** Hold Shift or Spacebar while moving
 - **Interaction:** Walk near buildings/technologies to view information
+- **Zoom:** the + / - buttons or the slider on the left
 
 ### Mobile
-- **Movement:** Virtual joystick (bottom right)
+- **Movement:** Virtual joystick (bottom right), push it further to run
 - **Interaction:** Tap and move near structures
+- **Screen:** fullscreen and orientation buttons in the top right corner
 
 ### Story Mode
-- **Same movement** as above; walk up to people, quizzes and doors to interact
-- **Dialogues:** tap or click the box to continue, pick an answer when asked
+- **Same movement** as above; walk up to people, quizzes, mini games and doors to interact
+- **Dialogues:** Enter, Space, a click or a tap to continue; pick an answer when asked
+- **Menu:** the Menu button (top left) for Items, Skills, music and dialogue volume
+- **Inspector:** drag an item or a skill to rotate it
 
 ---
 
@@ -309,16 +321,19 @@ retro-dev-journey/
 │   ├── vite.config.ts     # Vite, dev server and Vitest configuration
 │   │ 
 │   ├── src/               # Source code
-│   │   ├── components/    # React components
-│   │   ├── pages/         # Page components
-│   │   ├── game/          # Engine shared by Sandbox and Story (movement, collisions, scene)
-│   │   ├── services/      # API services
+│   │   ├── components/    # React components (Overworld, GameMenu, Story, FirstVisit...)
+│   │   ├── pages/         # Page components: Home, Sandbox, Story, Login, Admin
+│   │   ├── game/          # Engine shared by Sandbox and Story (movement, collisions, camera, zoom)
+│   │   ├── audio/         # Dialogue typing sound (Web Audio)
+│   │   ├── services/      # API calls, with runtime checks on every response
 │   │   ├── store/         # Redux store and persisted-state migrations
 │   │   ├── config/        # World, career, story and environment settings
 │   │   │   └── story/     # Story Mode: chapters, dialogues, quizzes, mini games, collectibles
-│   │   ├── hooks/         # Hooks TS folder
+│   │   ├── hooks/         # Shared hooks (loading screen, music, typing sound...)
 │   │   └── types/         # TypeScript definitions
 │   │ 
+│   ├── CLAUDE.md          # Rules and conventions of the frontend code
+│   ├── knip.json          # Unused files and exports check
 │   ├── Dockerfile         # Backend Docker container config
 │   ├── package.json       # Frontend dependencies
 │   ├── nginx.conf         # Nginx Configuration file for Docker
@@ -444,7 +459,11 @@ The game world is configured in plain TypeScript files:
 | `story/chapters.ts` | Chapter order, the building of each chapter, chapters still in development |
 | `story/<chapter>.ts` | One chapter: room, props, NPCs and dialogues, quizzes, objectives, closing scene |
 | `story/miniGames.ts`, `story/difficulty.ts` | Mini games and difficulty rules |
-| `story/collectibles.ts` | Hidden collectibles per chapter |
+| `story/collectibles.ts` | Hidden collectibles per chapter, with their rarity |
+| `story/flags.ts` | The flags each chapter saves in the player's progress |
+| `story/timeline.ts` | When things happened in a story, for the elapsed times |
+| `typingVoices.ts` | The voice of every speaker (pitch, rhythm) |
+| `menu.ts` | Game menu texts and default volumes |
 
 Technologies in `career.ts` also name the chapter that unlocks them in Story Mode (`storyChapter`).
 
@@ -540,10 +559,14 @@ npm run build:prod   # Build for production
 # Checks
 npm test            # Run the tests once (Vitest)
 npm run test:watch  # Re-run tests on change
-npm run typecheck   # TypeScript
-npm run lint        # ESLint
+npm run typecheck   # TypeScript (strict, with unchecked index access)
+npm run lint        # ESLint, no warnings allowed (React Compiler rules, type-checked rules)
+npm run knip        # Unused files, exports and dependencies
+npm run build       # Typecheck + production build
 npm run preview     # Serve the production build locally
 ```
+
+GitHub Actions (`.github/workflows/frontend.yml`) runs typecheck, lint, tests, knip and the build on every pull request and push to `main` that touches the frontend.
 
 ### Backend Development
 
@@ -670,27 +693,52 @@ Story Mode tells the same career as the Sandbox, one chapter at a time. Each cha
 
 - **Chapters** are plain config files (`config/story/<chapter>.ts`) with the room, props, NPCs, dialogues, quizzes, objectives and closing scene; `chapters.ts` sets their order. A chapter opens when the previous one is finished, and one still in development shows a "work in progress" window instead.
 - **Difficulty** (Junior, Middle, Senior) is chosen once per story and changes the number of questions, the mistakes allowed and the points.
-- **Dialogues** branch, remember the player's answers as flags and can pass from one character to another.
-- **Quizzes and mini games** mix multiple choice with "fix the code" questions (CodeMirror).
-- **The story map** lists every chapter (done, current, locked) and shows the technologies of the finished ones as statues.
-- **Collectibles** are hidden in every chapter (`config/story/collectibles.ts`), with a counter of the ones found.
+- **Objectives** in the top left corner say what is left to do in the chapter; once they are all done the chapter moves on to its last part.
 - **Meep**, a small companion, follows the player and comments along the way.
-- **Progress** is saved in the browser per chapter (flags, scores, collectibles) with Redux Persist.
-
-### Desktop
+- **Progress** is saved in the browser per chapter (flags, scores, collectibles, timestamps) with Redux Persist.
 
 <div align="left">
   <img src="./screenshots/story/desktop_difficulty.jpg" width="400">
   <img src="./screenshots/story/desktop_intro.jpg" width="400">
 </div>
 
+### Dialogues
+
+Walking up to a character opens a dialogue with their portrait. The text is typed letter by letter with a typing sound, and every speaker has a voice of their own (`config/typingVoices.ts`): Meep is higher and faster, the instructor lower and muffled. Dialogues branch, remember the player's answers as flags and can pass from one character to another; a question greys out once all its answers have been heard, with dots for the ones heard so far.
+
 <div align="left">
+  <img src="./screenshots/story/desktop_dialogue.jpg" width="400">
   <img src="./screenshots/story/desktop_prologue_debug.jpg" width="400">
-  <img src="./screenshots/story/desktop_collectible.jpg" width="400">
 </div>
+
+### Quizzes and mini games
+
+- **Quizzes** are split into topics (Java, Android, Objective-C, OOP basics in the Prologue). Questions are multiple choice or "fix the code" in a real Java editor (CodeMirror); too many mistakes restart the topic.
+- **Mini games** run on an old PC monitor: fix the Java build, pick the right commit, find the line that crashed in a log. The score depends on the difficulty, and a character comments the result.
+
+<div align="left">
+  <img src="./screenshots/story/desktop_quiz.jpg" width="400">
+  <img src="./screenshots/story/desktop_minigames.jpg" width="400">
+</div>
+
+### Collectibles and achievements
+
+Every chapter hides collectibles (`config/story/collectibles.ts`): some lie in a corner nobody visits, some appear only after walking a sequence of spots or standing still in the right place, some are given by a character, a few sit behind secret passages. A counter at the top shows how many are left.
+
+Finding one opens an achievement popup with its rarity (common, rare, epic, legendary, each with its own colour) and the time since the start of the story, like a speedrun timer (`38'54,00`). Finishing a chapter unlocks the technologies it taught: each gets its own popup and its statue appears on the story map.
+
+<div align="left">
+  <img src="./screenshots/story/desktop_collectible.jpg" width="400">
+  <img src="./screenshots/story/desktop_unlock.jpg" width="400">
+</div>
+
+### The story map
+
+The map lists every chapter (done, current, locked, with a padlock on the buildings still closed) and a chapter progress bar. Walking past the statue of an unlocked technology shows a small window with its rarity, the chapter that taught it and the time it took; **Inspect** opens it in 3D.
 
 <div align="left">
   <img src="./screenshots/story/desktop_map.jpg" width="400">
+  <img src="./screenshots/story/desktop_skill_window.jpg" width="400">
 </div>
 
 ### Mobile
@@ -698,6 +746,36 @@ Story Mode tells the same career as the Sandbox, one chapter at a time. Each cha
 <div align="left">
   <img src="./screenshots/story/portrait_prologue.jpg" width="250">
   <img src="./screenshots/story/landscape_prologue.jpg" width="520">
+</div>
+
+---
+
+## 🎒 Game Menu: Items & Skills
+
+The **Menu** button opens the same menu in the Sandbox, on the story map and in every chapter: the player's profile and difficulty, the way back home, the music and dialogue volume, and two collections.
+
+- **Items**: every collectible of the story. Found ones show their art, rarity frame and when they were found; missing ones are a dashed silhouette.
+- **Skills**: every technology of the career, unlocked chapter by chapter (`3 / 16` after the Prologue).
+- **Inspector**: tapping a found item or skill turns it into a 3D object with some thickness, to rotate by dragging, with its rarity and description.
+
+<div align="left">
+  <img src="./screenshots/story/desktop_menu.jpg" width="400">
+  <img src="./screenshots/story/desktop_items.jpg" width="400">
+</div>
+
+<div align="left">
+  <img src="./screenshots/story/desktop_inspect.jpg" width="400">
+  <img src="./screenshots/story/desktop_skills.jpg" width="400">
+</div>
+
+<div align="left">
+  <img src="./screenshots/story/portrait_menu.jpg" width="250">
+  <img src="./screenshots/story/portrait_items.jpg" width="250">
+</div>
+
+<div align="left">
+  <img src="./screenshots/story/landscape_menu.jpg" width="520">
+  <img src="./screenshots/story/landscape_skills.jpg" width="520">
 </div>
 
 ---
@@ -746,11 +824,12 @@ Story Mode tells the same career as the Sandbox, one chapter at a time. Each cha
 ## 🚀 Performance Optimizations
 
 ### Frontend Performance
+- **React Compiler:** every component and hook is memoized at build time, so a player step skips the parts of the scene that did not change
 - **Sprite Rendering:** CSS-based sprite animations with hardware acceleration
 - **Memory Management:** Efficient Redux state management with selective persistence
 - **Asset Optimization:** Compressed images and audio files
 - **Code Splitting:** Dynamic imports reduce initial bundle size
-- **RAF Optimization:** RequestAnimationFrame for smooth 60fps movement
+- **RAF Optimization:** RequestAnimationFrame for smooth movement at the screen's refresh rate
 
 ### Backend Performance
 - **Database Indexing:** Strategic indexes on frequently queried fields
@@ -791,12 +870,10 @@ Each structure can define custom collision boundaries separate from their visual
 
 ### Resource Loading and Optimization
 
-Before a scene starts, its images (and the Sandbox music) are loaded with a visual progress bar, so the world appears complete instead of popping in; a file that fails to load is skipped instead of blocking the scene. Story chapters do the same behind their title screen, with an `X/Y Loading` counter. Each page is its own chunk (lazy routes), so a first visit downloads only the home page, and the code editor used by the quizzes loads only when a quiz needs it.
-
-The loading page doesnt have a background for obvious reasons.
+Every scene (Sandbox, story map, chapters) starts behind the same loading screen: black, the scene's title in the middle and an `X/Y Loading` counter in the corner. The loading is real: the screen fades out as soon as the images the scene draws are loaded, with no minimum time, and a file that fails to load is skipped instead of blocking the scene (a 15 second cap covers a broken network). The player cannot move, and popups like the minimap wait, until the screen is gone. Each page is its own chunk (lazy routes), so a first visit downloads only the home page, and the code editor used by the quizzes loads only when a quiz needs it.
 
 <div align="left">
-  <img src="./screenshots/desktop/loading.png" width="800">
+  <img src="./screenshots/story/desktop_loading.jpg" width="400">
 </div>
 
 ---
@@ -807,9 +884,23 @@ The loading page doesnt have a background for obvious reasons.
 - Touch-based joystick controls (pushed further to run)
 - Responsive UI scaling, with dedicated layouts for portrait and landscape
 - Mobile-specific welcome dialog
-- Orientation choice for Story Mode and a fullscreen button
+- Orientation choice before the first game, a fullscreen button and an orientation toggle
+- Zoom buttons instead of the desktop slider
 
-The virtual joystick uses a dead zone and its distance from the centre as speed, so a light touch walks and a full push runs. UI scaling relies on viewport units and breakpoints; landscape phones get compact layouts for dialogs, panels and popups so they fit the short screen.
+The virtual joystick uses a dead zone and its distance from the centre as speed, so a light touch walks and a full push runs. UI scaling relies on viewport units and breakpoints; landscape phones get compact layouts for dialogs, panels and popups so they fit the short screen (the Sandbox dialog, for instance, splits into two columns). When the browser cannot lock the screen orientation, the whole app is rotated to the chosen one.
+
+### First visit
+
+Before the first game, Story or Sandbox, two one-time questions: on phones how to hold it (landscape or portrait), then whether to play with sound. Music and dialogue sound start muted until the player says yes, and the choice is shared by every page.
+
+<div align="left">
+  <img src="./screenshots/story/portrait_orientation.jpg" width="250">
+  <img src="./screenshots/story/desktop_sound.jpg" width="400">
+</div>
+
+<div align="left">
+  <img src="./screenshots/mobile/sandbox_landscape.png" width="520">
+</div>
 
 ### Desktop Features
 - Keyboard navigation (WASD/Arrows + Shift for running)
@@ -892,7 +983,7 @@ Multiple deployment environments support the development lifecycle:
 
 ### In Progress
 - **Story Mode chapters:** the Prologue is complete; Eikony and the following chapters are being written (the map shows a "work in progress" window for them)
-- **Collectibles menu:** one place for every collectible found, points and scores per chapter
+- **End-of-story stats:** total time, scores and collectibles per chapter, from the saved timestamps
 
 ### Planned Features
 - **Easter Eggs:** Tons of Easter Eggs.
