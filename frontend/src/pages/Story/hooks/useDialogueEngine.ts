@@ -35,13 +35,13 @@ export const useDialogueEngine = (
   }, [npcId, nodeId]);
 
   const selectChoice = (optionId: string) => {
-      if (!active) return;
-      const choice = getNode(active.npc, active.nodeId)?.choices?.[Number(optionId)];
-      if (!choice) return;
-      if (choice.setFlag) setFlag(choice.setFlag);
-      const next = pickNextNode(choice, active.npc, flags);
-      setActive(next ? { ...active, nodeId: next } : null);
-    };
+    if (!active) return;
+    const choice = getNode(active.npc, active.nodeId)?.choices?.[Number(optionId)];
+    if (!choice) return;
+    if (choice.setFlag) setFlag(choice.setFlag);
+    const next = pickNextNode(choice, active.npc, flags);
+    setActive(next ? { ...active, nodeId: next } : null);
+  };
 
   const advance = () => {
     if (!active) return;

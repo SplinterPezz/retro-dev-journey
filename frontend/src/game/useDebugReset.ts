@@ -17,11 +17,11 @@ export const useDebugReset = (chapterId?: string) => {
   };
 
   const completeCurrentChapter = (requiredFlags: string[], nextUnlockIndex: number) => {
-      if (!chapterId) return;
-      requiredFlags.forEach((flag) => dispatch(setFlag({ chapterId, flag })));
-      dispatch(completeChapter({ chapterId, unlockIndex: nextUnlockIndex }));
-      window.location.href = ROUTES.storyMap;
-    };
+    if (!chapterId) return;
+    requiredFlags.forEach((flag) => dispatch(setFlag({ chapterId, flag })));
+    dispatch(completeChapter({ chapterId, unlockIndex: nextUnlockIndex }));
+    window.location.href = ROUTES.storyMap;
+  };
 
   return { resetAll, resetCurrentChapter, completeCurrentChapter };
 };

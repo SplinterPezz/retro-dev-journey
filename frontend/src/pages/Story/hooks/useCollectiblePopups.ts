@@ -18,9 +18,9 @@ export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, to
   const [loreOpen, setLoreOpen] = useState(false);
 
   const onFind = (item: CollectibleData) => {
-      dispatch(collect({ chapterId, id: item.id }));
-      setQueue((q) => [...q, item]);
-    };
+    dispatch(collect({ chapterId, id: item.id }));
+    setQueue((q) => [...q, item]);
+  };
 
   const allFound = total > 0 && foundCount >= total;
 
