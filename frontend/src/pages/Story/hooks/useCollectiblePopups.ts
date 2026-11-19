@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../../store/store';
 import { collect } from '../../../store/storySlice';
@@ -18,13 +18,10 @@ export const useCollectiblePopups = ({ chapterId, flags, setFlag, foundCount, to
   const [queue, setQueue] = useState<CollectibleData[]>([]);
   const [loreOpen, setLoreOpen] = useState(false);
 
-  const onFind = useCallback(
-    (item: CollectibleData) => {
+  const onFind = (item: CollectibleData) => {
       dispatch(collect({ chapterId, id: item.id }));
       setQueue((q) => [...q, item]);
-    },
-    [dispatch, chapterId]
-  );
+    };
 
   const allFound = total > 0 && foundCount >= total;
 

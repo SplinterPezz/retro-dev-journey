@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StoryDifficulty } from '../../../types/story';
 import CodeFixEditor from '../code/LazyCodeFixEditor';
 import { sameCode } from '../code/sameCode';
@@ -116,7 +116,7 @@ const ReadLogQuestion: React.FC<QuestionProps & { log: { lines: string[]; errorI
 );
 
 const MiniGamesPopup: React.FC<MiniGamesPopupProps> = ({ difficulty, onFinish, onPowerOff }) => {
-  const steps = useMemo(() => buildSteps(difficulty), [difficulty]);
+  const steps = buildSteps(difficulty);
   const [results, setResults] = useState<boolean[]>([]);
   const [feedback, setFeedback] = useState<boolean | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout>>(undefined);

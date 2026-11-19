@@ -29,4 +29,4 @@ const PathRenderer: React.FC<PathRendererProps> = ({ pathSegments, tileSize }) =
   </div>
 );
 
-export default React.memo(PathRenderer);
+export default PathRenderer;

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChapterOutro, StoryNpcData, StoryFlags } from '../../../types/story';
 import { Position } from '../../../types/game';
 
@@ -82,7 +82,7 @@ export const useChapterOutro = ({ outro, flags, setFlag, ready, busy, npcs, cue,
   if (phase === 'fromBlack') curtain = { subtitle: outro?.subtitle, leaving: true };
   if (phase === 'ending') curtain = { leaving: false };
 
-  const leave = useCallback(() => setPhase((p) => (p === 'free' ? 'ending' : p)), []);
+  const leave = () => setPhase((p) => (p === 'free' ? 'ending' : p));
 
   return { active: phase !== 'idle' && phase !== 'free', ended, curtain, leave };
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
@@ -90,12 +90,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const difficulty = useSelector((state: RootState) => state.story.difficulty) ?? DEFAULT_DIFFICULTY;
   const startedAt = useSelector((state: RootState) => state.story.startedAt);
   const timeline = useSelector((state: RootState) => state.story.timeline);
-  const setChapterFlag = useCallback(
-    (flag: string) => {
+  const setChapterFlag = (flag: string) => {
       dispatch(setFlag({ chapterId: chapter.id, flag }));
-    },
-    [dispatch, chapter.id]
-  );
+    };
   const { resetAll, resetCurrentChapter, completeCurrentChapter } = useDebugReset(chapter.id);
 
   const dialogue = useDialogueEngine(chapter.npcs, flags, setChapterFlag);
@@ -106,15 +103,15 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const collectiblesTotal = collectibles?.items.length ?? 0;
   const found = useCollectiblePopups({ chapterId: chapter.id, flags, setFlag: setChapterFlag, foundCount: foundIds.length, total: collectiblesTotal });
   const meep = useMeepBeats(chapter.meepBeats, flags, completed);
-  const sprites = useMemo(() => chapterAssets(chapter), [chapter]);
+  const sprites = chapterAssets(chapter);
   const splash = useLoadingSplash(sprites);
 
   const popupOpen = !!dialogue.active || !!activeQuiz || !!activeMiniGame || found.isOpen;
   const { isOpen: menuOpen } = useGameMenu();
 
   const teleportRef = useRef<(position: Position) => void>(undefined);
-  const seatPlayer = useCallback((position: Position) => teleportRef.current?.(position), []);
-  const goToMap = useCallback(() => void navigate(ROUTES.storyMap), [navigate]);
+  const seatPlayer = (position: Position) => teleportRef.current?.(position);
+  const goToMap = () => void navigate(ROUTES.storyMap);
   const outro = useChapterOutro({
     outro: chapter.outro,
     flags,
@@ -129,26 +126,13 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
   const triggersEnabled = !introPending && !outro.active && !menuOpen;
 
   const npcStates = useNpcPatrol(chapter.npcs, chapter.props, dialogue.active?.npc.id ?? null);
-  const npcCollidables = useMemo(
-    () =>
-      chapter.npcs.map((npc) =>
+  const npcCollidables = chapter.npcs.map((npc) =>
         toCollidable(npc.id, npcStandingPosition(npc, flags, npcStates[npc.id]?.position), npc.interactionRadius ?? DEFAULT_NPC_REACH, npc.collisionHitbox)
-      ),
-    [chapter.npcs, npcStates, flags]
-  );
-  const quizCollidables = useMemo(
-    () => chapter.quizzes.map((q) => toCollidable(q.id, q.position, q.interactionRadius ?? DEFAULT_STATION_REACH)),
-    [chapter.quizzes]
-  );
-  const miniGameCollidables = useMemo(
-    () => (chapter.miniGames ?? []).map((m) => toCollidable(m.id, m.position, m.interactionRadius ?? DEFAULT_STATION_REACH)),
-    [chapter.miniGames]
-  );
-  const blockers = useMemo(
-    () => [...npcCollidables, ...chapter.props.map((p) => toCollidable(p.id, p.position, 0, p.collisionHitbox))],
-    [npcCollidables, chapter.props]
-  );
-  const { worldBounds, walkableAreas } = useMemo(() => walkableWorld(chapter, collectibles?.secretPaths), [chapter, collectibles]);
+      );
+  const quizCollidables = chapter.quizzes.map((q) => toCollidable(q.id, q.position, q.interactionRadius ?? DEFAULT_STATION_REACH));
+  const miniGameCollidables = (chapter.miniGames ?? []).map((m) => toCollidable(m.id, m.position, m.interactionRadius ?? DEFAULT_STATION_REACH));
+  const blockers = [...npcCollidables, ...chapter.props.map((p) => toCollidable(p.id, p.position, 0, p.collisionHitbox))];
+  const { worldBounds, walkableAreas } = walkableWorld(chapter, collectibles?.secretPaths);
 
   // reloaded in the middle of the closing scene: back at the seat
   const outroSeat = chapter.outro && flags[chapter.outro.startedFlag] ? chapter.outro.playerPosition : undefined;
@@ -240,10 +224,9 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
     onCue: cueDialogue,
   });
 
-  const powerOffMiniGames = useCallback(() => setActiveMiniGame(null), []);
+  const powerOffMiniGames = () => setActiveMiniGame(null);
 
-  const finishMiniGames = useCallback(
-    (earned: number, max: number) => {
+  const finishMiniGames = (earned: number, max: number) => {
       if (activeMiniGame) {
         dispatch(recordScore({ chapterId: chapter.id, gameId: activeMiniGame.id, score: { earned, max } }));
         setChapterFlag(activeMiniGame.completionFlag);
@@ -252,16 +235,14 @@ const InteriorScene: React.FC<InteriorSceneProps> = ({ chapter, nextUnlockIndex,
         if (results && npc) cueDialogue(npc, results.nodes[tierFor(earned, max).id]);
       }
       setActiveMiniGame(null);
-    },
-    [activeMiniGame, chapter.id, chapter.npcs, dispatch, setChapterFlag, cueDialogue]
-  );
+    };
 
-  const handleQuizAllComplete = useCallback(() => {
+  const handleQuizAllComplete = () => {
     if (activeQuiz) setChapterFlag(activeQuiz.completionFlag);
     setActiveQuiz(null);
-  }, [activeQuiz, setChapterFlag]);
+  };
 
-  const handleQuizClose = useCallback(() => setActiveQuiz(null), []);
+  const handleQuizClose = () => setActiveQuiz(null);
 
   const exitObjective = outro.ended ? chapter.outro?.exitObjective : undefined;
   const objectives = useMemo(() => {

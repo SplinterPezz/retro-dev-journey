@@ -25,4 +25,4 @@ const CollectibleItem: React.FC<CollectibleItemProps> = ({ item, near }) => {
   );
 };
 
-export default React.memo(CollectibleItem);
+export default CollectibleItem;

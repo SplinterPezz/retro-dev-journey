@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { QuizData, QuizCategory, QuizQuestion, StoryDifficulty, StoryFlags } from '../../../types/story';
 import { DEFAULT_DIFFICULTY, exceedsMistakeLimit, maxMistakesByDifficulty } from '../../../config/story/difficulty';
 import { sameCode } from '../code/sameCode';
@@ -84,10 +84,7 @@ const QuizPopup: React.FC<QuizPopupProps> = ({ quiz, flags, difficulty, onSetFla
   const [runId, setRunId] = useState(0);
   const later = useTimeouts();
 
-  const activeCategory: QuizCategory | undefined = useMemo(
-    () => quiz.categories.find((c) => c.id === activeCategoryId),
-    [quiz.categories, activeCategoryId]
-  );
+  const activeCategory: QuizCategory | undefined = quiz.categories.find((c) => c.id === activeCategoryId);
 
   const mistakeLimit = maxMistakesByDifficulty[difficulty];
 

@@ -129,4 +129,4 @@ const Structure: React.FC<StructureProps> = ({ data, type, isNearby, locked = fa
   );
 };
 
-export default React.memo(Structure);
+export default Structure;

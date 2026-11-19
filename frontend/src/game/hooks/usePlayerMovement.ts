@@ -1,4 +1,4 @@
-import { useState, useEffect, useEffectEvent, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { Position, Direction, CollidableEntity, EnvironmentData, Hitbox, WorldBounds } from '../../types/game';
 import { playerHitbox as defaultPlayerHitbox } from '../../config/world';
 import { hitsAny, isInside, toBlockers } from '../collision';
@@ -45,7 +45,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const [isMoving, setIsMoving] = useState(false);
 
   const { canMove, structures, environments } = config;
-  const blockers = useMemo(() => toBlockers(structures, environments), [structures, environments]);
+  const blockers = toBlockers(structures, environments);
 
   const positionRef = useRef(config.initialPosition);
   const directionRef = useRef<Direction>('idle');
@@ -55,7 +55,7 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
   const isWindowFocusedRef = useRef(true);
   const lastFrameRef = useRef(0);
 
-  const handleJoystickMove = useCallback((e: JoystickMoveEvent) => {
+  const handleJoystickMove = (e: JoystickMoveEvent) => {
     if (canMove === false) return;
     const x = e.x ?? null;
     const y = e.y ?? null;
@@ -65,9 +65,9 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     if (prev.direction !== d || Math.abs(prev.intensity - i) > 0.05) {
       joystickRef.current = { isActive: true, direction: d, intensity: i };
     }
-  }, [canMove]);
+  };
 
-  const teleport = useCallback((to: Position) => {
+  const teleport = (to: Position) => {
     keysRef.current.clear();
     joystickRef.current = IDLE_JOYSTICK;
     positionRef.current = to;
@@ -76,11 +76,11 @@ export const usePlayerMovement = (config: PlayerMovementConfig) => {
     setDirection('idle');
     isMovingRef.current = false;
     setIsMoving(false);
-  }, []);
+  };
 
-  const handleJoystickStop = useCallback(() => {
+  const handleJoystickStop = () => {
     joystickRef.current = IDLE_JOYSTICK;
-  }, []);
+  };
 
   const handleKeyDown = useEffectEvent((e: KeyboardEvent) => {
     if (isTextTarget(e.target)) return;

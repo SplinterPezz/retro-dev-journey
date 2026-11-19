@@ -49,4 +49,4 @@ const Meep: React.FC<MeepProps> = ({ position }) => {
   );
 };
 
-export default React.memo(Meep);
+export default Meep;

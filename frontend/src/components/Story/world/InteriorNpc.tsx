@@ -44,4 +44,4 @@ const InteriorNpc: React.FC<InteriorNpcProps> = ({ npc, position, moving = false
   );
 };
 
-export default React.memo(InteriorNpc);
+export default InteriorNpc;

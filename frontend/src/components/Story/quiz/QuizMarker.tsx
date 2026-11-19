@@ -24,4 +24,4 @@ const QuizMarker: React.FC<QuizMarkerProps> = ({
   </div>
 );
 
-export default React.memo(QuizMarker);
+export default QuizMarker;

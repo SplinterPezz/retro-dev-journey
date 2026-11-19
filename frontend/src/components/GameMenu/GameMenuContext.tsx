@@ -1,4 +1,4 @@
-import React, { createContext, use, useCallback, useMemo, useState } from 'react';
+import React, { createContext, use, useState } from 'react';
 import { useLocation } from 'react-router';
 
 interface GameMenuState {
@@ -15,9 +15,9 @@ export const GameMenuProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [openedOn, setOpenedOn] = useState<string | null>(null);
   const isOpen = openedOn === pathname;
 
-  const open = useCallback(() => setOpenedOn(pathname), [pathname]);
-  const close = useCallback(() => setOpenedOn(null), []);
-  const value = useMemo(() => ({ isOpen, open, close }), [isOpen, open, close]);
+  const open = () => setOpenedOn(pathname);
+  const close = () => setOpenedOn(null);
+  const value = ({ isOpen, open, close });
 
   return <GameMenuContext value={value}>{children}</GameMenuContext>;
 };

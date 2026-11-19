@@ -94,17 +94,13 @@ interface MapWorldProps {
 }
 
 // re-renders only when the nearby door or the unlocked statues change
-const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds, statues, pathTargets }) => {
-  const pathSegments = useMemo(
-    () =>
-      createPathGenerator({
+const MapWorld: React.FC<MapWorldProps> = ({ nearbyId, lockedIds, statues, pathTargets }) => {
+  const pathSegments = createPathGenerator({
         startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
         endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
         structures: pathTargets,
         tileSize: worldConfig.tileSize,
-      }).generatePath(),
-    [pathTargets]
-  );
+      }).generatePath();
 
   return (
     <>
@@ -138,7 +134,7 @@ const MapWorld: React.FC<MapWorldProps> = React.memo(({ nearbyId, lockedIds, sta
       </div>
     </>
   );
-});
+};
 
 const StoryMapPage: React.FC = () => {
   const navigate = useNavigate();
@@ -161,7 +157,7 @@ const StoryMapPage: React.FC = () => {
   const { isOpen: menuOpen } = useGameMenu();
 
   const activeChapter = storyChapterOrder[unlockedChapterIndex];
-  const quests = useMemo(() => chapterQuests(unlockedChapterIndex), [unlockedChapterIndex]);
+  const quests = chapterQuests(unlockedChapterIndex);
   const lockedIds = useMemo(() => {
     const open = new Set(quests.filter((q) => !q.locked).map((q) => q.id));
     return companies.filter((c) => !open.has(c.id)).map((c) => c.id);
@@ -180,16 +176,13 @@ const StoryMapPage: React.FC = () => {
     }
   }, [unfinishedStandalone, navigate]);
 
-  const activeCompany = useMemo(
-    () => (activeChapter?.companyId ? companies.find((c) => c.id === activeChapter.companyId) : undefined),
-    [activeChapter]
-  );
+  const activeCompany = (activeChapter?.companyId ? companies.find((c) => c.id === activeChapter.companyId) : undefined);
 
-  const statues = useMemo(() => unlockedTechnologies(chapters), [chapters]);
-  const mapAssets = useMemo(() => storyMapAssets(statues), [statues]);
+  const statues = unlockedTechnologies(chapters);
+  const mapAssets = storyMapAssets(statues);
   const splash = useLoadingSplash(mapAssets);
   const splashCovering = splash.visible && !splash.leaving;
-  const solidStructures = useMemo(() => [...companies, ...statues], [statues]);
+  const solidStructures = [...companies, ...statues];
   const newDiscoveries = statues.filter((t) => !(discoveriesSeen ?? []).includes(t.id));
   const discovery = newDiscoveries[0];
   const discoveriesLeft = newDiscoveries.length - 1;
@@ -222,7 +215,7 @@ const StoryMapPage: React.FC = () => {
 
   const meepPosition = useLaggedPosition(playerPosition, MEEP_LAG_MS);
 
-  const doorCollidable = useMemo(() => (activeCompany ? [activeCompany] : []), [activeCompany]);
+  const doorCollidable = (activeCompany ? [activeCompany] : []);
 
   const { nearbyStructure: nearbyDoor } = useCollisionDetection({
     playerPosition,

@@ -39,4 +39,4 @@ const Environment: React.FC<EnvironmentDataProps> = ({ size, environment }) => {
         </>
     )
 }
-export default React.memo(Environment);
+export default Environment;

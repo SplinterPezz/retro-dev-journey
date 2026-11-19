@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../../store/store';
@@ -30,9 +30,9 @@ const ChapterScenePage: React.FC<ChapterScenePageProps> = ({ chapter }) => {
     }
   }, [isLocked, navigate]);
 
-  const handleIntroComplete = useCallback(() => {
+  const handleIntroComplete = () => {
     dispatch(setFlag({ chapterId: chapter.id, flag: ENGINE_FLAGS.introSeen }));
-  }, [dispatch, chapter.id]);
+  };
 
   if (isLocked) {
     return null;

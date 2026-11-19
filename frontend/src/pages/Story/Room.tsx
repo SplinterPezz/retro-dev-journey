@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import TerrainRenderer from '../../components/Terrain/TerrainRenderer';
 import Environment from '../../components/Structures/Environment';
 import BobbingProp from '../../components/Story/world/BobbingProp';
@@ -14,7 +14,7 @@ interface RoomProps {
 
 // re-renders only when the flags change, never on a player step
 const Room: React.FC<RoomProps> = ({ chapter, flags }) => {
-  const door = useMemo(() => ({ image: doorImage, position: chapter.doorPosition }), [chapter.doorPosition]);
+  const door = ({ image: doorImage, position: chapter.doorPosition });
   const props = chapter.props.filter((prop) => isPropVisible(prop, flags));
   const quizzes = chapter.quizzes.filter((quiz) => isUnlocked(flags, quiz.requiredFlag));
 
@@ -36,4 +36,4 @@ const Room: React.FC<RoomProps> = ({ chapter, flags }) => {
   );
 };
 
-export default React.memo(Room);
+export default Room;

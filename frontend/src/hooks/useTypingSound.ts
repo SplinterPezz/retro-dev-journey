@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { selectDialogueSound } from '../store/settingsSlice';
@@ -8,7 +8,7 @@ import { typingVoiceFor } from '../config/typingVoices';
 export const useTypingSound = (text: string, typedLength: number, isTyping: boolean, speaker?: string) => {
   const settings = useSelector((state: RootState) => state.settings);
   const { dialogueVolume, dialogueMuted } = selectDialogueSound(settings);
-  const voice = useMemo(() => typingVoiceFor(speaker), [speaker]);
+  const voice = typingVoiceFor(speaker);
   const letters = useRef(0);
   const nextTickAt = useRef(0);
   const lastLength = useRef(0);

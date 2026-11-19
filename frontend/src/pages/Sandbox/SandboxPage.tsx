@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
 import { useLoadingSplash } from '../../hooks/useLoadingSplash';
@@ -97,19 +97,15 @@ interface StaticWorldProps {
 }
 
 // re-renders only when the nearby structure changes, never on a player step
-const StaticWorld: React.FC<StaticWorldProps> = React.memo(({ nearbyId }) => {
-  const pathSegments = useMemo(
-    () =>
-      pathGenerationEnabled
+const StaticWorld: React.FC<StaticWorldProps> = ({ nearbyId }) => {
+  const pathSegments = pathGenerationEnabled
         ? createPathGenerator({
             startPosition: { x: mainPathConfig.startX, y: mainPathConfig.startY },
             endPosition: { x: mainPathConfig.startX, y: mainPathConfig.endY },
             structures: careerStructures,
             tileSize: worldConfig.tileSize,
           }).generatePath()
-        : [],
-    []
-  );
+        : [];
 
   return (
     <>
@@ -147,9 +143,9 @@ const StaticWorld: React.FC<StaticWorldProps> = React.memo(({ nearbyId }) => {
       )}
     </>
   );
-});
+};
 
-const Minimap: React.FC = React.memo(() => (
+const Minimap: React.FC = () => (
   <>
     <div className="minimap-main-path" />
     {careerStructures.map((structure) => (
@@ -164,7 +160,7 @@ const Minimap: React.FC = React.memo(() => (
       />
     ))}
   </>
-));
+);
 
 const SandboxPage: React.FC = () => {
   const isMobile = useIsMobile();

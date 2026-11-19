@@ -176,4 +176,4 @@ const DownloadCV: React.FC<DownloadCVProps> = ({ isNearby, structure }) => {
     );
 };
 
-export default React.memo(DownloadCV);
+export default DownloadCV;

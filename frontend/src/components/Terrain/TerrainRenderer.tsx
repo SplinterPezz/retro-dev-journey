@@ -75,4 +75,4 @@ const TerrainRenderer: React.FC<TerrainRendererProps> = ({ worldConfig, autoRota
   );
 };
 
-export default React.memo(TerrainRenderer);
+export default TerrainRenderer;

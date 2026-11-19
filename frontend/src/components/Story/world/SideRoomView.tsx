@@ -42,4 +42,4 @@ const SideRoomView: React.FC<SideRoomViewProps> = ({ room, lit }) => (
   </>
 );
 
-export default React.memo(SideRoomView);
+export default SideRoomView;

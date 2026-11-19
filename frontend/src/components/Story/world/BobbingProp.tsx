@@ -22,4 +22,4 @@ const BobbingProp: React.FC<BobbingPropProps> = ({ prop }) => (
   </div>
 );
 
-export default React.memo(BobbingProp);
+export default BobbingProp;
