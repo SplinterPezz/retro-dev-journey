@@ -1,29 +1,14 @@
 import React from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
-import './OrientationChoice.css';
-import '../Common/pixel-button.css';
-import '../Common/fullscreen-page.css';
+import ChoiceScreen from './ChoiceScreen';
 
-interface SoundChoiceProps {
-  onChoose: (soundOn: boolean) => void;
-}
+const OPTIONS = [
+  { value: true, label: 'Audio on', icon: Volume2 },
+  { value: false, label: 'Audio off', icon: VolumeX },
+] as const;
 
-const SoundChoice: React.FC<SoundChoiceProps> = ({ onChoose }) => (
-  <div className="orientation-choice-page fullscreen-page">
-    <div className="orientation-choice-box">
-      <h2 className="orientation-choice-title">Do you want sound?</h2>
-      <div className="orientation-choice-buttons">
-        <button type="button" className="orientation-choice-button pixel-button" onClick={() => onChoose(true)}>
-          <Volume2 size={56} strokeWidth={2} />
-          <span>Audio on</span>
-        </button>
-        <button type="button" className="orientation-choice-button pixel-button" onClick={() => onChoose(false)}>
-          <VolumeX size={56} strokeWidth={2} />
-          <span>Audio off</span>
-        </button>
-      </div>
-    </div>
-  </div>
+const SoundChoice: React.FC<{ onChoose: (soundOn: boolean) => void }> = ({ onChoose }) => (
+  <ChoiceScreen title="Do you want sound?" options={OPTIONS} onChoose={onChoose} />
 );
 
 export default SoundChoice;

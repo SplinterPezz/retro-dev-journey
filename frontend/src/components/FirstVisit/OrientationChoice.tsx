@@ -1,38 +1,15 @@
 import React from 'react';
 import { RectangleHorizontal, RectangleVertical } from 'lucide-react';
 import { StoryOrientation } from '../../types/story';
-import './OrientationChoice.css';
-import '../Common/pixel-button.css';
-import '../Common/fullscreen-page.css';
+import ChoiceScreen from './ChoiceScreen';
 
-interface OrientationChoiceProps {
-  onChoose: (orientation: StoryOrientation) => void;
-}
+const OPTIONS = [
+  { value: 'landscape-primary', label: 'Landscape', icon: RectangleHorizontal },
+  { value: 'portrait', label: 'Portrait', icon: RectangleVertical },
+] as const;
 
-const OrientationChoice: React.FC<OrientationChoiceProps> = ({ onChoose }) => (
-  <div className="orientation-choice-page fullscreen-page">
-    <div className="orientation-choice-box">
-      <h2 className="orientation-choice-title">How do you want to play?</h2>
-      <div className="orientation-choice-buttons">
-        <button
-          type="button"
-          className="orientation-choice-button pixel-button"
-          onClick={() => onChoose('landscape-primary')}
-        >
-          <RectangleHorizontal size={56} strokeWidth={2} />
-          <span>Landscape</span>
-        </button>
-        <button
-          type="button"
-          className="orientation-choice-button pixel-button"
-          onClick={() => onChoose('portrait')}
-        >
-          <RectangleVertical size={56} strokeWidth={2} />
-          <span>Portrait</span>
-        </button>
-      </div>
-    </div>
-  </div>
+const OrientationChoice: React.FC<{ onChoose: (orientation: StoryOrientation) => void }> = ({ onChoose }) => (
+  <ChoiceScreen title="How do you want to play?" options={OPTIONS} onChoose={onChoose} />
 );
 
 export default OrientationChoice;

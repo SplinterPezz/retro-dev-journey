@@ -1,43 +1,22 @@
 import React from 'react';
-import { Music, Volume2, VolumeX } from 'lucide-react';
+import { Music } from 'lucide-react';
 import { setMusicMuted, setMusicVolume } from '../../store/settingsSlice';
-import '../AudioControls/AudioControls.css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import VolumeRow from './VolumeRow';
 
 const MusicControl: React.FC = () => {
   const dispatch = useAppDispatch();
   const { musicVolume, musicMuted } = useAppSelector((state) => state.settings);
 
-  const changeVolume = (volume: number) => {
-    dispatch(setMusicVolume(volume));
-    if (musicMuted && volume > 0) dispatch(setMusicMuted(false));
-  };
-
-  const MuteIcon = musicMuted ? VolumeX : Volume2;
-
   return (
-    <div className="game-menu-music">
-      <Music size={20} color="white" className="volume-filter game-menu-sound-icon" aria-hidden="true" />
-      <input
-        type="range"
-        className="game-menu-volume"
-        min={0}
-        max={100}
-        step={5}
-        value={musicVolume}
-        onChange={(e) => changeVolume(Number(e.target.value))}
-        aria-label="Music volume"
-      />
-      <button
-        type="button"
-        className="unmute-controls rpgui-button game-menu-mute"
-        onClick={() => dispatch(setMusicMuted(!musicMuted))}
-        title={musicMuted ? 'Turn the music on' : 'Turn the music off'}
-        aria-pressed={musicMuted}
-      >
-        <MuteIcon size={24} color="white" className="volume-filter" />
-      </button>
-    </div>
+    <VolumeRow
+      icon={Music}
+      name="music"
+      volume={musicVolume}
+      muted={musicMuted}
+      onVolumeChange={(volume) => dispatch(setMusicVolume(volume))}
+      onMutedChange={(muted) => dispatch(setMusicMuted(muted))}
+    />
   );
 };
 

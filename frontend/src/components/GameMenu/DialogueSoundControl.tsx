@@ -1,44 +1,22 @@
 import React from 'react';
-import { MessageSquareText, Volume2, VolumeX } from 'lucide-react';
+import { MessageSquareText } from 'lucide-react';
 import { selectDialogueSound, setDialogueMuted, setDialogueVolume } from '../../store/settingsSlice';
-import '../AudioControls/AudioControls.css';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import VolumeRow from './VolumeRow';
 
 const DialogueSoundControl: React.FC = () => {
   const dispatch = useAppDispatch();
-  const settings = useAppSelector((state) => state.settings);
-  const { dialogueVolume, dialogueMuted } = selectDialogueSound(settings);
-
-  const changeVolume = (volume: number) => {
-    dispatch(setDialogueVolume(volume));
-    if (dialogueMuted && volume > 0) dispatch(setDialogueMuted(false));
-  };
-
-  const MuteIcon = dialogueMuted ? VolumeX : Volume2;
+  const { dialogueVolume, dialogueMuted } = selectDialogueSound(useAppSelector((state) => state.settings));
 
   return (
-    <div className="game-menu-music">
-      <MessageSquareText size={20} color="white" className="volume-filter game-menu-sound-icon" aria-hidden="true" />
-      <input
-        type="range"
-        className="game-menu-volume"
-        min={0}
-        max={100}
-        step={5}
-        value={dialogueVolume}
-        onChange={(e) => changeVolume(Number(e.target.value))}
-        aria-label="Dialogue sound volume"
-      />
-      <button
-        type="button"
-        className="unmute-controls rpgui-button game-menu-mute"
-        onClick={() => dispatch(setDialogueMuted(!dialogueMuted))}
-        title={dialogueMuted ? 'Turn the dialogue sound on' : 'Turn the dialogue sound off'}
-        aria-pressed={dialogueMuted}
-      >
-        <MuteIcon size={24} color="white" className="volume-filter" />
-      </button>
-    </div>
+    <VolumeRow
+      icon={MessageSquareText}
+      name="dialogue sound"
+      volume={dialogueVolume}
+      muted={dialogueMuted}
+      onVolumeChange={(volume) => dispatch(setDialogueVolume(volume))}
+      onMutedChange={(muted) => dispatch(setDialogueMuted(muted))}
+    />
   );
 };
 
